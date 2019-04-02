@@ -29,7 +29,7 @@ public class Player {
     private Character character;
 
     /**
-     * 
+     * b
      */
     private String nickname;
 

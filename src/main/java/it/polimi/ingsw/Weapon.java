@@ -2,123 +2,41 @@ package it.polimi.ingsw;
 
 import java.util.*;
 
-/**
- * 
- */
 public class Weapon {
 
-    /**
-     * Default constructor
-     */
-    public Weapon() {
-    }
-
-    /**
-     * 
-     */
     private String name;
-
-    /**
-     * 
-     */
-    private Array<AmmoColor> cost;
-
-    /**
-     * 
-     */
+    private ArrayList<AmmoColor> cost;
     private String notes;
-
-    /**
-     * 
-     */
-    private Bool loaded;
-
-    /**
-     * 
-     */
-    private Array<AmmoColor> cost;
-
-    /**
-     * 
-     */
+    private Boolean loaded;
     private WeaponType type;
-
-    /**
-     * 
-     */
     private ArrayList<Effect> effects;
 
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * @return
-     */
-    public WeaponName getName() {
-        // TODO implement here
-        return null;
+    public String getName() {
+        return name;
     }
 
-    /**
-     * @return
-     */
-    public Array<AmmoColor> getCost() {
-        // TODO implement here
-        return null;
+    public ArrayList<AmmoColor> getCost() {
+        return cost;
     }
 
-    /**
-     * @return
-     */
     public String getNotes() {
-        // TODO implement here
-        return "";
+        return notes;
     }
 
-    /**
-     * @return
-     */
-    public BasicAttack getBasicAttack() {
-        // TODO implement here
-        return null;
+    public Boolean isLoaded() {
+        return loaded;
     }
 
-    /**
-     * @return
-     */
-    public Bool isLoaded() {
-        // TODO implement here
-        return null;
-    }
-
-    /**
-     * 
-     */
     public void unload() {
-        // TODO implement here
+        loaded = false;
     }
 
-    /**
-     * 
-     */
     public void reload() {
-        // TODO implement here
+        loaded = true;
     }
 
-    /**
-     * @return
-     */
     public ArrayList<Effect> getEffect() {
-        // TODO implement here
-        return null;
+        return effects;
     }
 
 }
