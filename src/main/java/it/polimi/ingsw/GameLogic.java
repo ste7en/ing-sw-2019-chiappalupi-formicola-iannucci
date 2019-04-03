@@ -2,96 +2,28 @@ package it.polimi.ingsw;
 
 import java.util.*;
 
-/**
- * 
- */
 public class GameLogic {
 
-    /**
-     * Default constructor
-     */
-    public GameLogic() {
-    }
-
-    /**
-     * 
-     */
-    private Array<Player> players;
-
-    /**
-     * 
-     */
+    private ArrayList<Player> players;
     private Board board;
+    private boolean finalFrenzy;
 
-    /**
-     * 
-     */
-    private Bool finalFrenzy;
+    public void move(Player player) { }
 
+    private void grabStuff(Player player) { }
 
+    private void shootPeople(Player player) { }
 
+    private void death(Player player) { }
 
-    /**
-     * @param player
-     */
-    private void move(Player player) {
-        // TODO implement here
-    }
+    private void spawn(Player player) { }
 
-    /**
-     * @param player
-     */
-    private void grabStuff(Player player) {
-        // TODO implement here
-    }
+    private void round(Player player) { }
 
-    /**
-     * @param player
-     */
-    private void shootPeople(Player player) {
-        // TODO implement here
-    }
+    private void finalFrenzyRound(Player player) { }
 
-    /**
-     * @param player
-     */
-    private void death(Player player) {
-        // TODO implement here
-    }
+    public void gameOver() { }
 
-    /**
-     * @param player
-     */
-    private void spawn(Player player) {
-        // TODO implement here
-    }
-
-    /**
-     * @param player
-     */
-    private void round(Player player) {
-        // TODO implement here
-    }
-
-    /**
-     * @param player
-     */
-    private void finalFrenzyRound(Player player) {
-        // TODO implement here
-    }
-
-    /**
-     * 
-     */
-    public void gameOver() {
-        // TODO implement here
-    }
-
-    /**
-     * @param player
-     */
-    public void addPlayer(Player player) {
-        // TODO implement here
-    }
+    public void addPlayer(Player player) { }
 
 }
