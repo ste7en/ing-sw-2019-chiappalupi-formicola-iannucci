@@ -2,61 +2,18 @@ package it.polimi.ingsw;
 
 import java.util.*;
 
-/**
- * 
- */
 public class GameSettings {
 
-    /**
-     * Default constructor
-     */
-    public GameSettings() {
-    }
-
-    /**
-     * 
-     */
     private Player firstPlayer;
-
-    /**
-     * 
-     */
     private MapType mapType;
-
-    /**
-     * 
-     */
     private UUID gameID;
 
+    public Player getFirstPlayer() { return null; }
 
-    /**
-     * @return
-     */
-    public Player getFirstPlayer() {
-        // TODO implement here
-        return null;
-    }
+    public void setFirstPlayer(Player player) { }
 
-    /**
-     * @param player
-     */
-    public void setFirstPlayer(Player player) {
-        // TODO implement here
-    }
+    public MapType getMapType() { return null; }
 
-    /**
-     * @return
-     */
-    public MapType getMapType() {
-        // TODO implement here
-        return null;
-    }
-
-    /**
-     * @param value
-     */
-    public void setMapType(MapType value) {
-        // TODO implement here
-    }
+    public void setMapType(MapType value) { }
 
 }

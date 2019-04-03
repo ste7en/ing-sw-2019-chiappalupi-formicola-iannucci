@@ -2,73 +2,19 @@ package it.polimi.ingsw;
 
 import java.util.*;
 
-/**
- * 
- */
 public class GameMap {
 
-    /**
-     * Default constructor
-     */
-    public GameMap() {
-    }
-
-    /**
-     * 
-     */
-    private Array<Array<Cell>> map;
-
-    /**
-     * 
-     */
+    private Cell[][] map;
     private HashMap<Player, Cell> playersPosition;
 
+    public ArrayList<Cell> getRoomFrom(Cell cell) { return null; }
 
+    public ArrayList<Player> getTargetsFrom(Cell cell, Border border) { return null; }
 
+    public ArrayList<Player> getTargetsFrom(Direction direction) { return null; }
 
-    /**
-     * @param cell 
-     * @return
-     */
-    public Array<Cell> getRoomFrom(Cell cell) {
-        // TODO implement here
-        return null;
-    }
+    public Cell getPositionFrom(Player player) { return null; }
 
-    /**
-     * @param cell 
-     * @param border 
-     * @return
-     */
-    public Array<Player> getTargetsFrom(Cell cell, Border border) {
-        // TODO implement here
-        return null;
-    }
-
-    /**
-     * @param direction 
-     * @return
-     */
-    public Array<Player> getTargetsFrom(Direction direction) {
-        // TODO implement here
-        return null;
-    }
-
-    /**
-     * @param player 
-     * @return
-     */
-    public Cell getPositionFrom(Player player) {
-        // TODO implement here
-        return null;
-    }
-
-    /**
-     * @return
-     */
-    public GameMap getMap() {
-        // TODO implement here
-        return null;
-    }
+    public GameMap getMap() { return null; }
 
 }
