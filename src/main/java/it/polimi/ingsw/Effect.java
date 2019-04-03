@@ -8,6 +8,12 @@ public class Effect {
     private HashMap<AmmoColor, Integer> cost;
     private EffectType type;
 
+    public Effect(String name, HashMap<AmmoColor, Integer> cost, EffectType type) {
+        this.name = name;
+        this.cost = cost;
+        this.type = type;
+    }
+
     public String getName() {
         return null;
     }

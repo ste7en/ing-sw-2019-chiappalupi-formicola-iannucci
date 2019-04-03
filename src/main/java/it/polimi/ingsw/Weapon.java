@@ -4,12 +4,21 @@ import java.util.*;
 
 public class Weapon {
 
-    private String name;
-    private ArrayList<AmmoColor> cost;
-    private String notes;
-    private Boolean loaded;
-    private WeaponType type;
-    private ArrayList<Effect> effects;
+    private final String name;
+    private final ArrayList<AmmoColor> cost;
+    private final String notes;
+    private boolean loaded;
+    private final WeaponType type;
+    private final ArrayList<Effect> effects;
+
+    public Weapon(String name, ArrayList<AmmoColor> cost, String notes, Boolean loaded, WeaponType type, ArrayList<Effect> effects) {
+        this.name = name;
+        this.cost = cost;
+        this.notes = notes;
+        this.loaded = loaded;
+        this.type = type;
+        this.effects = effects;
+    }
 
     public String getName() {
         return name;
@@ -23,7 +32,7 @@ public class Weapon {
         return notes;
     }
 
-    public Boolean isLoaded() {
+    public boolean isLoaded() {
         return loaded;
     }
 
