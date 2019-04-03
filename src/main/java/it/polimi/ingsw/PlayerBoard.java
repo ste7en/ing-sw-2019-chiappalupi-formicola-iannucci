@@ -16,23 +16,23 @@ public class PlayerBoard {
     /**
      * 
      */
-    private Array<PlayerColor> damage;
+    private ArrayList<PlayerColor> damage;
 
     /**
      * 
      */
-    private Int maxPoints;
+    private Integer maxPoints;
 
     /**
      * 
      */
-    private Array<PlayerColor> marks;
+    private ArrayList<PlayerColor> marks;
 
 
     /**
      * @return
      */
-    public Array<PlayerColor> getDamage() {
+    public ArrayList<PlayerColor> getDamage() {
         // TODO implement here
         return null;
     }
@@ -41,14 +41,14 @@ public class PlayerBoard {
      * @param color 
      * @param n
      */
-    public void appendDamage(PlayerColor color, Int n) {
+    public void appendDamage(PlayerColor color, Integer n) {
         // TODO implement here
     }
 
     /**
      * @return
      */
-    public Int getMaxPoints() {
+    public Integer getMaxPoints() {
         // TODO implement here
         return null;
     }
@@ -56,7 +56,7 @@ public class PlayerBoard {
     /**
      * @return
      */
-    public Array<PlayerColor> getMarks() {
+    public ArrayList<PlayerColor> getMarks() {
         // TODO implement here
         return null;
     }
@@ -64,7 +64,7 @@ public class PlayerBoard {
     /**
      * @param value
      */
-    public void setMarks(Array<PlayerColor> value) {
+    public void setMarks(ArrayList<PlayerColor> value) {
         // TODO implement here
     }
 
@@ -99,17 +99,17 @@ public class PlayerBoard {
     /**
      * @return
      */
-    public Bool isAdrenalinic1() {
+    public boolean isAdrenalinic1() {
         // TODO implement here
-        return null;
+        return true;
     }
 
     /**
      * @return
      */
-    public Bool isAdrenalinic2() {
+    public boolean isAdrenalinic2() {
         // TODO implement here
-        return null;
+        return true;
     }
 
 }

@@ -21,7 +21,7 @@ public class PlayerHand {
     /**
      * 
      */
-    private HashMap<AmmoColor, Int> ammos;
+    private HashMap<AmmoColor, Integer> ammos;
 
     /**
      * 
@@ -65,7 +65,7 @@ public class PlayerHand {
      * @param color 
      * @return
      */
-    public Int getAmmosAmount(AmmoColor color) {
+    public Integer getAmmosAmount(AmmoColor color) {
         // TODO implement here
         return null;
     }
@@ -74,7 +74,7 @@ public class PlayerHand {
      * @param ammoColor 
      * @param amount
      */
-    public void updateAmmos(AmmoColor ammoColor, Int amount) {
+    public void updateAmmos(AmmoColor ammoColor, Integer amount) {
         // TODO implement here
     }
 
