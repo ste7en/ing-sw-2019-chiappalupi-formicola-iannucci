@@ -10,8 +10,8 @@ public class WeaponTest {
 
     Weapon weaponTester;
 
-    @BeforeClass
-    public void setUpBeforeClass() {
+    @Before
+    public void setUp() {
         ArrayList<AmmoColor> cost = new ArrayList<>();
         cost.add(AmmoColor.red);
         cost.add(AmmoColor.blue);
