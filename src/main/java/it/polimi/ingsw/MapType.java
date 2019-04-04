@@ -1,8 +1,5 @@
 package it.polimi.ingsw;
 
-/**
- * 
- */
 public enum MapType {
     conf_1,
     conf_2,

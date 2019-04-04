@@ -4,8 +4,13 @@ import java.util.*;
 
 public class AmmoTile {
 
-    private ArrayList<AmmoColor> ammos;
-    private Powerup powerup;
+    private final ArrayList<AmmoColor> ammos;
+    private final Powerup powerup;
+
+    public AmmoTile(ArrayList<AmmoColor> ammos, Powerup powerup) {
+        this.ammos = ammos;
+        this.powerup = powerup;
+    }
 
     public Boolean hasPowerup() {
         return (powerup != null) ? true : false;

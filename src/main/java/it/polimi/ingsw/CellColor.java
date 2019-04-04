@@ -1,8 +1,5 @@
 package it.polimi.ingsw;
 
-/**
- * 
- */
 public enum CellColor {
     red,
     yellow,
