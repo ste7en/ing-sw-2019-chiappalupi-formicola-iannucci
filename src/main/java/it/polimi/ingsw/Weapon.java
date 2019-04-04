@@ -11,14 +11,16 @@ public class Weapon {
     private final WeaponType type;
     private final ArrayList<Effect> effects;
 
-    public Weapon(String name, ArrayList<AmmoColor> cost, String notes, Boolean loaded, WeaponType type, ArrayList<Effect> effects) {
+    public Weapon(String name, ArrayList<AmmoColor> cost, String notes, WeaponType type, ArrayList<Effect> effects) {
         this.name = name;
         this.cost = cost;
         this.notes = notes;
-        this.loaded = loaded;
+        this.loaded = true;
         this.type = type;
         this.effects = effects;
     }
+
+    public WeaponType getType() { return type; }
 
     public String getName() {
         return name;
