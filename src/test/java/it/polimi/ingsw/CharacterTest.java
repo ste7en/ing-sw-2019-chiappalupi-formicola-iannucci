@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * @author Stefano Formicola
  */
 public class CharacterTest {
-    private static Character character;
+    private Character character;
     private static PlayerColor colorTest;
     private static String characterName;
     private static String characterDescription;
