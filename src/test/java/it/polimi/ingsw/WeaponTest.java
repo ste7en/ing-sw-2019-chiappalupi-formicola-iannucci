@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 
 public class WeaponTest {
 
-    Weapon weaponTester;
+    private Weapon weaponTester;
 
     @Before
     public void setUp() {
@@ -19,7 +19,14 @@ public class WeaponTest {
         ArrayList<Effect> effects = new ArrayList<>();
         Effect e = new Effect("test", null, EffectType.Basic);
         effects.add(e);
-        weaponTester = new Weapon("weaponTester", cost, "this is a test Weapon", true, WeaponType.SimpleWeapon, effects);
+        weaponTester = new Weapon("weaponTester", cost, "this is a test Weapon", WeaponType.SimpleWeapon, effects);
+    }
+
+    @Test
+    public void testGetType() {
+        assertNotNull(weaponTester.getType());
+        assertEquals(WeaponType.SimpleWeapon, weaponTester.getType());
+        assertNotEquals(WeaponType.PotentiableWeapon, weaponTester.getType());
     }
 
     @Test
