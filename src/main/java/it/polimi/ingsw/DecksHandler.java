@@ -18,6 +18,10 @@ public class DecksHandler {
         powerupsRecycleBin = new ArrayList<>();
     }
 
+    public boolean weaponsOver() {
+        return weapons.size() == 0;
+    }
+
     public Weapon drawWeapon() {
         Collections.shuffle(weapons);
         return weapons.remove(0);
@@ -25,11 +29,21 @@ public class DecksHandler {
 
     public AmmoTile drawAmmoTile() {
         Collections.shuffle(ammoTiles);
+        if(ammoTiles.size() == 1) {
+            AmmoTile a = ammoTiles.remove(0);
+            recycleAmmos();
+            return a;
+        }
         return ammoTiles.remove(0);
     }
 
-    public Powerup drawPowerups() {
+    public Powerup drawPowerup() {
         Collections.shuffle(powerups);
+        if(powerups.size() == 1) {
+            Powerup p = powerups.remove(0);
+            recyclePowerups();
+            return p;
+        }
         return powerups.remove(0);
     }
 
