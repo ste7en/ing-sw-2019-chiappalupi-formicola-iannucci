@@ -32,7 +32,7 @@ public class CharacterTest {
      * Initializes the character before each test
      */
     @Before
-    public void initializeCharater() {
+    public void initializeCharacter() {
         character = new Character(characterName, colorTest, characterDescription);
     }
 
