@@ -50,6 +50,17 @@ public class Board {
         return (totalSkulls-lastSkullConquered);
     }
 
-    public void addBloodFrom(PlayerColor player, Integer count) { }
+
+    public void addBloodFrom(PlayerColor player, Integer count) {
+        int i=0;
+        ArrayList<PlayerColor> playerColors = new ArrayList<PlayerColor>();
+        do {
+            i++;
+        } while (skullTrack.get(i).size()!=0);
+        for (int j=0; j<count; j++){
+            playerColors.add(player);
+        }
+        skullTrack.replace(i, playerColors );
+    }
 
 }
