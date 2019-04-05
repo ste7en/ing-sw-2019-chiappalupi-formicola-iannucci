@@ -22,7 +22,7 @@ public class PowerupTest {
      */
     @BeforeClass
     public static void setUpBeforeClass() {
-        powName = "powTester1";
+        powName = "powTester";
         powDescription = "This is a sample description";
         powColor = AmmoColor.values()[new Random().nextInt(3)];
     }
