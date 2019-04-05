@@ -17,7 +17,7 @@ public class DecksHandlerTest {
     private static ArrayList<Powerup> powerups = new ArrayList<>();
 
     /**
-     * Randomly initializes the attributes for the test class
+     * Initializes the attributes for the test class with random values
      */
     @BeforeClass
     public static void setUpBeforeClass() {
