@@ -6,22 +6,41 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
+/**
+ * Test for {@link Weapon} class
+ *
+ * @author Daniele Chiappalupi
+ */
 public class WeaponTest {
 
     private Weapon weaponTester;
+    private static ArrayList<AmmoColor> cost = new ArrayList<>();
+    private static ArrayList<Effect> effects = new ArrayList<>();
 
-    @Before
-    public void setUp() {
-        ArrayList<AmmoColor> cost = new ArrayList<>();
+    /**
+     * Initializes the attributes for the test class with artificial values
+     */
+    @BeforeClass
+    public static void setUpBeforeClass() {
         cost.add(AmmoColor.red);
         cost.add(AmmoColor.blue);
         cost.add(AmmoColor.yellow);
-        ArrayList<Effect> effects = new ArrayList<>();
         Effect e = new Effect("test", null, EffectType.Basic);
         effects.add(e);
+    }
+
+    /**
+     * Initializes the weaponTester before every class
+     */
+    @Before
+    public void setUp() {
         weaponTester = new Weapon("weaponTester", cost, "this is a test Weapon", WeaponType.SimpleWeapon, effects);
     }
 
+    /**
+     * Tests the getType() method, both with a positive and a negative test
+     * @see Weapon#getType()
+     */
     @Test
     public void testGetType() {
         assertNotNull(weaponTester.getType());
@@ -29,6 +48,10 @@ public class WeaponTest {
         assertNotEquals(WeaponType.PotentiableWeapon, weaponTester.getType());
     }
 
+    /**
+     * Tests the getName() method, both with a positive and a negative test
+     * @see Weapon#getName()
+     */
     @Test
     public void testGetName() {
         assertNotNull(weaponTester.getName());
@@ -36,6 +59,10 @@ public class WeaponTest {
         assertNotEquals("weapon1", weaponTester.getName());
     }
 
+    /**
+     * Tests the getCost() method, both with a positive and a negative test
+     * @see Weapon#getCost()
+     */
     @Test
     public void testGetCost() {
         assertNotNull(weaponTester.getCost());
@@ -48,6 +75,10 @@ public class WeaponTest {
         assertNotEquals(cost, weaponTester.getCost());
     }
 
+    /**
+     * Tests the getNotes() method, both with a positive and a negative test
+     * @see Weapon#getNotes()
+     */
     @Test
     public void testGetNotes() {
         assertNotNull(weaponTester.getNotes());
@@ -55,6 +86,10 @@ public class WeaponTest {
         assertNotEquals("this is the armageddon", weaponTester.getNotes());
     }
 
+    /**
+     * Tests the isLoaded() method, both with a positive and a negative test
+     * @see Weapon#isLoaded()
+     */
     @Test
     public void testIsLoaded() {
         weaponTester.reload();
@@ -65,18 +100,30 @@ public class WeaponTest {
         assertTrue(weaponTester.isLoaded());
     }
 
+    /**
+     * Tests the unload() method
+     * @see Weapon#unload()
+     */
     @Test
     public void testUnload() {
         weaponTester.unload();
         assertFalse(weaponTester.isLoaded());
     }
 
+    /**
+     * Tests the reload() method
+     * @see Weapon#reload()
+     */
     @Test
     public void testReload() {
         weaponTester.reload();
         assertTrue(weaponTester.isLoaded());
     }
 
+    /**
+     * Tests the getEffect() method, both with positives and negatives tests
+     * @see Weapon#getEffect()
+     */
     @Test
     public void testGetEffect() {
         assertNotNull(weaponTester.getEffect());
