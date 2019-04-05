@@ -20,8 +20,7 @@ public class Cell {
             case West:
                 return borders.get(3);
         }
-
-    return null;
+        return null;
     }
 
     public CellColor getColor() { return color; }
