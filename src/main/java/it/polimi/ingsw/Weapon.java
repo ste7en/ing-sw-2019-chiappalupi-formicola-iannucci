@@ -79,7 +79,7 @@ public class Weapon {
 
     /**
      * Weapon's notes getter
-     * @return the notes of the weapon (null if the weapon hasn't got them)
+     * @return the notes of the weapon (null if the weapon hasn't got them: {@link Weapon#notes})
      */
     public String getNotes() {
         return notes;
@@ -87,7 +87,7 @@ public class Weapon {
 
     /**
      * Weapon's state viewer
-     * @return a boolean that shows if the weapon can shoot
+     * @return a boolean that shows if the weapon can shoot {@link Weapon#loaded}
      */
     public boolean isLoaded() {
         return loaded;

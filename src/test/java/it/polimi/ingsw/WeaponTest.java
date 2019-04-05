@@ -18,7 +18,7 @@ public class WeaponTest {
     private static ArrayList<Effect> effects = new ArrayList<>();
 
     /**
-     * Initializes the attributes for the test class with artificial values
+     * Initializes the attributes for the test class with sample values
      */
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -30,7 +30,7 @@ public class WeaponTest {
     }
 
     /**
-     * Initializes the weaponTester before every class
+     * Initializes the weaponTester before every testG
      */
     @Before
     public void setUp() {
