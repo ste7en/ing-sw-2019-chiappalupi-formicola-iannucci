@@ -9,6 +9,18 @@ public class GameMap {
     private int rows;
     private int columns;
 
+    public GameMap(Cell[][] map, HashMap<Player, Cell> playersPosition, int rows, int columns){
+        int i,j;
+        for (i=0; i<rows; i++) {
+            for (j = 0; j < columns; j++) {
+                this.map[i][j] = map[i][j];
+            }
+        }
+        this.playersPosition.putAll(playersPosition);
+        this.rows=rows;
+        this.columns=columns;
+    }
+
     public ArrayList<Cell> getRoomFromCell (Cell cell) {
         ArrayList<Cell> room = new ArrayList<Cell>();
         int i,j;

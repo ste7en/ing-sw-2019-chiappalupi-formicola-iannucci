@@ -9,6 +9,13 @@ public class Cell {
     private boolean respawner;
     private AmmoTile ammoCard;
 
+    public Cell (ArrayList<Border> borders, CellColor color, boolean respawner, AmmoTile ammoCard) {
+        this.borders.addAll(borders);
+        this.color=color;
+        this.respawner=respawner;
+        this.ammoCard=ammoCard;
+    }
+
     public Border adiacency(Direction direction) {
         switch(direction) {
             case North:

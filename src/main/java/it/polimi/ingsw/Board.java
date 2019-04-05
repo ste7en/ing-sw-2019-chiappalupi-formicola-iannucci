@@ -9,6 +9,11 @@ public class Board {
     private HashMap<AmmoColor, ArrayList<Weapon>> weapons;
     private HashMap<Integer, ArrayList<PlayerColor>> skullTrack;
 
+    public Board(GameMap map, HashMap<AmmoColor, ArrayList<Weapon>> weapons, HashMap<Integer, ArrayList<PlayerColor>> skullTrack){
+        this.map=map;
+        this.weapons.putAll(weapons);
+        this.skullTrack.putAll(skullTrack);
+    }
 
     public void refillWeapons(DecksHandler decksHandler) {
         for(AmmoColor ammoColor : weapons.keySet()){
