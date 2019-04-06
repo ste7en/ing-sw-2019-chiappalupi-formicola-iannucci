@@ -45,7 +45,7 @@ public class PlayerBoardTest {
      * Initializes the playerBoard before each test
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         playerBoard = new PlayerBoard(testColor);
     }
 
@@ -61,21 +61,17 @@ public class PlayerBoardTest {
     /**
      * Tests the impossibility that a player could infer a damage to himself
      */
-    @Test
+    @Test (expected = IllegalArgumentException.class)
     public void testAppendDamagesColorException() {
-        try {
-            playerBoard.appendDamage(testColor, 3);
-        } catch (IllegalArgumentException e) {}
+        playerBoard.appendDamage(testColor, 3);
     }
 
     /**
      * Tests the impossibility that a player could infer a mark to himself
      */
-    @Test
+    @Test (expected = IllegalArgumentException.class)
     public void testAppendDamagesCountException() {
-        try {
-            playerBoard.appendDamage(green, -1);
-        } catch (IllegalArgumentException e) {}
+        playerBoard.appendDamage(green, -1);
     }
 
     /**
