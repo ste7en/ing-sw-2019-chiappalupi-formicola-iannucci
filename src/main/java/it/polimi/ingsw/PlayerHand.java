@@ -70,6 +70,7 @@ public class PlayerHand {
     /**
      * Updates the list of weapons of the player
      * @param weapons the list of weapons to update
+     * @throws NullPointerException if a null pointer is passed as parameter
      */
     public void setWeapons(List<Weapon> weapons) {
         if (weapons != null) {
@@ -82,6 +83,8 @@ public class PlayerHand {
     /**
      * Adds a powerup to the player's deck of powerups
      * @param powerup the powerup to add to the player's list
+     * @throws NullPointerException if a null pointer is passed as parameter
+     * @throws RuntimeException if there's already the maximum number of powerups allowed
      */
     public void addPowerup(Powerup powerup) {
         if (powerup == null) {
@@ -95,6 +98,9 @@ public class PlayerHand {
      * This method updates the number of cubes a player has
      * @param ammoColor the color of the cubes
      * @param amount the amount of cubes to increment or decrement
+     * @throws IllegalArgumentException if the total number of ammos is less than zero or
+     *          the ammoColor parameter is none
+     * @throws RuntimeException if there's already the maximum number of cubes (ammos) allowed
      */
     public void updateAmmos(AmmoColor ammoColor, Integer amount) {
         if (ammoColor == AmmoColor.none) { throw new IllegalArgumentException(NO_COLOR_EXCEPTION); }

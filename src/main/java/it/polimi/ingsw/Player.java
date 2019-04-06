@@ -98,6 +98,7 @@ public class Player {
 
     /**
      * @param value the amount of new points to add
+     * @throws IllegalArgumentException if a value less than zero is passed as parameter
      */
     public void addPoints(Integer value) {
         if (value < 0) throw new IllegalArgumentException(NEGATIVE_POINTS_EXC);

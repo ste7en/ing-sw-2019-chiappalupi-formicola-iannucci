@@ -67,6 +67,9 @@ public class PlayerBoard {
      *
      * @param color color of the player's board and character who inferred the damage
      * @param n number of damages inferred (can't be negative)
+     * @throws IllegalArgumentException if the same color of the player is asked to be added
+     *         to the array or the number of damages is less than zero
+     *
      */
     public boolean appendDamage(PlayerColor color, Integer n) {
         if (color == this.boardColor) { throw new IllegalArgumentException(COLOR_DAMAGE_MARKS_EXCEPTION); }
@@ -101,6 +104,7 @@ public class PlayerBoard {
      * and checking the correctness of the parameter.
      *
      * @param value collection of the player's marks
+     * @throws IllegalArgumentException if the same color of the player is asked to be added to the array
      */
     public void setMarks(ArrayList<PlayerColor> value) {
         if (value.contains(this.boardColor)) { throw new IllegalArgumentException(COLOR_DAMAGE_MARKS_EXCEPTION); }
