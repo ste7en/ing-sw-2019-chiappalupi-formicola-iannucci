@@ -1,104 +1,108 @@
 package it.polimi.ingsw;
 
-import java.util.*;
-
 /**
- * 
+ * A class containing attributes that identify a single player
+ * and methods used to keep track of user's progress in the game.
+ *
+ * @author Stefano Formicola
  */
 public class Player {
-
     /**
-     * Default constructor
+     * String passed as message of IllegalArgumentException when is asked to add a value to player's points.
      */
-    public Player() {
-    }
+    private static final String NEGATIVE_POINTS_EXC = "Cannot add negative points to player's points.";
 
     /**
-     * 
+     * It is the board used to keep track of a player's
+     * points, damages, marks during the game.
      */
-    private PlayerBoard playerBoard;
+    private final PlayerBoard playerBoard;
 
     /**
-     * 
+     * It is the class responsible of handling player's
+     * weapons, powerups and cubes used during the game.
      */
-    private PlayerHand playerHand;
+    private final PlayerHand playerHand = new PlayerHand();
 
     /**
-     * 
+     * It is a unique character identifying the
+     * player during the game.
      */
-    private Character character;
+    private final Character character;
 
     /**
-     * b
+     * The user joining the multiplayer game
+     * and identified by a unique identifier.
+     */
+    private User user;
+
+    /**
+     * Nickname of the player.
      */
     private String nickname;
 
     /**
-     * 
+     * Points achieved during the game.
      */
-    private int points;
-
-
-
-
-
-
+    private Integer points = 0;
 
 
     /**
-     * @return
+     * Constructor: creates a new Player based on given user and character.
+     * @param user is an instance of User
+     * @param character is a unique character used by the player during the game
      */
-    public PlayerBoard getPlayerBoard() {
-        // TODO implement here
-        return null;
+    public Player(User user, Character character) {
+        PlayerColor color = character.getColor();
+        String nick = user.getUsername();
+
+        this.character = character;
+        this.playerBoard = new PlayerBoard(color);
+        this.nickname = nick;
     }
 
     /**
-     * 
+     * @return a PlayerBoard instance
      */
-    public void chooseCharacter() {
-        // TODO implement here
+    public PlayerBoard getPlayerBoard() {
+        return playerBoard;
     }
 
     /**
      * @return
      */
     public PlayerHand getPlayerHand() {
-        // TODO implement here
-        return null;
+        return playerHand;
     }
 
     /**
      * @return
      */
     public Character getCharacter() {
-        // TODO implement here
-        return null;
+        return character;
     }
 
     /**
-     * @return
+     * @return the nickname used by the player
      */
     public String getNickname() {
-        // TODO implement here
-        return "";
+        return nickname;
     }
 
     /**
-     * @return
+     * @return the amount of points of the player
      */
-    public int getPoints() {
-        // TODO implement here
-        return 0;
+    public Integer getPoints() {
+        return points;
     }
 
     /**
-     * @param value 
-     * @return
+     * @param value the amount of new points to add
+     * @throws IllegalArgumentException if a value less than zero is passed as parameter
      */
-    public int addPoints(int value) {
-        // TODO implement here
-        return 0;
+    public void addPoints(Integer value) {
+        if (value < 0) throw new IllegalArgumentException(NEGATIVE_POINTS_EXC);
+        else this.points += value;
     }
 
 }

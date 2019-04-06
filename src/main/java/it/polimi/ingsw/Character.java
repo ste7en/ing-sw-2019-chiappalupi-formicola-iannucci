@@ -41,6 +41,7 @@ public class Character {
      * @param name the name of the character
      * @param color the color of the character, defined as a PlayerColor Enum value
      * @param description the description of the character, as defined in the game's manual
+     * @throws IllegalArgumentException for empty strings
      */
     public Character(String name, PlayerColor color, String description) {
         if (name.isEmpty()) { throw new IllegalArgumentException(EMPTY_STRING_NAME); }

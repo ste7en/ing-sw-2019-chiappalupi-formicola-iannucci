@@ -32,7 +32,7 @@ public class CharacterTest {
      * Initializes the character before each test
      */
     @Before
-    public void initializeCharater() {
+    public void initializeCharacter() {
         character = new Character(characterName, colorTest, characterDescription);
     }
 
@@ -73,23 +73,17 @@ public class CharacterTest {
      * Tests the impossibility of creating a player with an empty string as name
      *@see Character#Character(String, PlayerColor, String)
      */
-    @Test
+    @Test (expected = IllegalArgumentException.class)
     public void testConstructorWithEmptyName(){
-        try{
-            Character c = new Character("", colorTest, characterDescription);
-            fail();
-        }catch (IllegalArgumentException e){}
+        Character c = new Character("", colorTest, characterDescription);
     }
 
     /**
      * Tests the impossibility of creating a player with an empty string as description
      *@see Character#Character(String, PlayerColor, String)
      */
-    @Test
+    @Test (expected = IllegalArgumentException.class)
     public void testConstructorWithEmptyDescription(){
-        try{
-            Character c = new Character(characterName, colorTest, "");
-            fail();
-        }catch (IllegalArgumentException e){}
+        Character c = new Character(characterName, colorTest, "");
     }
 }
