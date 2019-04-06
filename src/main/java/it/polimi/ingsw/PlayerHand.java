@@ -3,79 +3,106 @@ package it.polimi.ingsw;
 import java.util.*;
 
 /**
- * 
+ * This class provides methods and attributes to manage every card the player
+ * has during the game, giving an easy way to update, add or remove them.
+ *
+ * @author Stefano Formicola
  */
 public class PlayerHand {
 
+    private static final String INVALID_AMOUNT_EXC = "Invalid amount of ammos to increment or decrement.";
+    private static final String MAX_CUBES_ALLOWED = "Player has already the maximum number of cubes allowed.";
+    private static final String MAX_POWERUPS_ALLOWED = "Player has already the maximum number of powerups allowed.";
+    private static final String NO_COLOR_EXCEPTION = "Invalid color added";
     /**
-     * Default constructor
-     */
-    public PlayerHand() {
-    }
-
-    /**
-     * 
+     * Keeps track of which weapons the player has.
      */
     private List<Weapon> weapons;
 
     /**
-     * 
+     * Keeps track of how many cubes (called ammos) the player has,
+     * without counting powerups' cubes.
      */
-    private HashMap<AmmoColor, Integer> ammos;
+    private EnumMap<AmmoColor, Integer> ammos;
 
     /**
-     * 
+     * Keeps track of which powerups the player has and can use.
      */
     private List<Powerup> powerups;
 
-
-
-
     /**
-     * @param weapons
+     * When a new player instance is created it calls the default constructor
+     * of PlayerHand without parameters because all the data structures must be
+     * empty.
      */
-    public void setWeapons(List<Weapon> weapons) {
-        // TODO implement here
+    public PlayerHand() {
+        this.weapons = new ArrayList<>();
+        this.powerups = new ArrayList<>();
+        this.ammos = new EnumMap<>(AmmoColor.class);
     }
 
     /**
-     * @return
+     * Returns the structure containing player's weapons
+     * @return the structure containing player's weapons
      */
     public List<Weapon> getWeapons() {
-        // TODO implement here
-        return null;
+        return weapons;
     }
 
     /**
-     * @return
+     * Returns the structure containing player's powerups
+     * @return the structure containing player's powerups
      */
     public List<Powerup> getPowerups() {
-        // TODO implement here
-        return null;
+        return powerups;
     }
 
     /**
-     * @param powerup
-     */
-    public void addPowerup(Powerup powerup) {
-        // TODO implement here
-    }
-
-    /**
-     * @param color 
-     * @return
+     * Returns the amount of cubes of the specified color
+     * @param color the color of the cubes
+     * @return the amount of cubes of the specified color
      */
     public Integer getAmmosAmount(AmmoColor color) {
-        // TODO implement here
-        return null;
+        return ammos.getOrDefault(color, 0);
+    }
+
+
+    /**
+     * Updates the list of weapons of the player
+     * @param weapons the list of weapons to update
+     */
+    public void setWeapons(List<Weapon> weapons) {
+        if (weapons != null) {
+            this.weapons = weapons;
+        } else {
+            throw new NullPointerException("Weapons list can't be null");
+        }
     }
 
     /**
-     * @param ammoColor 
-     * @param amount
+     * Adds a powerup to the player's deck of powerups
+     * @param powerup the powerup to add to the player's list
+     */
+    public void addPowerup(Powerup powerup) {
+        if (powerup == null) {
+            throw new NullPointerException("Powerup object references to null");
+        } else if (powerups.size() >= 3) {
+            throw new RuntimeException(MAX_POWERUPS_ALLOWED);
+        } else powerups.add(powerup);
+    }
+
+    /**
+     * This method updates the number of cubes a player has
+     * @param ammoColor the color of the cubes
+     * @param amount the amount of cubes to increment or decrement
      */
     public void updateAmmos(AmmoColor ammoColor, Integer amount) {
-        // TODO implement here
+        if (ammoColor == AmmoColor.none) { throw new IllegalArgumentException(NO_COLOR_EXCEPTION); }
+
+        if (getAmmosAmount(ammoColor) == 3) throw new RuntimeException(MAX_CUBES_ALLOWED);
+        else if (getAmmosAmount(ammoColor) + amount < 0 || getAmmosAmount(ammoColor) + amount > 3)
+            throw new IllegalArgumentException(INVALID_AMOUNT_EXC);
+        else ammos.put(ammoColor, getAmmosAmount(ammoColor) + amount);
     }
 
 }
