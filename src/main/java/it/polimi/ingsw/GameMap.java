@@ -10,6 +10,27 @@ public class GameMap {
     private int rows;
     private int columns;
 
+    public GameMap(MapType mapType, HashMap<Player, Cell> playersPosition){
+        rows=3;
+        columns=4;
+        switch(mapType){
+            case conf_3:
+            map[0][0] = new Cell(Border.wall, Border.door, Border.space, Border.wall, CellColor.red,false , null );
+            map[0][1] = new Cell(Border.wall, Border.space, Border.door, Border.door, CellColor.blue,false , null );
+            map[0][2] = new Cell(Border.wall, Border.door, Border.door, Border.space, CellColor.blue, true, null );
+            map[0][3] = new Cell(Border.wall, Border.wall, Border.door, Border.door, CellColor.green,false , null );
+            map[1][0] = new Cell(Border.space, Border.wall, Border.door, Border.wall, CellColor.red,true , null );
+            map[1][1] = new Cell(Border.door, Border.wall, Border.door, Border.wall, CellColor.pink,false , null );
+            map[1][2] = new Cell(Border.door, Border.space, Border.space, Border.wall, CellColor.yellow,false , null );
+            map[1][3] = new Cell(Border.door, Border.wall, Border.space, Border.space, CellColor.yellow,false , null );
+            map[2][0] = new Cell(Border.door, Border.space, Border.wall, Border.wall, CellColor.white,false , null );
+            map[2][1] = new Cell(Border.door, Border.door, Border.wall, Border.space, CellColor.white,false , null );
+            map[2][2] = new Cell(Border.space, Border.space, Border.wall, Border.door, CellColor.yellow,false , null );
+            map[2][3] = new Cell(Border.space, Border.wall, Border.wall, Border.space, CellColor.yellow,true , null );
+        }
+        this.playersPosition.putAll(playersPosition);
+    }
+
     public GameMap(Cell[][] map, HashMap<Player, Cell> playersPosition, int rows, int columns){
         this.playersPosition = new HashMap<>();
         int i,j;

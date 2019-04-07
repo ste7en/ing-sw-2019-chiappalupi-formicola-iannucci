@@ -16,7 +16,6 @@ public class CellTest {
 
     private Cell cellTest;
     private static AmmoTile ammoTile;
-    private static ArrayList<Border> borders = new ArrayList<>();
     private static ArrayList<AmmoColor> colors = new ArrayList<>();
 
     /**
@@ -27,10 +26,6 @@ public class CellTest {
         colors.add(AmmoColor.red);
         colors.add(AmmoColor.blue);
         ammoTile = new AmmoTile(colors, true);
-        borders.add(Border.door);
-        borders.add(Border.space);
-        borders.add(Border.space);
-        borders.add(Border.wall);
     }
 
     /**
@@ -38,7 +33,7 @@ public class CellTest {
      */
     @Before
     public void setUp(){
-        cellTest = new Cell(borders, CellColor.yellow, false, ammoTile);
+        cellTest = new Cell(Border.door, Border.space, Border.space, Border.wall, CellColor.yellow, false, ammoTile);
 
     }
 

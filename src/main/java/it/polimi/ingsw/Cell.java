@@ -9,9 +9,11 @@ public class Cell {
     private boolean respawner;
     private AmmoTile ammoCard;
 
-    public Cell (ArrayList<Border> borders, CellColor color, boolean respawner, AmmoTile ammoCard) {
-        this.borders= new ArrayList<>();
-        this.borders.addAll(borders);
+    public Cell (Border b1, Border b2, Border b3, Border b4, CellColor color, boolean respawner, AmmoTile ammoCard) {
+        this.borders.add(b1);
+        this.borders.add(b2);
+        this.borders.add(b3);
+        this.borders.add(b4);
         this.color=color;
         this.respawner=respawner;
         this.ammoCard=ammoCard;
