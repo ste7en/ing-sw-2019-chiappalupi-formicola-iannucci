@@ -43,6 +43,7 @@ public class EffectTest {
 
     /**
      * Tests the name getter, both with a positive and a negative test
+     * @see Effect#getName()
      */
     @Test
     public void testGetName() {
@@ -53,6 +54,7 @@ public class EffectTest {
 
     /**
      * Tests the type getter, both with a positive and a negative test
+     * @see Effect#getType()
      */
     @Test
     public void testGetType() {
@@ -63,6 +65,8 @@ public class EffectTest {
 
     /**
      * Tests the actions adder and getter, both with positives and negatives test
+     * @see Effect#addAction(Action)
+     * @see Effect#getActions()
      */
     @Test
     public void testAddAction() {
