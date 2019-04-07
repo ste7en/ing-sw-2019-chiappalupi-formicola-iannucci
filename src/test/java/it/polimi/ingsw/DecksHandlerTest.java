@@ -33,7 +33,7 @@ public class DecksHandlerTest {
             ArrayList<AmmoColor> colors = new ArrayList<>();
             int costSize = new Random().nextInt(3);
             for(int j=0; j < costSize; j++) colors.add(AmmoColor.values()[new Random().nextInt(3)]);
-            ammoTiles.add(new AmmoTile(colors, new Random().nextBoolean() ? null : new Powerup("name", "description", AmmoColor.values()[new Random().nextInt(3)])));
+            ammoTiles.add(new AmmoTile(colors, new Random().nextBoolean()));
         }
 
         size = rand.nextInt(20) + 1;
@@ -94,7 +94,7 @@ public class DecksHandlerTest {
     @Test
     public void testDrawAmmoTile() {
         int i = 0;
-        AmmoTile a = new AmmoTile(new ArrayList<>(), null);
+        AmmoTile a = new AmmoTile(new ArrayList<>(), new Random().nextBoolean());
         decksTest.wasteAmmoTile(a);
         while (i < ammoTiles.size()) {
             assertTrue(ammoTiles.contains(decksTest.drawAmmoTile()));
@@ -133,9 +133,9 @@ public class DecksHandlerTest {
      */
     @Test
     public void testWasteAmmoTileRecycleAmmos() {
-        AmmoTile a1 = new AmmoTile(null, null);
-        AmmoTile a2 = new AmmoTile(null,  new Powerup("wasted2", "testing2", AmmoColor.blue));
-        AmmoTile a3 = new AmmoTile(null, new Powerup("wasted3", "testing3", AmmoColor.yellow));
+        AmmoTile a1 = new AmmoTile(null, new Random().nextBoolean());
+        AmmoTile a2 = new AmmoTile(null, new Random().nextBoolean());
+        AmmoTile a3 = new AmmoTile(null, new Random().nextBoolean());
         ArrayList<AmmoTile> wasted = new ArrayList<>();
         wasted.add(a1);
         wasted.add(a2);
@@ -148,7 +148,7 @@ public class DecksHandlerTest {
             assertFalse(wasted.contains(decksTest.drawAmmoTile()));
             i++;
         }
-        decksTest.wasteAmmoTile(new AmmoTile(null, new Powerup("wasted", "testing", AmmoColor.red)));
+        decksTest.wasteAmmoTile(new AmmoTile(null, new Random().nextBoolean()));
         i=0;
         while(i < 3) {
             assertTrue(wasted.contains(decksTest.drawAmmoTile()));
