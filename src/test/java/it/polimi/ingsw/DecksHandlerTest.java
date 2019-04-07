@@ -38,7 +38,7 @@ public class DecksHandlerTest {
 
         size = rand.nextInt(20) + 1;
         for (int i=0; i < size; i++) {
-            powerups.add(new Powerup("TestPowerup"+i, "TestDescription"+i, AmmoColor.values()[new Random().nextInt(3)]));
+            powerups.add(new Powerup(PowerupType.values()[new Random().nextInt(4)], "TestDescription"+i, AmmoColor.values()[new Random().nextInt(3)]));
         }
     }
 
@@ -114,7 +114,7 @@ public class DecksHandlerTest {
     @Test
     public void testDrawPowerup() {
         int i = 0;
-        Powerup p = new Powerup("toWaste", "Needed to avoid any NullPointerException", AmmoColor.red);
+        Powerup p = new Powerup(PowerupType.Newton, "Needed to avoid any NullPointerException", AmmoColor.red);
         decksTest.wastePowerup(p);
         while (i < powerups.size()) {
             assertTrue(powerups.contains(decksTest.drawPowerup()));
@@ -164,9 +164,9 @@ public class DecksHandlerTest {
      */
     @Test
     public void testWastePowerup() {
-        Powerup p1 = new Powerup("wasted1", "testing1", AmmoColor.red);
-        Powerup p2 = new Powerup("wasted2", "testing2", AmmoColor.blue);
-        Powerup p3 = new Powerup("wasted3", "testing3", AmmoColor.yellow);
+        Powerup p1 = new Powerup(PowerupType.Newton, "testing1", AmmoColor.red);
+        Powerup p2 = new Powerup(PowerupType.TagbackGrenade, "testing2", AmmoColor.blue);
+        Powerup p3 = new Powerup(PowerupType.TargetingScope, "testing3", AmmoColor.yellow);
         ArrayList<Powerup> wasted = new ArrayList<>();
         wasted.add(p1);
         wasted.add(p2);
@@ -179,7 +179,7 @@ public class DecksHandlerTest {
             assertFalse(wasted.contains(decksTest.drawPowerup()));
             i++;
         }
-        decksTest.wastePowerup(new Powerup("wasted", "testing", AmmoColor.red));
+        decksTest.wastePowerup(new Powerup(PowerupType.Teleporter, "testing", AmmoColor.red));
         i=0;
         while(i < 3) {
             assertTrue(wasted.contains(decksTest.drawPowerup()));
