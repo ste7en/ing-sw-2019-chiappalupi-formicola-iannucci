@@ -27,7 +27,7 @@ public class PlayerHandTest {
         testColor = AmmoColor.yellow;
         testAmount = 3;
         testAbsentColor = AmmoColor.blue;
-        testPowerup = new Powerup("", "", testColor);
+        testPowerup = new Powerup(PowerupType.Newton, "", testColor);
     }
 
     /**

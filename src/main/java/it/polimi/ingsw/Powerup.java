@@ -7,9 +7,9 @@ package it.polimi.ingsw;
 public class Powerup {
 
     /**
-     * Name of the powerup
+     * Type of the powerup
      */
-    private final String name;
+    private final PowerupType type;
 
     /**
      * Description of the powerup
@@ -22,23 +22,23 @@ public class Powerup {
     private final AmmoColor color;
 
     /**
-     * Constructor: creates a new Powerup from its name, description and color
-     * @param name name of the powerup
+     * Constructor: creates a new Powerup from its type, description and color
+     * @param type type of the powerup
      * @param description description of the powerup
      * @param color color of the powerup, defined as an AmmoColor
      */
-    public Powerup(String name, String description, AmmoColor color) {
-        this.name = name;
+    public Powerup(PowerupType type, String description, AmmoColor color) {
+        this.type = type;
         this.description = description;
         this.color = color;
     }
 
     /**
-     * Powerup's name getter
-     * @return the name of the powerup
+     * Powerup's type getter
+     * @return the type of the powerup
      */
-    public String getName() {
-        return name;
+    public PowerupType getType() {
+        return type;
     }
 
     /**
