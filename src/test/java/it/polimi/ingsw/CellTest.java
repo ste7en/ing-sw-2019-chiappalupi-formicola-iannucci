@@ -82,4 +82,6 @@ public class CellTest {
         assertNotNull(cellTest.getAmmoCard());
         assertEquals(ammoTile, cellTest.getAmmoCard());
     }
+
 }
+
