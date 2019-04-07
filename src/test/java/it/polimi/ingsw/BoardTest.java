@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
- * Test for {@link Cell} class
+ * Test for {@link Board} class
  *
  * @author Elena Iannucci
  */
@@ -36,7 +36,9 @@ public class BoardTest {
     private static Character characterTest2;
     private static final String username2 = "Barbara";
 
-
+    /**
+     * Initializes the attributes for the test class
+     */
     @BeforeClass
     public static void setUpBeforeClass() {
 
@@ -65,10 +67,13 @@ public class BoardTest {
         userTest = new User(username);
         characterTest = new Character("CharacterTestName", PlayerColor.yellow, "Character user for tests.");
         playerTest = new Player(userTest, characterTest);
-
         userTest2 = new User(username2);
         characterTest2 = new Character("CharacterTestName2", PlayerColor.blue, "Character user for tests.");
         playerTest2 = new Player(userTest2, characterTest2);
+        playersPosition.put(playerTest, null);
+        playersPosition.put(playerTest2, null);
+
+        gameMap = new GameMap(MapType.conf_3, playersPosition);
 
         ArrayList<Weapon> deck1 = new ArrayList<>();
         for(int i=0; i<3; i++){
@@ -91,13 +96,11 @@ public class BoardTest {
         for (int i=0; i<8; i++){
             skullsTrack.put(i, null);
         }
-
-        playersPosition.put(playerTest, null);
-        playersPosition.put(playerTest2, null);
-
-        gameMap = new GameMap(MapType.conf_3, playersPosition);
     }
 
+    /**
+     * Initializes the Board before each test
+     */
     @Before
     public void setUp() {
         boardTest = new Board(gameMap, weaponsdecks, skullsTrack);

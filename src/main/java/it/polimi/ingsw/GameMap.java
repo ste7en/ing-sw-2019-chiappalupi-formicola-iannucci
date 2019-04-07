@@ -10,6 +10,7 @@ public class GameMap {
     private int rows;
     private int columns;
 
+
     public GameMap(MapType mapType, HashMap<Player, Cell> playersPosition){
         rows=3;
         columns=4;
