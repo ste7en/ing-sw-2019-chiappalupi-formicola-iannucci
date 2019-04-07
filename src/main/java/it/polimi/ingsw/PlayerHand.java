@@ -1,6 +1,8 @@
 package it.polimi.ingsw;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
 
 /**
  * This class provides methods and attributes to manage every card the player

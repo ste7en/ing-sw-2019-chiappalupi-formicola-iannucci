@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Interface used to implement the effects
