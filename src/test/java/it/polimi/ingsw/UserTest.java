@@ -1,7 +1,6 @@
 package it.polimi.ingsw;
 
 import org.junit.*;
-
 import java.util.UUID;
 import static org.junit.Assert.*;
 

@@ -3,9 +3,7 @@ package it.polimi.ingsw;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import java.util.ArrayList;
-
 import static it.polimi.ingsw.PlayerColor.*;
 import static org.junit.Assert.*;
 
