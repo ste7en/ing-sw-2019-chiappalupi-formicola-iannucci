@@ -12,7 +12,7 @@ import java.util.Random;
 public class PowerupTest {
 
     private Powerup powTester;
-    private static String powName;
+    private static PowerupType powType;
     private static String powDescription;
     private static AmmoColor powColor;
 
@@ -21,7 +21,7 @@ public class PowerupTest {
      */
     @BeforeClass
     public static void setUpBeforeClass() {
-        powName = "powTester";
+        powType = PowerupType.values()[new Random().nextInt(4)];
         powDescription = "This is a sample description";
         powColor = AmmoColor.values()[new Random().nextInt(3)];
     }
@@ -31,18 +31,18 @@ public class PowerupTest {
      */
     @Before
     public void setUp() {
-        powTester = new Powerup(powName, powDescription, powColor);
+        powTester = new Powerup(powType, powDescription, powColor);
     }
 
     /**
-     * Tests the getName() method, both with a positive and a negative test
-     * @see Powerup#getName()
+     * Tests the getType() method, both with a positive and a negative test
+     * @see Powerup#getType()
      */
     @Test
-    public void testGetName() {
-        assertNotNull(powTester.getName());
-        assertEquals(powName, powTester.getName());
-        assertNotEquals("This is a fake name", powTester.getName());
+    public void testGetType() {
+        assertNotNull(powTester.getType());
+        assertEquals(powType, powTester.getType());
+        assertNotEquals((powType == PowerupType.Newton) ? PowerupType.TagbackGrenade : PowerupType.Newton, powTester.getType());
     }
 
     /**
