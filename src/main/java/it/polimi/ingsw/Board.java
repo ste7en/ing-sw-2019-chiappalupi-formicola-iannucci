@@ -7,14 +7,14 @@ public class Board {
 
     private GameMap map;
     private HashMap<AmmoColor, ArrayList<Weapon>> weapons;
-    private HashMap<Integer, ArrayList<PlayerColor>> skullTrack;
+    private HashMap<Integer, ArrayList<PlayerColor>> skullsTrack;
 
-    public Board(GameMap map, HashMap<AmmoColor, ArrayList<Weapon>> weapons, HashMap<Integer, ArrayList<PlayerColor>> skullTrack){
+    public Board(GameMap map, HashMap<AmmoColor, ArrayList<Weapon>> weapons, HashMap<Integer, ArrayList<PlayerColor>> skullsTrack){
         this.weapons = new HashMap<>();
-        this.skullTrack = new HashMap<>();
+        this.skullsTrack = new HashMap<>();
         this.map=map;
         this.weapons.putAll(weapons);
-        this.skullTrack.putAll(skullTrack);
+        this.skullsTrack.putAll(skullsTrack);
     }
 
     public void refillWeapons(DecksHandler decksHandler) {
@@ -48,8 +48,8 @@ public class Board {
     public Integer skullsLeft() {
         int lastSkullConquered=-1;
         int totalSkulls=0;
-        for(Integer skullsNumber : skullTrack.keySet()){
-            if (skullTrack.get(skullsNumber).size()==0 && lastSkullConquered==-1) {
+        for(Integer skullsNumber : skullsTrack.keySet()){
+            if (skullsTrack.get(skullsNumber).size()==0 && lastSkullConquered==-1) {
                 lastSkullConquered=skullsNumber;
             }
             totalSkulls++;
@@ -63,11 +63,11 @@ public class Board {
         ArrayList<PlayerColor> playerColors = new ArrayList<>();
         do {
             i++;
-        } while (skullTrack.get(i).size()!=0);
+        } while (skullsTrack.get(i).size()!=0);
         for (int j=0; j<count; j++){
             playerColors.add(player);
         }
-        skullTrack.replace(i, playerColors );
+        skullsTrack.replace(i, playerColors );
     }
 
 }
