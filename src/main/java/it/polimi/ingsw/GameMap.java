@@ -11,6 +11,7 @@ public class GameMap {
     private int columns;
 
     public GameMap(Cell[][] map, HashMap<Player, Cell> playersPosition, int rows, int columns){
+        this.playersPosition = new HashMap<>();
         int i,j;
         for (i=0; i<rows; i++) {
             for (j = 0; j < columns; j++) {
@@ -23,7 +24,7 @@ public class GameMap {
     }
 
     public ArrayList<Cell> getRoomFromCell (Cell cell) {
-        ArrayList<Cell> room = new ArrayList<Cell>();
+        ArrayList<Cell> room = new ArrayList<>();
         int i,j;
         for (i=0; i<rows; i++) {
             for(j=0; j<columns; j++){
@@ -56,7 +57,7 @@ public class GameMap {
     }
 
     private ArrayList<Player> getPlayersFromCell (Cell cell){
-        ArrayList<Player> playersInThatCell = new ArrayList<Player>();
+        ArrayList<Player> playersInThatCell = new ArrayList<>();
         for (Player player : playersPosition.keySet()){
             if (playersPosition.get(player).equals(cell)) playersInThatCell.add(player);
         }
@@ -69,7 +70,7 @@ public class GameMap {
     }
 
     public ArrayList<Player> getOneMoveAwayTargets (Player player){
-        ArrayList<Player> targets = new ArrayList<Player>();
+        ArrayList<Player> targets = new ArrayList<>();
         for (Direction direction : Direction.values()) {
            if(playersPosition.get(player).adiacency(direction) != Border.wall) {
                targets.addAll(getPlayersFromCell(getCellFromDirection(player, direction)));

@@ -16,8 +16,8 @@ public class CellTest {
 
     private Cell cellTest;
     private static AmmoTile ammoTile;
-    private static ArrayList<Border> borders = new ArrayList<Border>();
-    private static ArrayList<AmmoColor> colors = new ArrayList<AmmoColor>();
+    private static ArrayList<Border> borders = new ArrayList<>();
+    private static ArrayList<AmmoColor> colors = new ArrayList<>();
 
     /**
      * Initializes the attributes for the test class
@@ -82,6 +82,5 @@ public class CellTest {
         assertNotNull(cellTest.getAmmoCard());
         assertEquals(ammoTile, cellTest.getAmmoCard());
     }
-
 }
 
