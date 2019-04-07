@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import java.util.*;
+import java.util.UUID;
 
 /**
  *
@@ -19,8 +19,8 @@ public class User {
     private final String username;
 
     /**
-     * Constructor: creates a new user from a username and generating a random UUID
-     * @param username
+     * Constructor: creates a new User from a username and generating a random UUID
+     * @param username username of the user
      */
     public User(String username) {
         this.username = username;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * Board used by each player to keep track of his points, damages, cubes and
