@@ -2,7 +2,6 @@ package it.polimi.ingsw;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Board {
 
@@ -11,6 +10,8 @@ public class Board {
     private HashMap<Integer, ArrayList<PlayerColor>> skullTrack;
 
     public Board(GameMap map, HashMap<AmmoColor, ArrayList<Weapon>> weapons, HashMap<Integer, ArrayList<PlayerColor>> skullTrack){
+        this.weapons = new HashMap<>();
+        this.skullTrack = new HashMap<>();
         this.map=map;
         this.weapons.putAll(weapons);
         this.skullTrack.putAll(skullTrack);
@@ -27,7 +28,7 @@ public class Board {
     }
 
     public ArrayList<Weapon> showWeapons(AmmoColor color) {
-        ArrayList<Weapon> decksweapons = new ArrayList<Weapon>();
+        ArrayList<Weapon> decksweapons = new ArrayList<>();
         decksweapons.addAll(weapons.get(color));
         return decksweapons;
     }
@@ -59,7 +60,7 @@ public class Board {
 
     public void addBloodFrom(PlayerColor player, Integer count) {
         int i=0;
-        ArrayList<PlayerColor> playerColors = new ArrayList<PlayerColor>();
+        ArrayList<PlayerColor> playerColors = new ArrayList<>();
         do {
             i++;
         } while (skullTrack.get(i).size()!=0);
