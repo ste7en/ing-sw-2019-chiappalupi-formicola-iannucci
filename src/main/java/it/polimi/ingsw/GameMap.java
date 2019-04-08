@@ -16,7 +16,7 @@ public class GameMap {
     private int rows;
     private int columns;
 
-    public GameMap(MapType mapType, LinkedHashMap<Player, Cell> playersPositions){
+    public GameMap(MapType mapType, LinkedHashMap<Player, Cell> playersPosition){
         rows=3;
         columns=4;
         this.playersPosition = new LinkedHashMap<>();
