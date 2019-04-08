@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Random;
 
 /**
@@ -22,7 +23,7 @@ public class BoardTest {
     private static HashMap<AmmoColor, ArrayList<Weapon>> weaponsdecks = new HashMap<>();
     private static HashMap<Integer, ArrayList<PlayerColor>> skullsTrack = new HashMap<>();
     private static GameMap gameMap;
-    private static HashMap<Player, Cell> playersPosition = new HashMap<>();
+    private static LinkedHashMap<Player, Cell> playersPosition = new LinkedHashMap<>();
     private static DecksHandler decksHandler;
     private static ArrayList<Weapon> weapons = new ArrayList<>();
     private static ArrayList<AmmoTile> ammoTiles  = new ArrayList<>();
@@ -73,7 +74,7 @@ public class BoardTest {
         playersPosition.put(playerTest, null);
         playersPosition.put(playerTest2, null);
 
-        gameMap = new GameMap(MapType.conf_3, playersPosition);
+        gameMap = new GameMap(MapType.conf_4, playersPosition);
 
         ArrayList<Weapon> deck1 = new ArrayList<>();
         for(int i=0; i<3; i++){
@@ -105,6 +106,11 @@ public class BoardTest {
     public void setUp() {
         boardTest = new Board(gameMap, weaponsdecks, skullsTrack);
     }
+/**
+    @Test
+    public void setBoardTest() {
 
+    }
+*/
 
 }

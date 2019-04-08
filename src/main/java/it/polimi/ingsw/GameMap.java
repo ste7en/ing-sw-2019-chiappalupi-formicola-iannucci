@@ -2,19 +2,23 @@ package it.polimi.ingsw;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class GameMap {
 
     private Cell[][] map;
-    private HashMap<Player, Cell> playersPosition;
+    private LinkedHashMap<Player, Cell> playersPosition;
     private int rows;
     private int columns;
 
-    public GameMap(MapType mapType, HashMap<Player, Cell> playersPosition){
+    public GameMap(MapType mapType, LinkedHashMap<Player, Cell> playersPositions){
         rows=3;
         columns=4;
+        this.playersPosition = new LinkedHashMap<>();
+        this.playersPosition.putAll(playersPosition);
+        this.map = new Cell[3][4];
         switch(mapType){
-            case conf_3:
+            case conf_4:
             map[0][0] = new Cell(Border.wall, Border.door, Border.space, Border.wall, CellColor.red,false , null );
             map[0][1] = new Cell(Border.wall, Border.space, Border.door, Border.door, CellColor.blue,false , null );
             map[0][2] = new Cell(Border.wall, Border.door, Border.door, Border.space, CellColor.blue, true, null );
@@ -28,11 +32,10 @@ public class GameMap {
             map[2][2] = new Cell(Border.space, Border.space, Border.wall, Border.door, CellColor.yellow,false , null );
             map[2][3] = new Cell(Border.space, Border.wall, Border.wall, Border.space, CellColor.yellow,true , null );
         }
-        this.playersPosition.putAll(playersPosition);
     }
 
     public GameMap(Cell[][] map, HashMap<Player, Cell> playersPosition, int rows, int columns){
-        this.playersPosition = new HashMap<>();
+        this.playersPosition = new LinkedHashMap<>();
         int i,j;
         for (i=0; i<rows; i++) {
             for (j = 0; j < columns; j++) {
@@ -43,6 +46,11 @@ public class GameMap {
         this.rows=rows;
         this.columns=columns;
     }
+
+    public Cell getCell(int i, int j) {
+        return map[i][j];
+    }
+
 
     public ArrayList<Cell> getRoomFromCell (Cell cell) {
         ArrayList<Cell> room = new ArrayList<>();
@@ -107,13 +115,12 @@ public class GameMap {
 
     public ArrayList<Player> getTargetsFrom(Direction direction) { return null; }
 
-    public Cell getPositionFrom(Player player) {
-
-        return null;
+    public void setPlayerPosition (Player player, int i, int j){
+        Cell cell = getCell(i,j);
+        playersPosition.put(player, cell);
     }
 
-    public Cell[][] getMap() {
-        return map;
+    public Cell getPositionFromPlayer (Player player) {
+        return playersPosition.get(player);
     }
-
 }

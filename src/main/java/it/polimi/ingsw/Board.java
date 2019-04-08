@@ -15,6 +15,7 @@ public class Board {
         this.map=map;
         this.weapons.putAll(weapons);
         this.skullsTrack.putAll(skullsTrack);
+
     }
 
     public void refillWeapons(DecksHandler decksHandler) {
