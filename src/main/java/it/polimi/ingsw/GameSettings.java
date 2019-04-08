@@ -8,12 +8,18 @@ public class GameSettings {
     private MapType mapType;
     private UUID gameID;
 
-    public Player getFirstPlayer() { return null; }
+    public Player getFirstPlayer() { return firstPlayer; }
 
-    public void setFirstPlayer(Player player) { }
+    public void setFirstPlayer(Player player) {
+        if (player==null) throw new NullPointerException("Player object references to null");
+        else this.firstPlayer=player;
+    }
 
-    public MapType getMapType() { return null; }
+    public MapType getMapType() { return mapType; }
 
-    public void setMapType(MapType value) { }
+    public void setMapType(MapType value) {
+        if (value==null) throw new NullPointerException("MapType references to null");
+        else this.mapType=value;
+    }
 
 }

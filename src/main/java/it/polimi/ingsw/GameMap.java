@@ -22,6 +22,7 @@ public class GameMap {
         this.playersPosition = new LinkedHashMap<>();
         this.playersPosition.putAll(playersPosition);
         this.map = new Cell[3][4];
+        //tem
         switch(mapType){
             case conf_4:
             map[0][0] = new Cell(Border.wall, Border.door, Border.space, Border.wall, CellColor.red,false , null );
@@ -113,10 +114,7 @@ public class GameMap {
         return targets;
     }
 
-    public ArrayList<Player> getTargetsFrom(Cell cell, Border border) {
-        return null;
-
-    }
+    public ArrayList<Player> getTargetsFrom(Cell cell, Border border) { return null; }
 
     public ArrayList<Player> getTargetsFrom(Direction direction) { return null; }
 
