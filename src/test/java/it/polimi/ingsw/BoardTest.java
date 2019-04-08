@@ -165,11 +165,12 @@ public class BoardTest {
     }
 
     /**
-     * Tests the addBloodFrom method
+     * Tests the addBloodFrom and getBlood methods
      * @see Board#addBloodFrom(PlayerColor, Integer)
+     * @see Board#getBlood(int)
      */
     @Test
-    public void testAddBloodFrom (){
+    public void testAddAndGetBloodFrom (){
         ArrayList<PlayerColor> blood = new ArrayList<>();
         ArrayList<PlayerColor> blood2 = new ArrayList<>();
         blood.add(PlayerColor.yellow);
