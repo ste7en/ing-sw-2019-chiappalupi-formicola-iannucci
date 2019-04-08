@@ -7,7 +7,6 @@ import java.util.LinkedHashMap;
 /**
  *
  * @author Elena Iannucci
- *
  */
 
 public class Board {
