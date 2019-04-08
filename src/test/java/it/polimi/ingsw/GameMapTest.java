@@ -127,6 +127,17 @@ public class GameMapTest {
     }
 
     /**
+     * Tests the isAOneStepValidMove method
+     * @see GameMap#isAOneStepValidMove(Player, Cell)
+     */
+    @Test
+    public void testIsOneStepValidMood (){
+        gameMapTest.setPlayerPosition(playerTest,1,2);
+        assertTrue(gameMapTest.isAOneStepValidMove(playerTest, gameMapTest.getCell(1,3)));
+        assertFalse(gameMapTest.isAOneStepValidMove(playerTest, gameMapTest.getCell(1,1)));
+    }
+
+    /**
      * Tests the getPositionFromPlayer method
      * @see GameMap#getPositionFromPlayer(Player)
      */
