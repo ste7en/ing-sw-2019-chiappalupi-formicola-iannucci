@@ -58,7 +58,7 @@ public class GameMap {
     }
 
 
-    public ArrayList<Cell> getRoomFromCell (Cell cell) {
+    public ArrayList<Cell> getRoomFromCell(Cell cell) {
         ArrayList<Cell> room = new ArrayList<>();
         int i,j;
         for (i=0; i<rows; i++) {
@@ -69,7 +69,7 @@ public class GameMap {
         return room;
     }
 
-    private Cell getCellFromDirection (Player player, Direction direction){
+    private Cell getCellFromDirection(Player player, Direction direction){
         int i,j;
         for (i=0; i<rows; i++) {
             for(j=0; j<columns; j++) {
@@ -91,7 +91,7 @@ public class GameMap {
         return null;
     }
 
-    private ArrayList<Player> getPlayersFromCell (Cell cell){
+    private ArrayList<Player> getPlayersFromCell(Cell cell){
         ArrayList<Player> playersInThatCell = new ArrayList<>();
         for (Player player : playersPosition.keySet()){
             if (playersPosition.get(player).equals(cell)) playersInThatCell.add(player);
@@ -100,11 +100,11 @@ public class GameMap {
     }
 
 
-    public ArrayList<Player> getTargetsInMyCell (Player player){
+    public ArrayList<Player> getTargetsInMyCell(Player player){
         return getPlayersFromCell(playersPosition.get(player));
     }
 
-    public ArrayList<Player> getOneMoveAwayTargets (Player player){
+    public ArrayList<Player> getOneMoveAwayTargets(Player player){
         ArrayList<Player> targets = new ArrayList<>();
         for (Direction direction : Direction.values()) {
            if(playersPosition.get(player).adiacency(direction) != Border.wall) {
@@ -114,9 +114,18 @@ public class GameMap {
         return targets;
     }
 
-    public ArrayList<Player> getTargetsFrom(Cell cell, Border border) { return null; }
+    public ArrayList<Player> getSeenTargets(Player player) { return null; }
 
     public ArrayList<Player> getTargetsFrom(Direction direction) { return null; }
+
+    public boolean isAOneStepValidMove(Player player, Cell cell) {
+        for (Direction direction : Direction.values()) {
+            if (playersPosition.get(player).adiacency(direction) != Border.wall && getCellFromDirection(player, direction) == cell) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void setPlayerPosition (Player player, int i, int j){
         Cell cell = getCell(i,j);
