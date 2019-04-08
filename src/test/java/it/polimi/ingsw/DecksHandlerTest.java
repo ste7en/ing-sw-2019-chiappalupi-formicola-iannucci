@@ -88,6 +88,15 @@ public class DecksHandlerTest {
     }
 
     /**
+     * Tests a RuntimeException
+     */
+    @Test (expected = RuntimeException.class)
+    public void testDrawWeaponException() {
+        while(!decksTest.weaponsOver()) decksTest.drawWeapon();
+        decksTest.drawWeapon();
+    }
+
+    /**
      * Tests the drawAmmoTile() method
      * @see DecksHandler#drawAmmoTile()
      */

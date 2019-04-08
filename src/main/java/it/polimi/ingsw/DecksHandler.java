@@ -11,6 +11,11 @@ import java.util.Collections;
 public class DecksHandler {
 
     /**
+     * String passed as message of RuntimeException when it is asked to draw from an empty deck.
+     */
+    private static final String WEAPONS_OVER_EXC = "Tried to draw from a finished deck.";
+
+    /**
      * Deck of weapons
      */
     private ArrayList<Weapon> weapons;
@@ -60,8 +65,10 @@ public class DecksHandler {
     /**
      * Method that draws a weapon from the weapons deck. For a better fairness, it shuffles the deck before every drawn
      * @return the weapon drawn
+     * @throws RuntimeException if the deck is empty
      */
     public Weapon drawWeapon() {
+        if(weaponsOver()) throw new RuntimeException(WEAPONS_OVER_EXC);
         Collections.shuffle(weapons);
         return weapons.remove(0);
     }
