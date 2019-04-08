@@ -2,11 +2,20 @@ package it.polimi.ingsw;
 
 import java.util.UUID;
 
+/**
+ *
+ * @author Elena Iannucci
+ */
+
 public class GameSettings {
 
     private Player firstPlayer;
     private MapType mapType;
     private UUID gameID;
+
+    public GameSettings(UUID gameID){
+        this.gameID=gameID;
+    }
 
     public Player getFirstPlayer() { return firstPlayer; }
 

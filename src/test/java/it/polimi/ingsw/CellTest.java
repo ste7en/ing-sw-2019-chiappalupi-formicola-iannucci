@@ -1,10 +1,8 @@
 package it.polimi.ingsw;
 
 import org.junit.*;
-
-import java.util.ArrayList;
-
 import static org.junit.Assert.*;
+import java.util.ArrayList;
 
 /**
  * Test for {@link Cell} class
