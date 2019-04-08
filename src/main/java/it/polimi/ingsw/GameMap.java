@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+/**
+ *
+ * @author Elena Iannucci
+ */
+
 public class GameMap {
 
     private Cell[][] map;

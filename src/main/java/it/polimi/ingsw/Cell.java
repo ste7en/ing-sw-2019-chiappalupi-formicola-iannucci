@@ -2,6 +2,11 @@ package it.polimi.ingsw;
 
 import java.util.ArrayList;
 
+/**
+ *
+ * @author Elena Iannucci
+ */
+
 public class Cell {
 
     private ArrayList<Border> borders;

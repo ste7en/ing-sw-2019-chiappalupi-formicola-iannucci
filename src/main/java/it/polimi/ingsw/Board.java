@@ -2,19 +2,38 @@ package it.polimi.ingsw;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+
+/**
+ *
+ * @author Elena Iannucci
+ *
+ */
 
 public class Board {
 
     private GameMap map;
     private HashMap<AmmoColor, ArrayList<Weapon>> weapons;
-    private HashMap<Integer, ArrayList<PlayerColor>> skullsTrack;
+    private LinkedHashMap<Integer, ArrayList<PlayerColor>> skullsTrack;
 
-    public Board(GameMap map, HashMap<AmmoColor, ArrayList<Weapon>> weapons, HashMap<Integer, ArrayList<PlayerColor>> skullsTrack){
+    public Board(GameMap map, HashMap<AmmoColor, ArrayList<Weapon>> weapons, LinkedHashMap<Integer, ArrayList<PlayerColor>> skullsTrack){
         this.weapons = new HashMap<>();
-        this.skullsTrack = new HashMap<>();
+        this.skullsTrack = new LinkedHashMap<>();
         this.map=map;
         this.weapons.putAll(weapons);
         this.skullsTrack.putAll(skullsTrack);
+    }
+
+    public void pickWeapon(Weapon chosenWeapon) {
+        int index;
+        for (AmmoColor ammoColor : weapons.keySet()){
+            for (Weapon weapon : weapons.get(ammoColor)){
+                if (weapon == chosenWeapon) {
+                    index=weapons.get(ammoColor).indexOf(weapon);
+                    weapons.get(ammoColor).set(index, null);
+                }
+            }
+        }
     }
 
     public void refillWeapons(DecksHandler decksHandler) {
@@ -33,41 +52,33 @@ public class Board {
         return decksweapons;
     }
 
-    public void pickWeapon(Weapon chosenWeapon) {
-        int index;
-        for (AmmoColor ammoColor : weapons.keySet()){
-            for (Weapon weapon : weapons.get(ammoColor)){
-                if (weapon.equals(chosenWeapon)) {
-                    index=weapons.get(ammoColor).indexOf(weapon);
-                    weapons.get(ammoColor).set(index, null);
-                }
-            }
-        }
-    }
-
-    public Integer skullsLeft() {
+    public int skullsLeft() {
         int lastSkullConquered=-1;
         int totalSkulls=0;
         for(Integer skullsNumber : skullsTrack.keySet()){
-            if (skullsTrack.get(skullsNumber).size()==0 && lastSkullConquered==-1) {
+            if (skullsTrack.get(skullsNumber)==null && lastSkullConquered==-1) {
                 lastSkullConquered=skullsNumber;
             }
             totalSkulls++;
         }
-        return (totalSkulls-lastSkullConquered);
+        if (lastSkullConquered == -1) return 0;
+        else return (totalSkulls-lastSkullConquered);
     }
-
 
     public void addBloodFrom(PlayerColor player, Integer count) {
         int i=0;
         ArrayList<PlayerColor> playerColors = new ArrayList<>();
-        do {
-            i++;
-        } while (skullsTrack.get(i).size()!=0);
+        while (this.skullsTrack.get(i)!=null) i++;
         for (int j=0; j<count; j++){
             playerColors.add(player);
         }
-        skullsTrack.replace(i, playerColors );
+        skullsTrack.put(i, playerColors);
+    }
+
+    public ArrayList<PlayerColor> getBlood(int i){
+        ArrayList<PlayerColor> blood = new ArrayList<>();
+        blood.addAll(skullsTrack.get(i));
+        return blood;
     }
 
 }
