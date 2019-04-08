@@ -10,6 +10,7 @@ public class Cell {
     private AmmoTile ammoCard;
 
     public Cell (Border b1, Border b2, Border b3, Border b4, CellColor color, boolean respawner, AmmoTile ammoCard) {
+        borders = new ArrayList<>();
         this.borders.add(b1);
         this.borders.add(b2);
         this.borders.add(b3);
