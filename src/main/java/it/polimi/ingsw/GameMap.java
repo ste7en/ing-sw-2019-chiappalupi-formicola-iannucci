@@ -53,8 +53,8 @@ public class GameMap {
         this.columns=columns;
     }
 
-    public Cell getCell(int i, int j) {
-        return map[i][j];
+    public Cell getCell(int row, int column) {
+        return map[row][column];
     }
 
 

@@ -1,10 +1,7 @@
 package it.polimi.ingsw;
 
 import org.junit.*;
-
 import static org.junit.Assert.*;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 

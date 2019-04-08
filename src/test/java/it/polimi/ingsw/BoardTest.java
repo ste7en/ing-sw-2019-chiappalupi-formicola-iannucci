@@ -1,16 +1,8 @@
 package it.polimi.ingsw;
 
 import org.junit.*;
-import sun.awt.image.ImageWatched;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
 import static org.junit.Assert.*;
-
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Test for {@link Board} class
