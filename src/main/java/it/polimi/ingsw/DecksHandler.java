@@ -108,7 +108,10 @@ public class DecksHandler {
      * @param ammoTile it's the ammo tile to add to the bin
      */
     public void wasteAmmoTile(AmmoTile ammoTile) {
-        ammoRecycleBin.add(ammoTile);
+        if(ammoTile != null) {
+            ammoRecycleBin.add(ammoTile);
+        }
+        else throw new NullPointerException("Ammo tile can't be null");
     }
 
     /**
@@ -116,7 +119,10 @@ public class DecksHandler {
      * @param powerup it's the powerup to add to the bin
      */
     public void wastePowerup(Powerup powerup) {
-        powerupsRecycleBin.add(powerup);
+        if(powerup != null) {
+            powerupsRecycleBin.add(powerup);
+        }
+        else throw new NullPointerException("Powerup can't be null");
     }
 
     /**

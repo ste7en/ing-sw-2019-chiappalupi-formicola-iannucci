@@ -168,11 +168,19 @@ public class DecksHandlerTest {
     }
 
     /**
+     * Tests a NullPointerException
+     */
+    @Test (expected = NullPointerException.class)
+    public void testWasteAmmoTileException() {
+        decksTest.wasteAmmoTile(null);
+    }
+
+    /**
      * Tests both the wastePowerup() method and the recyclePowerups() method, as the latter is private and it is used by the former
      * @see DecksHandler#wastePowerup(Powerup)
      */
     @Test
-    public void testWastePowerup() {
+    public void testWastePowerupRecyclePowerup() {
         Powerup p1 = new Powerup(PowerupType.Newton, "testing1", AmmoColor.red);
         Powerup p2 = new Powerup(PowerupType.TagbackGrenade, "testing2", AmmoColor.blue);
         Powerup p3 = new Powerup(PowerupType.TargetingScope, "testing3", AmmoColor.yellow);
@@ -196,6 +204,14 @@ public class DecksHandlerTest {
         }
         decksTest.wastePowerup(p1);
         assertFalse(wasted.contains(decksTest.drawPowerup()));
+    }
+
+    /**
+     * Tests a NullPointerException
+     */
+    @Test (expected = NullPointerException.class)
+    public void testWastePowerupException() {
+        decksTest.wastePowerup(null);
     }
 
 }
