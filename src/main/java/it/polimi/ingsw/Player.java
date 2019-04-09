@@ -56,6 +56,7 @@ public class Player {
         PlayerColor color = character.getColor();
         String nick = user.getUsername();
 
+        this.user = user;
         this.character = character;
         this.playerBoard = new PlayerBoard(color);
         this.nickname = nick;
@@ -95,6 +96,8 @@ public class Player {
     public Integer getPoints() {
         return points;
     }
+
+    public User getUser() { return user; }
 
     /**
      * @param value the amount of new points to add

@@ -97,6 +97,12 @@ public class PlayerTest {
         assertEquals(pointsToAdd, playerTest.getPoints());
     }
 
+   @Test
+    public void testGetUser() {
+        assertNotNull(playerTest.getUser());
+        assertEquals(userTest, playerTest.getUser());
+   }
+
     /**
      * Tests an exception when a negative value is passed to the
      * @see Player#addPoints(Integer) method
