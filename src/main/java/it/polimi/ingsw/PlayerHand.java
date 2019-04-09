@@ -19,7 +19,7 @@ public class PlayerHand {
     /**
      * Keeps track of which weapons the player has.
      */
-    private List<Weapon> weapons;
+    private ArrayList<Weapon> weapons;
 
     /**
      * Keeps track of how many cubes (called ammos) the player has,
@@ -30,7 +30,7 @@ public class PlayerHand {
     /**
      * Keeps track of which powerups the player has and can use.
      */
-    private List<Powerup> powerups;
+    private ArrayList<Powerup> powerups;
 
     /**
      * When a new player instance is created it calls the default constructor
@@ -47,16 +47,16 @@ public class PlayerHand {
      * Returns the structure containing player's weapons
      * @return the structure containing player's weapons
      */
-    public List<Weapon> getWeapons() {
-        return weapons;
+    public ArrayList<Weapon> getWeapons() {
+        return (ArrayList<Weapon>)weapons.clone();
     }
 
     /**
      * Returns the structure containing player's powerups
      * @return the structure containing player's powerups
      */
-    public List<Powerup> getPowerups() {
-        return powerups;
+    public ArrayList<Powerup> getPowerups() {
+        return (ArrayList<Powerup>)powerups.clone();
     }
 
     /**
@@ -74,7 +74,7 @@ public class PlayerHand {
      * @param weapons the list of weapons to update
      * @throws NullPointerException if a null pointer is passed as parameter
      */
-    public void setWeapons(List<Weapon> weapons) {
+    public void setWeapons(ArrayList<Weapon> weapons) {
         if (weapons != null) {
             this.weapons = weapons;
         } else {

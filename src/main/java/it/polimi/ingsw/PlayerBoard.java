@@ -58,7 +58,7 @@ public class PlayerBoard {
      * @return collection of the player's damage points
      */
     public ArrayList<PlayerColor> getDamage() {
-        return damage;
+        return (ArrayList<PlayerColor>)damage.clone();
     }
 
     /**
@@ -96,7 +96,7 @@ public class PlayerBoard {
      * @return collection of the player's marks
      */
     public ArrayList<PlayerColor> getMarks() {
-        return marks;
+        return (ArrayList<PlayerColor>)marks.clone();
     }
 
     /**
