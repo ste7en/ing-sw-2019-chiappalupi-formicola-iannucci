@@ -74,7 +74,7 @@ public class Weapon {
      * @return the cost of the weapon
      */
     public ArrayList<AmmoColor> getCost() {
-        return cost;
+        return (ArrayList<AmmoColor>)cost.clone();
     }
 
     /**
@@ -112,7 +112,7 @@ public class Weapon {
      * @return the ArrayList of Effects of the weapon
      */
     public ArrayList<Effect> getEffect() {
-        return effects;
+        return (ArrayList<Effect>)effects.clone();
     }
 
 }

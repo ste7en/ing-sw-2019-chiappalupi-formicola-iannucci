@@ -41,7 +41,7 @@ public class AmmoTile {
      * @return the list of ammos provided by the AmmoTile
      */
     public ArrayList<AmmoColor> getAmmoColors() {
-        return ammos;
+        return (ArrayList<AmmoColor>)ammos.clone();
     }
 
 }

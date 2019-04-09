@@ -67,7 +67,7 @@ public class Effect {
      * @return the cost of the effect
      */
     public HashMap<AmmoColor, Integer> getCost() {
-        return cost;
+        return (HashMap<AmmoColor, Integer>)cost.clone();
     }
 
     /**
