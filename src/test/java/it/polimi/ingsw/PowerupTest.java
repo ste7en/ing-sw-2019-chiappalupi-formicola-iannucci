@@ -66,4 +66,27 @@ public class PowerupTest {
         assertEquals(powColor, powTester.getColor());
         assertNotEquals(AmmoColor.blue==powColor ? AmmoColor.red : AmmoColor.blue, powTester.getColor());
     }
+
+    /**
+     * Tests a NullPointerException
+     */
+    @Test (expected = NullPointerException.class)
+    public void testUseNullPointerException() {
+        powTester.use(null, null, null);
+    }
+
+    /**
+     * Tests a RuntimeException
+     */
+    @Test (expected = RuntimeException.class)
+    public void testUseRuntimeException() {
+        Player playerTest;
+        User userTest;
+        Character characterTest;
+        String username = "Mimmo";
+        userTest = new User(username);
+        characterTest = new Character("CharacterTestName", PlayerColor.yellow, "Character user for tests.");
+        playerTest = new Player(userTest, characterTest);
+        powTester.use(playerTest, playerTest, null);
+    }
 }

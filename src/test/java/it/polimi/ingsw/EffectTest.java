@@ -82,4 +82,12 @@ public class EffectTest {
         assertTrue(verifier.contains(effectTester.getActions().get(0)));
     }
 
+    /**
+     * Tests a NullPointerException
+     */
+    @Test (expected = NullPointerException.class)
+    public void testAddActionException() {
+        effectTester.addAction(null);
+    }
+
 }

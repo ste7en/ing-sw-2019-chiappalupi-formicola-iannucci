@@ -66,8 +66,12 @@ public class Powerup {
      * @param user the player who is using the powerup
      * @param target the player who is the target of the powerup (null if PowerupType is Teleporter)
      * @param gameMap necessary to manage the effects (null if PowerupType is TargetingScope)
+     * @throws NullPointerException if user is null
+     * @throws RuntimeException if user and target are the same player
      */
     public void use(Player user, Player target, GameMap gameMap) {
+        if(user == null) throw new NullPointerException("user can't be null");
+        if(user == target) throw new RuntimeException("user and target can't be the same player");
         switch (type) {
             case Newton: {
                 newton(user, target, gameMap);

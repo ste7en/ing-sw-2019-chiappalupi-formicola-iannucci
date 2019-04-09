@@ -81,8 +81,10 @@ public class Effect {
     /**
      * Adds an action to the effect
      * @param a lambda to add to the card
+     * @throws  NullPointerException if Action a is null
      */
     public void addAction(Action a) {
+        if(a == null) throw new NullPointerException("Action a can't be null");
         actions.add(a);
     }
 

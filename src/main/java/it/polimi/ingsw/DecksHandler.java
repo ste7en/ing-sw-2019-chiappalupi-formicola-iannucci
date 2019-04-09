@@ -106,6 +106,7 @@ public class DecksHandler {
     /**
      * Method that adds the used ammo tiles to the ammo tiles recycle bin
      * @param ammoTile it's the ammo tile to add to the bin
+     * @throws NullPointerException if ammoTile is null
      */
     public void wasteAmmoTile(AmmoTile ammoTile) {
         if(ammoTile != null) {
@@ -117,6 +118,7 @@ public class DecksHandler {
     /**
      * Method that adds the used or wasted powerups to the powerups recycle bin
      * @param powerup it's the powerup to add to the bin
+     * @throws NullPointerException if powerup is null
      */
     public void wastePowerup(Powerup powerup) {
         if(powerup != null) {
