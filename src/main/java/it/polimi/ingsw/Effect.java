@@ -30,6 +30,11 @@ public class Effect {
     private final String name;
 
     /**
+     * Description of the effect
+     */
+    private final String description;
+
+    /**
      * Cost of the effect
      */
     private final HashMap<AmmoColor, Integer> cost;
@@ -51,8 +56,9 @@ public class Effect {
      * @param cost cost of the effect
      * @param type type of the effect
      */
-    public Effect(String name, HashMap<AmmoColor, Integer> cost, EffectType type) {
+    public Effect(String name, String description, HashMap<AmmoColor, Integer> cost, EffectType type) {
         this.name = name;
+        this.description = description;
         this.cost = cost;
         this.type = type;
         actions = new ArrayList<>();

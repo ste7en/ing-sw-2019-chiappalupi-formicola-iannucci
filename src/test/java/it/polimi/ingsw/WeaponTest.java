@@ -23,7 +23,7 @@ public class WeaponTest {
         cost.add(AmmoColor.red);
         cost.add(AmmoColor.blue);
         cost.add(AmmoColor.yellow);
-        Effect e = new Effect("test", null, EffectType.Basic);
+        Effect e = new Effect("test", "sample", null, EffectType.Basic);
         effects.add(e);
     }
 
@@ -126,14 +126,14 @@ public class WeaponTest {
     public void testGetEffect() {
         assertNotNull(weaponTester.getEffect());
         ArrayList<Effect> effects = new ArrayList<>();
-        Effect e = new Effect("test", null, EffectType.Basic);
+        Effect e = new Effect("test", "sample", null, EffectType.Basic);
         effects.add(e);
         for(Effect effect : effects) {
             assertEquals(effect.getName(), weaponTester.getEffect().get(effects.indexOf(effect)).getName());
             assertEquals(effect.getCost(), weaponTester.getEffect().get(effects.indexOf(effect)).getCost());
             assertEquals(effect.getType(), weaponTester.getEffect().get(effects.indexOf(effect)).getType());
         }
-        Effect e1 = new Effect("failtest", null, EffectType.Additional);
+        Effect e1 = new Effect("failtest", "sample", null, EffectType.Additional);
         effects.add(e1);
         for(Effect effect : effects) {
             if(effects.indexOf(effect) > weaponTester.getEffect().size()) {

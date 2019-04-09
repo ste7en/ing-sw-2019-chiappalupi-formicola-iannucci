@@ -135,4 +135,5 @@ public class GameMap {
     public Cell getPositionFromPlayer (Player player) {
         return playersPosition.get(player);
     }
+
 }

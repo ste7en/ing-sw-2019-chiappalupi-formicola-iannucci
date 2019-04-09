@@ -15,6 +15,7 @@ public class EffectTest {
 
     private Effect effectTester;
     private static String name;
+    private static String description;
     private static HashMap<AmmoColor, Integer> cost;
     private static EffectType type;
 
@@ -24,6 +25,7 @@ public class EffectTest {
     @BeforeClass
     public static void setUpBeforeClass() {
         name = "Sample Effect";
+        description = "Sample Description";
         cost = new HashMap<>();
         while(cost.size() == 0) {
             for(AmmoColor color : AmmoColor.values())
@@ -38,7 +40,7 @@ public class EffectTest {
      */
     @Before
     public void setUp() {
-        effectTester = new Effect(name, cost, type);
+        effectTester = new Effect(name, description, cost, type);
     }
 
     /**
@@ -73,7 +75,7 @@ public class EffectTest {
         assertNotNull(effectTester.getActions());
         ArrayList<Action> verifier = new ArrayList<>();
         Action a = (p, m) -> {
-            //Sample action
+            //sample code
         };
         effectTester.addAction(a);
         assertEquals(1, effectTester.getActions().size());
