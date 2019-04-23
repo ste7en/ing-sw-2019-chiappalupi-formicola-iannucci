@@ -12,7 +12,6 @@ import java.util.*;
 public class DecksHandlerTest {
 
     private DecksHandler decksTest;
-    private static ArrayList<Weapon> weapons = new ArrayList<>();
     private static ArrayList<AmmoTile> ammoTiles  = new ArrayList<>();
     private static ArrayList<Powerup> powerups = new ArrayList<>();
 
@@ -22,12 +21,7 @@ public class DecksHandlerTest {
     @BeforeClass
     public static void setUpBeforeClass() {
         Random rand = new Random();
-        int size = rand.nextInt(20) + 1;
-        for (int i=0; i < size; i++) {
-            WeaponType type = WeaponType.values()[new Random().nextInt(3)];
-            weapons.add(new Weapon("TestWeapon"+i, new ArrayList<>(), "TestNotes"+i, type, new ArrayList<>()));
-        }
-
+        int size;
         size = rand.nextInt(20) + 1;
         for (int i=0; i < size; i++) {
             ArrayList<AmmoColor> colors = new ArrayList<>();
@@ -47,7 +41,7 @@ public class DecksHandlerTest {
      */
     @Before
     public void setUp() {
-        decksTest = new DecksHandler((ArrayList<Weapon>)weapons.clone(), (ArrayList<AmmoTile>)ammoTiles.clone(), (ArrayList<Powerup>)powerups.clone());
+        decksTest = new DecksHandler((ArrayList<AmmoTile>)ammoTiles.clone(), (ArrayList<Powerup>)powerups.clone());
     }
 
     /**
@@ -57,7 +51,11 @@ public class DecksHandlerTest {
     @Test
     public void testWeaponsOver() {
         assertFalse(decksTest.weaponsOver());
-        decksTest = new DecksHandler(new ArrayList<>(), ammoTiles, powerups);
+        int i = 21;
+        while(i > 0) {
+            decksTest.drawWeapon();
+            i--;
+        }
         assertTrue(decksTest.weaponsOver());
     }
 
@@ -67,6 +65,7 @@ public class DecksHandlerTest {
      */
     @Test
     public void testDrawWeapon() {
+        ArrayList<Weapon> weapons = decksTest.initializeWeapons();
         int i = 0;
         while(!decksTest.weaponsOver()) {
             Weapon w1 = decksTest.drawWeapon();
@@ -79,12 +78,12 @@ public class DecksHandlerTest {
                 assertNotEquals(w1, w2);
             }
         }
-        assertEquals(weapons.size(),i);
-        Weapon w3 = new Weapon("weaponNotContained", new ArrayList<>(), "notes", WeaponType.PotentiableWeapon, new ArrayList<>());
+        assertEquals(weapons.size(), i);
+        Weapon w3 = new Weapon();
         ArrayList<Weapon> weapons1 = new ArrayList<>();
         weapons1.add(w3);
-        decksTest = new DecksHandler(weapons1, ammoTiles, powerups);
-        assertFalse(weapons.contains(decksTest.drawWeapon()));
+        decksTest = new DecksHandler(ammoTiles, powerups);
+        assertFalse(weapons1.contains(decksTest.drawWeapon()));
     }
 
     /**
@@ -213,5 +212,4 @@ public class DecksHandlerTest {
     public void testWastePowerupException() {
         decksTest.wastePowerup(null);
     }
-
 }

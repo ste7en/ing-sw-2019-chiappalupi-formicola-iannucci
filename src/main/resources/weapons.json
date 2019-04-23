@@ -1,5 +1,4 @@
-{
-  "weapons": [
+[
     {
       "name": "Lock Rifle",
       "cost": [
@@ -7,23 +6,8 @@
         "blue"
       ],
       "notes": null,
-      "type": "potentiable",
-      "effects": [
-        {
-          "name": "Basic Effect",
-          "cost": null,
-          "type": "basic",
-          "description": "Deal 2 damage and 1 mark to 1 target you can see.",
-          "actions": 
-            [
-              ""
-            ],
-          "appliable" : {
-            "canSee" : 1,
-            "minDist" : 0
-          }
-        }
-      ]
+      "type": "PotentiableWeapon",
+      "effect": null
     },
     {
       "name": "Machine Gun",
@@ -32,8 +16,8 @@
         "red"
       ],
       "notes": "If you deal both additional points of damage, they must be dealt to 2 different targets. If you see only 2 targets, you deal 2 to each if you use both optional effects. If you use the basic effect on only 1 target, you can still use the the turret tripod to give it 1 additional damage.",
-      "type": "potentiable",
-      "effects": {}
+      "type": "PotentiableWeapon",
+      "effect": null
     },
     {
       "name": "T.H.O.R.",
@@ -42,8 +26,8 @@
         "red"
       ],
       "notes": "This card constrains the order in which you can use its effects. (Most cards don't.) Also note that each target must be a different player.",
-      "type": "",
-      "effects": {}
+      "type": "PotentiableWeapon",
+      "effect": null
     },
     {
       "name": "Plasma Gun",
@@ -52,8 +36,8 @@
         "yellow"
       ],
       "notes": "The two moves have no ammo cost. You don't have to be able to see your target when you play the card.For example, you can move 2 squares and shoot a target you now see. You cannot use 1 move before shooting and 1 move after.",
-      "type": "potentiable",
-      "effects": {}
+      "type": "PotentiableWeapon",
+      "effect": null
     },
     {
       "name": "Whisper",
@@ -63,8 +47,8 @@
         "yellow"
       ],
       "notes": "For example, in the 2-by-2 room, you cannot shoot a target on an adjacent square, but you can shoot a target on the diagonal. If you are beside a door, you can't shoot a target on the other side of the door, but you can shoot a target on a different square of that room.",
-      "type": "simple",
-      "effects": {}
+      "type": "SimpleWeapon",
+      "effect": null
     },
     {
       "name": "Electroscythe",
@@ -72,8 +56,8 @@
         "blue"
       ],
       "notes": null,
-      "type": "selectable",
-      "effects": {}
+      "type": "SelectableWeapon",
+      "effect": null
     },
     {
       "name": "Tractor Beam",
@@ -81,8 +65,8 @@
         "blue"
       ],
       "notes": "You can move a target even if you can't see it. The target ends up in a place where you can see and damage it. The moves do not have to be in the same direction.",
-      "type": "selectable",
-      "effects": {}
+      "type": "SelectableWeapon",
+      "effect": null
     },
     {
       "name": "Vortex Cannon",
@@ -91,8 +75,8 @@
         "blue"
       ],
       "notes": "The 3 targets must be different, but some might start on the same square. It is legal to choose targets on your square, on the vortex, or even on squares you can't see. They all end up on the vortex.",
-      "type": "potentiable",
-      "effects": {}
+      "type": "PotentiableWeapon",
+      "effect": null
     },
     {
       "name": "Furnace",
@@ -101,8 +85,8 @@
         "blue"
       ],
       "notes": null,
-      "type": "selectable",
-      "effects": {}
+      "type": "SelectableWeapon",
+      "effect": null
     },
     {
       "name": "Heatseeker",
@@ -112,8 +96,8 @@
         "yellow"
       ],
       "notes": "Yes, this can only hit targets you cannot see.",
-      "type": "simple",
-      "effects": {}
+      "type": "SimpleWeapon",
+      "effect": null
     },
     {
       "name": "Hellion",
@@ -122,8 +106,8 @@
         "yellow"
       ],
       "notes": null,
-      "type": "selectable",
-      "effects": {}
+      "type": "SelectableWeapon",
+      "effect": null
     },
     {
       "name": "Flamethrower",
@@ -131,8 +115,8 @@
         "red"
       ],
       "notes": "This weapon cannot damage anyone in your square. However, it can sometimes damage a target you can't see – the flame won't go through walls, but it will go through doors. Think of it as a straight-line blast of flame that can travel 2 squares in a cardinal direction.",
-      "type": "selectable",
-      "effects": {}
+      "type": "SelectableWeapon",
+      "effect": null
     },
     {
       "name": "Grenade Launcher",
@@ -140,8 +124,8 @@
         "red"
       ],
       "notes": "For example, you can shoot a target, move it onto a square with other targets, then damage everyone including the first target. Or you can deal 2 to a main target, 1 to everyone else on that square, then move the main target. Or you can deal 1 to an isolated target and 1 to everyone on a different square. If you target your own square, you will not be moved or damaged.",
-      "type": "potentiable",
-      "effects": {}
+      "type": "PotentiableWeapon",
+      "effect": null
     },
     {
       "name": "Rocket Launcher",
@@ -150,8 +134,8 @@
         "red"
       ],
       "notes": "If you use the rocket jump before the basic effect, you consider only your new square when determining if a target is legal. You can even move off a square so you can shoot someone on it. If you use the fragmenting warhead, you deal damage to everyone on the target's square before you move the target – your target will take 3 damage total.",
-      "type": "potentiable",
-      "effects": {}
+      "type": "PotentiableWeapon",
+      "effect": null
     },
     {
       "name": "Railgun",
@@ -161,8 +145,8 @@
         "blue"
       ],
       "notes": "Basically, you're shooting in a straight line and ignoring walls. You don't have to pick a target on the other side of a wall – it could even be someone on your own square – but shooting through walls sure is fun. There are only 4 cardinal directions. You imagine facing one wall or door, square-on, and firing in that direction. Anyone on a square in that direction (including yours) is a valid target. In piercing mode, the 2 targets can be on the same square or on different squares.",
-      "type": "selectable",
-      "effects": {}
+      "type": "SelectableWeapon",
+      "effect": null
     },
     {
       "name": "Cyberblade",
@@ -171,8 +155,8 @@
         "red"
       ],
       "notes": "Combining all effects allows you to move onto a square and whack 2 people; or whack somebody, move, and whack somebody else; or whack 2 people and then move.",
-      "type": "potentiable",
-      "effects": {}
+      "type": "PotentiableWeapon",
+      "effect": null
     },
     {
       "name": "ZX-2",
@@ -181,8 +165,8 @@
         "red"
       ],
       "notes": "Remember that the 3 targets can be in 3 different rooms.",
-      "type": "selectable",
-      "effects": {}
+      "type": "SelectableWeapon",
+      "effect": null
     },
     {
       "name": "Shotgun",
@@ -191,8 +175,8 @@
         "yellow"
       ],
       "notes": null,
-      "type": "selectable",
-      "effects": {}
+      "type": "SelectableWeapon",
+      "effect": null
     },
     {
       "name": "Power Glove",
@@ -201,8 +185,8 @@
         "blue"
       ],
       "notes": " In rocket fist mode, you're flying 2 squares in a straight line, punching 1 person per square.",
-      "type": "selectable",
-      "effects": {}
+      "type": "SelectableWeapon",
+      "effect": null
     },
     {
       "name": "Shockwave",
@@ -210,8 +194,8 @@
         "yellow"
       ],
       "notes": null,
-      "type": "selectable",
-      "effects": {}
+      "type": "SelectableWeapon",
+      "effect": null
     },
     {
       "name": "Sledgehammer",
@@ -219,8 +203,7 @@
         "yellow"
       ],
       "notes": "Remember that moves go through doors, but not walls.",
-      "type": "selectable",
-      "effects": {}
+      "type": "SelectableWeapon",
+      "effect": null
     }
-  ]
-}
+]

@@ -41,10 +41,6 @@ public class BoardTest {
 
         Random rand = new Random();
         int size = 20;
-        for (int i=0; i < size; i++) {
-            WeaponType type = WeaponType.values()[new Random().nextInt(3)];
-            weapons.add(new Weapon("TestWeapon"+i, new ArrayList<>(), "TestNotes"+i, type, new ArrayList<>()));
-        }
 
         size = rand.nextInt(20) + 1;
         for (int i=0; i < size; i++) {
@@ -59,7 +55,7 @@ public class BoardTest {
             powerups.add(new Powerup(PowerupType.values()[new Random().nextInt(4)], "TestDescription"+i, AmmoColor.values()[new Random().nextInt(3)]));
         }
 
-        decksHandler = new DecksHandler((ArrayList<Weapon>)weapons.clone(), (ArrayList<AmmoTile>)ammoTiles.clone(), (ArrayList<Powerup>)powerups.clone());
+        decksHandler = new DecksHandler((ArrayList<AmmoTile>)ammoTiles.clone(), (ArrayList<Powerup>)powerups.clone());
 
         userTest = new User(username);
         characterTest = new Character("CharacterTestName", PlayerColor.yellow, "Character user for tests.");

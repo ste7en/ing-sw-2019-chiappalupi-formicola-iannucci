@@ -1,7 +1,12 @@
 package it.polimi.ingsw;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -14,6 +19,11 @@ public class DecksHandler {
      * String passed as message of RuntimeException when it is asked to draw from an empty deck.
      */
     private static final String WEAPONS_OVER_EXC = "Tried to draw from a finished deck.";
+
+    /**
+     * Integer to initialize the weaponsDeck
+     */
+    private static final Integer NUM_OF_WEAPONS = 21;
 
     /**
      * Deck of weapons
@@ -41,17 +51,33 @@ public class DecksHandler {
     private ArrayList<Powerup> powerupsRecycleBin;
 
     /**
-     * Constructor: creates a new DecksHandler from the list of weapons, ammo tiles and powerups
-     * @param weapons starting deck of weapons
+     * Constructor: creates a new DecksHandler from the jsons of weapons, ammo tiles and powerups
      * @param ammoTiles starting deck of ammo tiles
      * @param powerups starting deck of powerups
      */
-    public DecksHandler(ArrayList<Weapon> weapons, ArrayList<AmmoTile> ammoTiles, ArrayList<Powerup> powerups) {
-        this.weapons = weapons;
+    public DecksHandler(ArrayList<AmmoTile> ammoTiles, ArrayList<Powerup> powerups) {
+        weapons = initializeWeapons();
         this.ammoTiles = ammoTiles;
         this.powerups = powerups;
         ammoRecycleBin = new ArrayList<>();
         powerupsRecycleBin = new ArrayList<>();
+    }
+
+    /**
+     * Method that initializes the weapons deck using a json file
+     * @return an ArrayList containing the deck of weapons for testing purposes
+     */
+    public ArrayList<Weapon> initializeWeapons() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Weapon[] box = new Weapon[NUM_OF_WEAPONS];
+        try {
+            File json = new File("src\\main\\resources\\weapons.json");
+            box = objectMapper.readValue(json, Weapon[].class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        weapons = new ArrayList<>(Arrays.asList(box));
+        return (ArrayList<Weapon>) weapons.clone();
     }
 
     /**
