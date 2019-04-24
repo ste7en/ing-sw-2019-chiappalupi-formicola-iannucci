@@ -27,23 +27,23 @@ public class Effect {
     /**
      * Name of the effect
      */
-    private final String name;
+    private String name;
 
     /**
      * Description of the effect
      */
-    private final String description;
+    private String description;
 
     /**
      * Cost of the effect
      */
-    private final HashMap<AmmoColor, Integer> cost;
+    private HashMap<AmmoColor, Integer> cost;
 
     /**
      * Type of the effect
      * @see EffectType
      */
-    private final EffectType type;
+    private EffectType type;
 
     /**
      * ArrayList to save the lambdas of the effect
@@ -51,18 +51,10 @@ public class Effect {
     private ArrayList<Action> actions;
 
     /**
-     * Constructor of the class: creates a new Effect, from its name, cost and type
-     * @param name name of the effect
-     * @param cost cost of the effect
-     * @param type type of the effect
+     * HashMap to save de properties of the effect, needed to the GameLogic function that returns the applicability of a Weapon
      */
-    public Effect(String name, String description, HashMap<AmmoColor, Integer> cost, EffectType type) {
-        this.name = name;
-        this.description = description;
-        this.cost = cost;
-        this.type = type;
-        actions = new ArrayList<>();
-    }
+    private HashMap<EffectProperty, Integer> properties;
+
 
     public String getName() {
         return name;
@@ -85,12 +77,21 @@ public class Effect {
     }
 
     /**
+     * Effect's description getter
+     * @return the description of the effect
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
      * Adds an action to the effect
      * @param a lambda to add to the card
      * @throws  NullPointerException if Action a is null
      */
     public void addAction(Action a) {
-        if(a == null) throw new NullPointerException("Action a can't be null");
+        //if(a == null) throw new NullPointerException("Action a can't be null");
+        if(actions == null) actions = new ArrayList<>();
         actions.add(a);
     }
 
@@ -100,6 +101,14 @@ public class Effect {
      */
     public ArrayList<Action> getActions() {
         return (ArrayList<Action>)actions.clone();
+    }
+
+    /**
+     * Effect's properties getter (returns a clone to preserve the rep invariant)
+     * @return a clone of the properties
+     */
+    public HashMap<EffectProperty, Integer> getProperties() {
+        return (HashMap<EffectProperty, Integer>) properties.clone();
     }
 
 }

@@ -7,7 +7,32 @@
       ],
       "notes": null,
       "type": "PotentiableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic effect",
+          "description": "Deal 2 damage and 1 mark to 1 target you can see.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MaxDistance": -2,
+            "MaxPlayer": 1
+          }
+        },  {
+          "name": "with second lock",
+          "description": "Deal 1 mark to a different target you can see.",
+          "cost": {
+            "red": 1
+          },
+          "type": "Additional",
+          "actions": null,
+          "properties": {
+            "MaxDistance": -2,
+            "MaxPlayer": 1,
+            "DifferentFromEffect": 0
+          }
+        }
+      ]
     },
     {
       "name": "Machine Gun",
@@ -17,7 +42,42 @@
       ],
       "notes": "If you deal both additional points of damage, they must be dealt to 2 different targets. If you see only 2 targets, you deal 2 to each if you use both optional effects. If you use the basic effect on only 1 target, you can still use the the turret tripod to give it 1 additional damage.",
       "type": "PotentiableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic effect",
+          "description": "Choose 1 or 2 targets you can see and deal 1 damage to each.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MaxDistance": -2,
+            "MaxPlayer": 2,
+            "MultipleCell": 2
+          }
+        },  {
+          "name": "with focus shot",
+          "description": "Deal 1 additional damage to one of those targets.",
+          "cost": {
+            "yellow": 1
+          },
+          "type": "Additional",
+          "actions": null,
+          "properties": {
+            "MaxDistance": -2,
+            "MaxPlayer": 1,
+            "DifferentFromEffect": -1
+          }
+        },  {
+          "name": "with turret tripod",
+          "description": "Deal 1 additional damage to the other of those targets and/or deal 1 damage to a different target you can see.",
+          "cost": {
+            "blue": 1
+          },
+          "type": "Additional",
+          "actions": null,
+          "properties": null
+        }
+      ]
     },
     {
       "name": "T.H.O.R.",
@@ -27,7 +87,45 @@
       ],
       "notes": "This card constrains the order in which you can use its effects. (Most cards don't.) Also note that each target must be a different player.",
       "type": "PotentiableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic effect",
+          "description": "Deal 2 damage to 1 target you can see.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MaxDistance": -2,
+            "MaxPlayer": 1
+          }
+        },  {
+          "name": "with chain reaction",
+          "description": "Deal 1 damage to a second target that your first target can see.",
+          "cost": {
+            "blue": 1
+          },
+          "type": "Additional",
+          "actions": null,
+          "properties": {
+            "EffectOnTarget": 0,
+            "MaxDistance": -2,
+            "MaxPlayer": 1
+          }
+        },  {
+          "name": "with high voltage",
+          "description": "Deal 2 damage to a third target that your second target can see. You cannot use this effect unless you first use the chain reaction.",
+          "cost": {
+            "blue": 1
+          },
+          "type": "Additional",
+          "actions": null,
+          "properties": {
+            "EffectOnTarget": 1,
+            "MaxDistance": -2,
+            "MaxPlayer": 1
+          }
+        }
+      ]
     },
     {
       "name": "Plasma Gun",
@@ -37,7 +135,40 @@
       ],
       "notes": "The two moves have no ammo cost. You don't have to be able to see your target when you play the card.For example, you can move 2 squares and shoot a target you now see. You cannot use 1 move before shooting and 1 move after.",
       "type": "PotentiableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic effect",
+          "description": "Deal 2 damage to 1 target you can see.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MaxDistance": -2,
+            "MaxPlayer": 1
+          }
+        },  {
+          "name": "with phase glide",
+          "description": "Move 1 or 2 squares. This effect can be used either before or after the basic effect.",
+          "cost": null,
+          "type": "Additional",
+          "actions": null,
+          "properties": {
+            "MoveMe": 2
+          }
+        },  {
+          "name": "with charged shot",
+          "description": "Deal 1 additional damage to your target.",
+          "cost": {
+            "blue": 1
+          },
+          "type": "Additional",
+          "actions": null,
+          "properties": {
+            "DifferentFromEffect": -1,
+            "MaxPlayer": 1
+          }
+        }
+      ]
     },
     {
       "name": "Whisper",
@@ -48,7 +179,20 @@
       ],
       "notes": "For example, in the 2-by-2 room, you cannot shoot a target on an adjacent square, but you can shoot a target on the diagonal. If you are beside a door, you can't shoot a target on the other side of the door, but you can shoot a target on a different square of that room.",
       "type": "SimpleWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "effect",
+          "description": "Deal 3 damage and 1 mark to 1 target you can see.Your target must be at least 2 moves away from you.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MinDistance": 2,
+            "MaxDistance": -2,
+            "MaxPlayer": 1
+          }
+        }
+      ]
     },
     {
       "name": "Electroscythe",
@@ -57,7 +201,32 @@
       ],
       "notes": null,
       "type": "SelectableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Deal 1 damage to every other player on your square.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MaxDistance": 0,
+            "MultipleCell": 0
+          }
+        }, {
+          "name": "in reaper mode",
+          "description": "Deal 2 damage to every other player on your square.",
+          "cost": {
+            "blue": 1,
+            "red": 1
+          },
+          "type": "Selectable",
+          "actions": null,
+          "properties": {
+            "MaxDistance": 0,
+            "MultipleCell": 0
+          }
+        }
+      ]
     },
     {
       "name": "Tractor Beam",
@@ -66,7 +235,34 @@
       ],
       "notes": "You can move a target even if you can't see it. The target ends up in a place where you can see and damage it. The moves do not have to be in the same direction.",
       "type": "SelectableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Move a target 0, 1, or 2 squares to a square you can see, and give it 1 damage.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "CanMoveBefore": 2,
+            "MaxDistance": -2,
+            "MaxPlayer": 1
+          }
+        }, {
+          "name": "in punisher mode",
+          "description": "Choose a target 0, 1, or 2 moves away from you. Move the target to your square and deal 3 damage to it.",
+          "cost": {
+            "yellow": 1,
+            "red": 1
+          },
+          "type": "Selectable",
+          "actions": null,
+          "properties": {
+            "CanMoveBefore": 2,
+            "MaxDistance": 0,
+            "MaxPlayer": 1
+          }
+        }
+      ]
     },
     {
       "name": "Vortex Cannon",
@@ -76,7 +272,25 @@
       ],
       "notes": "The 3 targets must be different, but some might start on the same square. It is legal to choose targets on your square, on the vortex, or even on squares you can't see. They all end up on the vortex.",
       "type": "PotentiableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic effect",
+          "description": "Choose a square you can see, but not your square. Call it \"the vortex\". Choose a target on the vortex or 1 move away from it. Move it onto the vortex and give it 2 damage.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": null
+        }, {
+          "name": "with black hole",
+          "description": "Choose up to 2 other targets on the vortex or 1 move away from it. Move them onto the vortex and give them each 1 damage.",
+          "cost": {
+            "red": 1
+          },
+          "type": "Additional",
+          "actions": null,
+          "properties": null
+        }
+      ]
     },
     {
       "name": "Furnace",
@@ -86,7 +300,30 @@
       ],
       "notes": null,
       "type": "SelectableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Choose a room you can see, but not the room you are in. Deal 1 damage to everyone in that room.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MinDistance": 1,
+            "MultipleCell": -1
+          }
+        }, {
+          "name": "in cozy fire mode",
+          "description": "Choose a square exactly one move away. Deal 1 damage and 1 mark to everyone on that square.",
+          "cost": null,
+          "type": "Selectable",
+          "actions": null,
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": 1,
+            "MultipleCell": 0
+          }
+        }
+      ]
     },
     {
       "name": "Heatseeker",
@@ -97,7 +334,19 @@
       ],
       "notes": "Yes, this can only hit targets you cannot see.",
       "type": "SimpleWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "effect",
+          "description": "Choose 1 target you cannot see and deal 3 damage to it.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MinDistance": -1,
+            "MaxPlayer": 1
+          }
+        }
+      ]
     },
     {
       "name": "Hellion",
@@ -107,7 +356,35 @@
       ],
       "notes": null,
       "type": "SelectableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Deal 1 damage to 1 target you can see at least 1 move away. Then give 1 mark to that target and everyone else on that square.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": -2,
+            "MaxPlayer": 1,
+            "MarksAfter": 1
+          }
+        }, {
+          "name": "in nano-tracer mode",
+          "description": "Deal 1 damage to 1 target you can see at least 1 move away. Then give 2 mark to that target and everyone else on that square.",
+          "cost": {
+            "red": 1
+          },
+          "type": "Selectable",
+          "actions": null,
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": -2,
+            "MaxPlayer": 1,
+            "MarksAfter": 2
+          }
+        }
+      ]
     },
     {
       "name": "Flamethrower",
@@ -116,7 +393,34 @@
       ],
       "notes": "This weapon cannot damage anyone in your square. However, it can sometimes damage a target you can't see – the flame won't go through walls, but it will go through doors. Think of it as a straight-line blast of flame that can travel 2 squares in a cardinal direction.",
       "type": "SelectableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Choose a square 1 move away and possibly a second square 1 more move away in the same direction. On each square, you may choose 1 target and give it 1 damage.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": 2,
+            "MultipleCell": -2,
+            "MaxPlayer": 2
+          }
+        }, {
+          "name": "in barbecue mode",
+          "description": "Choose 2 squares as above. Deal 2 damage to everyone on the first square and 1 damage to everyone on the second square.",
+          "cost": {
+            "yellow": 2
+          },
+          "type": "Selectable",
+          "actions": null,
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": 2,
+            "MultipleCell": -2
+          }
+        }
+      ]
     },
     {
       "name": "Grenade Launcher",
@@ -125,7 +429,32 @@
       ],
       "notes": "For example, you can shoot a target, move it onto a square with other targets, then damage everyone including the first target. Or you can deal 2 to a main target, 1 to everyone else on that square, then move the main target. Or you can deal 1 to an isolated target and 1 to everyone on a different square. If you target your own square, you will not be moved or damaged.",
       "type": "PotentiableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic effect",
+          "description": "Deal 1 damage to 1 target you can see. Then you may move the target 1 square.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MaxDistance": -2,
+            "MaxPlayer": 1,
+            "CanMoveAfter": 1
+          }
+        }, {
+          "name": "with extra grenade",
+          "description": "Deal 1 damage to every player on a square you can see. You can use this before or after the basic effect's move.",
+          "cost": {
+            "red": 1
+          },
+          "type": "Additional",
+          "actions": null,
+          "properties": {
+            "MaxDistance": -2,
+            "MultipleCell": 0
+          }
+        }
+      ]
     },
     {
       "name": "Rocket Launcher",
@@ -135,7 +464,41 @@
       ],
       "notes": "If you use the rocket jump before the basic effect, you consider only your new square when determining if a target is legal. You can even move off a square so you can shoot someone on it. If you use the fragmenting warhead, you deal damage to everyone on the target's square before you move the target – your target will take 3 damage total.",
       "type": "PotentiableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic effect",
+          "description": "Deal 2 damage to 1 target you can see that is not on your square. Then you may move the target 1 square.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": -2,
+            "MaxPlayer": 1,
+            "CanMoveAfter": 1
+          }
+        }, {
+          "name": "with rocket jump",
+          "description": "Move 1 or 2 squares. This effect can be used either before or after the basic effect.",
+          "cost": {
+            "blue": 1
+          },
+          "type": "Additional",
+          "actions": null,
+          "properties": {
+            "MoveMe": 2
+          }
+        }, {
+          "name": "with fragmenting warhead",
+          "description": "During the basic effect, deal 1 damage to every player on your target's original square – including the target, even if you move it.",
+          "cost": {
+            "yellow": 1
+          },
+          "type": "Additional",
+          "actions": null,
+          "properties": null
+        }
+      ]
     },
     {
       "name": "Railgun",
@@ -146,7 +509,29 @@
       ],
       "notes": "Basically, you're shooting in a straight line and ignoring walls. You don't have to pick a target on the other side of a wall – it could even be someone on your own square – but shooting through walls sure is fun. There are only 4 cardinal directions. You imagine facing one wall or door, square-on, and firing in that direction. Anyone on a square in that direction (including yours) is a valid target. In piercing mode, the 2 targets can be on the same square or on different squares.",
       "type": "SelectableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Choose a cardinal direction and 1 target in that direction. Deal 3 damage to it.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MaxPlayer": 1,
+            "MultipleCell": -2
+          }
+        }, {
+          "name": "in piercing mode",
+          "description": "Choose a cardinal direction and 1 or 2 targets in that direction. Deal 2 damage to each.",
+          "cost": null,
+          "type": "Selectable",
+          "actions": null,
+          "properties": {
+            "MaxPlayer": 2,
+            "MultipleCell": -2
+          }
+        }
+      ]
     },
     {
       "name": "Cyberblade",
@@ -156,7 +541,41 @@
       ],
       "notes": "Combining all effects allows you to move onto a square and whack 2 people; or whack somebody, move, and whack somebody else; or whack 2 people and then move.",
       "type": "PotentiableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic effect",
+          "description": "Deal 2 damage to 1 target on your square.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MaxDistance": 0,
+            "MaxPlayer": 1
+          }
+        }, {
+          "name": "with shadowstep",
+          "description": "Move 1 square before or after the basic effect.",
+          "cost": null,
+          "type": "Additional",
+          "actions": null,
+          "properties": {
+            "MoveMe": 1
+          }
+        }, {
+          "name": "with slice and dice",
+          "description": "Deal 2 damage to a different target on your square.The shadowstep may be used before or after this effect.",
+          "cost": {
+            "yellow": 1
+          },
+          "type": "Additional",
+          "actions": null,
+          "properties": {
+            "DifferentFromEffect": 0,
+            "MaxDistance": 0,
+            "MaxPlayer": 1
+          }
+        }
+      ]
     },
     {
       "name": "ZX-2",
@@ -166,7 +585,29 @@
       ],
       "notes": "Remember that the 3 targets can be in 3 different rooms.",
       "type": "SelectableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Deal 1 damage and 2 marks to 1 target you can see.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MaxPlayer": 1,
+            "MaxDistance": -2
+          }
+        }, {
+          "name": "in scanner mode",
+          "description": "Choose up to 3 targets you can see and deal 1 mark to each.",
+          "cost": null,
+          "type": "Selectable",
+          "actions": null,
+          "properties": {
+            "MaxPlayer": 3,
+            "MaxDistance": -2
+          }
+        }
+      ]
     },
     {
       "name": "Shotgun",
@@ -176,7 +617,31 @@
       ],
       "notes": null,
       "type": "SelectableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Deal 3 damage to 1 target on your square. If you want, you may then move the target 1 square.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MaxPlayer": 1,
+            "MaxDistance": 0,
+            "CanMoveAfter": 1
+          }
+        }, {
+          "name": "in long barrel mode",
+          "description": "Deal 2 damage to 1 target on any square exactly one move away.",
+          "cost": null,
+          "type": "Selectable",
+          "actions": null,
+          "properties": {
+            "MaxPlayer": 1,
+            "MinDistance": 1,
+            "MaxDistance": 1
+          }
+        }
+      ]
     },
     {
       "name": "Power Glove",
@@ -186,7 +651,25 @@
       ],
       "notes": " In rocket fist mode, you're flying 2 squares in a straight line, punching 1 person per square.",
       "type": "SelectableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Choose 1 target on any square exactly 1 move away. Move onto that square and give the target 1 damage and 2 marks.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": null
+        }, {
+          "name": "in rocket fist mode",
+          "description": "Choose a square exactly 1 move away. Move onto that square. You may deal 2 damage to 1 target there. If you want, you may move 1 more square in that same direction (but only if it is a legal move). You may deal 2 damage to 1 target there, as well.",
+          "cost": {
+            "blue": 1
+          },
+          "type": "Selectable",
+          "actions": null,
+          "properties": null
+        }
+      ]
     },
     {
       "name": "Shockwave",
@@ -195,7 +678,35 @@
       ],
       "notes": null,
       "type": "SelectableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Choose up to 3 targets on different squares, each exactly 1 move away. Deal 1 damage to each target.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": 1,
+            "MultipleCell": 3,
+            "MaxPlayer": 3
+            }
+        }, {
+          "name": "in tsunami mode",
+          "description": "Deal 1 damage to all targets that are exactly 1 move away.",
+          "cost": {
+            "yellow": 1
+          },
+          "type": "Selectable",
+          "actions": null,
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": 1,
+            "MultipleCell": 4,
+            "MaxPlayer": -1
+          }
+        }
+      ]
     },
     {
       "name": "Sledgehammer",
@@ -204,6 +715,31 @@
       ],
       "notes": "Remember that moves go through doors, but not walls.",
       "type": "SelectableWeapon",
-      "effect": null
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Deal 2 damage to 1 target on your square.",
+          "cost": null,
+          "type": "Basic",
+          "actions": null,
+          "properties": {
+            "MaxDistance": 0,
+            "MaxPlayer": 1
+          }
+        }, {
+          "name": "in pulverize mode",
+          "description": "Deal 3 damage to 1 target on your square, then move that target 0, 1, or 2 squares in one direction.",
+          "cost": {
+            "red": 1
+          },
+          "type": "Selectable",
+          "actions": null,
+          "properties": {
+            "MaxDistance": 0,
+            "CanMoveAfter": 2,
+            "MultipleCell": -2
+          }
+        }
+      ]
     }
 ]

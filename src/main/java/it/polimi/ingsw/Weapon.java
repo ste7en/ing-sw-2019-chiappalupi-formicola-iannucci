@@ -94,7 +94,7 @@ public class Weapon {
      * Weapon's effects getter
      * @return the ArrayList of Effects of the weapon
      */
-    public ArrayList<Effect> getEffect() {
+    public ArrayList<Effect> getEffects() {
         return (ArrayList<Effect>)effects.clone();
     }
 

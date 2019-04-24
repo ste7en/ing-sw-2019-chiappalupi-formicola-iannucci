@@ -77,6 +77,7 @@ public class DecksHandler {
             e.printStackTrace();
         }
         weapons = new ArrayList<>(Arrays.asList(box));
+        for(Weapon w : weapons) w.reload();
         return (ArrayList<Weapon>) weapons.clone();
     }
 
