@@ -10,7 +10,7 @@ public enum EffectProperty {
     MinDistance,
 
     /**
-     * Maximum distance where a weapon can shoot; (-1) if the weapon shoots to a room, (-2) if the weapon can be used only against targets who can be seen
+     * Maximum distance where a weapon can shoot; (-1) if the weapon can be used only against targets who can be seen
      */
     MaxDistance,
 
@@ -20,7 +20,7 @@ public enum EffectProperty {
     MaxPlayer,
 
     /**
-     * Saves if the target/s must be different from the others effects of the weapon, (-1) if target/s must be the same
+     * Saves if the target/s must be different from the others effects of the weapon; (-1) if target/s must be the same
      */
     DifferentFromEffect,
 
@@ -40,7 +40,7 @@ public enum EffectProperty {
     MoveMe,
 
     /**
-     * Saves if the Weapon must shoot to different cells, (-1) if it's an entire room, (-2) if it's an entire direction, (0) if it's everyone in a cell
+     * Saves if the Weapon must shoot to different cells; (-1) if it's an entire room, (-2) if it's an entire direction, (0) if it's everyone in a cell
      */
     MultipleCell,
 

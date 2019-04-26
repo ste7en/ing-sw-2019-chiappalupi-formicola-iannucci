@@ -15,7 +15,7 @@
           "type": "Basic",
           "actions": null,
           "properties": {
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1
           }
         },  {
@@ -27,7 +27,7 @@
           "type": "Additional",
           "actions": null,
           "properties": {
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1,
             "DifferentFromEffect": 0
           }
@@ -50,7 +50,7 @@
           "type": "Basic",
           "actions": null,
           "properties": {
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 2,
             "MultipleCell": 2
           }
@@ -63,7 +63,7 @@
           "type": "Additional",
           "actions": null,
           "properties": {
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1,
             "DifferentFromEffect": -1
           }
@@ -95,7 +95,7 @@
           "type": "Basic",
           "actions": null,
           "properties": {
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1
           }
         },  {
@@ -108,7 +108,7 @@
           "actions": null,
           "properties": {
             "EffectOnTarget": 0,
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1
           }
         },  {
@@ -121,7 +121,7 @@
           "actions": null,
           "properties": {
             "EffectOnTarget": 1,
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1
           }
         }
@@ -143,7 +143,7 @@
           "type": "Basic",
           "actions": null,
           "properties": {
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1
           }
         },  {
@@ -188,7 +188,7 @@
           "actions": null,
           "properties": {
             "MinDistance": 2,
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1
           }
         }
@@ -244,7 +244,7 @@
           "actions": null,
           "properties": {
             "CanMoveBefore": 2,
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1
           }
         }, {
@@ -365,7 +365,7 @@
           "actions": null,
           "properties": {
             "MinDistance": 1,
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1,
             "MarksAfter": 1
           }
@@ -379,7 +379,7 @@
           "actions": null,
           "properties": {
             "MinDistance": 1,
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1,
             "MarksAfter": 2
           }
@@ -437,7 +437,7 @@
           "type": "Basic",
           "actions": null,
           "properties": {
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1,
             "CanMoveAfter": 1
           }
@@ -450,7 +450,7 @@
           "type": "Additional",
           "actions": null,
           "properties": {
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MultipleCell": 0
           }
         }
@@ -473,7 +473,7 @@
           "actions": null,
           "properties": {
             "MinDistance": 1,
-            "MaxDistance": -2,
+            "MaxDistance": -1,
             "MaxPlayer": 1,
             "CanMoveAfter": 1
           }
@@ -594,7 +594,7 @@
           "actions": null,
           "properties": {
             "MaxPlayer": 1,
-            "MaxDistance": -2
+            "MaxDistance": -1
           }
         }, {
           "name": "in scanner mode",
@@ -604,7 +604,7 @@
           "actions": null,
           "properties": {
             "MaxPlayer": 3,
-            "MaxDistance": -2
+            "MaxDistance": -1
           }
         }
       ]

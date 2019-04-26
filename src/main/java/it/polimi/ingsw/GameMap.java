@@ -114,7 +114,13 @@ public class GameMap {
         return targets;
     }
 
+    public ArrayList<Player> getTargetsFromMinDistance(Player player, int distance) { return null; }
+
+    public ArrayList<Player> getTargetsFromMaxDistance(Player player, int distance) { return null; }
+
     public ArrayList<Player> getSeenTargets(Player player) { return null; }
+
+    public ArrayList<Player> getUnseenTargets(Player player) { return null; }
 
     public ArrayList<Player> getTargetsFrom(Direction direction) { return null; }
 
