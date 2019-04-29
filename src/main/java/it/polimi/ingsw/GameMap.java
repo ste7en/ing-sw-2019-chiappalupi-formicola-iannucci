@@ -1,8 +1,12 @@
 package it.polimi.ingsw;
 
+import sun.plugin.net.proxy.PluginAutoProxyHandler;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  *
@@ -57,6 +61,9 @@ public class GameMap {
         return map[row][column];
     }
 
+    public Cell getCellFromPlayer(Player player){
+        return playersPosition.get(player);
+    }
 
     public ArrayList<Cell> getRoomFromCell(Cell cell) {
         ArrayList<Cell> room = new ArrayList<>();
@@ -69,20 +76,28 @@ public class GameMap {
         return room;
     }
 
-    private Cell getCellFromDirection(Player player, Direction direction){
+    private Cell getCellFromDirection(Cell cell, Direction direction){
         int i,j;
         for (i=0; i<rows; i++) {
             for(j=0; j<columns; j++) {
-                if (map[i][j].equals(playersPosition.get(player))) {
-                    switch (direction){
+                if (map[i][j].equals(cell)) {
+                    switch (direction) {
                         case North:
-                            return map[i-1][j];
+                            if(i>0) {
+                                return map[i - 1][j];
+                            }
                         case East:
-                            return map[i][j+1];
+                            if(j<3) {
+                                return map[i][j + 1];
+                            }
                         case South:
-                            return map[i+1][j];
+                            if(i<2) {
+                                return map[i + 1][j];
+                            }
                         case West:
-                            return map[i][j-1];
+                            if(j>0) {
+                                return map[i][j - 1];
+                            }
                     }
                 }
 
@@ -99,28 +114,85 @@ public class GameMap {
         return playersInThatCell;
     }
 
-
     public ArrayList<Player> getTargetsInMyCell(Player player){
         return getPlayersFromCell(playersPosition.get(player));
     }
 
-    public ArrayList<Player> getOneMoveAwayTargets(Player player){
+    public ArrayList<Player> getTargetsAtMaxDistance(Cell cell, int distance){
+        ArrayList<Player> targets = new ArrayList<>();
+        if (distance==0){
+            targets.addAll(getPlayersFromCell(cell));
+            return targets;
+        }
+        for (Direction direction : Direction.values()) {
+            if ((getCellFromDirection(cell, direction) != null) && (cell.adiacency(direction) != Border.wall)) {
+                targets.addAll(getTargetsAtMaxDistance(getCellFromDirection(cell, direction), distance - 1));
+            }
+        }
+        targets.addAll(getPlayersFromCell(cell));
+        targets.addAll(getAdiacentTargets(cell));
+        Set<Player> duplicatesEliminator = new LinkedHashSet<>();
+        duplicatesEliminator.addAll(targets);
+        targets.clear();
+        targets.addAll(duplicatesEliminator);
+        targets.sort(Player::compareTo);
+        return targets;
+    }
+
+    public ArrayList<Player> getTargetsAtMinDistance(Player player, int distance){
+        ArrayList<Player> targets = new ArrayList<>();
+        for(Player tempPlayer : playersPosition.keySet() ){
+            if (distance>0 && !getTargetsAtMaxDistance(playersPosition.get(player),distance-1).contains(tempPlayer)) {
+                targets.add(tempPlayer);
+            }
+            else if(distance==0 && !getTargetsInMyCell(player).contains(tempPlayer)) {
+                targets.add(tempPlayer);
+            }
+        }
+        if (targets != null) targets.sort(Player::compareTo);
+        return targets;
+    }
+
+    public ArrayList<Player> getAdiacentTargets (Cell cell){
         ArrayList<Player> targets = new ArrayList<>();
         for (Direction direction : Direction.values()) {
-           if(playersPosition.get(player).adiacency(direction) != Border.wall) {
-               targets.addAll(getPlayersFromCell(getCellFromDirection(player, direction)));
-           }
+            if (cell.adiacency(direction) != Border.wall) {
+                targets.addAll(getPlayersFromCell(getCellFromDirection(cell, direction)));
+            }
         }
         return targets;
     }
 
-    public ArrayList<Player> getSeenTargets(Player player) { return null; }
+    public ArrayList<Player> getSeenTargets(Player player) {
+        ArrayList<Player> targets = new ArrayList<>();
+        for (Direction direction : Direction.values()) {
+            if(playersPosition.get(player).adiacency(direction)==Border.door) {
+                for (Cell cell : getRoomFromCell(getCellFromDirection(playersPosition.get(player), direction))) {
+                    targets.addAll(getPlayersFromCell(cell));
+                }
+            }
+        }
+        for (Cell cell1 : getRoomFromCell(playersPosition.get(player))){
+            targets.addAll(getPlayersFromCell(cell1));
+        }
+        targets.sort(Player::compareTo);
+        return targets;
+    }
 
-    public ArrayList<Player> getTargetsFrom(Direction direction) { return null; }
+    public ArrayList<Player> getTargetsFromDirection(Player player, Direction direction) {
+        ArrayList<Player> targets = new ArrayList<>();
+        Cell cell = getCellFromDirection(playersPosition.get(player), direction);
+        do {
+            targets.addAll(getPlayersFromCell(cell));
+            cell = getCellFromDirection(playersPosition.get(player), direction);
+        }
+        while(getCellFromDirection(playersPosition.get(player), direction)!=null);
+        return targets;
+    }
 
     public boolean isAOneStepValidMove(Player player, Cell cell) {
         for (Direction direction : Direction.values()) {
-            if (playersPosition.get(player).adiacency(direction) != Border.wall && getCellFromDirection(player, direction) == cell) {
+            if (playersPosition.get(player).adiacency(direction) != Border.wall && getCellFromDirection(playersPosition.get(player), direction) == cell) {
                 return true;
             }
         }

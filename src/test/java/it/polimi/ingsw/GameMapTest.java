@@ -59,6 +59,16 @@ public class GameMapTest {
     }
 
     /**
+     * Tests the getCellFromPlayer method
+     * @see GameMap#getCellFromPlayer(Player)
+     */
+    @Test
+    public void testGetCellFromPlayer (){
+        gameMapTest.setPlayerPosition(playerTest,1,2);
+        assertEquals(gameMapTest.getCell(1,2), gameMapTest.getCellFromPlayer(playerTest));
+    }
+
+    /**
      * Tests the getRoomFromCell method
      * @see GameMap#getRoomFromCell(Cell)
      */
@@ -103,27 +113,89 @@ public class GameMapTest {
     }
 
     /**
-     * Tests the getOneMoveAwayTargets method
-     * @see GameMap#getOneMoveAwayTargets(Player)
+     * Tests the getTargetsAtMaxDistance method
+     * @see GameMap#getTargetsAtMaxDistance(Cell, int)
      */
     @Test
-    public void testGetOneMoveAwayTargets (){
-        Player playerTest3;
-        User userTest3;
-        Character characterTest3;
-        String username3 = "Barbara";
-        userTest3 = new User(username3);
-        characterTest3 = new Character("CharacterTestName3", PlayerColor.green, "Character user for tests.");
-        playerTest3 = new Player(userTest3, characterTest3);
+    public void testGetTargetsAtMaxDistance (){
+        ArrayList<Player> targets = new ArrayList<>();
+        gameMapTest.setPlayerPosition(playerTest,0,0);
+        gameMapTest.setPlayerPosition(playerTest2,0,0);
+        targets.add(playerTest);
+        targets.add(playerTest2);
+        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(gameMapTest.getCellFromPlayer(playerTest), 0));
 
-        ArrayList<Player> adiacentPlayers = new ArrayList<>();
-        gameMapTest.setPlayerPosition(playerTest,1,2);
-        gameMapTest.setPlayerPosition(playerTest2, 0,2);
-        gameMapTest.setPlayerPosition(playerTest3, 1,3);
-        adiacentPlayers.add(playerTest2);
-        adiacentPlayers.add(playerTest3);
+        gameMapTest.setPlayerPosition(playerTest,1,0);
+        gameMapTest.setPlayerPosition(playerTest2,0,0);
+        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(gameMapTest.getCellFromPlayer(playerTest), 1));
 
-        assertEquals(adiacentPlayers, gameMapTest.getOneMoveAwayTargets(playerTest));
+        gameMapTest.setPlayerPosition(playerTest,2,0);
+        gameMapTest.setPlayerPosition(playerTest2,1,1);
+        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(gameMapTest.getCellFromPlayer(playerTest), 3));
+
+        gameMapTest.setPlayerPosition(playerTest,2,0);
+        gameMapTest.setPlayerPosition(playerTest2,1,1);
+        targets.clear();
+        targets.add(playerTest);
+        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(gameMapTest.getCellFromPlayer(playerTest), 1));
+
+        gameMapTest.setPlayerPosition(playerTest,2,2);
+        gameMapTest.setPlayerPosition(playerTest2,1,1);
+        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(gameMapTest.getCellFromPlayer(playerTest), 1));
+    }
+
+    /**
+     * Tests the getTargetsAtMinDistance method
+     * @see GameMap#getTargetsAtMinDistance(Player, int)
+     */
+    @Test
+    public void testGetTargetsAtMinDistance (){
+        ArrayList<Player> targets = new ArrayList<>();
+        gameMapTest.setPlayerPosition(playerTest,2,2);
+        gameMapTest.setPlayerPosition(playerTest2,1,1);
+        targets.add(playerTest2);
+        assertEquals(targets, gameMapTest.getTargetsAtMinDistance(playerTest, 1));
+
+        gameMapTest.setPlayerPosition(playerTest,2,0);
+        gameMapTest.setPlayerPosition(playerTest2,1,1);
+        targets.clear();
+        assertEquals(targets, gameMapTest.getTargetsAtMinDistance(playerTest, 3));
+    }
+
+    /**
+     * Tests the getAdiancentTargets method
+     * @see GameMap#getAdiacentTargets(Cell)
+     */
+    @Test
+    public void testGetAdiacentTargets (){
+        ArrayList<Player> targets = new ArrayList<>();
+        gameMapTest.setPlayerPosition(playerTest,1,0);
+        gameMapTest.setPlayerPosition(playerTest2,0,0);
+        targets.add(playerTest2);
+        assertEquals(targets, gameMapTest.getAdiacentTargets(gameMapTest.getCellFromPlayer(playerTest)));
+    }
+
+    /**
+     * Tests the getSeenTargets method
+     * @see GameMap#getSeenTargets(Player)
+     */
+    @Test
+    public void testGetSeenTargets (){
+        ArrayList<Player> targets = new ArrayList<>();
+        gameMapTest.setPlayerPosition(playerTest,2,0);
+        gameMapTest.setPlayerPosition(playerTest2,0,0);
+        targets.add(playerTest);
+        targets.add(playerTest2);
+        assertEquals(targets, gameMapTest.getSeenTargets(playerTest));
+
+        gameMapTest.setPlayerPosition(playerTest2, 2,1);
+        assertEquals(targets, gameMapTest.getSeenTargets(playerTest));
+
+        targets.clear();
+        targets.add(playerTest);
+
+        gameMapTest.setPlayerPosition(playerTest2,1,1 );
+        assertEquals(targets, gameMapTest.getSeenTargets(playerTest));
     }
 
     /**

@@ -6,7 +6,7 @@ package it.polimi.ingsw;
  *
  * @author Stefano Formicola
  */
-public class Player {
+public class Player implements Comparable<Player>{
     /**
      * String passed as message of IllegalArgumentException when is asked to add a value to player's points.
      */
@@ -106,6 +106,11 @@ public class Player {
     public void addPoints(Integer value) {
         if (value < 0) throw new IllegalArgumentException(NEGATIVE_POINTS_EXC);
         else this.points += value;
+    }
+
+    @Override
+    public int compareTo(Player anotherPlayer) {
+        return this.nickname.compareToIgnoreCase(anotherPlayer.getNickname());
     }
 
 }
