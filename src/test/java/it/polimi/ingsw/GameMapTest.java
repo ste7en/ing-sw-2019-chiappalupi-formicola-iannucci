@@ -199,6 +199,26 @@ public class GameMapTest {
     }
 
     /**
+     * Tests the getTargetsFromDirection method
+     * @see GameMap#getTargetsFromDirection(Player, Direction)
+     */
+    @Test
+    public void testGetTargetsFromDirection (){
+        ArrayList<Player> targets = new ArrayList<>();
+        gameMapTest.setPlayerPosition(playerTest,0,0);
+        gameMapTest.setPlayerPosition(playerTest2,0,2);
+        targets.add(playerTest);
+        targets.add(playerTest2);
+        assertEquals(targets, gameMapTest.getTargetsFromDirection(playerTest, Direction.East));
+
+        targets.clear();
+        targets.add(playerTest);
+        assertEquals(targets, gameMapTest.getTargetsFromDirection(playerTest, Direction.North));
+        assertEquals(targets, gameMapTest.getTargetsFromDirection(playerTest, Direction.South));
+        assertEquals(targets, gameMapTest.getTargetsFromDirection(playerTest, Direction.West));
+    }
+
+    /**
      * Tests the isAOneStepValidMove method
      * @see GameMap#isAOneStepValidMove(Player, Cell)
      */

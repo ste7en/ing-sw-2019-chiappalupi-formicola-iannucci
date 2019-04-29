@@ -78,31 +78,22 @@ public class GameMap {
 
     private Cell getCellFromDirection(Cell cell, Direction direction){
         int i,j;
-        for (i=0; i<rows; i++) {
-            for(j=0; j<columns; j++) {
+        for (i=0; i<rows; i++)
+            for(j=0; j<columns; j++)
                 if (map[i][j].equals(cell)) {
-                    switch (direction) {
-                        case North:
-                            if(i>0) {
-                                return map[i - 1][j];
-                            }
-                        case East:
-                            if(j<3) {
-                                return map[i][j + 1];
-                            }
-                        case South:
-                            if(i<2) {
-                                return map[i + 1][j];
-                            }
-                        case West:
-                            if(j>0) {
-                                return map[i][j - 1];
-                            }
+                    if (direction == Direction.North) {
+                        if (i > 0)  return map[i - 1][j];
+                    }
+                    else if (direction == Direction.East) {
+                        if (j < 3)  return map[i][j + 1];
+                    }
+                    else if (direction == Direction.South) {
+                        if (i < 2)  return map[i + 1][j];
+                    }
+                    else if (direction == Direction.West) {
+                        if (j > 0)  return map[i][j - 1];
                     }
                 }
-
-            }
-        }
         return null;
     }
 
@@ -181,12 +172,13 @@ public class GameMap {
 
     public ArrayList<Player> getTargetsFromDirection(Player player, Direction direction) {
         ArrayList<Player> targets = new ArrayList<>();
+        targets.addAll(getTargetsInMyCell(player));
         Cell cell = getCellFromDirection(playersPosition.get(player), direction);
-        do {
+        while(cell != null) {
             targets.addAll(getPlayersFromCell(cell));
-            cell = getCellFromDirection(playersPosition.get(player), direction);
+            cell = getCellFromDirection(cell, direction);
         }
-        while(getCellFromDirection(playersPosition.get(player), direction)!=null);
+        targets.sort(Player::compareTo);
         return targets;
     }
 
