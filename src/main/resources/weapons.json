@@ -16,7 +16,9 @@
           "actions": null,
           "properties": {
             "MaxDistance": -1,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 2,
+            "Mark": 1
           }
         },  {
           "name": "with second lock",
@@ -29,7 +31,8 @@
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 1,
-            "DifferentFromEffect": 0
+            "DifferentFromEffect": 0,
+            "Mark": 1
           }
         }
       ]
@@ -52,7 +55,8 @@
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 2,
-            "MultipleCell": 2
+            "MultipleCell": 2,
+            "Damage": 1
           }
         },  {
           "name": "with focus shot",
@@ -65,7 +69,8 @@
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 1,
-            "DifferentFromEffect": -1
+            "DifferentFromEffect": -1,
+            "Damage": 1
           }
         },  {
           "name": "with turret tripod",
@@ -96,7 +101,8 @@
           "actions": null,
           "properties": {
             "MaxDistance": -1,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 2
           }
         },  {
           "name": "with chain reaction",
@@ -109,7 +115,8 @@
           "properties": {
             "EffectOnTarget": 0,
             "MaxDistance": -1,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 1
           }
         },  {
           "name": "with high voltage",
@@ -122,7 +129,8 @@
           "properties": {
             "EffectOnTarget": 1,
             "MaxDistance": -1,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 2
           }
         }
       ]
@@ -144,7 +152,8 @@
           "actions": null,
           "properties": {
             "MaxDistance": -1,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 2
           }
         },  {
           "name": "with phase glide",
@@ -165,7 +174,8 @@
           "actions": null,
           "properties": {
             "DifferentFromEffect": -1,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 1
           }
         }
       ]
@@ -189,7 +199,9 @@
           "properties": {
             "MinDistance": 2,
             "MaxDistance": -1,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 3,
+            "Mark": 1
           }
         }
       ]
@@ -210,7 +222,8 @@
           "actions": null,
           "properties": {
             "MaxDistance": 0,
-            "MultipleCell": 0
+            "MultipleCell": 0,
+            "Damage": 1
           }
         }, {
           "name": "in reaper mode",
@@ -223,7 +236,8 @@
           "actions": null,
           "properties": {
             "MaxDistance": 0,
-            "MultipleCell": 0
+            "MultipleCell": 0,
+            "Damage": 2
           }
         }
       ]
@@ -245,7 +259,8 @@
           "properties": {
             "CanMoveBefore": 2,
             "MaxDistance": -1,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 1
           }
         }, {
           "name": "in punisher mode",
@@ -259,7 +274,8 @@
           "properties": {
             "CanMoveBefore": 2,
             "MaxDistance": 0,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 3
           }
         }
       ]
@@ -309,7 +325,8 @@
           "actions": null,
           "properties": {
             "MinDistance": 1,
-            "MultipleCell": -1
+            "MultipleCell": -1,
+            "Damage": 1
           }
         }, {
           "name": "in cozy fire mode",
@@ -320,7 +337,9 @@
           "properties": {
             "MinDistance": 1,
             "MaxDistance": 1,
-            "MultipleCell": 0
+            "MultipleCell": 0,
+            "Damage": 1,
+            "Mark": 1
           }
         }
       ]
@@ -343,7 +362,8 @@
           "actions": null,
           "properties": {
             "MinDistance": -1,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 3
           }
         }
       ]
@@ -367,7 +387,9 @@
             "MinDistance": 1,
             "MaxDistance": -1,
             "MaxPlayer": 1,
-            "MarksAfter": 1
+            "MarksAfter": 1,
+            "Damage": 1,
+            "Mark": 1
           }
         }, {
           "name": "in nano-tracer mode",
@@ -381,7 +403,9 @@
             "MinDistance": 1,
             "MaxDistance": -1,
             "MaxPlayer": 1,
-            "MarksAfter": 2
+            "MarksAfter": 2,
+            "Damage": 1,
+            "Mark": 2
           }
         }
       ]
@@ -404,7 +428,8 @@
             "MinDistance": 1,
             "MaxDistance": 2,
             "MultipleCell": -2,
-            "MaxPlayer": 2
+            "MaxPlayer": 2,
+            "Damage": 1
           }
         }, {
           "name": "in barbecue mode",
@@ -417,7 +442,8 @@
           "properties": {
             "MinDistance": 1,
             "MaxDistance": 2,
-            "MultipleCell": -2
+            "MultipleCell": -2,
+            "Damage": 2
           }
         }
       ]
@@ -439,7 +465,8 @@
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 1,
-            "CanMoveAfter": 1
+            "CanMoveAfter": 1,
+            "Damage": 1
           }
         }, {
           "name": "with extra grenade",
@@ -451,7 +478,8 @@
           "actions": null,
           "properties": {
             "MaxDistance": -1,
-            "MultipleCell": 0
+            "MultipleCell": 0,
+            "Damage": 1
           }
         }
       ]
@@ -475,7 +503,8 @@
             "MinDistance": 1,
             "MaxDistance": -1,
             "MaxPlayer": 1,
-            "CanMoveAfter": 1
+            "CanMoveAfter": 1,
+            "Damage": 2
           }
         }, {
           "name": "with rocket jump",
@@ -518,7 +547,8 @@
           "actions": null,
           "properties": {
             "MaxPlayer": 1,
-            "MultipleCell": -2
+            "MultipleCell": -2,
+            "Damage": 3
           }
         }, {
           "name": "in piercing mode",
@@ -528,7 +558,8 @@
           "actions": null,
           "properties": {
             "MaxPlayer": 2,
-            "MultipleCell": -2
+            "MultipleCell": -2,
+            "Damage": 2
           }
         }
       ]
@@ -550,7 +581,8 @@
           "actions": null,
           "properties": {
             "MaxDistance": 0,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 2
           }
         }, {
           "name": "with shadowstep",
@@ -572,7 +604,8 @@
           "properties": {
             "DifferentFromEffect": 0,
             "MaxDistance": 0,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 2
           }
         }
       ]
@@ -594,7 +627,9 @@
           "actions": null,
           "properties": {
             "MaxPlayer": 1,
-            "MaxDistance": -1
+            "MaxDistance": -1,
+            "Damage": 1,
+            "Mark": 1
           }
         }, {
           "name": "in scanner mode",
@@ -604,7 +639,8 @@
           "actions": null,
           "properties": {
             "MaxPlayer": 3,
-            "MaxDistance": -1
+            "MaxDistance": -1,
+            "Mark": 1
           }
         }
       ]
@@ -627,7 +663,8 @@
           "properties": {
             "MaxPlayer": 1,
             "MaxDistance": 0,
-            "CanMoveAfter": 1
+            "CanMoveAfter": 1,
+            "Damage": 3
           }
         }, {
           "name": "in long barrel mode",
@@ -638,7 +675,8 @@
           "properties": {
             "MaxPlayer": 1,
             "MinDistance": 1,
-            "MaxDistance": 1
+            "MaxDistance": 1,
+            "Damage": 2
           }
         }
       ]
@@ -689,7 +727,8 @@
             "MinDistance": 1,
             "MaxDistance": 1,
             "MultipleCell": 3,
-            "MaxPlayer": 3
+            "MaxPlayer": 3,
+            "Damage": 1
             }
         }, {
           "name": "in tsunami mode",
@@ -703,7 +742,8 @@
             "MinDistance": 1,
             "MaxDistance": 1,
             "MultipleCell": 4,
-            "MaxPlayer": -1
+            "MaxPlayer": -1,
+            "Damage": 1
           }
         }
       ]
@@ -724,7 +764,8 @@
           "actions": null,
           "properties": {
             "MaxDistance": 0,
-            "MaxPlayer": 1
+            "MaxPlayer": 1,
+            "Damage": 2
           }
         }, {
           "name": "in pulverize mode",
@@ -737,7 +778,8 @@
           "properties": {
             "MaxDistance": 0,
             "CanMoveAfter": 2,
-            "MultipleCell": -2
+            "MultipleCell": -2,
+            "Damage": 1
           }
         }
       ]

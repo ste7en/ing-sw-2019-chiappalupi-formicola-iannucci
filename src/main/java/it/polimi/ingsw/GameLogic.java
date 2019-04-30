@@ -12,6 +12,14 @@ public class GameLogic {
     private Board board;
     private boolean finalFrenzy;
 
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    public void setPlayers(ArrayList<Player> players) {
+        this.players = players;
+    }
+
     public void move(Player player) { }
 
     private void grabStuff(Player player) { }
@@ -46,6 +54,8 @@ public class GameLogic {
                         arrayD.add(new Damage());
                         d = arrayD.get(k);
                         d.setTarget(targetsCombination.get(i).get(k));
+                        d.setDamage(effect.getProperties().get(EffectProperty.Damage));
+                        if(effect.getProperties().containsKey(EffectProperty.Mark)) d.setMarks(effect.getProperties().get(EffectProperty.Mark));
                     }
                 }
                 return solutions;
