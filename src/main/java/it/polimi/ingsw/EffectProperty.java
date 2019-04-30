@@ -52,5 +52,15 @@ public enum EffectProperty {
     /**
      * Saves if marks must be given to different targets than the ones damaged
      */
-    MarksAfter
+    MarksAfter,
+
+    /**
+     * Saves the damages given by the effect
+     */
+    Damage,
+
+    /**
+     * Saves the marks given by the effect
+     */
+    Mark
 }
