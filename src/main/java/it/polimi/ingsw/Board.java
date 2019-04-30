@@ -80,4 +80,8 @@ public class Board {
         return blood;
     }
 
+    public GameMap getMap() {
+        return map;
+    }
+
 }

@@ -154,6 +154,15 @@ public class GameMap {
         return targets;
     }
 
+    public ArrayList<Player> getUnseenTargets(Player player) {
+        ArrayList<Player> targets = new ArrayList<>();
+        ArrayList<Player> seenTargets = getSeenTargets(player);
+        for(Player p : playersPosition.keySet())
+            if (!(seenTargets.contains(p)))
+                targets.add(p);
+        return targets;
+    }
+
     public ArrayList<Player> getSeenTargets(Player player) {
         ArrayList<Player> targets = new ArrayList<>();
         for (Direction direction : Direction.values()) {
