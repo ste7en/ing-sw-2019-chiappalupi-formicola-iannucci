@@ -1,7 +1,5 @@
 package it.polimi.ingsw;
 
-import sun.plugin.net.proxy.PluginAutoProxyHandler;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;

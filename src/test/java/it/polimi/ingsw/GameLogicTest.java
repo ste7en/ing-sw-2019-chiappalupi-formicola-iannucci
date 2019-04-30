@@ -136,7 +136,7 @@ public class GameLogicTest {
 
     /**
      * Tests the usage of the Whisper weapon
-     * @see GameLogic#useEffect(Player, Effect)
+     * @see GameLogic#useEffect(Player, Effect, Weapon)
      */
     @Test
     public void testWeaponWhisper() {
@@ -152,7 +152,7 @@ public class GameLogicTest {
         tester.get(0).get(0).setDamage(3);
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(0).setMarks(1);
-        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0)));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 1);
@@ -168,12 +168,12 @@ public class GameLogicTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
         tester.get(2).get(0).setTarget(p4);
-        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0)));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w));
     }
 
     /**
      * Tests the usage of the Heatseeker weapon
-     * @see GameLogic#useEffect(Player, Effect)
+     * @see GameLogic#useEffect(Player, Effect, Weapon)
      */
     @Test
     public void testWeaponHeatseeker() {
@@ -188,7 +188,7 @@ public class GameLogicTest {
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setDamage(3);
         tester.get(0).get(0).setTarget(p2);
-        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0)));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 1, 1);
@@ -202,7 +202,7 @@ public class GameLogicTest {
         }
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
-        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0)));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w));
     }
 
 }
