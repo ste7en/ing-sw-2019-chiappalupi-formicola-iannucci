@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import it.polimi.ingsw.networking.utility.*;
+import it.polimi.ingsw.utility.AdrenalineLogger;
+import it.polimi.ingsw.utility.Loggable;
 
 
 /**
@@ -16,12 +18,22 @@ import it.polimi.ingsw.networking.utility.*;
  * @author Stefano Formicola
  */
 
-public final class ServerSocketConnectionHandler {
+public final class ServerSocketConnectionHandler implements Loggable {
 
     /**
      * Port number for socket connections
      */
     private int portNumber;
+
+    /**
+     * Log strings
+     */
+    private String EXC_ON_CLIENT_CONNECTION = "Error while trying to accept a client :: ";
+    private String EXC_ON_SOCKET = "Error while creating a SocketServer :: ";
+    private String SERVER_SOCKET_CONFIG = "ServerSocket configured on port ";
+    private String SERVER_SOCKET_SUCCESS = "ServerSocket is running...";
+    private String SOCKET_SUCCESS = "A new socket connection with a client has been created :: ";
+    private String SERVER_SOCKET_SHUTDOWN = "SocketServer is shutting down and closing its connections";
 
     /**
      * Class constructor
@@ -38,20 +50,28 @@ public final class ServerSocketConnectionHandler {
      */
     public void startSocketServer() {
         ExecutorService executor = Executors.newCachedThreadPool();
-
+        AdrenalineLogger.config(SERVER_SOCKET_CONFIG + portNumber);
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
+            logOnSuccess(SERVER_SOCKET_SUCCESS);
+            logDescription();
             while(true) {
                 try (Socket socket = serverSocket.accept()) {
+                    logOnSuccess(SOCKET_SUCCESS + socket.toString());
                     executor.submit(new ServerSocketClientHandler(socket));
                 } catch (IOException e) {
-                    System.out.println(e.getMessage());
+                    logOnException(EXC_ON_CLIENT_CONNECTION, e);
                     break;
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            logOnException(EXC_ON_SOCKET, e);
             return;
         }
+        AdrenalineLogger.info(SERVER_SOCKET_SHUTDOWN);
         executor.shutdown();
+    }
+
+    private void logDescription() {
+        AdrenalineLogger.info(this.toString());
     }
 }

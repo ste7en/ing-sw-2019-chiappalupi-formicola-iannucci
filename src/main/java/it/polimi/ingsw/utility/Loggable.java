@@ -24,5 +24,5 @@ public interface Loggable {
     /**
      * Method to implement in order to debug with more verbosity a class or method
      */
-    void logDescription();
+    private void logDescription() {}
 }
