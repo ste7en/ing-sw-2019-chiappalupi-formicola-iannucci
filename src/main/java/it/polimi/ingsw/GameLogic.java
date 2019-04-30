@@ -38,11 +38,11 @@ public class GameLogic {
 
     public void addPlayer(Player player) { }
 
-    public ArrayList<ArrayList<Damage>> useEffect(Player player, Effect effect) {
+    public ArrayList<ArrayList<Damage>> useEffect(Player player, Effect effect, Weapon weapon) {
         GameMap map = board.getMap();
         ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
-        switch(effect.getType()) {
-            case Basic: {
+        switch(weapon.getType()) {
+            case SimpleWeapon: {
                 ArrayList<Player> targets = generateTargetsFromDistances(effect, player, map);
                 ArrayList<ArrayList<Player>> targetsCombination = generateTargetsCombinations(effect, targets);
                 Damage d;
@@ -59,6 +59,12 @@ public class GameLogic {
                     }
                 }
                 return solutions;
+            }
+            case SelectableWeapon: {
+                //TODO
+            }
+            case PotentiableWeapon: {
+                //TODO
             }
         }
         return solutions;
