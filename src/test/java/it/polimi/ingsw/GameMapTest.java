@@ -199,6 +199,23 @@ public class GameMapTest {
     }
 
     /**
+     * Tests the getUnseenTargets method
+     * @see GameMap#getUnseenTargets(Player)
+     */
+    @Test
+    public void testGetUnseenTargets () {
+        ArrayList<Player> targets = new ArrayList<>();
+        gameMapTest.setPlayerPosition(playerTest, 2, 3);
+        gameMapTest.setPlayerPosition(playerTest2, 1, 1);
+        targets.add(playerTest2);
+        assertEquals(targets, gameMapTest.getUnseenTargets(playerTest));
+
+        gameMapTest.setPlayerPosition(playerTest2, 1, 2);
+        targets.clear();
+        assertEquals(targets, gameMapTest.getUnseenTargets(playerTest));
+    }
+
+    /**
      * Tests the getTargetsFromDirection method
      * @see GameMap#getTargetsFromDirection(Player, Direction)
      */
