@@ -2,7 +2,8 @@ package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.networking.*;
 import it.polimi.ingsw.networking.socket.*;
-import it.polimi.ingsw.networking.rmi.*;
+import it.polimi.ingsw.utility.Loggable;
+//import it.polimi.ingsw.networking.rmi.*;
 
 /**
  * Main class of the game server. It will set up the networking and create controllers and games.
@@ -11,10 +12,12 @@ import it.polimi.ingsw.networking.rmi.*;
  *
  * @author Stefano Formicola
  */
-public class Server {
+public class Server implements Loggable {
 
     private Integer portNumberSocket;
     private Integer portNumberRMI;
+
+    private String EXC_SETUP = "Error while setting up a ServerSocketConnectionHandler :: ";
 
     public static void main(String args[]) {
 
@@ -39,7 +42,7 @@ public class Server {
         try {
             socketConnectionHandler = new ServerSocketConnectionHandler(portNumberSocket);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logOnException(EXC_SETUP, e);
             return;
         }
         socketConnectionHandler.startSocketServer();
