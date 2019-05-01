@@ -206,7 +206,7 @@ public class GameLogicTest {
     }
 
     /**
-     * Tests the usage of the Electroscythe weapon
+     * Tests the usage of the Electroscythe weapon, in both the modalities
      * @see GameLogic#useEffect(Player, Effect, Weapon)
      */
     @Test
@@ -222,7 +222,7 @@ public class GameLogicTest {
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setDamage(1);
         tester.get(0).get(0).setTarget(p3);
-        //assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 3);
@@ -230,13 +230,37 @@ public class GameLogicTest {
         map.setPlayerPosition(p4, 1, 2);
         tester.clear();
         tester.add(new ArrayList<>());
-        for(int i = 0; i < 3; i++) {
+        for(int i = 0; i < 2; i++) {
             tester.get(0).add(new Damage());
             tester.get(0).get(i).setDamage(1);
         }
-        tester.get(0).get(0).setTarget(p1);
-        tester.get(0).get(1).setTarget(p2);
-        tester.get(0).get(2).setTarget(p3);
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(0).get(1).setTarget(p3);
         assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w));
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 1, 1);
+        map.setPlayerPosition(p3, 0, 3);
+        map.setPlayerPosition(p4, 1, 2);
+        tester.clear();
+        tester.add(new ArrayList<>());
+        tester.get(0).add(new Damage());
+        tester.get(0).get(0).setDamage(2);
+        tester.get(0).get(0).setTarget(p3);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w));
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 0, 3);
+        map.setPlayerPosition(p3, 0, 3);
+        map.setPlayerPosition(p4, 1, 2);
+        tester.clear();
+        tester.add(new ArrayList<>());
+        for(int i = 0; i < 2; i++) {
+            tester.get(0).add(new Damage());
+            tester.get(0).get(i).setDamage(2);
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(0).get(1).setTarget(p3);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w));
     }
 }
