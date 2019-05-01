@@ -222,7 +222,7 @@
           "actions": null,
           "properties": {
             "MaxDistance": 0,
-            "MultipleCell": 0,
+            "MaxPlayer": -1,
             "Damage": 1
           }
         }, {
