@@ -113,4 +113,13 @@ public class Player implements Comparable<Player>{
         return this.nickname.compareToIgnoreCase(anotherPlayer.getNickname());
     }
 
+    /**
+     * Overrode toString for debugging purposes
+     * @return the nickname of the player
+     */
+    @Override
+    public String toString() {
+        return nickname;
+    }
+
 }

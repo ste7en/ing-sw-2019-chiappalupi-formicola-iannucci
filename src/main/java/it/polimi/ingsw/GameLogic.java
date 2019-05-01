@@ -42,29 +42,39 @@ public class GameLogic {
         GameMap map = board.getMap();
         ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
         switch(weapon.getType()) {
-            case SimpleWeapon: {
-                ArrayList<Player> targets = generateTargetsFromDistances(effect, player, map);
-                ArrayList<ArrayList<Player>> targetsCombination = generateTargetsCombinations(effect, targets);
-                Damage d;
-                ArrayList<Damage> arrayD;
-                for(int i = 0; i < targetsCombination.size(); i++) {
-                    solutions.add(new ArrayList());
-                    arrayD = solutions.get(i);
-                    for (int k = 0; k < targetsCombination.get(i).size(); k++) {
-                        arrayD.add(new Damage());
-                        d = arrayD.get(k);
-                        d.setTarget(targetsCombination.get(i).get(k));
-                        d.setDamage(effect.getProperties().get(EffectProperty.Damage));
-                        if(effect.getProperties().containsKey(EffectProperty.Mark)) d.setMarks(effect.getProperties().get(EffectProperty.Mark));
-                    }
-                }
+            case SimpleWeapon: case SelectableWeapon: {
+                solutions = computeDamages(effect, player);
                 return solutions;
-            }
-            case SelectableWeapon: {
-                //TODO
             }
             case PotentiableWeapon: {
                 //TODO
+            }
+        }
+        return solutions;
+    }
+
+    /**
+     * Computes the ArrayList of damages from the effect and the damage when the former only depends from distances and max number of players
+     * @param effect the effect that is been using
+     * @param player the player who is using the effect
+     * @return an ArrayList containing all of the possible solutions of damages
+     */
+    private ArrayList<ArrayList<Damage>> computeDamages(Effect effect, Player player) {
+        GameMap map = board.getMap();
+        ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
+        ArrayList<Player> targets = generateTargetsFromDistances(effect, player, map);
+        ArrayList<ArrayList<Player>> targetsCombination = generateTargetsCombinations(effect, targets);
+        Damage d;
+        ArrayList<Damage> arrayD;
+        for(int i = 0; i < targetsCombination.size(); i++) {
+            solutions.add(new ArrayList());
+            arrayD = solutions.get(i);
+            for(int k = 0; k < targetsCombination.get(i).size(); k++) {
+                arrayD.add(new Damage());
+                d = arrayD.get(k);
+                d.setTarget(targetsCombination.get(i).get(k));
+                d.setDamage(effect.getProperties().get(EffectProperty.Damage));
+                if(effect.getProperties().containsKey(EffectProperty.Mark)) d.setMarks(effect.getProperties().get(EffectProperty.Mark));
             }
         }
         return solutions;
@@ -88,7 +98,7 @@ public class GameLogic {
         }
         if(properties.contains(EffectProperty.MaxDistance)) {
             if(e.getProperties().get(EffectProperty.MaxDistance) == -1) targetsFromMax.addAll(m.getSeenTargets(p));
-            else targetsFromMax.addAll(m.getTargetsAtMinDistance(p, e.getProperties().get(EffectProperty.MaxPlayer)));
+            else targetsFromMax.addAll(m.getTargetsAtMaxDistance(board.getMap().getCellFromPlayer(p), e.getProperties().get(EffectProperty.MaxDistance)));
         }
         if(properties.contains(EffectProperty.MinDistance) && properties.contains(EffectProperty.MaxDistance)) {
             for (Player player : players)
@@ -108,9 +118,14 @@ public class GameLogic {
     public ArrayList<ArrayList<Player>> generateTargetsCombinations(Effect e, ArrayList<Player> p) {
         HashMap<Integer, ArrayList<Player>> combinations = new HashMap<>();
         if(e.getProperties().containsKey(EffectProperty.MaxPlayer)) {
+            if(e.getProperties().get(EffectProperty.MaxPlayer) == -1) {
+                ArrayList<ArrayList<Player>> allPlayers = new ArrayList<>();
+                allPlayers.add((ArrayList<Player>)p.clone());
+                return allPlayers;
+            }
             HashMap<Integer, ArrayList<Integer>> comb = combinations(p.size(), e.getProperties().get(EffectProperty.MaxPlayer));
             for(int i = 0; i < comb.keySet().size(); i++) {
-                combinations.put(i, new ArrayList<Player>());
+                combinations.put(i, new ArrayList<>());
                 for(int k = 0; k < comb.get(i).size(); k++)
                     combinations.get(i).add(p.get(comb.get(i).get(k) - 1));
             }
