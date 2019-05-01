@@ -107,41 +107,38 @@ public class GameMapTest {
         ArrayList<Player> playersInThatCell = new ArrayList<>();
         gameMapTest.setPlayerPosition(playerTest,1,2);
         gameMapTest.setPlayerPosition(playerTest2, 1,2);
-        playersInThatCell.add(playerTest);
         playersInThatCell.add(playerTest2);
         assertEquals(playersInThatCell, gameMapTest.getTargetsInMyCell(playerTest));
     }
 
     /**
      * Tests the getTargetsAtMaxDistance method
-     * @see GameMap#getTargetsAtMaxDistance(Cell, int)
+     * @see GameMap#getTargetsAtMaxDistance(Player, int)
      */
     @Test
     public void testGetTargetsAtMaxDistance (){
         ArrayList<Player> targets = new ArrayList<>();
         gameMapTest.setPlayerPosition(playerTest,0,0);
         gameMapTest.setPlayerPosition(playerTest2,0,0);
-        targets.add(playerTest);
         targets.add(playerTest2);
-        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(gameMapTest.getCellFromPlayer(playerTest), 0));
+        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(playerTest, 0));
 
         gameMapTest.setPlayerPosition(playerTest,1,0);
         gameMapTest.setPlayerPosition(playerTest2,0,0);
-        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(gameMapTest.getCellFromPlayer(playerTest), 1));
+        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(playerTest, 1));
 
         gameMapTest.setPlayerPosition(playerTest,2,0);
         gameMapTest.setPlayerPosition(playerTest2,1,1);
-        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(gameMapTest.getCellFromPlayer(playerTest), 3));
+        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(playerTest, 3));
 
         gameMapTest.setPlayerPosition(playerTest,2,0);
         gameMapTest.setPlayerPosition(playerTest2,1,1);
         targets.clear();
-        targets.add(playerTest);
-        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(gameMapTest.getCellFromPlayer(playerTest), 1));
+        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(playerTest, 1));
 
         gameMapTest.setPlayerPosition(playerTest,2,2);
         gameMapTest.setPlayerPosition(playerTest2,1,1);
-        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(gameMapTest.getCellFromPlayer(playerTest), 1));
+        assertEquals(targets, gameMapTest.getTargetsAtMaxDistance(playerTest, 1));
     }
 
     /**
@@ -155,6 +152,9 @@ public class GameMapTest {
         gameMapTest.setPlayerPosition(playerTest2,1,1);
         targets.add(playerTest2);
         assertEquals(targets, gameMapTest.getTargetsAtMinDistance(playerTest, 1));
+
+        gameMapTest.setPlayerPosition(playerTest2,2,2);
+        assertEquals(targets, gameMapTest.getTargetsAtMinDistance(playerTest, 0));
 
         gameMapTest.setPlayerPosition(playerTest,2,0);
         gameMapTest.setPlayerPosition(playerTest2,1,1);
@@ -184,17 +184,14 @@ public class GameMapTest {
         ArrayList<Player> targets = new ArrayList<>();
         gameMapTest.setPlayerPosition(playerTest,2,0);
         gameMapTest.setPlayerPosition(playerTest2,0,0);
-        targets.add(playerTest);
         targets.add(playerTest2);
         assertEquals(targets, gameMapTest.getSeenTargets(playerTest));
 
         gameMapTest.setPlayerPosition(playerTest2, 2,1);
         assertEquals(targets, gameMapTest.getSeenTargets(playerTest));
 
-        targets.clear();
-        targets.add(playerTest);
-
         gameMapTest.setPlayerPosition(playerTest2,1,1 );
+        targets.clear();
         assertEquals(targets, gameMapTest.getSeenTargets(playerTest));
     }
 
@@ -224,12 +221,10 @@ public class GameMapTest {
         ArrayList<Player> targets = new ArrayList<>();
         gameMapTest.setPlayerPosition(playerTest,0,0);
         gameMapTest.setPlayerPosition(playerTest2,0,2);
-        targets.add(playerTest);
         targets.add(playerTest2);
         assertEquals(targets, gameMapTest.getTargetsFromDirection(playerTest, Direction.East));
 
         targets.clear();
-        targets.add(playerTest);
         assertEquals(targets, gameMapTest.getTargetsFromDirection(playerTest, Direction.North));
         assertEquals(targets, gameMapTest.getTargetsFromDirection(playerTest, Direction.South));
         assertEquals(targets, gameMapTest.getTargetsFromDirection(playerTest, Direction.West));
