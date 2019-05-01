@@ -98,7 +98,7 @@ public class GameLogic {
         }
         if(properties.contains(EffectProperty.MaxDistance)) {
             if(e.getProperties().get(EffectProperty.MaxDistance) == -1) targetsFromMax.addAll(m.getSeenTargets(p));
-            else targetsFromMax.addAll(m.getTargetsAtMaxDistance(board.getMap().getCellFromPlayer(p), e.getProperties().get(EffectProperty.MaxDistance)));
+            else targetsFromMax.addAll(m.getTargetsAtMaxDistance(p, e.getProperties().get(EffectProperty.MaxDistance)));
         }
         if(properties.contains(EffectProperty.MinDistance) && properties.contains(EffectProperty.MaxDistance)) {
             for (Player player : players)

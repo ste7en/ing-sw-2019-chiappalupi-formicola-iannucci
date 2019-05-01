@@ -104,10 +104,18 @@ public class GameMap {
     }
 
     public ArrayList<Player> getTargetsInMyCell(Player player){
-        return getPlayersFromCell(playersPosition.get(player));
+        ArrayList<Player> targets = getPlayersFromCell(playersPosition.get(player));
+        targets.remove(player);
+        return targets;
     }
 
-    public ArrayList<Player> getTargetsAtMaxDistance(Cell cell, int distance){
+    public ArrayList<Player> getTargetsAtMaxDistance(Player player, int distance){
+        ArrayList<Player> targets = getTargetsAtMaxDistanceHelper(getCellFromPlayer(player), distance);
+        targets.remove(player);
+        return targets;
+    }
+
+    private ArrayList<Player> getTargetsAtMaxDistanceHelper(Cell cell, int distance){
         ArrayList<Player> targets = new ArrayList<>();
         if (distance==0){
             targets.addAll(getPlayersFromCell(cell));
@@ -115,7 +123,7 @@ public class GameMap {
         }
         for (Direction direction : Direction.values()) {
             if ((getCellFromDirection(cell, direction) != null) && (cell.adiacency(direction) != Border.wall)) {
-                targets.addAll(getTargetsAtMaxDistance(getCellFromDirection(cell, direction), distance - 1));
+                targets.addAll(getTargetsAtMaxDistanceHelper(getCellFromDirection(cell, direction), distance - 1));
             }
         }
         targets.addAll(getPlayersFromCell(cell));
@@ -131,10 +139,10 @@ public class GameMap {
     public ArrayList<Player> getTargetsAtMinDistance(Player player, int distance){
         ArrayList<Player> targets = new ArrayList<>();
         for(Player tempPlayer : playersPosition.keySet() ){
-            if (distance>0 && !getTargetsAtMaxDistance(playersPosition.get(player),distance-1).contains(tempPlayer)) {
+            if (distance>0 && !getTargetsAtMaxDistance(player,distance-1).contains(tempPlayer) && tempPlayer!= player) {
                 targets.add(tempPlayer);
             }
-            else if(distance==0 && !getTargetsInMyCell(player).contains(tempPlayer)) {
+            else if(distance==0 && tempPlayer != player) {
                 targets.add(tempPlayer);
             }
         }
@@ -165,6 +173,7 @@ public class GameMap {
             targets.addAll(getPlayersFromCell(cell1));
         }
         targets.sort(Player::compareTo);
+        targets.remove(player);
         return targets;
     }
 
@@ -172,7 +181,7 @@ public class GameMap {
         ArrayList<Player> targets = new ArrayList<>();
         ArrayList<Player> seenTargets = getSeenTargets(player);
         for(Player p : playersPosition.keySet())
-            if (!(seenTargets.contains(p)))
+            if (!(seenTargets.contains(p)) && p != player)
                 targets.add(p);
         return targets;
     }
