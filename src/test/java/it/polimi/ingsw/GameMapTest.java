@@ -242,13 +242,18 @@ public class GameMapTest {
     }
 
     /**
-     * Tests the getPositionFromPlayer method
+     * Tests the setPlayerPosition and getPositionFromPlayer methods
+     * @see GameMap#setPlayerPosition(Player, Cell)
+     * @see GameMap#setPlayerPosition(Player, int, int)
      * @see GameMap#getPositionFromPlayer(Player)
      */
     @Test
-    public void testGetPositionFromPlayer (){
+    public void testSetPlayerPositionGetPositionFromPlayer (){
         gameMapTest.setPlayerPosition(playerTest,1,2);
         Cell positionCell = gameMapTest.getCell(1,2);
+        assertEquals(positionCell, gameMapTest.getPositionFromPlayer(playerTest));
+
+        gameMapTest.setPlayerPosition(playerTest2, gameMapTest.getCell(1,2));
         assertEquals(positionCell, gameMapTest.getPositionFromPlayer(playerTest));
     }
 

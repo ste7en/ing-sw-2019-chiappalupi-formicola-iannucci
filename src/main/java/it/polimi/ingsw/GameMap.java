@@ -212,6 +212,10 @@ public class GameMap {
         playersPosition.put(player, cell);
     }
 
+    public void setPlayerPosition (Player player, Cell cell){
+        playersPosition.put(player, cell);
+    }
+
     public Cell getPositionFromPlayer (Player player) {
         return playersPosition.get(player);
     }
