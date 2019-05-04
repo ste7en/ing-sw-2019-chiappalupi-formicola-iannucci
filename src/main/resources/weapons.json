@@ -31,7 +31,7 @@
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 1,
-            "DifferentFromEffect": 0,
+            "DifferentTarget": 1,
             "Mark": 1
           }
         }
@@ -55,7 +55,6 @@
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 2,
-            "MultipleCell": 2,
             "Damage": 1
           }
         },  {
@@ -324,7 +323,7 @@
           "type": "Basic",
           "actions": null,
           "properties": {
-            "MinDistance": 1,
+            "MinDistance": -1,
             "MultipleCell": -1,
             "Damage": 1
           }
@@ -387,9 +386,8 @@
             "MinDistance": 1,
             "MaxDistance": -1,
             "MaxPlayer": 1,
-            "MarksAfter": 1,
             "Damage": 1,
-            "Mark": 1
+            "Mark": -1
           }
         }, {
           "name": "in nano-tracer mode",
@@ -403,9 +401,8 @@
             "MinDistance": 1,
             "MaxDistance": -1,
             "MaxPlayer": 1,
-            "MarksAfter": 2,
             "Damage": 1,
-            "Mark": 2
+            "Mark": -2
           }
         }
       ]
@@ -440,10 +437,7 @@
           "type": "Selectable",
           "actions": null,
           "properties": {
-            "MinDistance": 1,
-            "MaxDistance": 2,
-            "MultipleCell": -2,
-            "Damage": 2
+            "Hard": 0
           }
         }
       ]
@@ -629,7 +623,7 @@
             "MaxPlayer": 1,
             "MaxDistance": -1,
             "Damage": 1,
-            "Mark": 1
+            "Mark": 2
           }
         }, {
           "name": "in scanner mode",
@@ -696,7 +690,14 @@
           "cost": null,
           "type": "Basic",
           "actions": null,
-          "properties": null
+          "properties": {
+            "MaxPlayer": 1,
+            "MaxDistance": 1,
+            "MinDistance": 1,
+            "Damage": 1,
+            "Mark": 2,
+            "MoveMe": -1
+          }
         }, {
           "name": "in rocket fist mode",
           "description": "Choose a square exactly 1 move away. Move onto that square. You may deal 2 damage to 1 target there. If you want, you may move 1 more square in that same direction (but only if it is a legal move). You may deal 2 damage to 1 target there, as well.",
@@ -705,7 +706,14 @@
           },
           "type": "Selectable",
           "actions": null,
-          "properties": null
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": 2,
+            "MultipleCell": -2,
+            "MaxPlayer": 2,
+            "Damage": 2,
+            "MoveMe": -2
+          }
         }
       ]
     },
@@ -726,7 +734,7 @@
           "properties": {
             "MinDistance": 1,
             "MaxDistance": 1,
-            "MultipleCell": 3,
+            "MultipleCell": 1,
             "MaxPlayer": 3,
             "Damage": 1
             }
@@ -741,7 +749,6 @@
           "properties": {
             "MinDistance": 1,
             "MaxDistance": 1,
-            "MultipleCell": 4,
             "MaxPlayer": -1,
             "Damage": 1
           }
@@ -776,10 +783,10 @@
           "type": "Selectable",
           "actions": null,
           "properties": {
+            "MaxPlayer": 1,
             "MaxDistance": 0,
-            "CanMoveAfter": 2,
-            "MultipleCell": -2,
-            "Damage": 1
+            "CanMoveAfter": -2,
+            "Damage": 3
           }
         }
       ]

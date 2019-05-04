@@ -5,7 +5,7 @@ package it.polimi.ingsw;
  */
 public enum EffectProperty {
     /**
-     * Minimum distance from where a weapon can shoot; (-1) if the weapon can be used only against targets who can't be seen
+     * Minimum distance from where a weapon can shoot; (-1) if the weapon can be used only against targets who can't be seen, (-2) if the weapon can be used only against targets who are in different rooms
      */
     MinDistance,
 
@@ -23,6 +23,7 @@ public enum EffectProperty {
      * Saves if the target/s must be different from the others effects of the weapon; (-1) if target/s must be the same
      */
     DifferentFromEffect,
+    DifferentTarget,
 
     /**
      * Saves if a player can move a target before using the effect
@@ -30,17 +31,17 @@ public enum EffectProperty {
     CanMoveBefore,
 
     /**
-     * Saves if a player can move a target after using the effect
+     * Saves if a player can move a target after using the effect; (negative) if the target must be moved in a straight direction
      */
     CanMoveAfter,
 
     /**
-     * Saves if a player can move himself before or after the effect
+     * Saves if a player can move himself before or after the effect; (negative) if the player moves in the cell of its target
      */
     MoveMe,
 
     /**
-     * Saves if the Weapon must shoot to different cells; (-1) if it's an entire room, (-2) if it's an entire direction, (0) if it's everyone in a cell
+     * Saves if the Weapon must shoot to different cells and can't shoot to multiple targets in a single cell; (-1) if it's an entire room, (-2) if it's an entire direction, (0) if it's everyone in a cell
      */
     MultipleCell,
 
@@ -50,17 +51,17 @@ public enum EffectProperty {
     EffectOnTarget,
 
     /**
-     * Saves if marks must be given to different targets than the ones damaged
-     */
-    MarksAfter,
-
-    /**
      * Saves the damages given by the effect
      */
     Damage,
 
     /**
-     * Saves the marks given by the effect
+     * Saves the marks given by the effect; (negative) if the effect gives marks to all the players in a square
      */
-    Mark
+    Mark,
+
+    /**
+     * Saves if the effect was too different from the others and define new properties for it would be worthless
+     */
+    Hard
 }

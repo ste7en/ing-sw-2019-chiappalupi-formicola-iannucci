@@ -83,7 +83,7 @@ public class GameMap {
         return room;
     }
 
-    private Cell getCellFromDirection(Cell cell, Direction direction){
+    public Cell getCellFromDirection(Cell cell, Direction direction){
         int i,j;
         for (i=0; i<rows; i++)
             for(j=0; j<columns; j++)
