@@ -2,7 +2,7 @@ package it.polimi.ingsw;
 
 import java.util.ArrayList;
 
-public class Damage {
+public class Damage implements Comparable<Damage> {
 
     private Player target;
     private Cell position;
@@ -63,5 +63,12 @@ public class Damage {
         Damage d = (Damage) o;
         if(d.getTarget() != target || d.getDamage() != damage || d.getMarks() != marks || d.getPosition() != position) return false;
         return true;
+    }
+
+    @Override
+    public int compareTo(Damage damage) {
+        if (target != damage.target) return target.compareTo(damage.getTarget());
+        if (position != null && damage.getPosition()!= null) return position.compareTo(damage.getPosition());
+        return this.compareTo(damage);
     }
 }

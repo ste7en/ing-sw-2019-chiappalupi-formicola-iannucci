@@ -1,9 +1,6 @@
 package it.polimi.ingsw;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.Math.pow;
 
@@ -39,35 +36,108 @@ public class GameLogic {
 
     public void addPlayer(Player player) { }
 
-    public ArrayList<ArrayList<Damage>> useEffect(Player player, Effect effect, Weapon weapon) {
+    public ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, Weapon weapon, ArrayList<Damage> forPotentiableWeapons) {
         GameMap map = board.getMap();
         ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
         switch(weapon.getType()) {
             case SimpleWeapon: {
-                return computeDamages(effect, player);
+                return computeDamages(effect, shooter);
             }
             case SelectableWeapon: {
                 if (effect.getProperties().containsKey(EffectProperty.CanMoveBefore)) {
-                    //TODO: Which Player do you wanna use this effect on?
+                    //TODO: Which Player do you wanna use this effect on? Randomizing for testing and implementation purposes
+                    Random r = new Random();
+                    Player target = players.get(r.nextInt(players.size()));
+                    while(computeMovement(effect, shooter, target).size()==0) target = players.get(r.nextInt(players.size()));
+                    ArrayList<Cell> movements = computeMovement(effect, shooter, target);
+                    for(int i = 0; i < movements.size(); i++) {
+                        solutions.add(new ArrayList<>());
+                        solutions.get(i).add(new Damage());
+                        solutions.get(i).get(0).setTarget(target);
+                        solutions.get(i).get(0).setDamage(effect.getProperties().get(EffectProperty.Damage));
+                        if(effect.getProperties().containsKey(EffectProperty.Mark)) solutions.get(i).get(0).setMarks(effect.getProperties().get(EffectProperty.Mark));
+                        solutions.get(i).get(0).setPosition(movements.get(i));
+                    }
+                    return solutions;
                 }
-                solutions = computeDamages(effect, player);
+                if(effect.getProperties().containsKey(EffectProperty.Hard))
+                    if(effect.getProperties().get(EffectProperty.Hard) == 0) return inBarbecueMode(shooter);
+                solutions = computeDamages(effect, shooter);
                 return solutions;
             }
             case PotentiableWeapon: {
-                //TODO
+                if(effect.getType() == EffectType.Basic) return computeDamages(effect, shooter);
             }
         }
         return solutions;
     }
 
+    /**
+     * This method computes the possible movements of a target when shot by a weapon that can move the target
+     * @param effect it's the effect that is being used by the shooter
+     * @param shooter it's the player who is shooting
+     * @param target it's the target of the shot
+     * @return an ArrayList containing all the possible cells where the target can be moved
+     */
     public ArrayList<Cell> computeMovement(Effect effect, Player shooter, Player target) {
-        GameMap box = new GameMap(board.getMap().getMapType(), board.getMap().getPlayersPosition());
+        GameMap box = (GameMap)board.getMap().clone();
         ArrayList<Cell> possibleMovements = new ArrayList<>();
-        recursiveMovements(possibleMovements, effect.getProperties().get(EffectProperty.CanMoveBefore), shooter, target, box);
+        if(effect.getProperties().containsKey(EffectProperty.CanMoveBefore)) {
+            if (effect.getProperties().get(EffectProperty.MaxDistance) == -1)
+                recursiveMovementsCanSee(possibleMovements, effect.getProperties().get(EffectProperty.CanMoveBefore), shooter, target, box);
+            else
+                recursiveMovementsInCell(possibleMovements, effect.getProperties().get(EffectProperty.CanMoveBefore), shooter, target, box, effect.getProperties().get(EffectProperty.MaxDistance));
+        } else {
+            if(effect.getProperties().get(EffectProperty.CanMoveAfter) > 0) recursiveMovementsEverywhere(possibleMovements, effect.getProperties().get(EffectProperty.CanMoveAfter), shooter, target, box);
+            else {
+                int distance = effect.getProperties().get(EffectProperty.CanMoveAfter) * (-1);
+                for(Direction direction : Direction.values()) {
+                    GameMap clone = (GameMap)board.getMap().clone();
+                    ArrayList<Cell> movementsInDirection = new ArrayList<>();
+                    int distanceBox = distance;
+                    while(distanceBox > 0) {
+                        if(clone.isAOneStepValidMove(target, clone.getCellFromDirection(clone.getCellFromPlayer(target), direction))) {
+                            Cell cell = clone.getCellFromDirection(clone.getCellFromPlayer(target), direction);
+                            movementsInDirection.add(cell);
+                            clone.setPlayerPosition(target, cell);
+                            distanceBox--;
+                        } else distanceBox = -1;
+                    }
+                    possibleMovements.addAll(movementsInDirection);
+                    possibleMovements.add(box.getCellFromPlayer(target));
+                }
+            }
+        }
         Set<Cell> set = new HashSet<>(possibleMovements);
         possibleMovements.clear();
         possibleMovements.addAll(set);
+        possibleMovements.sort(Cell::compareTo);
         return possibleMovements;
+    }
+
+    /**
+     * This method computes the possible movements of a target made by a weapon that has the ability to move players after the shot
+     * @param movements it's the ArrayList where the possible movements are stored
+     * @param distance it's the recursive counter
+     * @param shooter it's the Player who is using the weapon
+     * @param target it's the Player who is being shot
+     * @param map it's a map (not the game one) used for the recursion
+     */
+    private void recursiveMovementsEverywhere (ArrayList<Cell> movements, Integer distance, Player shooter, Player target, GameMap map) {
+        if(distance == 0) {
+                movements.add(map.getCellFromPlayer(target));
+                return;
+        }
+        movements.add(map.getCellFromPlayer(target));
+        for(Direction direction : Direction.values()) {
+            Cell targetPosition = map.getPositionFromPlayer(target);
+            Cell cell = map.getCellFromDirection(targetPosition, direction);
+            if(cell != null && map.isAOneStepValidMove(target, cell)) {
+                GameMap box = (GameMap)map.clone();
+                box.setPlayerPosition(target, cell);
+                recursiveMovementsEverywhere(movements, distance-1, shooter, target, box);
+            }
+        }
     }
 
     /**
@@ -78,49 +148,141 @@ public class GameLogic {
      * @param target it's the Player who is being shot
      * @param map it's a map (not the game one) used for the recursion
      */
-    private void recursiveMovements(ArrayList<Cell> movements, Integer distance, Player shooter, Player target, GameMap map) {
-        if(distance == 0 && map.getSeenTargets(shooter).contains(target)) {
-            movements.add(map.getCellFromPlayer(target));
+    private void recursiveMovementsInCell(ArrayList<Cell> movements, Integer distance, Player shooter, Player target, GameMap map, Integer MaxDistance) {
+        if(distance == 0) {
+            if(map.getTargetsAtMaxDistance(shooter, MaxDistance).contains(target))
+                movements.add(map.getCellFromPlayer(target));
+            return;
+        }
+        if(map.getTargetsAtMaxDistance(shooter, MaxDistance).contains(target)) movements.add(map.getCellFromPlayer(target));
+        for(Direction direction : Direction.values()) {
+            GameMap box = (GameMap)map.clone();
+            Cell targetPosition = map.getPositionFromPlayer(target);
+            Cell cell = map.getCellFromDirection(targetPosition, direction);
+            if(cell != null && map.isAOneStepValidMove(target, cell)) {
+                box.setPlayerPosition(target, cell);
+                recursiveMovementsInCell(movements, distance-1, shooter, target, box, MaxDistance);
+            }
+        }
+        return;
+    }
+
+    /**
+     * This method computes the possible movements of a target made by a weapon that has the ability to move players
+     * @param movements it's the ArrayList where the possible movements are stored
+     * @param distance it's the recursive counter
+     * @param shooter it's the Player who is using the weapon
+     * @param target it's the Player who is being shot
+     * @param map it's a map (not the game one) used for the recursion
+     */
+    private void recursiveMovementsCanSee(ArrayList<Cell> movements, Integer distance, Player shooter, Player target, GameMap map) {
+        if(distance == 0) {
+            if(map.getSeenTargets(shooter).contains(target))
+                movements.add(map.getCellFromPlayer(target));
             return;
         }
         if(map.getSeenTargets(shooter).contains(target)) movements.add(map.getCellFromPlayer(target));
         for(Direction direction : Direction.values()) {
-            GameMap box = new GameMap(map.getMapType(), map.getPlayersPosition());
+            GameMap box = (GameMap)map.clone();
             Cell targetPosition = map.getPositionFromPlayer(target);
             Cell cell = map.getCellFromDirection(targetPosition, direction);
-            if(cell != null) {
+            if(cell != null && map.isAOneStepValidMove(target, cell)) {
                 box.setPlayerPosition(target, cell);
-                recursiveMovements(movements, distance-1, shooter, target, box);
-                return;
+                recursiveMovementsCanSee(movements, distance-1, shooter, target, box);
             }
-            return;
         }
     }
 
     /**
      * Computes the ArrayList of damages from the effect and the damage when the former only depends from distances and max number of players
      * @param effect the effect that is been using
-     * @param player the player who is using the effect
+     * @param shooter the player who is using the effect
      * @return an ArrayList containing all of the possible solutions of damages
      */
-    private ArrayList<ArrayList<Damage>> computeDamages(Effect effect, Player player) {
+    private ArrayList<ArrayList<Damage>> computeDamages(Effect effect, Player shooter) {
         GameMap map = board.getMap();
         ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
-        ArrayList<Player> targets = generateTargetsFromDistances(effect, player, map);
-        ArrayList<ArrayList<Player>> targetsCombination = generateTargetsCombinations(effect, targets);
+        ArrayList<Player> targets = generateTargetsFromDistances(effect, shooter, map);
+        ArrayList<ArrayList<Player>> targetsCombination = generateTargetsCombinations(effect, targets, shooter);
         Damage d;
         ArrayList<Damage> arrayD;
         for(int i = 0; i < targetsCombination.size(); i++) {
-            solutions.add(new ArrayList());
+            solutions.add(new ArrayList<>());
             arrayD = solutions.get(i);
             for(int k = 0; k < targetsCombination.get(i).size(); k++) {
                 arrayD.add(new Damage());
                 d = arrayD.get(k);
                 d.setTarget(targetsCombination.get(i).get(k));
-                d.setDamage(effect.getProperties().get(EffectProperty.Damage));
-                if(effect.getProperties().containsKey(EffectProperty.Mark)) d.setMarks(effect.getProperties().get(EffectProperty.Mark));
+                if(effect.getProperties().containsKey(EffectProperty.Damage)) d.setDamage(effect.getProperties().get(EffectProperty.Damage));
+                if(effect.getProperties().containsKey(EffectProperty.Mark)) {
+                    int marks = effect.getProperties().get(EffectProperty.Mark);
+                    if(marks < 0 && k == 0) {
+                        int positiveMarks = (-1) * marks;
+                        d.setMarks(positiveMarks);
+                        ArrayList<Player> markedPlayers = map.getTargetsInMyCell(d.getTarget());
+                        for(Player p : markedPlayers) {
+                            arrayD.add(new Damage());
+                            arrayD.get(arrayD.size() - 1).setTarget(p);
+                            arrayD.get(arrayD.size() - 1).setMarks(positiveMarks);
+                        }
+                    }
+                    else if(marks != -1) d.setMarks(marks);
+                }
             }
         }
+        if(effect.getProperties().containsKey(EffectProperty.CanMoveAfter)) {
+            ArrayList<ArrayList<Damage>> solutionsBox = new ArrayList<>();
+            HashMap<Player, ArrayList<Cell>> movements = new HashMap<>();
+            for (ArrayList<Damage> damages : solutions) {
+                Damage temp = damages.get(0);
+                for (Damage damage : damages)
+                    if (!movements.containsKey(damage.getTarget()))
+                        movements.put(damage.getTarget(), computeMovement(effect, shooter, damage.getTarget()));
+                    Player target = temp.getTarget();
+                    for (Cell cell : movements.get(target)) {
+                        ArrayList<Damage> box = new ArrayList<>();
+                        Damage damageBox = new Damage();
+                        damageBox.setMarks(temp.getMarks());
+                        damageBox.setTarget(temp.getTarget());
+                        damageBox.setDamage(temp.getDamage());
+                        damageBox.setPosition(cell);
+                        box.add(damageBox);
+                        solutionsBox.add(box);
+                    }
+                }
+            solutionsBox.sort(Comparator.comparing(a -> a.get(0)));
+            solutions = solutionsBox;
+        }
+        if(effect.getProperties().containsKey(EffectProperty.MoveMe) && effect.getProperties().get(EffectProperty.MoveMe) < 0) {
+            int movements = effect.getProperties().get(EffectProperty.MoveMe);
+            if(movements == -1)
+                for(ArrayList<Damage> damages : solutions) {
+                    Damage damage = new Damage();
+                    damage.setTarget(shooter);
+                    damage.setPosition(map.getCellFromPlayer(damages.get(0).getTarget()));
+                    damages.add(damage);
+                }
+            else if (movements == -2) {
+                ArrayList<ArrayList<Damage>> toRemove = new ArrayList<>();
+                for(ArrayList<Damage> damages : solutions) {
+                    if(damages.size() == 1 && map.getTargetsAtMinDistance(shooter, 2).contains(damages.get(0).getTarget()))
+                        toRemove.add(damages);
+                    else {
+                        Damage damage = new Damage();
+                        damage.setTarget(shooter);
+                        Player target;
+                        if(damages.size() == 1) target = damages.get(0).getTarget();
+                        else target = map.getTargetsAtMinDistance(shooter, 2).contains(damages.get(0).getTarget()) ? damages.get(0).getTarget() : damages.get(1).getTarget();
+                        damage.setPosition(map.getCellFromPlayer(target));
+                        damages.add(damage);
+                    }
+                }
+                solutions.removeAll(toRemove);
+            }
+        }
+        ArrayList<ArrayList<Damage>> emptyRemover = new ArrayList<>();
+        for(ArrayList<Damage> solution : solutions) if(solution.size() == 0) emptyRemover.add(solution);
+        solutions.removeAll(emptyRemover);
         return solutions;
     }
 
@@ -138,6 +300,12 @@ public class GameLogic {
         Set<EffectProperty> properties = e.getProperties().keySet();
         if(properties.contains(EffectProperty.MinDistance)) {
             if(e.getProperties().get(EffectProperty.MinDistance) == -1) targetsFromMin.addAll(m.getUnseenTargets(p));
+            else if(e.getProperties().get(EffectProperty.MinDistance) == -2) {
+                GameMap map = board.getMap();
+                for(Player player : players)
+                    if(map.getRoomFromCell(map.getPositionFromPlayer(player)) != map.getRoomFromCell(map.getCellFromPlayer(p)))
+                        targetsFromMin.add(player);
+            }
             else targetsFromMin.addAll(m.getTargetsAtMinDistance(p, e.getProperties().get(EffectProperty.MinDistance)));
         }
         if(properties.contains(EffectProperty.MaxDistance)) {
@@ -147,19 +315,115 @@ public class GameLogic {
         if(properties.contains(EffectProperty.MinDistance) && properties.contains(EffectProperty.MaxDistance)) {
             for (Player player : players)
                 if (targetsFromMin.contains(player) && targetsFromMax.contains(player)) targets.add(player);
-            return targets;
         }
-        else if(properties.contains(EffectProperty.MinDistance)) return targetsFromMin;
-        return targetsFromMax;
+        else if(properties.contains(EffectProperty.MinDistance)) targets = targetsFromMin;
+        else targets = targetsFromMax;
+
+        if(properties.contains(EffectProperty.MultipleCell) && e.getProperties().get(EffectProperty.MultipleCell) == -2) {
+            ArrayList<Player> box = new ArrayList<>();
+            if(properties.contains(EffectProperty.MaxDistance)) {
+                for(Player player : players)
+                    if(targets.contains(player))
+                        for(Direction d : Direction.values())
+                            if(board.getMap().getTargetsFromDirection(p, d).contains(player))
+                                box.add(player);
+            Set<Player> setBox = new LinkedHashSet<>();
+            setBox.addAll(box);
+            targets.clear();
+            targets.addAll(setBox);
+            }
+            else {
+                Set<Player> setBox = new LinkedHashSet<>();
+                for(Direction d : Direction.values()) setBox.addAll(board.getMap().getTargetsFromDirection(p, d));
+                box.clear();
+                box.addAll(setBox);
+                targets = box;
+            }
+        }
+        return targets;
     }
 
     /**
-     * Generates all of the possible targets combinations while using an effect
+     * Generates all of the possible targets combinations while using an effect (public for testing purposes)
      * @param e it's the effect of analysis
      * @param p it's the ArrayList the potential targets
+     * @param shooter it's the player who is using the weapon
      * @return an ArrayList with all the combinations
      */
-    public ArrayList<ArrayList<Player>> generateTargetsCombinations(Effect e, ArrayList<Player> p) {
+    public ArrayList<ArrayList<Player>> generateTargetsCombinations(Effect e, ArrayList<Player> p, Player shooter) {
+        if(e.getProperties().containsKey(EffectProperty.MultipleCell)) {
+            Integer multipleCell = e.getProperties().get(EffectProperty.MultipleCell);
+            switch (multipleCell) {
+                case 0: {
+                    ArrayList<ArrayList<Player>> solutions = new ArrayList<>();
+                    for (Player player : p) {
+                        int exists = 0;
+                        Cell cell = board.getMap().getCellFromPlayer(player);
+                        for(int i = 0; i < solutions.size(); i++)
+                            if(board.getMap().getCellFromPlayer(solutions.get(i).get(0)) == cell) {
+                                    solutions.get(i).add(player);
+                                    exists = 1;
+                                }
+                        if(exists == 0) {
+                            solutions.add(new ArrayList<>());
+                            solutions.get(solutions.size() - 1).add(player);
+                        }
+                    }
+                    return solutions;
+                }
+                case -1: {
+                    ArrayList<ArrayList<Player>> solutions = new ArrayList<>();
+                    for (Player player : p) {
+                        int exists = 0;
+                        ArrayList<Cell> room = board.getMap().getRoomFromCell(board.getMap().getCellFromPlayer(player));
+                        for(int i = 0; i < solutions.size(); i++)
+                            if(board.getMap().getRoomFromCell(board.getMap().getCellFromPlayer(solutions.get(i).get(0))).equals(room)) {
+                                solutions.get(i).add(player);
+                                exists = 1;
+                            }
+                        if(exists == 0) {
+                            solutions.add(new ArrayList<>());
+                            solutions.get(solutions.size() - 1).add(player);
+                        }
+                    }
+                    return solutions;
+                }
+                case -2: {
+                    ArrayList<ArrayList<Player>> solutions = combinationsFromMaxPlayer(e, p);
+                    ArrayList<ArrayList<Player>> toRemove = new ArrayList<>();
+                    for(ArrayList<Player> solution : solutions) {
+                        int controller = 0;
+                        for(Direction d : Direction.values())
+                            if(board.getMap().getTargetsFromDirection(shooter, d).containsAll(solution)) controller++;
+                        if(controller == 0) toRemove.add(solution);
+                    }
+                    solutions.removeAll(toRemove);
+                    return solutions;
+                }
+                default: {
+                    ArrayList<ArrayList<Player>> solutions = combinationsFromMaxPlayer(e, p);
+                    ArrayList<ArrayList<Player>> toRemove = new ArrayList<>();
+                    for(ArrayList<Player> solution : solutions) {
+                        Set<Cell> positions = new HashSet<>();
+                        for(Player player : solution) positions.add(board.getMap().getCellFromPlayer(player));
+                        if(positions.size() != solution.size()) toRemove.add(solution);
+                    }
+                    solutions.removeAll(toRemove);
+                    return solutions;
+                }
+            }
+        }
+        ArrayList<ArrayList<Player>> combs = combinationsFromMaxPlayer(e, p);
+        return combs;
+    }
+
+    /**
+     * Generates the Players combinations from the list of targets and the effect properties
+     * @param e it's the effect that is being used
+     * @param p it's the list of players on who the effect can be used
+     * @return an ArratList containing all of the possible combinations of those targets
+     */
+    private ArrayList<ArrayList<Player>> combinationsFromMaxPlayer(Effect e, ArrayList<Player> p) {
         HashMap<Integer, ArrayList<Player>> combinations = new HashMap<>();
         if(e.getProperties().containsKey(EffectProperty.MaxPlayer)) {
             if(e.getProperties().get(EffectProperty.MaxPlayer) == -1) {
@@ -167,7 +431,7 @@ public class GameLogic {
                 allPlayers.add((ArrayList<Player>)p.clone());
                 return allPlayers;
             }
-            HashMap<Integer, ArrayList<Integer>> comb = combinations(p.size(), e.getProperties().get(EffectProperty.MaxPlayer));
+            HashMap<Integer, ArrayList<Integer>> comb = combinationsWithLowerValues(p.size(), e.getProperties().get(EffectProperty.MaxPlayer));
             for(int i = 0; i < comb.keySet().size(); i++) {
                 combinations.put(i, new ArrayList<>());
                 for(int k = 0; k < comb.get(i).size(); k++)
@@ -181,16 +445,34 @@ public class GameLogic {
     }
 
     /**
+     * Returns the mathematical combination of a set of Integer, including all of the possible lenghts from zero to the max size (public for testing purposes)
+     * @param size size of the set to combine
+     * @param r size of the biggest combinations to generate
+     * @return a HashMap containing the combinations and their indexes
+     */
+    public HashMap<Integer, ArrayList<Integer>> combinationsWithLowerValues(int size, int r){
+        HashMap<Integer, ArrayList<Integer>> combinations = new HashMap<>();
+        for(int i = 1; i <= r; i ++) {
+            HashMap<Integer, ArrayList<Integer>> box = combinations(size, i);
+            int k = 0;
+            for(Integer j : combinations.keySet()) if(j > k) k = j;
+            if(k != 0) k++;
+            for(Integer j : box.keySet()) combinations.put(j+k, box.get(j));
+        }
+        return combinations;
+    }
+
+    /**
      * Returns the mathematical combination of a set of Integer: it's used to generate all the possible combinations of targets
      * @param size size of the set to combine
      * @param r size of the combinations to generate
      * @return a HashMap containing the combinations and their indexes
      */
-    public HashMap<Integer, ArrayList<Integer>> combinations(int size, int r) {
+    private HashMap<Integer, ArrayList<Integer>> combinations(int size, int r) {
         int[] i = new int[size];
         ArrayList<Integer> param = new ArrayList<Integer>();
         for(int k=0; k < size; k++) i[k] = k+1;
-        numberCombination(param, i, new int[size], 0, size-1, 0, r);
+        recursiveCombinations(param, i, new int[size], 0, size-1, 0, r);
         HashMap<Integer, ArrayList<Integer>> combs = new HashMap<>();
 
         for(int j = 0; j < param.size(); j++) {
@@ -223,7 +505,7 @@ public class GameLogic {
      * @param index saves the state of the computation (needed because of recursion)
      * @param r saves the size of the combinations
      */
-    private void numberCombination(ArrayList<Integer> box, int arr[], int data[], int start,
+    private void recursiveCombinations(ArrayList<Integer> box, int arr[], int data[], int start,
                                    int end, int index, int r) {
         if (index == r)
         {
@@ -236,8 +518,37 @@ public class GameLogic {
         for (int i=start; i<=end && end-i+1 >= r-index; i++)
         {
             data[index] = arr[i];
-            numberCombination(box, arr, data, i+1, end, index+1, r);
+            recursiveCombinations(box, arr, data, i+1, end, index+1, r);
         }
+    }
+
+    /**
+     * This method computes the different solutions of damages when using the "in Barbecue Mode" effect, of the "Flamethrower" weapon
+     * @param shooter it's the Player who is using the effect
+     * @return an ArrayList containing all of the different solutions
+     */
+    private ArrayList<ArrayList<Damage>> inBarbecueMode(Player shooter) {
+        ArrayList<ArrayList<Damage>> damages = new ArrayList<>();
+        for(Direction direction : Direction.values())
+            if(board.getMap().getTargetsFromDirection(shooter, direction).size() > 0) {
+                ArrayList<Damage> arrayD = new ArrayList<>();
+                damages.add(arrayD);
+                ArrayList<Player> targetsInDirection = board.getMap().getTargetsFromDirection(shooter, direction);
+                targetsInDirection.removeAll(board.getMap().getTargetsInMyCell(shooter));
+                for(Player player : targetsInDirection) {
+                    Damage damage = new Damage();
+                    damage.setTarget(player);
+                    if(board.getMap().getTargetsAtMaxDistance(shooter, 1).contains(player)) {
+                        damage.setDamage(2);
+                        arrayD.add(damage);
+                    } else if(board.getMap().getTargetsAtMaxDistance(shooter, 2).contains(player)) {
+                        damage.setDamage(1);
+                        arrayD.add(damage);
+                    }
+                }
+                if(arrayD.size() == 0) damages.remove(arrayD);
+            }
+        return damages;
     }
 
 }
