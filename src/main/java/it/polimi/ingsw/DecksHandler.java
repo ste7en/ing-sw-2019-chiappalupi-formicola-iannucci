@@ -71,7 +71,7 @@ public class DecksHandler {
         ObjectMapper objectMapper = new ObjectMapper();
         Weapon[] box = new Weapon[NUM_OF_WEAPONS];
         try {
-            File json = new File("src\\main\\resources\\weapons.json");
+            File json = new File("src/main/resources/weapons.json");
             box = objectMapper.readValue(json, Weapon[].class);
         } catch (IOException e) {
             e.printStackTrace();
