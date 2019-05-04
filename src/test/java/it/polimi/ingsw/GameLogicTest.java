@@ -263,4 +263,30 @@ public class GameLogicTest {
         tester.get(0).get(1).setTarget(p3);
         assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w));
     }
+
+    /**
+     * Tests the Compute Movements method
+     * @see GameLogic#computeMovement(Effect, Player, Player)
+     */
+    @Test
+    public void testComputeMovements() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Tractor Beam"))) w = decks.drawWeapon();
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 0, 0);
+        map.setPlayerPosition(p4, 0, 0);
+        /*ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
+        tester.add(new ArrayList<>());
+        tester.get(0).add(new Damage());
+        tester.get(0).get(0).setDamage(3);
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(0).get(0).setMarks(1);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w));*/
+        ArrayList<Cell> movements = gameLogicTest.computeMovement(w.getEffects().get(0), p1, p2);
+        System.out.println("Cell [1, 2] = " + map.getCell(1,2));
+        System.out.println("Cell [1, 3] = " + map.getCell(1,3));
+        System.out.println("Cell [2, 2] = " + map.getCell(2,2));
+        System.out.println("\n" + movements);
+    }
 }

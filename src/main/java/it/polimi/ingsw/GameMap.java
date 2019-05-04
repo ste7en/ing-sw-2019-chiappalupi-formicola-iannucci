@@ -57,11 +57,12 @@ public class GameMap {
         this.columns=columns;
     }
 
-    @Override
-    public Object clone() {
-        GameMap clone = new GameMap(this.mapType, (LinkedHashMap<Player, Cell>)this.playersPosition.clone());
-        clone.map = this.map.clone();
-        return clone;
+    public LinkedHashMap<Player, Cell> getPlayersPosition() {
+        return (LinkedHashMap<Player, Cell>)playersPosition.clone();
+    }
+
+    public MapType getMapType() {
+        return mapType;
     }
 
     public Cell getCell(int row, int column) {
@@ -83,7 +84,7 @@ public class GameMap {
         return room;
     }
 
-    private Cell getCellFromDirection(Cell cell, Direction direction){
+    public Cell getCellFromDirection(Cell cell, Direction direction){
         int i,j;
         for (i=0; i<rows; i++)
             for(j=0; j<columns; j++)
@@ -221,7 +222,7 @@ public class GameMap {
         playersPosition.put(player, cell);
     }
 
-    public void setPlayerPosition (Player player, Cell cell){
+    public void setPlayerPosition (Player player, Cell cell) {
         playersPosition.put(player, cell);
     }
 

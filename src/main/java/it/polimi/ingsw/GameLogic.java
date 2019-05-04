@@ -2,6 +2,7 @@ package it.polimi.ingsw;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 import static java.lang.Math.pow;
@@ -42,7 +43,13 @@ public class GameLogic {
         GameMap map = board.getMap();
         ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
         switch(weapon.getType()) {
-            case SimpleWeapon: case SelectableWeapon: {
+            case SimpleWeapon: {
+                return computeDamages(effect, player);
+            }
+            case SelectableWeapon: {
+                if (effect.getProperties().containsKey(EffectProperty.CanMoveBefore)) {
+                    //TODO: Which Player do you wanna use this effect on?
+                }
                 solutions = computeDamages(effect, player);
                 return solutions;
             }
@@ -51,6 +58,43 @@ public class GameLogic {
             }
         }
         return solutions;
+    }
+
+    public ArrayList<Cell> computeMovement(Effect effect, Player shooter, Player target) {
+        GameMap box = new GameMap(board.getMap().getMapType(), board.getMap().getPlayersPosition());
+        ArrayList<Cell> possibleMovements = new ArrayList<>();
+        recursiveMovements(possibleMovements, effect.getProperties().get(EffectProperty.CanMoveBefore), shooter, target, box);
+        Set<Cell> set = new HashSet<>(possibleMovements);
+        possibleMovements.clear();
+        possibleMovements.addAll(set);
+        return possibleMovements;
+    }
+
+    /**
+     * This method computes the possible movements of a target made by a weapon that has the ability to move players
+     * @param movements it's the ArrayList where the possible movements are stored
+     * @param distance it's the recursive counter
+     * @param shooter it's the Player who is using the weapon
+     * @param target it's the Player who is being shot
+     * @param map it's a map (not the game one) used for the recursion
+     */
+    private void recursiveMovements(ArrayList<Cell> movements, Integer distance, Player shooter, Player target, GameMap map) {
+        if(distance == 0 && map.getSeenTargets(shooter).contains(target)) {
+            movements.add(map.getCellFromPlayer(target));
+            return;
+        }
+        if(map.getSeenTargets(shooter).contains(target)) movements.add(map.getCellFromPlayer(target));
+        for(Direction direction : Direction.values()) {
+            GameMap box = new GameMap(map.getMapType(), map.getPlayersPosition());
+            Cell targetPosition = map.getPositionFromPlayer(target);
+            Cell cell = map.getCellFromDirection(targetPosition, direction);
+            if(cell != null) {
+                box.setPlayerPosition(target, cell);
+                recursiveMovements(movements, distance-1, shooter, target, box);
+                return;
+            }
+            return;
+        }
     }
 
     /**
