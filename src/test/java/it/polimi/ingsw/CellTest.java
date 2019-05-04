@@ -31,7 +31,7 @@ public class CellTest {
      */
     @Before
     public void setUp(){
-        cellTest = new Cell(Border.door, Border.space, Border.space, Border.wall, CellColor.yellow, false, ammoTile);
+        cellTest = new Cell(Border.door, Border.space, Border.space, Border.wall, CellColor.yellow, false, ammoTile, 0, 0);
 
     }
 
