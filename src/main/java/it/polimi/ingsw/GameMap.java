@@ -155,7 +155,7 @@ public class GameMap {
                 targets.add(tempPlayer);
             }
         }
-        if (targets != null) targets.sort(Player::compareTo);
+        targets.sort(Player::compareTo);
         return targets;
     }
 

@@ -12,8 +12,6 @@
           "name": "basic effect",
           "description": "Deal 2 damage and 1 mark to 1 target you can see.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 1,
@@ -26,12 +24,10 @@
           "cost": {
             "red": 1
           },
-          "type": "Additional",
-          "actions": null,
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 1,
-            "DifferentTarget": 1,
+            "AdditionalTarget": 1,
             "Mark": 1
           }
         }
@@ -50,8 +46,6 @@
           "name": "basic effect",
           "description": "Choose 1 or 2 targets you can see and deal 1 damage to each.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 2,
@@ -63,12 +57,10 @@
           "cost": {
             "yellow": 1
           },
-          "type": "Additional",
-          "actions": null,
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 1,
-            "DifferentFromEffect": -1,
+            "AdditionalTarget": -1,
             "Damage": 1
           }
         },  {
@@ -77,9 +69,9 @@
           "cost": {
             "blue": 1
           },
-          "type": "Additional",
-          "actions": null,
-          "properties": null
+          "properties": {
+            "Hard": 2
+          }
         }
       ]
     },
@@ -96,8 +88,6 @@
           "name": "basic effect",
           "description": "Deal 2 damage to 1 target you can see.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 1,
@@ -109,8 +99,6 @@
           "cost": {
             "blue": 1
           },
-          "type": "Additional",
-          "actions": null,
           "properties": {
             "EffectOnTarget": 0,
             "MaxDistance": -1,
@@ -123,8 +111,6 @@
           "cost": {
             "blue": 1
           },
-          "type": "Additional",
-          "actions": null,
           "properties": {
             "EffectOnTarget": 1,
             "MaxDistance": -1,
@@ -147,8 +133,6 @@
           "name": "basic effect",
           "description": "Deal 2 damage to 1 target you can see.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 1,
@@ -158,8 +142,6 @@
           "name": "with phase glide",
           "description": "Move 1 or 2 squares. This effect can be used either before or after the basic effect.",
           "cost": null,
-          "type": "Additional",
-          "actions": null,
           "properties": {
             "MoveMe": 2
           }
@@ -169,10 +151,8 @@
           "cost": {
             "blue": 1
           },
-          "type": "Additional",
-          "actions": null,
           "properties": {
-            "DifferentFromEffect": -1,
+            "AdditionalTarget": -1,
             "MaxPlayer": 1,
             "Damage": 1
           }
@@ -193,8 +173,6 @@
           "name": "effect",
           "description": "Deal 3 damage and 1 mark to 1 target you can see.Your target must be at least 2 moves away from you.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MinDistance": 2,
             "MaxDistance": -1,
@@ -217,8 +195,6 @@
           "name": "basic mode",
           "description": "Deal 1 damage to every other player on your square.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MaxDistance": 0,
             "MaxPlayer": -1,
@@ -231,8 +207,6 @@
             "blue": 1,
             "red": 1
           },
-          "type": "Selectable",
-          "actions": null,
           "properties": {
             "MaxDistance": 0,
             "MaxPlayer": -1,
@@ -253,8 +227,6 @@
           "name": "basic mode",
           "description": "Move a target 0, 1, or 2 squares to a square you can see, and give it 1 damage.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "CanMoveBefore": 2,
             "MaxDistance": -1,
@@ -268,8 +240,6 @@
             "yellow": 1,
             "red": 1
           },
-          "type": "Selectable",
-          "actions": null,
           "properties": {
             "CanMoveBefore": 2,
             "MaxDistance": 0,
@@ -292,18 +262,25 @@
           "name": "basic effect",
           "description": "Choose a square you can see, but not your square. Call it \"the vortex\". Choose a target on the vortex or 1 move away from it. Move it onto the vortex and give it 2 damage.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
-          "properties": null
+          "properties": {
+            "CanMoveBefore": 1,
+            "MinDistance": 1,
+            "MaxDistance": -1,
+            "MaxPlayer": 1,
+            "Damage": 2
+          }
         }, {
           "name": "with black hole",
           "description": "Choose up to 2 other targets on the vortex or 1 move away from it. Move them onto the vortex and give them each 1 damage.",
           "cost": {
             "red": 1
           },
-          "type": "Additional",
-          "actions": null,
-          "properties": null
+          "properties": {
+            "CanMoveBefore": 1,
+            "MaxDistance": 0,
+            "MaxPlayer": 1,
+            "Damage": 1
+          }
         }
       ]
     },
@@ -320,8 +297,6 @@
           "name": "basic mode",
           "description": "Choose a room you can see, but not the room you are in. Deal 1 damage to everyone in that room.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MinDistance": -1,
             "MultipleCell": -1,
@@ -331,8 +306,6 @@
           "name": "in cozy fire mode",
           "description": "Choose a square exactly one move away. Deal 1 damage and 1 mark to everyone on that square.",
           "cost": null,
-          "type": "Selectable",
-          "actions": null,
           "properties": {
             "MinDistance": 1,
             "MaxDistance": 1,
@@ -357,8 +330,6 @@
           "name": "effect",
           "description": "Choose 1 target you cannot see and deal 3 damage to it.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MinDistance": -1,
             "MaxPlayer": 1,
@@ -380,8 +351,6 @@
           "name": "basic mode",
           "description": "Deal 1 damage to 1 target you can see at least 1 move away. Then give 1 mark to that target and everyone else on that square.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MinDistance": 1,
             "MaxDistance": -1,
@@ -395,8 +364,6 @@
           "cost": {
             "red": 1
           },
-          "type": "Selectable",
-          "actions": null,
           "properties": {
             "MinDistance": 1,
             "MaxDistance": -1,
@@ -419,8 +386,6 @@
           "name": "basic mode",
           "description": "Choose a square 1 move away and possibly a second square 1 more move away in the same direction. On each square, you may choose 1 target and give it 1 damage.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MinDistance": 1,
             "MaxDistance": 2,
@@ -434,8 +399,6 @@
           "cost": {
             "yellow": 2
           },
-          "type": "Selectable",
-          "actions": null,
           "properties": {
             "Hard": 0
           }
@@ -454,8 +417,6 @@
           "name": "basic effect",
           "description": "Deal 1 damage to 1 target you can see. Then you may move the target 1 square.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MaxDistance": -1,
             "MaxPlayer": 1,
@@ -468,8 +429,6 @@
           "cost": {
             "red": 1
           },
-          "type": "Additional",
-          "actions": null,
           "properties": {
             "MaxDistance": -1,
             "MultipleCell": 0,
@@ -491,8 +450,6 @@
           "name": "basic effect",
           "description": "Deal 2 damage to 1 target you can see that is not on your square. Then you may move the target 1 square.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MinDistance": 1,
             "MaxDistance": -1,
@@ -506,8 +463,6 @@
           "cost": {
             "blue": 1
           },
-          "type": "Additional",
-          "actions": null,
           "properties": {
             "MoveMe": 2
           }
@@ -517,9 +472,12 @@
           "cost": {
             "yellow": 1
           },
-          "type": "Additional",
-          "actions": null,
-          "properties": null
+          "properties": {
+            "Damage": 1,
+            "MultipleCell": 0,
+            "EffectOnTarget": -2,
+            "MaxDistance": 0
+          }
         }
       ]
     },
@@ -537,8 +495,6 @@
           "name": "basic mode",
           "description": "Choose a cardinal direction and 1 target in that direction. Deal 3 damage to it.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MaxPlayer": 1,
             "MultipleCell": -2,
@@ -548,8 +504,6 @@
           "name": "in piercing mode",
           "description": "Choose a cardinal direction and 1 or 2 targets in that direction. Deal 2 damage to each.",
           "cost": null,
-          "type": "Selectable",
-          "actions": null,
           "properties": {
             "MaxPlayer": 2,
             "MultipleCell": -2,
@@ -571,8 +525,6 @@
           "name": "basic effect",
           "description": "Deal 2 damage to 1 target on your square.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MaxDistance": 0,
             "MaxPlayer": 1,
@@ -582,8 +534,6 @@
           "name": "with shadowstep",
           "description": "Move 1 square before or after the basic effect.",
           "cost": null,
-          "type": "Additional",
-          "actions": null,
           "properties": {
             "MoveMe": 1
           }
@@ -593,10 +543,8 @@
           "cost": {
             "yellow": 1
           },
-          "type": "Additional",
-          "actions": null,
           "properties": {
-            "DifferentFromEffect": 0,
+            "AdditionalTarget": 1,
             "MaxDistance": 0,
             "MaxPlayer": 1,
             "Damage": 2
@@ -617,8 +565,6 @@
           "name": "basic mode",
           "description": "Deal 1 damage and 2 marks to 1 target you can see.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MaxPlayer": 1,
             "MaxDistance": -1,
@@ -629,8 +575,6 @@
           "name": "in scanner mode",
           "description": "Choose up to 3 targets you can see and deal 1 mark to each.",
           "cost": null,
-          "type": "Selectable",
-          "actions": null,
           "properties": {
             "MaxPlayer": 3,
             "MaxDistance": -1,
@@ -652,8 +596,6 @@
           "name": "basic mode",
           "description": "Deal 3 damage to 1 target on your square. If you want, you may then move the target 1 square.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MaxPlayer": 1,
             "MaxDistance": 0,
@@ -664,8 +606,6 @@
           "name": "in long barrel mode",
           "description": "Deal 2 damage to 1 target on any square exactly one move away.",
           "cost": null,
-          "type": "Selectable",
-          "actions": null,
           "properties": {
             "MaxPlayer": 1,
             "MinDistance": 1,
@@ -688,8 +628,6 @@
           "name": "basic mode",
           "description": "Choose 1 target on any square exactly 1 move away. Move onto that square and give the target 1 damage and 2 marks.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MaxPlayer": 1,
             "MaxDistance": 1,
@@ -704,8 +642,6 @@
           "cost": {
             "blue": 1
           },
-          "type": "Selectable",
-          "actions": null,
           "properties": {
             "MinDistance": 1,
             "MaxDistance": 2,
@@ -729,8 +665,6 @@
           "name": "basic mode",
           "description": "Choose up to 3 targets on different squares, each exactly 1 move away. Deal 1 damage to each target.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MinDistance": 1,
             "MaxDistance": 1,
@@ -744,8 +678,6 @@
           "cost": {
             "yellow": 1
           },
-          "type": "Selectable",
-          "actions": null,
           "properties": {
             "MinDistance": 1,
             "MaxDistance": 1,
@@ -767,8 +699,6 @@
           "name": "basic mode",
           "description": "Deal 2 damage to 1 target on your square.",
           "cost": null,
-          "type": "Basic",
-          "actions": null,
           "properties": {
             "MaxDistance": 0,
             "MaxPlayer": 1,
@@ -780,8 +710,6 @@
           "cost": {
             "red": 1
           },
-          "type": "Selectable",
-          "actions": null,
           "properties": {
             "MaxPlayer": 1,
             "MaxDistance": 0,

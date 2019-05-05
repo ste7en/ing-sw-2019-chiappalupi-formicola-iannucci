@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import java.util.*;
 
 /**
@@ -62,6 +61,7 @@ public class GameLogicTest {
 
     /**
      * Tests the generateTargetsCombination method in some real cases
+     *
      * @see GameLogic#generateTargetsCombinations(Effect, ArrayList, Player)
      */
     @Test
@@ -88,7 +88,7 @@ public class GameLogicTest {
 
         decks = new DecksHandler(new ArrayList<>(), new ArrayList<>());
         w = decks.drawWeapon();
-        while(!(w.getName().equals("Machine Gun"))) w = decks.drawWeapon();
+        while (!(w.getName().equals("Machine Gun"))) w = decks.drawWeapon();
         tester = new ArrayList<>();
         for (int i = 0; i < 10; i++) tester.add(i, new ArrayList<>());
         tester.get(0).add(p1);
@@ -112,6 +112,7 @@ public class GameLogicTest {
 
     /**
      * Tests the numberCombination method
+     *
      * @see GameLogic#combinationsWithLowerValues(int, int)
      */
     @Test
@@ -119,7 +120,7 @@ public class GameLogicTest {
         GameLogic g = new GameLogic();
         HashMap<Integer, ArrayList<Integer>> box = g.combinationsWithLowerValues(4, 2);
         HashMap<Integer, ArrayList<Integer>> tester = new HashMap<>();
-        for(int i = 0; i < 10; i++) tester.put(i, new ArrayList<>());
+        for (int i = 0; i < 10; i++) tester.put(i, new ArrayList<>());
         tester.get(0).add(1);
         tester.get(1).add(2);
         tester.get(2).add(3);
@@ -141,6 +142,7 @@ public class GameLogicTest {
 
     /**
      * Tests the usage of the Whisper weapon in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -164,7 +166,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 2, 3);
         map.setPlayerPosition(p4, 1, 2);
         tester.clear();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(3);
@@ -185,6 +187,7 @@ public class GameLogicTest {
 
     /**
      * Tests the usage of the Heatseeker weapon in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -207,7 +210,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 2, 0);
         map.setPlayerPosition(p4, 1, 2);
         tester.clear();
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(3);
@@ -219,6 +222,7 @@ public class GameLogicTest {
 
     /**
      * Tests the usage of the Electroscythe weapon, in both the modalities and in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -242,7 +246,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p4, 1, 2);
         tester.clear();
         tester.add(new ArrayList<>());
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.get(0).add(new Damage());
             tester.get(0).get(i).setDamage(1);
         }
@@ -267,7 +271,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p4, 1, 2);
         tester.clear();
         tester.add(new ArrayList<>());
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.get(0).add(new Damage());
             tester.get(0).get(i).setDamage(2);
         }
@@ -278,7 +282,8 @@ public class GameLogicTest {
 
     /**
      * Tests the Compute Movements method
-     * @see GameLogic#computeMovement(Effect, Player, Player)
+     *
+     * @see GameLogic#computeMovement(Effect, Player, Player, Cell)
      */
     @Test
     public void testComputeMovements() {
@@ -289,28 +294,29 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 0, 0);
         map.setPlayerPosition(p4, 0, 0);
         ArrayList<Cell> tester = new ArrayList<>();
-        tester.add(map.getCell(2,3));
-        tester.add(map.getCell(1,3));
-        tester.add(map.getCell(2,2));
-        tester.add(map.getCell(1,2));
+        tester.add(map.getCell(2, 3));
+        tester.add(map.getCell(1, 3));
+        tester.add(map.getCell(2, 2));
+        tester.add(map.getCell(1, 2));
         tester.sort(Cell::compareTo);
-        assertEquals(tester, gameLogicTest.computeMovement(w.getEffects().get(0), p1, p2));
+        assertEquals(tester, gameLogicTest.computeMovement(w.getEffects().get(0), p1, p2, null));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 2, 1);
         map.setPlayerPosition(p3, 0, 0);
         map.setPlayerPosition(p4, 0, 0);
         tester.clear();
-        tester.add(map.getCell(0,1));
-        tester.add(map.getCell(1,2));
-        tester.add(map.getCell(2,2));
-        tester.add(map.getCell(2,3));
+        tester.add(map.getCell(0, 1));
+        tester.add(map.getCell(1, 2));
+        tester.add(map.getCell(2, 2));
+        tester.add(map.getCell(2, 3));
         tester.sort(Cell::compareTo);
-        assertEquals(tester, gameLogicTest.computeMovement(w.getEffects().get(0), p1, p2));
+        assertEquals(tester, gameLogicTest.computeMovement(w.getEffects().get(0), p1, p2, null));
     }
 
     /**
      * Tests the usage of the Tractor Beam weapon, in both the modalities and in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -320,16 +326,18 @@ public class GameLogicTest {
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
-        map.setPlayerPosition(p3, 0, 0);
+        map.setPlayerPosition(p3, 1, 2);
         map.setPlayerPosition(p4, 0, 0);
         ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
-        ArrayList<Cell> movements = gameLogicTest.computeMovement(w.getEffects().get(0), p1, p2);
-        for(int i = 0; i < 4; i++) {
+        ArrayList<Cell> movementsP2 = gameLogicTest.computeMovement(w.getEffects().get(0), p1, p2, null);
+        ArrayList<Cell> movementsP3 = gameLogicTest.computeMovement(w.getEffects().get(0), p1, p3, null);
+        ArrayList<Cell> movements;
+        for (int i = 0; i < 8; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(1);
-            tester.get(i).get(0).setTarget(p2);
-            tester.get(i).get(0).setPosition(movements.get(i));
+            tester.get(i).get(0).setTarget((i < 4) ? p2 : p3);
+            tester.get(i).get(0).setPosition((i < 4) ? movementsP2.get(i) : movementsP3.get(i - 4));
         }
         ArrayList<Cell> movementsCheck = new ArrayList<>();
         movementsCheck.add(map.getCell(1, 2));
@@ -337,7 +345,8 @@ public class GameLogicTest {
         movementsCheck.add(map.getCell(2, 2));
         movementsCheck.add(map.getCell(2, 3));
         movementsCheck.sort(Cell::compareTo);
-        assertEquals(movements, movementsCheck);
+        assertEquals(movementsP2, movementsCheck);
+        assertEquals(movementsP3, movementsCheck);
         assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
 
         map.setPlayerPosition(p1, 0, 0);
@@ -345,9 +354,9 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 2, 3);
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
-        movements = gameLogicTest.computeMovement(w.getEffects().get(0), p1, p2);
+        movements = gameLogicTest.computeMovement(w.getEffects().get(0), p1, p2, null);
         movementsCheck.clear();
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(1);
@@ -371,10 +380,27 @@ public class GameLogicTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(0).setPosition(map.getCell(0, 0));
         assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
+
+        map.setPlayerPosition(p1, 0, 0);
+        map.setPlayerPosition(p2, 0, 2);
+        map.setPlayerPosition(p3, 0, 1);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        for (int i = 0; i < 3; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(3);
+            tester.get(i).get(0).setPosition(map.getCell(0, 0));
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(1).get(0).setTarget(p3);
+        tester.get(2).get(0).setTarget(p4);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
     }
 
     /**
      * Tests the usage of the Furnace weapon, in both the modalities and in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -389,7 +415,7 @@ public class GameLogicTest {
         ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
         tester.add(new ArrayList<>());
         tester.add(new ArrayList<>());
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(1);
             tester.get(i).get(0).setMarks(1);
@@ -415,7 +441,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p4, 2, 2);
         tester.clear();
         tester.add(new ArrayList<>());
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.get(0).add(new Damage());
             tester.get(0).get(i).setDamage(1);
             tester.get(0).get(i).setMarks(1);
@@ -430,7 +456,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 0, 0);
         map.setPlayerPosition(p4, 1, 1);
         tester.clear();
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(1);
@@ -452,7 +478,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p4, 0, 0);
         tester.clear();
         tester.add(new ArrayList<>());
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.get(0).add(new Damage());
             tester.get(0).get(i).setDamage(1);
         }
@@ -465,6 +491,7 @@ public class GameLogicTest {
 
     /**
      * Tests the usage of the Furnace weapon, in both the modalities and in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -477,11 +504,11 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 1);
         map.setPlayerPosition(p4, 0, 0);
         ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
-            for(int j = 0; j < 2; j++) {
+            for (int j = 0; j < 2; j++) {
                 tester.get(i).add(new Damage());
-                if(j == 0) tester.get(i).get(j).setDamage(1);
+                if (j == 0) tester.get(i).get(j).setDamage(1);
                 tester.get(i).get(j).setMarks(1);
             }
         }
@@ -496,11 +523,11 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 1);
         map.setPlayerPosition(p4, 1, 1);
         tester.clear();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
-            for(int j = 0; j < 3; j++) {
+            for (int j = 0; j < 3; j++) {
                 tester.get(i).add(new Damage());
-                if(j == 0) tester.get(i).get(j).setDamage(1);
+                if (j == 0) tester.get(i).get(j).setDamage(1);
                 tester.get(i).get(j).setMarks(1);
             }
         }
@@ -527,11 +554,11 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 1);
         map.setPlayerPosition(p4, 0, 0);
         tester.clear();
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
-            for(int j = 0; j < 2; j++) {
+            for (int j = 0; j < 2; j++) {
                 tester.get(i).add(new Damage());
-                if(j == 0) tester.get(i).get(j).setDamage(1);
+                if (j == 0) tester.get(i).get(j).setDamage(1);
                 tester.get(i).get(j).setMarks(2);
             }
         }
@@ -546,11 +573,11 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 1);
         map.setPlayerPosition(p4, 1, 1);
         tester.clear();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
-            for(int j = 0; j < 3; j++) {
+            for (int j = 0; j < 3; j++) {
                 tester.get(i).add(new Damage());
-                if(j == 0) tester.get(i).get(j).setDamage(1);
+                if (j == 0) tester.get(i).get(j).setDamage(1);
                 tester.get(i).get(j).setMarks(2);
             }
         }
@@ -575,6 +602,7 @@ public class GameLogicTest {
 
     /**
      * Tests the usage of the Flamethrower weapon, in both the modalities and in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -587,7 +615,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 0, 3);
         ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(1);
@@ -612,7 +640,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(1);
@@ -631,7 +659,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 0, 3);
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(1);
@@ -645,7 +673,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 0, 1);
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
         }
@@ -682,6 +710,7 @@ public class GameLogicTest {
 
     /**
      * Tests the usage of the Railgun weapon, in both the modalities and in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -694,7 +723,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 0, 3);
         ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(3);
@@ -715,7 +744,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 0, 3);
         tester.clear();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(3);
@@ -730,7 +759,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 0, 3);
         tester.clear();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(2);
@@ -755,7 +784,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 0, 3);
         tester.clear();
-        for(int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(2);
@@ -781,6 +810,7 @@ public class GameLogicTest {
 
     /**
      * Tests the usage of the ZX-2 weapon, in both the modalities and in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -792,7 +822,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 0, 0);
         map.setPlayerPosition(p4, 1, 3);
         ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(1);
@@ -807,7 +837,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 2, 3);
         map.setPlayerPosition(p4, 1, 2);
         tester.clear();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(1);
@@ -830,7 +860,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 2, 3);
         map.setPlayerPosition(p4, 1, 2);
         tester.clear();
-        for(int i = 0; i < 7; i++) {
+        for (int i = 0; i < 7; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setMarks(1);
@@ -869,6 +899,7 @@ public class GameLogicTest {
 
     /**
      * Tests the usage of the Shotgun weapon, in both the modalities and in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -881,16 +912,16 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 0, 0);
         map.setPlayerPosition(p4, 1, 3);
         ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(3);
             tester.get(i).get(0).setTarget(p4);
         }
-        tester.get(0).get(0).setPosition(map.getCell(1,2));
-        tester.get(1).get(0).setPosition(map.getCell(0,3));
-        tester.get(2).get(0).setPosition(map.getCell(1,3));
-        tester.get(3).get(0).setPosition(map.getCell(2,3));
+        tester.get(0).get(0).setPosition(map.getCell(1, 2));
+        tester.get(1).get(0).setPosition(map.getCell(0, 3));
+        tester.get(2).get(0).setPosition(map.getCell(1, 3));
+        tester.get(3).get(0).setPosition(map.getCell(2, 3));
         tester.sort(Comparator.comparing(a -> a.get(0)));
         assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
 
@@ -899,19 +930,19 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 0, 0);
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
-        for(int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(3);
-            if(i < 3) tester.get(i).get(0).setTarget(p2);
+            if (i < 3) tester.get(i).get(0).setTarget(p2);
             else tester.get(i).get(0).setTarget(p4);
         }
-        tester.get(0).get(0).setPosition(map.getCell(1,3));
-        tester.get(1).get(0).setPosition(map.getCell(2,3));
-        tester.get(2).get(0).setPosition(map.getCell(2,2));
-        tester.get(3).get(0).setPosition(map.getCell(1,3));
-        tester.get(4).get(0).setPosition(map.getCell(2,3));
-        tester.get(5).get(0).setPosition(map.getCell(2,2));
+        tester.get(0).get(0).setPosition(map.getCell(1, 3));
+        tester.get(1).get(0).setPosition(map.getCell(2, 3));
+        tester.get(2).get(0).setPosition(map.getCell(2, 2));
+        tester.get(3).get(0).setPosition(map.getCell(1, 3));
+        tester.get(4).get(0).setPosition(map.getCell(2, 3));
+        tester.get(5).get(0).setPosition(map.getCell(2, 2));
         tester.sort(Comparator.comparing(a -> a.get(0)));
         assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
 
@@ -938,7 +969,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 2, 2);
         map.setPlayerPosition(p4, 2, 2);
         tester.clear();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(2);
@@ -958,6 +989,7 @@ public class GameLogicTest {
 
     /**
      * Tests the usage of the Power Glove weapon, in both the modalities and in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -976,7 +1008,7 @@ public class GameLogicTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(0).setMarks(2);
         tester.get(0).add(new Damage());
-        tester.get(0).get(1).setPosition(map.getCell(1,2));
+        tester.get(0).get(1).setPosition(map.getCell(1, 2));
         tester.get(0).get(1).setTarget(p1);
         assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
 
@@ -985,7 +1017,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 1, 3);
         tester.clear();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(1);
@@ -996,9 +1028,9 @@ public class GameLogicTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
         tester.get(2).get(0).setTarget(p4);
-        tester.get(0).get(1).setPosition(map.getCell(0,2));
-        tester.get(1).get(1).setPosition(map.getCell(1,3));
-        tester.get(2).get(1).setPosition(map.getCell(1,3));
+        tester.get(0).get(1).setPosition(map.getCell(0, 2));
+        tester.get(1).get(1).setPosition(map.getCell(1, 3));
+        tester.get(2).get(1).setPosition(map.getCell(1, 3));
         assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
 
         map.setPlayerPosition(p1, 1, 1);
@@ -1013,17 +1045,16 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(2);
             tester.get(i).get(0).setTarget(p3);
             tester.get(i).add(new Damage());
-            if(i == 0) {
+            if (i == 0) {
                 tester.get(i).get(1).setTarget(p1);
                 tester.get(i).get(1).setPosition(map.getCellFromPlayer(p3));
-            }
-            else {
+            } else {
                 tester.get(i).get(1).setTarget(p4);
                 tester.get(i).get(1).setDamage(2);
                 tester.get(i).add(new Damage());
@@ -1038,23 +1069,21 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(2);
             tester.get(i).get(0).setTarget(p3);
             tester.get(i).add(new Damage());
-            if(i == 0) {
+            if (i == 0) {
 
                 tester.get(i).get(0).setTarget(p2);
                 tester.get(i).get(1).setTarget(p1);
                 tester.get(i).get(1).setPosition(map.getCellFromPlayer(p2));
-            }
-            else if(i == 1) {
+            } else if (i == 1) {
                 tester.get(i).get(1).setTarget(p1);
                 tester.get(i).get(1).setPosition(map.getCellFromPlayer(p3));
-            }
-            else {
+            } else {
                 tester.get(i).get(1).setTarget(p4);
                 tester.get(i).get(1).setDamage(2);
                 tester.get(i).add(new Damage());
@@ -1074,6 +1103,7 @@ public class GameLogicTest {
 
     /**
      * Tests the usage of the Shockwave weapon, in both the modalities and in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -1086,11 +1116,11 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 2);
         map.setPlayerPosition(p4, 2, 3);
         ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(1);
-            if(i > 2) {
+            if (i > 2) {
                 tester.get(i).add(new Damage());
                 tester.get(i).get(1).setDamage(1);
             }
@@ -1109,11 +1139,11 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 0, 1);
         map.setPlayerPosition(p4, 2, 1);
         tester.clear();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(1);
-            if(i > 1) {
+            if (i > 1) {
                 tester.get(i).add(new Damage());
                 tester.get(i).get(1).setDamage(1);
             }
@@ -1137,7 +1167,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
         tester.add(new ArrayList<>());
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.get(0).add(new Damage());
             tester.get(0).get(i).setDamage(1);
         }
@@ -1152,7 +1182,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p4, 2, 1);
         tester.clear();
         tester.add(new ArrayList<>());
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             tester.get(0).add(new Damage());
             tester.get(0).get(i).setDamage(1);
         }
@@ -1170,6 +1200,7 @@ public class GameLogicTest {
 
     /**
      * Tests the usage of the Sledgehammer weapon, in both the modalities and in different situations
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -1182,7 +1213,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 1, 3);
         ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(2);
@@ -1215,18 +1246,18 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 1);
         map.setPlayerPosition(p4, 2, 1);
         tester.clear();
-        for(int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(3);
-            tester.get(i).get(0).setTarget((i<3) ? p2 : p3);
+            tester.get(i).get(0).setTarget((i < 3) ? p2 : p3);
         }
-        tester.get(0).get(0).setPosition(map.getCell(0,1));
-        tester.get(1).get(0).setPosition(map.getCell(1,1));
-        tester.get(2).get(0).setPosition(map.getCell(2,1));
-        tester.get(3).get(0).setPosition(map.getCell(0,1));
-        tester.get(4).get(0).setPosition(map.getCell(1,1));
-        tester.get(5).get(0).setPosition(map.getCell(2,1));
+        tester.get(0).get(0).setPosition(map.getCell(0, 1));
+        tester.get(1).get(0).setPosition(map.getCell(1, 1));
+        tester.get(2).get(0).setPosition(map.getCell(2, 1));
+        tester.get(3).get(0).setPosition(map.getCell(0, 1));
+        tester.get(4).get(0).setPosition(map.getCell(1, 1));
+        tester.get(5).get(0).setPosition(map.getCell(2, 1));
         assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
 
         map.setPlayerPosition(p1, 2, 3);
@@ -1234,22 +1265,22 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 1);
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(3);
-            tester.get(i).get(0).setTarget((i<5) ? p2 : p4);
+            tester.get(i).get(0).setTarget((i < 5) ? p2 : p4);
         }
-        tester.get(0).get(0).setPosition(map.getCell(0,3));
-        tester.get(1).get(0).setPosition(map.getCell(1,3));
-        tester.get(2).get(0).setPosition(map.getCell(2,1));
-        tester.get(3).get(0).setPosition(map.getCell(2,2));
-        tester.get(4).get(0).setPosition(map.getCell(2,3));
-        tester.get(5).get(0).setPosition(map.getCell(0,3));
-        tester.get(6).get(0).setPosition(map.getCell(1,3));
-        tester.get(7).get(0).setPosition(map.getCell(2,1));
-        tester.get(8).get(0).setPosition(map.getCell(2,2));
-        tester.get(9).get(0).setPosition(map.getCell(2,3));
+        tester.get(0).get(0).setPosition(map.getCell(0, 3));
+        tester.get(1).get(0).setPosition(map.getCell(1, 3));
+        tester.get(2).get(0).setPosition(map.getCell(2, 1));
+        tester.get(3).get(0).setPosition(map.getCell(2, 2));
+        tester.get(4).get(0).setPosition(map.getCell(2, 3));
+        tester.get(5).get(0).setPosition(map.getCell(0, 3));
+        tester.get(6).get(0).setPosition(map.getCell(1, 3));
+        tester.get(7).get(0).setPosition(map.getCell(2, 1));
+        tester.get(8).get(0).setPosition(map.getCell(2, 2));
+        tester.get(9).get(0).setPosition(map.getCell(2, 3));
         assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
 
         map.setPlayerPosition(p1, 1, 1);
@@ -1261,7 +1292,8 @@ public class GameLogicTest {
     }
 
     /**
-     * Tests the usage of the Lock Rifle weapon and of its effects
+     * Tests the usage of the Lock Rifle weapon and all of its effects
+     *
      * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
      */
     @Test
@@ -1274,7 +1306,7 @@ public class GameLogicTest {
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 1, 3);
         ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(2);
@@ -1291,5 +1323,950 @@ public class GameLogicTest {
         map.setPlayerPosition(p4, 2, 0);
         tester.clear();
         assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 1, 3);
+        map.setPlayerPosition(p2, 1, 3);
+        map.setPlayerPosition(p3, 1, 3);
+        map.setPlayerPosition(p4, 1, 3);
+        ArrayList<Damage> forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(0);
+        tester.clear();
+        for (int i = 0; i < 2; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setMarks(1);
+            tester.get(i).get(0).setTarget(i == 0 ? p3 : p4);
+        }
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon));
+
+        map.setPlayerPosition(p1, 1, 3);
+        map.setPlayerPosition(p2, 1, 3);
+        map.setPlayerPosition(p3, 0, 0);
+        map.setPlayerPosition(p4, 0, 0);
+        forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(0);
+        tester.clear();
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon));
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 0, 1);
+        map.setPlayerPosition(p3, 0, 2);
+        map.setPlayerPosition(p4, 1, 3);
+        forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(1);
+        tester.clear();
+        for (int i = 0; i < 2; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setMarks(1);
+            tester.get(i).get(0).setTarget(i == 0 ? p2 : p4);
+        }
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon));
+    }
+
+    /**
+     * Tests the usage of the Machine Gun weapon and all of its effects
+     *
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test
+    public void testWeaponMachineGun() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Machine Gun"))) w = decks.drawWeapon();
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 0, 1);
+        map.setPlayerPosition(p3, 0, 3);
+        map.setPlayerPosition(p4, 2, 3);
+        ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(1);
+            if (i > 2) {
+                tester.get(i).add(new Damage());
+                tester.get(i).get(1).setDamage(1);
+            }
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(1).get(0).setTarget(p3);
+        tester.get(2).get(0).setTarget(p4);
+        tester.get(3).get(0).setTarget(p2);
+        tester.get(4).get(0).setTarget(p2);
+        tester.get(5).get(0).setTarget(p3);
+        tester.get(3).get(1).setTarget(p3);
+        tester.get(4).get(1).setTarget(p4);
+        tester.get(5).get(1).setTarget(p4);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 1, 1);
+        map.setPlayerPosition(p2, 0, 0);
+        map.setPlayerPosition(p3, 0, 3);
+        map.setPlayerPosition(p4, 2, 3);
+        tester.clear();
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 0, 1);
+        map.setPlayerPosition(p3, 0, 2);
+        map.setPlayerPosition(p4, 1, 3);
+        ArrayList<Damage> forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(3);
+        tester.clear();
+        ArrayList<ArrayList<Damage>> forOrder = gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon);
+        for (int i = 0; i < 2; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(1);
+            tester.get(i).get(0).setTarget(forOrder.get(0).get(0).getTarget() == p2 ? p2 : p3);
+        }
+        tester.get(1).get(0).setTarget(tester.get(0).get(0).getTarget() == p2 ? p3 : p2);
+        assertEquals(tester, forOrder);
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 0, 1);
+        map.setPlayerPosition(p3, 0, 2);
+        map.setPlayerPosition(p4, 1, 3);
+        forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(3);
+        forPotentiableWeapon.addAll(gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon).get(0));
+        Player alreadyShot = forPotentiableWeapon.get(2).getTarget();
+        Player toShoot = (alreadyShot == p2) ? p3 : p2;
+        tester.clear();
+        for (int i = 0; i < 3; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(1);
+            tester.get(i).get(0).setTarget((i == 1) ? p4 : toShoot);
+            if (i == 2) {
+                tester.get(i).add(new Damage());
+                tester.get(i).get(1).setTarget(p4);
+                tester.get(i).get(1).setDamage(1);
+            }
+        }
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon));
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 0, 1);
+        map.setPlayerPosition(p3, 0, 2);
+        map.setPlayerPosition(p4, 1, 3);
+        forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(3);
+        tester.clear();
+        for (int i = 0; i < 5; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(1);
+            if (i > 2) {
+                tester.get(i).add(new Damage());
+                tester.get(i).get(1).setTarget(p4);
+                tester.get(i).get(1).setDamage(1);
+            }
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(1).get(0).setTarget(p3);
+        tester.get(2).get(0).setTarget(p4);
+        tester.get(3).get(0).setTarget(p2);
+        tester.get(4).get(0).setTarget(p3);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon));
+    }
+
+    /**
+     * Tests an exception when the Machine Gun weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = NullPointerException.class)
+    public void testMachineGunNullPointerExceptionEffect1() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Machine Gun"))) w = decks.drawWeapon();
+        gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null);
+    }
+
+    /**
+     * Tests an exception when the Machine Gun weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = RuntimeException.class)
+    public void testMachineGunRuntimeExceptionEffect1() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Machine Gun"))) w = decks.drawWeapon();
+        ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
+        gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon);
+    }
+
+    /**
+     * Tests an exception when the Machine Gun weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = NullPointerException.class)
+    public void testMachineGunNullPointerExceptionEffect2() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Machine Gun"))) w = decks.drawWeapon();
+        gameLogicTest.useEffect(p1, w.getEffects().get(2), w, null);
+    }
+
+    /**
+     * Tests an exception when the Machine Gun weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = RuntimeException.class)
+    public void testMachineGunRuntimeExceptionEffect2() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Machine Gun"))) w = decks.drawWeapon();
+        ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
+        gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon);
+    }
+
+    /**
+     * Tests the usage of the T.H.O.R. weapon and all of its effects
+     *
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test
+    public void testWeaponTHOR() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("T.H.O.R."))) w = decks.drawWeapon();
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 0, 1);
+        map.setPlayerPosition(p3, 1, 0);
+        map.setPlayerPosition(p4, 2, 1);
+        ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
+        tester.add(new ArrayList<>());
+        tester.get(0).add(new Damage());
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(0).get(0).setDamage(2);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 1, 3);
+        map.setPlayerPosition(p4, 2, 2);
+        tester.clear();
+        for (int i = 0; i < 3; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(2);
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(1).get(0).setTarget(p3);
+        tester.get(2).get(0).setTarget(p4);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 1);
+        map.setPlayerPosition(p3, 1, 0);
+        map.setPlayerPosition(p4, 2, 0);
+        tester.clear();
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 0, 1);
+        map.setPlayerPosition(p3, 1, 0);
+        map.setPlayerPosition(p4, 2, 1);
+        tester.clear();
+        ArrayList<Damage> forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(0);
+        tester.add(new ArrayList<>());
+        tester.get(0).add(new Damage());
+        tester.get(0).get(0).setTarget(p3);
+        tester.get(0).get(0).setDamage(1);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 1, 3);
+        map.setPlayerPosition(p4, 2, 2);
+        tester.clear();
+        forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(0);
+        for (int i = 0; i < 2; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(1);
+        }
+        tester.get(0).get(0).setTarget(p3);
+        tester.get(1).get(0).setTarget(p4);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 0, 0);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(0);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon));
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 0, 1);
+        map.setPlayerPosition(p3, 1, 0);
+        map.setPlayerPosition(p4, 2, 1);
+        tester.clear();
+        forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(0);
+        forPotentiableWeapon.addAll(gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon).get(0));
+        tester.add(new ArrayList<>());
+        tester.get(0).add(new Damage());
+        tester.get(0).get(0).setTarget(p4);
+        tester.get(0).get(0).setDamage(2);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 1, 3);
+        map.setPlayerPosition(p4, 2, 2);
+        tester.clear();
+        forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(0);
+        forPotentiableWeapon.addAll(gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon).get(0));
+        for (int i = 0; i < 1; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(2);
+        }
+        tester.get(0).get(0).setTarget(p4);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 1, 3);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(0);
+        forPotentiableWeapon.addAll(gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon).get(0));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon));
+    }
+
+    /**
+     * Tests an exception when the T.H.O.R. weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = NullPointerException.class)
+    public void testTHORNullPointerExceptionEffect1() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("T.H.O.R."))) w = decks.drawWeapon();
+        gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null);
+    }
+
+    /**
+     * Tests an exception when the T.H.O.R. weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = RuntimeException.class)
+    public void testTHORRuntimeExceptionEffect1() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("T.H.O.R."))) w = decks.drawWeapon();
+        ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
+        gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon);
+    }
+
+    /**
+     * Tests an exception when the T.H.O.R. weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = NullPointerException.class)
+    public void testTHORNullPointerExceptionEffect2() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("T.H.O.R."))) w = decks.drawWeapon();
+        gameLogicTest.useEffect(p1, w.getEffects().get(2), w, null);
+    }
+
+    /**
+     * Tests an exception when the T.H.O.R. weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = RuntimeException.class)
+    public void testTHORRuntimeExceptionEffect2() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("T.H.O.R."))) w = decks.drawWeapon();
+        ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
+        gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon);
+    }
+
+    /**
+     * Tests the usage of the Plasma Gun weapon and all of its effects
+     *
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test
+    public void testWeaponPlasmaGun() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Plasma Gun"))) w = decks.drawWeapon();
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 0, 1);
+        map.setPlayerPosition(p3, 1, 0);
+        map.setPlayerPosition(p4, 2, 1);
+        ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
+        tester.add(new ArrayList<>());
+        tester.get(0).add(new Damage());
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(0).get(0).setDamage(2);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 1, 3);
+        map.setPlayerPosition(p4, 2, 2);
+        tester.clear();
+        for (int i = 0; i < 3; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(2);
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(1).get(0).setTarget(p3);
+        tester.get(2).get(0).setTarget(p4);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 1);
+        map.setPlayerPosition(p3, 1, 0);
+        map.setPlayerPosition(p4, 2, 0);
+        tester.clear();
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 1, 1);
+        map.setPlayerPosition(p2, 0, 0);
+        map.setPlayerPosition(p3, 0, 0);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        for (int i = 0; i < 6; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setTarget(p1);
+        }
+        tester.get(0).get(0).setPosition(board.getMap().getCell(0, 0));
+        tester.get(1).get(0).setPosition(board.getMap().getCell(0, 1));
+        tester.get(2).get(0).setPosition(board.getMap().getCell(0, 2));
+        tester.get(3).get(0).setPosition(board.getMap().getCell(2, 0));
+        tester.get(4).get(0).setPosition(board.getMap().getCell(2, 1));
+        tester.get(5).get(0).setPosition(board.getMap().getCell(2, 2));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
+
+        map.setPlayerPosition(p1, 1, 2);
+        map.setPlayerPosition(p2, 0, 0);
+        map.setPlayerPosition(p3, 0, 0);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        for (int i = 0; i < 7; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setTarget(p1);
+        }
+        tester.get(0).get(0).setPosition(board.getMap().getCell(0, 1));
+        tester.get(1).get(0).setPosition(board.getMap().getCell(0, 2));
+        tester.get(2).get(0).setPosition(board.getMap().getCell(0, 3));
+        tester.get(3).get(0).setPosition(board.getMap().getCell(1, 3));
+        tester.get(4).get(0).setPosition(board.getMap().getCell(2, 1));
+        tester.get(5).get(0).setPosition(board.getMap().getCell(2, 2));
+        tester.get(6).get(0).setPosition(board.getMap().getCell(2, 3));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
+
+        map.setPlayerPosition(p1, 0, 0);
+        map.setPlayerPosition(p2, 0, 0);
+        map.setPlayerPosition(p3, 0, 0);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        for (int i = 0; i < 5; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setTarget(p1);
+        }
+        tester.get(0).get(0).setPosition(board.getMap().getCell(0, 1));
+        tester.get(1).get(0).setPosition(board.getMap().getCell(0, 2));
+        tester.get(2).get(0).setPosition(board.getMap().getCell(1, 0));
+        tester.get(3).get(0).setPosition(board.getMap().getCell(1, 1));
+        tester.get(4).get(0).setPosition(board.getMap().getCell(2, 0));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 0, 1);
+        map.setPlayerPosition(p3, 1, 0);
+        map.setPlayerPosition(p4, 2, 1);
+        tester.clear();
+        ArrayList<Damage> forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(0);
+        tester.add(new ArrayList<>());
+        tester.get(0).add(new Damage());
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(0).get(0).setDamage(1);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 1, 3);
+        map.setPlayerPosition(p4, 2, 2);
+        tester.clear();
+        forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(1);
+        tester.add(new ArrayList<>());
+        tester.get(0).add(new Damage());
+        tester.get(0).get(0).setTarget(p3);
+        tester.get(0).get(0).setDamage(1);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon));
+    }
+
+    /**
+     * Tests an exception when the Plasma Gun weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = NullPointerException.class)
+    public void testPlasmaGunNullPointerException() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Plasma Gun"))) w = decks.drawWeapon();
+        gameLogicTest.useEffect(p1, w.getEffects().get(2), w, null);
+    }
+
+    /**
+     * Tests an exception when the Plasma Gun weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = RuntimeException.class)
+    public void testPlasmaGunRuntimeException() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Plasma Gun"))) w = decks.drawWeapon();
+        ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
+        gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon);
+    }
+
+    /**
+     * Tests the usage of the Vortex Cannon weapon and all of its effects
+     *
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test
+    public void testWeaponVortexCannon() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Vortex Cannon"))) w = decks.drawWeapon();
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 1, 2);
+        map.setPlayerPosition(p4, 0, 0);
+        ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(2);
+            tester.get(i).get(0).setTarget((i < 3) ? p2 : p3);
+        }
+        tester.get(0).get(0).setPosition(map.getCell(1, 2));
+        tester.get(1).get(0).setPosition(map.getCell(1, 3));
+        tester.get(2).get(0).setPosition(map.getCell(2, 2));
+        tester.get(3).get(0).setPosition(map.getCell(1, 2));
+        tester.get(4).get(0).setPosition(map.getCell(1, 3));
+        tester.get(5).get(0).setPosition(map.getCell(2, 2));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 3);
+        map.setPlayerPosition(p3, 2, 2);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        for (int i = 0; i < 4; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(2);
+            tester.get(i).get(0).setTarget((i < 2) ? p2 : p3);
+        }
+        tester.get(0).get(0).setPosition(map.getCell(1, 2));
+        tester.get(1).get(0).setPosition(map.getCell(1, 3));
+        tester.get(2).get(0).setPosition(map.getCell(1, 2));
+        tester.get(3).get(0).setPosition(map.getCell(2, 2));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 0, 0);
+        map.setPlayerPosition(p2, 0, 3);
+        map.setPlayerPosition(p3, 2, 0);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        for (int i = 0; i < 4; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(2);
+            tester.get(i).get(0).setTarget((i > 1) ? p4 : p3);
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(0).get(0).setPosition(map.getCell(0, 2));
+        tester.get(1).get(0).setPosition(map.getCell(1, 0));
+        tester.get(2).get(0).setPosition(map.getCell(0, 1));
+        tester.get(3).get(0).setPosition(map.getCell(1, 0));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 0, 0);
+        map.setPlayerPosition(p2, 1, 3);
+        map.setPlayerPosition(p3, 2, 1);
+        map.setPlayerPosition(p4, 2, 2);
+        tester.clear();
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 3);
+        map.setPlayerPosition(p3, 2, 2);
+        map.setPlayerPosition(p4, 1, 3);
+        ArrayList<Damage> forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(0);
+        tester.clear();
+        for (int i = 0; i < 2; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(1);
+            tester.get(i).get(0).setTarget((i == 0) ? p3 : p4);
+        }
+        tester.get(0).get(0).setPosition(map.getCell(1, 2));
+        tester.get(1).get(0).setPosition(map.getCell(1, 2));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, forPotentiableWeapon));
+    }
+
+    /**
+     * Tests the usage of the Grenade Launcher weapon and all of its effects
+     *
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test
+    public void testWeaponGrenadeLauncher() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Grenade Launcher"))) w = decks.drawWeapon();
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 1, 2);
+        map.setPlayerPosition(p4, 0, 0);
+        ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(1);
+            tester.get(i).get(0).setTarget((i < 4) ? p2 : p3);
+        }
+        tester.get(0).get(0).setPosition(map.getCell(0, 2));
+        tester.get(1).get(0).setPosition(map.getCell(1, 2));
+        tester.get(2).get(0).setPosition(map.getCell(1, 3));
+        tester.get(3).get(0).setPosition(map.getCell(2, 2));
+        tester.get(4).get(0).setPosition(map.getCell(0, 2));
+        tester.get(5).get(0).setPosition(map.getCell(1, 2));
+        tester.get(6).get(0).setPosition(map.getCell(1, 3));
+        tester.get(7).get(0).setPosition(map.getCell(2, 2));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 1, 1);
+        map.setPlayerPosition(p2, 1, 1);
+        map.setPlayerPosition(p3, 2, 0);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        for (int i = 0; i < 6; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(1);
+            tester.get(i).get(0).setTarget((i < 3) ? p2 : p3);
+        }
+        tester.get(0).get(0).setPosition(map.getCell(0, 1));
+        tester.get(1).get(0).setPosition(map.getCell(1, 1));
+        tester.get(2).get(0).setPosition(map.getCell(2, 1));
+        tester.get(3).get(0).setPosition(map.getCell(1, 0));
+        tester.get(4).get(0).setPosition(map.getCell(2, 0));
+        tester.get(5).get(0).setPosition(map.getCell(2, 1));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 1, 1);
+        map.setPlayerPosition(p2, 0, 2);
+        map.setPlayerPosition(p3, 2, 0);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        for (int i = 0; i < 7; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(1);
+            tester.get(i).get(0).setTarget((i < 4) ? p2 : p3);
+        }
+        tester.get(0).get(0).setPosition(map.getCell(0, 1));
+        tester.get(1).get(0).setPosition(map.getCell(0, 2));
+        tester.get(2).get(0).setPosition(map.getCell(0, 3));
+        tester.get(3).get(0).setPosition(map.getCell(1, 2));
+        tester.get(4).get(0).setPosition(map.getCell(1, 0));
+        tester.get(5).get(0).setPosition(map.getCell(2, 0));
+        tester.get(6).get(0).setPosition(map.getCell(2, 1));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 1);
+        map.setPlayerPosition(p3, 1, 0);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 1, 2);
+        map.setPlayerPosition(p4, 1, 3);
+        tester.clear();
+        for (int i = 0; i < 2; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(1);
+            if(i==0) {
+                tester.get(i).add(new Damage());
+                tester.get(i).get(1).setDamage(1);
+            }
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(0).get(1).setTarget(p3);
+        tester.get(1).get(0).setTarget(p4);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
+
+        map.setPlayerPosition(p1, 0, 3);
+        map.setPlayerPosition(p2, 0, 3);
+        map.setPlayerPosition(p3, 0, 3);
+        map.setPlayerPosition(p4, 1, 3);
+        tester.clear();
+        for (int i = 0; i < 2; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(1);
+            if(i==0) {
+                tester.get(i).add(new Damage());
+                tester.get(i).get(1).setDamage(1);
+            }
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(0).get(1).setTarget(p3);
+        tester.get(1).get(0).setTarget(p4);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 1);
+        map.setPlayerPosition(p3, 0, 2);
+        map.setPlayerPosition(p4, 1, 0);
+        tester.clear();
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
+    }
+
+    /**
+     * Tests the usage of the Rocket Launcher weapon and all of its effects, except the "with rocket jump" one, as it is the same as the "with phase glide" effect of the "Plasma Gun" weapon
+     *
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test
+    public void testWeaponRocketLauncher() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Rocket Launcher"))) w = decks.drawWeapon();
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 1, 2);
+        map.setPlayerPosition(p4, 0, 0);
+        ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(2);
+            tester.get(i).get(0).setTarget((i < 4) ? p2 : p3);
+        }
+        tester.get(0).get(0).setPosition(map.getCell(0, 2));
+        tester.get(1).get(0).setPosition(map.getCell(1, 2));
+        tester.get(2).get(0).setPosition(map.getCell(1, 3));
+        tester.get(3).get(0).setPosition(map.getCell(2, 2));
+        tester.get(4).get(0).setPosition(map.getCell(0, 2));
+        tester.get(5).get(0).setPosition(map.getCell(1, 2));
+        tester.get(6).get(0).setPosition(map.getCell(1, 3));
+        tester.get(7).get(0).setPosition(map.getCell(2, 2));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 1, 1);
+        map.setPlayerPosition(p2, 0, 2);
+        map.setPlayerPosition(p3, 1, 1);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        for (int i = 0; i < 4; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(2);
+            tester.get(i).get(0).setTarget(p2);
+        }
+        tester.get(0).get(0).setPosition(map.getCell(0, 1));
+        tester.get(1).get(0).setPosition(map.getCell(0, 2));
+        tester.get(2).get(0).setPosition(map.getCell(0, 3));
+        tester.get(3).get(0).setPosition(map.getCell(1, 2));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 1);
+        map.setPlayerPosition(p3, 1, 0);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 1, 2);
+        map.setPlayerPosition(p3, 1, 2);
+        map.setPlayerPosition(p4, 1, 2);
+        tester.clear();
+        ArrayList<Damage> forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(1);
+        tester.add(new ArrayList<>());
+        for (int i = 0; i < 3; i++) {
+            tester.get(0).add(new Damage());
+            tester.get(0).get(i).setDamage(1);
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(0).get(1).setTarget(p3);
+        tester.get(0).get(2).setTarget(p4);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon));
+
+        map.setPlayerPosition(p1, 1, 1);
+        map.setPlayerPosition(p2, 0, 2);
+        map.setPlayerPosition(p3, 0, 2);
+        map.setPlayerPosition(p4, 0, 2);
+        tester.clear();
+        forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(0);
+        tester.add(new ArrayList<>());
+        for (int i = 0; i < 3; i++) {
+            tester.get(0).add(new Damage());
+            tester.get(0).get(i).setDamage(1);
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(0).get(1).setTarget(p3);
+        tester.get(0).get(2).setTarget(p4);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon));
+    }
+
+    /**
+     * Tests an exception when the Rocket Launcher weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = NullPointerException.class)
+    public void testRocketLauncherNullPointerException() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Rocket Launcher"))) w = decks.drawWeapon();
+        gameLogicTest.useEffect(p1, w.getEffects().get(2), w, null);
+    }
+
+    /**
+     * Tests an exception when the Rocket Launcher weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = RuntimeException.class)
+    public void testRocketLauncherRuntimeException() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Rocket Launcher"))) w = decks.drawWeapon();
+        ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
+        gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon);
+    }
+
+    /**
+     * Tests the usage of the Rocket Launcher weapon and all of its effects
+     *
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test
+    public void testWeaponCyberblade() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Cyberblade"))) w = decks.drawWeapon();
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 2, 3);
+        map.setPlayerPosition(p3, 2, 3);
+        map.setPlayerPosition(p4, 2, 3);
+        ArrayList<ArrayList<Damage>> tester = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(2);
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(1).get(0).setTarget(p3);
+        tester.get(2).get(0).setTarget(p4);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 0, 0);
+        map.setPlayerPosition(p3, 1, 1);
+        map.setPlayerPosition(p4, 0, 1);
+        tester.clear();
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null));
+
+        map.setPlayerPosition(p1, 0, 0);
+        map.setPlayerPosition(p2, 2, 3);
+        map.setPlayerPosition(p3, 2, 3);
+        map.setPlayerPosition(p4, 2, 3);
+        tester.clear();
+        for (int i = 0; i < 2; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setTarget(p1);
+        }
+        tester.get(0).get(0).setPosition(map.getCell(0,1));
+        tester.get(1).get(0).setPosition(map.getCell(1,0));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
+
+        map.setPlayerPosition(p1, 1, 1);
+        map.setPlayerPosition(p2, 2, 3);
+        map.setPlayerPosition(p3, 2, 3);
+        map.setPlayerPosition(p4, 2, 3);
+        tester.clear();
+        for (int i = 0; i < 2; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setTarget(p1);
+        }
+        tester.get(0).get(0).setPosition(map.getCell(0,1));
+        tester.get(1).get(0).setPosition(map.getCell(2,1));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
+
+        map.setPlayerPosition(p1, 1, 2);
+        map.setPlayerPosition(p2, 2, 3);
+        map.setPlayerPosition(p3, 2, 3);
+        map.setPlayerPosition(p4, 2, 3);
+        tester.clear();
+        for (int i = 0; i < 3; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setTarget(p1);
+        }
+        tester.get(0).get(0).setPosition(map.getCell(0,2));
+        tester.get(1).get(0).setPosition(map.getCell(1,3));
+        tester.get(2).get(0).setPosition(map.getCell(2,2));
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(1), w, null));
+
+        map.setPlayerPosition(p1, 2, 3);
+        map.setPlayerPosition(p2, 2, 3);
+        map.setPlayerPosition(p3, 2, 3);
+        map.setPlayerPosition(p4, 2, 3);
+        tester.clear();
+        ArrayList<Damage> forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(0);
+        for (int i = 0; i < 2; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(2);
+        }
+        tester.get(0).get(0).setTarget(p3);
+        tester.get(1).get(0).setTarget(p4);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon));
+
+        map.setPlayerPosition(p1, 0, 0);
+        map.setPlayerPosition(p2, 0, 0);
+        map.setPlayerPosition(p3, 0, 0);
+        map.setPlayerPosition(p4, 0, 0);
+        tester.clear();
+        forPotentiableWeapon = gameLogicTest.useEffect(p1, w.getEffects().get(0), w, null).get(2);
+        for (int i = 0; i < 2; i++) {
+            tester.add(new ArrayList<>());
+            tester.get(i).add(new Damage());
+            tester.get(i).get(0).setDamage(2);
+        }
+        tester.get(0).get(0).setTarget(p2);
+        tester.get(1).get(0).setTarget(p3);
+        assertEquals(tester, gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon));
+    }
+
+    /**
+     * Tests an exception when the Cyberblade weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = NullPointerException.class)
+    public void testCyberbladeNullPointerException() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Cyberblade"))) w = decks.drawWeapon();
+        gameLogicTest.useEffect(p1, w.getEffects().get(2), w, null);
+    }
+
+    /**
+     * Tests an exception when the Cyberblade weapon's optional effects are used in a wrong way
+     * @see GameLogic#useEffect(Player, Effect, Weapon, ArrayList)
+     */
+    @Test (expected = RuntimeException.class)
+    public void testCyberbladeRuntimeException() {
+        Weapon w = decks.drawWeapon();
+        while (!(w.getName().equals("Cyberblade"))) w = decks.drawWeapon();
+        ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
+        gameLogicTest.useEffect(p1, w.getEffects().get(2), w, forPotentiableWeapon);
     }
 }
