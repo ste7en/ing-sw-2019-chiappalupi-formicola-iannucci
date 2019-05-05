@@ -22,8 +22,8 @@ public enum EffectProperty {
     /**
      * Saves if the target/s must be different from the others effects of the weapon; (-1) if target/s must be the same
      */
+    AdditionalTarget,
     DifferentFromEffect,
-    DifferentTarget,
 
     /**
      * Saves if a player can move a target before using the effect
@@ -46,7 +46,7 @@ public enum EffectProperty {
     MultipleCell,
 
     /**
-     * Saves if the effect is applied from the point of view of another target
+     * Saves if the effect is applied from the point of view of another target; (negative) if its value refers to the effect instead of the target
      */
     EffectOnTarget,
 
@@ -61,7 +61,7 @@ public enum EffectProperty {
     Mark,
 
     /**
-     * Saves if the effect was too different from the others and define new properties for it would be worthless
+     * Saves if the effect was too different from the others and defining new properties for it would be worthless (and over-engineered)
      */
     Hard
 }

@@ -51,10 +51,10 @@ public class Damage implements Comparable<Damage> {
     @Override
     public String toString() {
         String s = "Damage:\n";
-        if(target != null) s = s + "target: " + target.getNickname() + "\n";
-        if(position != null) s = s + "position: " + position + "\n";
-        if(damage != 0) s = s + "damages: " + damage + "\n";
-        if(marks != 0) s = s + "marks: " + marks + "\n";
+        if(target != null) s = s + "target: " + target.getNickname();
+        if(position != null) s = s + "\nposition: " + position;
+        if(damage != 0) s = s + "\ndamages: " + damage;
+        if(marks != 0) s = s + "\nmarks: " + marks;
         return s;
     }
 

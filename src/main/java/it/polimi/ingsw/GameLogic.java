@@ -1,5 +1,8 @@
 package it.polimi.ingsw;
 
+import sun.awt.image.ImageWatched;
+
+import java.awt.image.AreaAveragingScaleFilter;
 import java.util.*;
 
 import static java.lang.Math.pow;
@@ -36,37 +39,110 @@ public class GameLogic {
 
     public void addPlayer(Player player) { }
 
+    /**
+     * This method computes all of the possible alternatives when using a weapon: the player will choose the one he prefers from the list of options returned
+     * @param shooter it's the player who is using the weapon
+     * @param effect it's the effect that is being used
+     * @param weapon it's the weapon that is being used
+     * @param forPotentiableWeapons this List is only used when the effect is an additional one; it's the list of damages that has been already done with the other effects of the same weapon
+     * @return the list of options that the player can choose
+     */
     public ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, Weapon weapon, ArrayList<Damage> forPotentiableWeapons) {
         GameMap map = board.getMap();
         ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
         switch(weapon.getType()) {
             case SimpleWeapon: {
-                return computeDamages(effect, shooter);
+                return computeDamages(effect, shooter, null);
             }
             case SelectableWeapon: {
-                if (effect.getProperties().containsKey(EffectProperty.CanMoveBefore)) {
-                    //TODO: Which Player do you wanna use this effect on? Randomizing for testing and implementation purposes
-                    Random r = new Random();
-                    Player target = players.get(r.nextInt(players.size()));
-                    while(computeMovement(effect, shooter, target).size()==0) target = players.get(r.nextInt(players.size()));
-                    ArrayList<Cell> movements = computeMovement(effect, shooter, target);
-                    for(int i = 0; i < movements.size(); i++) {
-                        solutions.add(new ArrayList<>());
-                        solutions.get(i).add(new Damage());
-                        solutions.get(i).get(0).setTarget(target);
-                        solutions.get(i).get(0).setDamage(effect.getProperties().get(EffectProperty.Damage));
-                        if(effect.getProperties().containsKey(EffectProperty.Mark)) solutions.get(i).get(0).setMarks(effect.getProperties().get(EffectProperty.Mark));
-                        solutions.get(i).get(0).setPosition(movements.get(i));
-                    }
-                    return solutions;
-                }
+                if (effect.getProperties().containsKey(EffectProperty.CanMoveBefore))
+                    return computeDamageCanMoveBefore(effect, shooter, null);
                 if(effect.getProperties().containsKey(EffectProperty.Hard))
                     if(effect.getProperties().get(EffectProperty.Hard) == 0) return inBarbecueMode(shooter);
-                solutions = computeDamages(effect, shooter);
-                return solutions;
+                return computeDamages(effect, shooter, null);
             }
             case PotentiableWeapon: {
-                if(effect.getType() == EffectType.Basic) return computeDamages(effect, shooter);
+                if(weapon.getEffects().get(0) == effect) {
+                    boolean canMoveBefore = effect.getProperties().containsKey(EffectProperty.CanMoveBefore);
+                    return canMoveBefore ? computeDamageCanMoveBefore(effect, shooter, null) : computeDamages(effect, shooter, null);
+                }
+                else {
+                    if(effect.getProperties().containsKey(EffectProperty.MoveMe) && effect.getProperties().get(EffectProperty.MoveMe) > 0) {
+                        ArrayList<Cell> movements = new ArrayList<>();
+                        recursiveMovementsEverywhere(movements, effect.getProperties().get(EffectProperty.MoveMe), shooter, map);
+                        Set<Cell> movementsDuplicateEliminator = new HashSet<>(movements);
+                        movements.clear();
+                        movements.addAll(movementsDuplicateEliminator);
+                        movements.sort(Cell::compareTo);
+                        for(Cell cell : movements)
+                            if(cell != map.getCellFromPlayer(shooter)) {
+                                Damage damage = new Damage();
+                                damage.setTarget(shooter);
+                                damage.setPosition(cell);
+                                ArrayList<Damage> arrayD = new ArrayList<>();
+                                arrayD.add(damage);
+                                solutions.add(arrayD);
+                            }
+                        return solutions;
+                    }
+                    if(effect.getProperties().containsKey(EffectProperty.AdditionalTarget)) {
+                        if(forPotentiableWeapons == null) throw new NullPointerException("This effects needs the history of the damages made by the other effects to work!");
+                        if(forPotentiableWeapons.size() == 0) throw new RuntimeException("The history of damages made by the other effects can't be empty!");
+                        Set<Player> setForAdditionalEffects = new HashSet<>();
+                        for(Damage damage : forPotentiableWeapons) setForAdditionalEffects.add(damage.getTarget());
+                        ArrayList<Player> listForAdditionalEffects = new ArrayList<>(setForAdditionalEffects);
+                        return computeDamages(effect, shooter, listForAdditionalEffects);
+                    }
+                    if(effect.getProperties().containsKey(EffectProperty.EffectOnTarget)) {
+                        if(forPotentiableWeapons == null) throw new NullPointerException("This effects needs the history of the damages made by the other effects to work!");
+                        if(forPotentiableWeapons.size() == 0) throw new RuntimeException("The history of damages made by the other effects can't be empty!");
+                        int effectOnTarget = effect.getProperties().get(EffectProperty.EffectOnTarget);
+                        if(effectOnTarget < 0) effectOnTarget = (-1) * effectOnTarget;
+                        if(forPotentiableWeapons.size() == 0) return new ArrayList<>();
+                        ArrayList<Player> toNotShoot = new ArrayList<>();
+                        toNotShoot.add(shooter);
+                        if(! effect.getProperties().containsKey(EffectProperty.MultipleCell)) for(Damage damage : forPotentiableWeapons) toNotShoot.add(damage.getTarget());
+                        if(effect.getProperties().get(EffectProperty.EffectOnTarget) >= 0) solutions = useEffect(forPotentiableWeapons.get(effectOnTarget).getTarget(), weapon.getEffects().get(0), weapon, null);
+                        else {
+                            Effect box = new Effect();
+                            HashMap<EffectProperty, Integer> boxProperties = (HashMap<EffectProperty, Integer>)weapon.getEffects().get(effectOnTarget).getProperties().clone();
+                            boxProperties.remove(EffectProperty.EffectOnTarget);
+                            box.setProperties(boxProperties);
+                            solutions = computeDamages(box, forPotentiableWeapons.get(0).getTarget(), null);
+                            if (boxProperties.containsKey(EffectProperty.MultipleCell) && boxProperties.get(EffectProperty.MultipleCell) == 0) {
+                                Damage damage = new Damage();
+                                damage.setTarget(forPotentiableWeapons.get(0).getTarget());
+                                if(effect.getProperties().containsKey(EffectProperty.Damage)) damage.setDamage(effect.getProperties().get(EffectProperty.Damage));
+                                if(effect.getProperties().containsKey(EffectProperty.Mark)) damage.setDamage(effect.getProperties().get(EffectProperty.Mark));
+                                int i = 0;
+                                for(Damage d : solutions.get(0))
+                                    if(d.getTarget().compareTo(damage.getTarget()) < 0) i++;
+                                solutions.get(0).add(i, damage);
+                            }
+
+                        }
+                        ArrayList<ArrayList<Damage>> toRemove = new ArrayList<>();
+                        boolean condition = !effect.getProperties().get(EffectProperty.Damage).equals(weapon.getEffects().get(0).getProperties().get(EffectProperty.Damage));
+                        int updatedDamage = effect.getProperties().get(EffectProperty.Damage);
+                        if(condition) updatedDamage = effect.getProperties().get(EffectProperty.Damage);
+                        for(ArrayList<Damage> damages : solutions)
+                            for(Damage damage : damages) {
+                                if(toNotShoot.contains(damage.getTarget()))
+                                    toRemove.add(damages);
+                                if(condition) damage.setDamage(updatedDamage);
+                            }
+                        solutions.removeAll(toRemove);
+                        return solutions;
+                    }
+                    if(effect.getProperties().containsKey(EffectProperty.CanMoveBefore)) return computeDamageCanMoveBefore(effect, shooter, forPotentiableWeapons);
+                    if(effect.getProperties().containsKey(EffectProperty.Hard))
+                        if(effect.getProperties().get(EffectProperty.Hard) == 2) {
+                            if(forPotentiableWeapons == null) throw new NullPointerException("This effects needs the history of the damages made by the other effects to work!");
+                            if(forPotentiableWeapons.size() == 0) throw new RuntimeException("The history of damages made by the other effects can't be empty!");
+                            return withTurretTripod(shooter, forPotentiableWeapons);
+                        }
+                    return computeDamages(effect, shooter, null);
+                }
             }
         }
         return solutions;
@@ -79,16 +155,28 @@ public class GameLogic {
      * @param target it's the target of the shot
      * @return an ArrayList containing all the possible cells where the target can be moved
      */
-    public ArrayList<Cell> computeMovement(Effect effect, Player shooter, Player target) {
+    public ArrayList<Cell> computeMovement(Effect effect, Player shooter, Player target, Cell shooterPosition) {
         GameMap box = (GameMap)board.getMap().clone();
+        if(shooterPosition != null) box.setPlayerPosition(shooter, shooterPosition);
         ArrayList<Cell> possibleMovements = new ArrayList<>();
         if(effect.getProperties().containsKey(EffectProperty.CanMoveBefore)) {
-            if (effect.getProperties().get(EffectProperty.MaxDistance) == -1)
+            if (effect.getProperties().get(EffectProperty.MaxDistance) == -1) {
                 recursiveMovementsCanSee(possibleMovements, effect.getProperties().get(EffectProperty.CanMoveBefore), shooter, target, box);
+                if(effect.getProperties().containsKey(EffectProperty.MinDistance) && effect.getProperties().get(EffectProperty.MinDistance) > 0) {
+                    ArrayList<Cell> toRemove = new ArrayList<>();
+                    for(Cell cell : possibleMovements) {
+                        GameMap clone = (GameMap)board.getMap().clone();
+                        clone.setPlayerPosition(target, cell);
+                        if(!clone.getTargetsAtMinDistance(shooter, effect.getProperties().get(EffectProperty.MinDistance)).contains(target))
+                            toRemove.add(cell);
+                    }
+                    possibleMovements.removeAll(toRemove);
+                }
+            }
             else
                 recursiveMovementsInCell(possibleMovements, effect.getProperties().get(EffectProperty.CanMoveBefore), shooter, target, box, effect.getProperties().get(EffectProperty.MaxDistance));
         } else {
-            if(effect.getProperties().get(EffectProperty.CanMoveAfter) > 0) recursiveMovementsEverywhere(possibleMovements, effect.getProperties().get(EffectProperty.CanMoveAfter), shooter, target, box);
+            if(effect.getProperties().get(EffectProperty.CanMoveAfter) > 0) recursiveMovementsEverywhere(possibleMovements, effect.getProperties().get(EffectProperty.CanMoveAfter), target, box);
             else {
                 int distance = effect.getProperties().get(EffectProperty.CanMoveAfter) * (-1);
                 for(Direction direction : Direction.values()) {
@@ -119,11 +207,10 @@ public class GameLogic {
      * This method computes the possible movements of a target made by a weapon that has the ability to move players after the shot
      * @param movements it's the ArrayList where the possible movements are stored
      * @param distance it's the recursive counter
-     * @param shooter it's the Player who is using the weapon
      * @param target it's the Player who is being shot
      * @param map it's a map (not the game one) used for the recursion
      */
-    private void recursiveMovementsEverywhere (ArrayList<Cell> movements, Integer distance, Player shooter, Player target, GameMap map) {
+    private void recursiveMovementsEverywhere (ArrayList<Cell> movements, Integer distance, Player target, GameMap map) {
         if(distance == 0) {
                 movements.add(map.getCellFromPlayer(target));
                 return;
@@ -135,7 +222,7 @@ public class GameLogic {
             if(cell != null && map.isAOneStepValidMove(target, cell)) {
                 GameMap box = (GameMap)map.clone();
                 box.setPlayerPosition(target, cell);
-                recursiveMovementsEverywhere(movements, distance-1, shooter, target, box);
+                recursiveMovementsEverywhere(movements, distance-1, target, box);
             }
         }
     }
@@ -195,15 +282,20 @@ public class GameLogic {
 
     /**
      * Computes the ArrayList of damages from the effect and the damage when the former only depends from distances and max number of players
-     * @param effect the effect that is been using
+     * @param effect the effect that is being used
      * @param shooter the player who is using the effect
      * @return an ArrayList containing all of the possible solutions of damages
      */
-    private ArrayList<ArrayList<Damage>> computeDamages(Effect effect, Player shooter) {
+    private ArrayList<ArrayList<Damage>> computeDamages(Effect effect, Player shooter, ArrayList<Player> forAdditionalEffects) {
         GameMap map = board.getMap();
         ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
         ArrayList<Player> targets = generateTargetsFromDistances(effect, shooter, map);
-        ArrayList<ArrayList<Player>> targetsCombination = generateTargetsCombinations(effect, targets, shooter);
+        if(effect.getProperties().keySet().contains(EffectProperty.AdditionalTarget) && effect.getProperties().get(EffectProperty.AdditionalTarget) > 0)
+            targets.removeAll(forAdditionalEffects);
+        ArrayList<ArrayList<Player>> targetsCombination;
+        if(effect.getProperties().keySet().contains(EffectProperty.AdditionalTarget) && effect.getProperties().get(EffectProperty.AdditionalTarget) < 0)
+            targetsCombination = generateTargetsCombinations(effect, forAdditionalEffects, shooter);
+        else targetsCombination = generateTargetsCombinations(effect, targets, shooter);
         Damage d;
         ArrayList<Damage> arrayD;
         for(int i = 0; i < targetsCombination.size(); i++) {
@@ -237,7 +329,7 @@ public class GameLogic {
                 Damage temp = damages.get(0);
                 for (Damage damage : damages)
                     if (!movements.containsKey(damage.getTarget()))
-                        movements.put(damage.getTarget(), computeMovement(effect, shooter, damage.getTarget()));
+                        movements.put(damage.getTarget(), computeMovement(effect, shooter, damage.getTarget(), null));
                     Player target = temp.getTarget();
                     for (Cell cell : movements.get(target)) {
                         ArrayList<Damage> box = new ArrayList<>();
@@ -287,6 +379,37 @@ public class GameLogic {
     }
 
     /**
+     * Computes the ArrayList of damages when the effect that is being used has the ability to move players before attacking them
+     * @param effect it's the effect that is being used
+     * @param shooter it's the player who is using the effect
+     * @return an ArrayList containing all of the possible solutions of damages
+     */
+    private ArrayList<ArrayList<Damage>> computeDamageCanMoveBefore(Effect effect, Player shooter, ArrayList<Damage> forAdditionalEffects) {
+        ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
+        ArrayList<Player> targets = new ArrayList<>();
+        boolean optionalEffect = effect.getProperties().get(EffectProperty.CanMoveBefore) != -1 && forAdditionalEffects != null;
+        if(optionalEffect)  {
+            for(Player player : players)
+                if(player != shooter && computeMovement(effect, forAdditionalEffects.get(0).getTarget(), player, forAdditionalEffects.get(0).getPosition()).size() != 0) targets.add(player);
+        } else for(Player player : players)
+            if(computeMovement(effect, shooter, player, null).size() != 0) targets.add(player);
+        for(Player target : targets) {
+            ArrayList<Cell> movements = optionalEffect ? computeMovement(effect, forAdditionalEffects.get(0).getTarget(), target, forAdditionalEffects.get(0).getPosition()) : computeMovement(effect, shooter, target, null);
+            ArrayList<ArrayList<Damage>> solutionsBox = new ArrayList<>();
+            for(int i = 0; i < movements.size(); i++) {
+                solutionsBox.add(new ArrayList<>());
+                solutionsBox.get(i).add(new Damage());
+                solutionsBox.get(i).get(0).setTarget(target);
+                solutionsBox.get(i).get(0).setDamage(effect.getProperties().get(EffectProperty.Damage));
+                if(effect.getProperties().containsKey(EffectProperty.Mark)) solutionsBox.get(i).get(0).setMarks(effect.getProperties().get(EffectProperty.Mark));
+                    solutionsBox.get(i).get(0).setPosition(movements.get(i));
+                }
+            solutions.addAll(solutionsBox);
+            }
+        return solutions;
+    }
+
+    /**
      * Generates the list of possible targets from the MinDistance and MaxDistance parameters of the Effect
      * @param e it's the effect of analysis
      * @param p it's the player who is using the effect
@@ -327,15 +450,13 @@ public class GameLogic {
                         for(Direction d : Direction.values())
                             if(board.getMap().getTargetsFromDirection(p, d).contains(player))
                                 box.add(player);
-            Set<Player> setBox = new LinkedHashSet<>();
-            setBox.addAll(box);
+            Set<Player> setBox = new LinkedHashSet<>(box);
             targets.clear();
             targets.addAll(setBox);
             }
             else {
                 Set<Player> setBox = new LinkedHashSet<>();
                 for(Direction d : Direction.values()) setBox.addAll(board.getMap().getTargetsFromDirection(p, d));
-                box.clear();
                 box.addAll(setBox);
                 targets = box;
             }
@@ -359,11 +480,11 @@ public class GameLogic {
                     for (Player player : p) {
                         int exists = 0;
                         Cell cell = board.getMap().getCellFromPlayer(player);
-                        for(int i = 0; i < solutions.size(); i++)
-                            if(board.getMap().getCellFromPlayer(solutions.get(i).get(0)) == cell) {
-                                    solutions.get(i).add(player);
-                                    exists = 1;
-                                }
+                        for (ArrayList<Player> solution : solutions)
+                            if (board.getMap().getCellFromPlayer(solution.get(0)) == cell) {
+                                solution.add(player);
+                                exists = 1;
+                            }
                         if(exists == 0) {
                             solutions.add(new ArrayList<>());
                             solutions.get(solutions.size() - 1).add(player);
@@ -376,9 +497,9 @@ public class GameLogic {
                     for (Player player : p) {
                         int exists = 0;
                         ArrayList<Cell> room = board.getMap().getRoomFromCell(board.getMap().getCellFromPlayer(player));
-                        for(int i = 0; i < solutions.size(); i++)
-                            if(board.getMap().getRoomFromCell(board.getMap().getCellFromPlayer(solutions.get(i).get(0))).equals(room)) {
-                                solutions.get(i).add(player);
+                        for (ArrayList<Player> solution : solutions)
+                            if (board.getMap().getRoomFromCell(board.getMap().getCellFromPlayer(solution.get(0))).equals(room)) {
+                                solution.add(player);
                                 exists = 1;
                             }
                         if(exists == 0) {
@@ -413,8 +534,7 @@ public class GameLogic {
                 }
             }
         }
-        ArrayList<ArrayList<Player>> combs = combinationsFromMaxPlayer(e, p);
-        return combs;
+        return combinationsFromMaxPlayer(e, p);
     }
 
     /**
@@ -425,18 +545,17 @@ public class GameLogic {
      */
     private ArrayList<ArrayList<Player>> combinationsFromMaxPlayer(Effect e, ArrayList<Player> p) {
         HashMap<Integer, ArrayList<Player>> combinations = new HashMap<>();
-        if(e.getProperties().containsKey(EffectProperty.MaxPlayer)) {
-            if(e.getProperties().get(EffectProperty.MaxPlayer) == -1) {
-                ArrayList<ArrayList<Player>> allPlayers = new ArrayList<>();
-                allPlayers.add((ArrayList<Player>)p.clone());
-                return allPlayers;
-            }
-            HashMap<Integer, ArrayList<Integer>> comb = combinationsWithLowerValues(p.size(), e.getProperties().get(EffectProperty.MaxPlayer));
-            for(int i = 0; i < comb.keySet().size(); i++) {
-                combinations.put(i, new ArrayList<>());
-                for(int k = 0; k < comb.get(i).size(); k++)
-                    combinations.get(i).add(p.get(comb.get(i).get(k) - 1));
-            }
+        if (!e.getProperties().containsKey(EffectProperty.MaxPlayer)) throw new NullPointerException("Effect doesn't have MaxPlayer property");
+        if(e.getProperties().get(EffectProperty.MaxPlayer) == -1) {
+            ArrayList<ArrayList<Player>> allPlayers = new ArrayList<>();
+            allPlayers.add((ArrayList<Player>)p.clone());
+            return allPlayers;
+        }
+        HashMap<Integer, ArrayList<Integer>> comb = combinationsWithLowerValues(p.size(), e.getProperties().get(EffectProperty.MaxPlayer));
+        for(int i = 0; i < comb.keySet().size(); i++) {
+            combinations.put(i, new ArrayList<>());
+            for(int k = 0; k < comb.get(i).size(); k++)
+                combinations.get(i).add(p.get(comb.get(i).get(k) - 1));
         }
         ArrayList<ArrayList<Player>> combs = new ArrayList<>();
         for(Integer i : combinations.keySet())
@@ -470,7 +589,7 @@ public class GameLogic {
      */
     private HashMap<Integer, ArrayList<Integer>> combinations(int size, int r) {
         int[] i = new int[size];
-        ArrayList<Integer> param = new ArrayList<Integer>();
+        ArrayList<Integer> param = new ArrayList<>();
         for(int k=0; k < size; k++) i[k] = k+1;
         recursiveCombinations(param, i, new int[size], 0, size-1, 0, r);
         HashMap<Integer, ArrayList<Integer>> combs = new HashMap<>();
@@ -505,8 +624,8 @@ public class GameLogic {
      * @param index saves the state of the computation (needed because of recursion)
      * @param r saves the size of the combinations
      */
-    private void recursiveCombinations(ArrayList<Integer> box, int arr[], int data[], int start,
-                                   int end, int index, int r) {
+    private void recursiveCombinations(ArrayList<Integer> box, int[] arr, int[] data, int start,
+                                       int end, int index, int r) {
         if (index == r)
         {
             int a = 0;
@@ -549,6 +668,47 @@ public class GameLogic {
                 if(arrayD.size() == 0) damages.remove(arrayD);
             }
         return damages;
+    }
+
+    private ArrayList<ArrayList<Damage>> withTurretTripod (Player shooter, ArrayList<Damage> earlyDamages) {
+        ArrayList<ArrayList<Damage>> solutions;
+        Player alreadyShot = null;
+        ArrayList<Player> toShoot = new ArrayList<>();
+        for(Player player : players) {
+            int counter = 0;
+            for(Damage damage : earlyDamages)
+                if(damage.getTarget() == player) counter++;
+            if (counter == 2) alreadyShot = player;
+            else if(counter == 1) toShoot.add(player);
+        }
+        Effect boxEffect = new Effect();
+        HashMap<EffectProperty, Integer> boxProperties = new HashMap<>();
+        boxProperties.put(EffectProperty.MaxPlayer, 2);
+        boxProperties.put(EffectProperty.MaxDistance, -1);
+        boxProperties.put(EffectProperty.Damage, 1);
+        boxEffect.setProperties(boxProperties);
+        solutions = computeDamages(boxEffect, shooter, null);
+        Set<ArrayList<Damage>> toRemove = new HashSet<>();
+        if(alreadyShot != null)
+            for(ArrayList<Damage> damages : solutions)
+                for(Damage damage : damages)
+                    if(damage.getTarget() == alreadyShot) toRemove.add(damages);
+        if(toShoot.size() > 0)
+            for (ArrayList<Damage> damages : solutions)
+                if (damages.size() > 1) {
+                    if(toShoot.size() == 1) {
+                        int counter = 0;
+                        for (Damage damage : damages)
+                            if (damage.getTarget() != toShoot.get(0)) counter++;
+                        if (counter != 1) toRemove.add(damages);
+                    } else {
+                        ArrayList<Player> boxTargets = new ArrayList<>();
+                        for(Damage damage : damages) boxTargets.add(damage.getTarget());
+                        if(boxTargets.contains(toShoot.get(0)) && boxTargets.contains(toShoot.get(1))) toRemove.add(damages);
+                    }
+                }
+        solutions.removeAll(toRemove);
+        return solutions;
     }
 
 }
