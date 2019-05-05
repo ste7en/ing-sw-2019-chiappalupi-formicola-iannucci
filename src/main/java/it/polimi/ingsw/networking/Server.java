@@ -43,6 +43,7 @@ public class Server implements Loggable {
         ServerRMIConnectionHandler RMIConnectionHandler;
         try {
             socketConnectionHandler = new ServerSocketConnectionHandler(portNumberSocket);
+            socketConnectionHandler.startSocketServer();
         } catch (Exception e) {
             logOnException(EXC_SETUP, e);
             return;
