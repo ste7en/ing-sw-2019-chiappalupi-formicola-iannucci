@@ -13,12 +13,9 @@ import it.polimi.ingsw.utility.Loggable;
 
 public class ClientSocketConnectionHandler extends ClientConnectionHandler implements Runnable {
 
-    private String serverName;
-    private Integer socketPortNumber;
-
     public ClientSocketConnectionHandler(String server, Integer port) {
-        this.serverName = server;
-        this.socketPortNumber = port;
+        super.serverName = server;
+        super.portNumber = port;
 
         this.run();
     }

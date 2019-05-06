@@ -21,11 +21,6 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
 public final class ServerSocketConnectionHandler extends ServerConnectionHandler {
 
     /**
-     * Port number for socket connections
-     */
-    private int portNumber;
-
-    /**
      * Log strings
      */
     private String EXC_ON_CLIENT_CONNECTION = "Error while trying to accept a client :: ";
@@ -41,7 +36,7 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
      */
     public ServerSocketConnectionHandler(int portNumber) throws IllegalPortNumber {
         if (portNumber > 65535 || portNumber < 1024) throw new IllegalPortNumber();
-        this.portNumber = portNumber;
+        super.portNumber = portNumber;
     }
 
     /**

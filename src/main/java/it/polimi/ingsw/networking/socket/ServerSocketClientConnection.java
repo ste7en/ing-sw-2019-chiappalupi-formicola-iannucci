@@ -1,5 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
+import it.polimi.ingsw.utility.AdrenalineLogger;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -32,7 +34,7 @@ public class ServerSocketClientConnection implements Runnable {
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());) {
 
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            AdrenalineLogger.errorException(e.getMessage(), e);
         }
     }
 }
