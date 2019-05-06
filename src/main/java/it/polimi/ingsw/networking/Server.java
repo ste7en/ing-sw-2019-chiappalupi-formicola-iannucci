@@ -4,6 +4,9 @@ import it.polimi.ingsw.networking.*;
 import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
 import it.polimi.ingsw.networking.socket.*;
 import it.polimi.ingsw.utility.Loggable;
+
+import java.util.LinkedList;
+import java.util.List;
 //import it.polimi.ingsw.networking.rmi.*;
 
 /**
@@ -17,7 +20,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
 
     private Integer portNumberSocket;
     private Integer portNumberRMI;
-    private ConnectionHandlerSenderDelegate senderDelegate;
+    private List<ConnectionHandlerSenderDelegate> senderDelegate = new LinkedList<>();
 
     private String EXC_SETUP = "Error while setting up a ServerSocketConnectionHandler :: ";
 
@@ -52,6 +55,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
         ServerRMIConnectionHandler RMIConnectionHandler;
         try {
             socketConnectionHandler = new ServerSocketConnectionHandler(portNumberSocket);
+            senderDelegate.add(socketConnectionHandler);
             socketConnectionHandler.startSocketServer();
         } catch (Exception e) {
             logOnException(EXC_SETUP, e);

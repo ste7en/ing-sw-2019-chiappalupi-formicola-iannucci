@@ -3,6 +3,8 @@ package it.polimi.ingsw.networking.socket;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.ServerSocket;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,6 +21,10 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
  */
 
 public final class ServerSocketConnectionHandler extends ServerConnectionHandler {
+    /**
+     * List of connections, used in order to send messages to connected clients.
+     */
+    private List<ServerSocketClientConnection> senders = new LinkedList<>();
 
     /**
      * Log strings
@@ -83,6 +89,6 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
      */
     @Override
     public void send() {
-
+        senders.forEach(ServerSocketClientConnection::send);
     }
 }

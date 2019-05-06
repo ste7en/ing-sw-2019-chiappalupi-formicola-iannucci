@@ -30,11 +30,13 @@ public class ServerSocketClientConnection implements Runnable {
      */
     @Override
     public void run() {
-        try(ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+        try(ObjectInputStream   in = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());) {
 
         } catch (IOException e) {
             AdrenalineLogger.errorException(e.getMessage(), e);
         }
     }
+
+    public void send() {}
 }
