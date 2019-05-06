@@ -1,6 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
-import it.polimi.ingsw.networking.utility.ClientConnectionHandler;
+import it.polimi.ingsw.networking.ClientConnectionHandler;
+import it.polimi.ingsw.networking.ConnectionHandlerSenderDelegate;
 import it.polimi.ingsw.utility.Loggable;
 
 /**
@@ -10,7 +11,7 @@ import it.polimi.ingsw.utility.Loggable;
  * @author Stefano Formicola
  */
 
-public class ClientSocketConnectionHandler implements Loggable, Runnable, ClientConnectionHandler {
+public class ClientSocketConnectionHandler extends ClientConnectionHandler implements Runnable {
 
     private String serverName;
     private Integer socketPortNumber;
@@ -33,6 +34,14 @@ public class ClientSocketConnectionHandler implements Loggable, Runnable, Client
      */
     @Override
     public void run() {
+
+    }
+
+    /**
+     * Sends a message through its connection
+     */
+    @Override
+    public void send() {
 
     }
 }
