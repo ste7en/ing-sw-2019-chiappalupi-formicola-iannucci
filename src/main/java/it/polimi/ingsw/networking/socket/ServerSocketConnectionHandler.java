@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import it.polimi.ingsw.networking.ServerConnectionHandler;
 import it.polimi.ingsw.networking.utility.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.utility.Loggable;
@@ -18,7 +19,7 @@ import it.polimi.ingsw.utility.Loggable;
  * @author Stefano Formicola
  */
 
-public final class ServerSocketConnectionHandler implements Loggable {
+public final class ServerSocketConnectionHandler extends ServerConnectionHandler {
 
     /**
      * Port number for socket connections
@@ -48,7 +49,7 @@ public final class ServerSocketConnectionHandler implements Loggable {
      * Instance method used to start the socket server and accept incoming connections,
      * that are handled by the {@link ServerSocketClientHandler}.
      */
-    public void startSocketServer() {
+    private void startSocketServer() {
         ExecutorService executor = Executors.newCachedThreadPool();
         AdrenalineLogger.config(SERVER_SOCKET_CONFIG + portNumber);
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
@@ -73,5 +74,21 @@ public final class ServerSocketConnectionHandler implements Loggable {
 
     private void logDescription() {
         AdrenalineLogger.info(this.toString());
+    }
+
+    /**
+     * Starts the listening server connection
+     */
+    @Override
+    public void start() {
+        startSocketServer();
+    }
+
+    /**
+     * Sends a message through its connection
+     */
+    @Override
+    public void send() {
+
     }
 }
