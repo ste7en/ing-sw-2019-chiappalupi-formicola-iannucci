@@ -11,7 +11,7 @@ import java.net.Socket;
  *
  * @author Stefano Formicola
  */
-public class ServerSocketClientHandler implements Runnable {
+public class ServerSocketClientConnection implements Runnable {
 
     private Socket socket;
 
@@ -19,7 +19,7 @@ public class ServerSocketClientHandler implements Runnable {
      * Basic class constructor
      * @param socket socket connection with the client
      */
-    ServerSocketClientHandler(Socket socket) {
+    ServerSocketClientConnection(Socket socket) {
         this.socket = socket;
     }
 

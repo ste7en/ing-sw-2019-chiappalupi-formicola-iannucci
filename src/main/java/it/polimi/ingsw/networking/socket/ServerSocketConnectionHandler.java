@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
 import it.polimi.ingsw.networking.utility.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
-import it.polimi.ingsw.utility.Loggable;
 
 
 /**
@@ -47,7 +46,7 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
 
     /**
      * Instance method used to start the socket server and accept incoming connections,
-     * that are handled by the {@link ServerSocketClientHandler}.
+     * that are handled by the {@link ServerSocketClientConnection}.
      */
     private void startSocketServer() {
         ExecutorService executor = Executors.newCachedThreadPool();
@@ -58,7 +57,7 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
             while(true) {
                 try (Socket socket = serverSocket.accept()) {
                     logOnSuccess(SOCKET_SUCCESS + socket.toString());
-                    executor.submit(new ServerSocketClientHandler(socket));
+                    executor.submit(new ServerSocketClientConnection(socket));
                 } catch (IOException e) {
                     logOnException(EXC_ON_CLIENT_CONNECTION, e);
                     break;
