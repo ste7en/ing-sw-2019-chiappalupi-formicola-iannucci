@@ -1,6 +1,5 @@
 package it.polimi.ingsw.networking;
 
-import it.polimi.ingsw.networking.utility.ClientConnectionHandler;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.Loggable;
 
@@ -10,12 +9,12 @@ import it.polimi.ingsw.utility.Loggable;
  * @author Stefano Formicola
  */
 
-public final class Client implements Loggable {
+public final class Client implements Loggable, ConnectionHandlerReceiverDelegate {
 
     private String serverName;
     private Integer connectionPort;
     private ConnectionType connectionType;
-    private ClientConnectionHandler connectionHandler;
+    private ConnectionHandlerSenderDelegate senderDelegate;
 
     public Client(ConnectionType connectionType, String host, Integer port) {
         this.serverName = host;
@@ -33,4 +32,11 @@ public final class Client implements Loggable {
         }
     }
 
+    /**
+     * Receives a message from a delegator
+     */
+    @Override
+    public void receive() {
+
+    }
 }
