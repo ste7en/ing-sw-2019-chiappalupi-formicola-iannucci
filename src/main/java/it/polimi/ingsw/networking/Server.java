@@ -13,10 +13,11 @@ import it.polimi.ingsw.utility.Loggable;
  *
  * @author Stefano Formicola feat. Elena Iannucci
  */
-public class Server implements Loggable {
+public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
 
     private Integer portNumberSocket;
     private Integer portNumberRMI;
+    private ConnectionHandlerSenderDelegate senderDelegate;
 
     private String EXC_SETUP = "Error while setting up a ServerSocketConnectionHandler :: ";
 
@@ -33,6 +34,14 @@ public class Server implements Loggable {
         this.portNumberSocket = portNumberSocket;
         this.portNumberRMI = portNumberRMI;
         setupConnections();
+    }
+
+    /**
+     * Receives a message from a delegator
+     */
+    @Override
+    public void receive() {
+
     }
 
     /**
@@ -55,5 +64,7 @@ public class Server implements Loggable {
             logOnException(EXC_SETUP, e);
             return;
         }
+
+
     }
 }
