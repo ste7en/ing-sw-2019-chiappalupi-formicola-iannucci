@@ -1,8 +1,9 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
 import org.junit.*;
 import java.util.ArrayList;
 import static org.junit.Assert.*;
+import it.polimi.ingsw.controller.*;
 
 /**
  * Test for {@link Weapon} class

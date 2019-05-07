@@ -1,8 +1,9 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.*;
+import it.polimi.ingsw.controller.*;
 
 /**
  * Test for {@link Board} class

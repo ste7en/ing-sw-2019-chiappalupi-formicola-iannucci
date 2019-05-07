@@ -1,8 +1,6 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.controller;
 
-import sun.awt.image.ImageWatched;
-
-import java.awt.image.AreaAveragingScaleFilter;
+import it.polimi.ingsw.model.*;
 import java.util.*;
 
 import static java.lang.Math.pow;

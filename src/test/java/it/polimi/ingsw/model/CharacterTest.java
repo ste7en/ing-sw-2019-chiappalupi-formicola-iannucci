@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Test for {@link Character} class
+ * Test for {@link java.lang.Character} class
  *
  * @author Stefano Formicola
  */
@@ -35,7 +35,7 @@ public class CharacterTest {
     }
 
     /**
-     * Tests the constructor of the {@link Character} class
+     * Tests the constructor of the {@link java.lang.Character} class
      * @see Character#Character(String, PlayerColor, String)
      */
     @Test

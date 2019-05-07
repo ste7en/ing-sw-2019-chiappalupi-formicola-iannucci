@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
 import org.junit.Before;
 import org.junit.BeforeClass;

@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,7 +37,7 @@ public class PlayerTest {
 
     /**
      * Tests the constructor of the {@link Player} class
-     * @see Player#Player(User, Character)
+     * @see Player#Player(User, java.lang.Character)
      */
     @Test
     public void testConstructor() {

@@ -1,6 +1,6 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.controller;
 
-
+import it.polimi.ingsw.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;

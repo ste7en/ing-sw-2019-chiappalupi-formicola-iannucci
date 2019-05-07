@@ -1,10 +1,10 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.model;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import java.util.ArrayList;
-import static it.polimi.ingsw.PlayerColor.*;
+
 import static org.junit.Assert.*;
 
 /**
@@ -26,17 +26,17 @@ public class PlayerBoardTest {
      */
     @BeforeClass
     public static void setUpClass() {
-        testColor = yellow;
-        emptyPlayerColorArray = new ArrayList<PlayerColor>();
+        testColor = PlayerColor.yellow;
+        emptyPlayerColorArray = new ArrayList<>();
 
-        testPlayerColorArray = new ArrayList<PlayerColor>();
-        testPlayerColorArray.add(green);
-        testPlayerColorArray.add(blue);
-        testPlayerColorArray.add(blue);
-        testPlayerColorArray.add(green);
-        testPlayerColorArray.add(purple);
-        testPlayerColorArray.add(purple);
-        testPlayerColorArray.add(green);
+        testPlayerColorArray = new ArrayList<>();
+        testPlayerColorArray.add(PlayerColor.green);
+        testPlayerColorArray.add(PlayerColor.blue);
+        testPlayerColorArray.add(PlayerColor.blue);
+        testPlayerColorArray.add(PlayerColor.green);
+        testPlayerColorArray.add(PlayerColor.purple);
+        testPlayerColorArray.add(PlayerColor.purple);
+        testPlayerColorArray.add(PlayerColor.green);
     }
 
     /**
@@ -69,7 +69,7 @@ public class PlayerBoardTest {
      */
     @Test (expected = IllegalArgumentException.class)
     public void testAppendDamagesCountException() {
-        playerBoard.appendDamage(green, -1);
+        playerBoard.appendDamage(PlayerColor.green, -1);
     }
 
     /**
@@ -78,11 +78,11 @@ public class PlayerBoardTest {
      */
     @Test
     public void testAppendDamages() {
-        playerBoard.appendDamage(green, 1);
-        playerBoard.appendDamage(blue, 2);
-        playerBoard.appendDamage(green, 1);
-        playerBoard.appendDamage(purple, 2);
-        playerBoard.appendDamage(green, 1);
+        playerBoard.appendDamage(PlayerColor.green, 1);
+        playerBoard.appendDamage(PlayerColor.blue, 2);
+        playerBoard.appendDamage(PlayerColor.green, 1);
+        playerBoard.appendDamage(PlayerColor.purple, 2);
+        playerBoard.appendDamage(PlayerColor.green, 1);
 
         assertTrue(playerBoard.getDamage().equals(testPlayerColorArray));
     }
@@ -95,8 +95,8 @@ public class PlayerBoardTest {
     public void testSetMarks() {
         ArrayList<PlayerColor> toAdd = playerBoard.getMarks();
         toAdd.add(testColor);
-        toAdd.add(green);
-        toAdd.add(blue);
+        toAdd.add(PlayerColor.green);
+        toAdd.add(PlayerColor.blue);
         try {
             playerBoard.setMarks(toAdd);
         } catch (IllegalArgumentException e) {}
@@ -126,7 +126,7 @@ public class PlayerBoardTest {
      */
     @Test
     public void testDeath() {
-        playerBoard.appendDamage(blue, 10);
+        playerBoard.appendDamage(PlayerColor.blue, 10);
         playerBoard.setMarks(testPlayerColorArray);
         playerBoard.death();
         assertEquals(playerBoard.getDamage(), emptyPlayerColorArray);
@@ -141,11 +141,11 @@ public class PlayerBoardTest {
         assertFalse(playerBoard.isAdrenalinic1());
         assertFalse(playerBoard.isAdrenalinic2());
 
-        playerBoard.appendDamage(blue, 3);
+        playerBoard.appendDamage(PlayerColor.blue, 3);
         assertTrue(playerBoard.isAdrenalinic1());
         assertFalse(playerBoard.isAdrenalinic2());
 
-        playerBoard.appendDamage(green, 3);
+        playerBoard.appendDamage(PlayerColor.green, 3);
         assertTrue(playerBoard.isAdrenalinic1());
         assertTrue(playerBoard.isAdrenalinic2());
     }

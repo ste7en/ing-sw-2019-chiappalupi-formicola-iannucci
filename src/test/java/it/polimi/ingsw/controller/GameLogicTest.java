@@ -1,10 +1,13 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.controller;
 
 import static org.junit.Assert.*;
+
+import it.polimi.ingsw.model.Character;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import java.util.*;
+import it.polimi.ingsw.model.*;
 
 /**
  * Test for {@link Weapon} class
