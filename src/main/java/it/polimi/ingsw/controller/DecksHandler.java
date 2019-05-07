@@ -26,6 +26,16 @@ public class DecksHandler {
     private static final Integer NUM_OF_WEAPONS = 21;
 
     /**
+     * Integer to initialize the ammoTilesDeck
+     */
+    private static final Integer NUM_OF_AMMOTILES = 36;
+
+    /**
+     * Integer to initialize the weaponsDeck
+     */
+    private static final Integer NUM_OF_POWERUPS = 24;
+
+    /**
      * Deck of weapons
      */
     private ArrayList<Weapon> weapons;
@@ -52,13 +62,11 @@ public class DecksHandler {
 
     /**
      * Constructor: creates a new DecksHandler from the jsons of weapons, ammo tiles and powerups
-     * @param ammoTiles starting deck of ammo tiles
-     * @param powerups starting deck of powerups
      */
-    public DecksHandler(ArrayList<AmmoTile> ammoTiles, ArrayList<Powerup> powerups) {
+    public DecksHandler() {
         weapons = initializeWeapons();
-        this.ammoTiles = ammoTiles;
-        this.powerups = powerups;
+        initializeAmmoTiles();
+        initializePowerups();
         ammoRecycleBin = new ArrayList<>();
         powerupsRecycleBin = new ArrayList<>();
     }
@@ -79,6 +87,40 @@ public class DecksHandler {
         weapons = new ArrayList<>(Arrays.asList(box));
         for(Weapon w : weapons) w.reload();
         return (ArrayList<Weapon>) weapons.clone();
+    }
+
+    /**
+     * Method that initializes the weapons deck using a json file
+     * @return an ArrayList containing the deck of weapons for testing purposes
+     */
+    public ArrayList<AmmoTile> initializeAmmoTiles() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        AmmoTile[] box = new AmmoTile[NUM_OF_AMMOTILES];
+        try {
+            File json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "ammoTiles.json");
+            box = objectMapper.readValue(json, AmmoTile[].class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ammoTiles = new ArrayList<>(Arrays.asList(box));
+        return (ArrayList<AmmoTile>) ammoTiles.clone();
+    }
+
+    /**
+     * Method that initializes the weapons deck using a json file
+     * @return an ArrayList containing the deck of weapons for testing purposes
+     */
+    public ArrayList<Powerup> initializePowerups() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Powerup[] box = new Powerup[NUM_OF_POWERUPS];
+        try {
+            File json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "powerups.json");
+            box = objectMapper.readValue(json, Powerup[].class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        powerups = new ArrayList<>(Arrays.asList(box));
+        return (ArrayList<Powerup>) powerups.clone();
     }
 
     /**

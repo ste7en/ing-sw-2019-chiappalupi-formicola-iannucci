@@ -57,7 +57,7 @@ public class GameLogicTest {
         p.add(p2);
         p.add(p3);
         p.add(p4);
-        decks = new DecksHandler(new ArrayList<>(), new ArrayList<>());
+        decks = new DecksHandler();
         gameLogicTest.setBoard(board);
         gameLogicTest.setPlayers(p);
     }
@@ -78,7 +78,7 @@ public class GameLogicTest {
         p.add(p2);
         p.add(p3);
         p.add(p4);
-        DecksHandler decks = new DecksHandler(new ArrayList<>(), new ArrayList<>());
+        DecksHandler decks = new DecksHandler();
         Weapon w = decks.drawWeapon();
         while (!(w.getName().equals("Lock Rifle"))) w = decks.drawWeapon();
         ArrayList<ArrayList<Player>> tester = new ArrayList<>();
@@ -89,7 +89,7 @@ public class GameLogicTest {
         tester.get(3).add(p4);
         assertEquals(tester, gameLogicTest.generateTargetsCombinations(w.getEffects().get(0), p, p1));
 
-        decks = new DecksHandler(new ArrayList<>(), new ArrayList<>());
+        decks = new DecksHandler();
         w = decks.drawWeapon();
         while (!(w.getName().equals("Machine Gun"))) w = decks.drawWeapon();
         tester = new ArrayList<>();

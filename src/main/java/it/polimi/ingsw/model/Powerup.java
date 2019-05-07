@@ -11,17 +11,17 @@ public class Powerup {
     /**
      * Type of the powerup
      */
-    private final PowerupType type;
+    private PowerupType type;
 
     /**
      * Description of the powerup
      */
-    private final String description;
+    private String description;
 
     /**
      * Color of the powerup
      */
-    private final AmmoColor color;
+    private AmmoColor color;
 
     /**
      * Constructor: creates a new Powerup from its type, description and color
@@ -34,6 +34,8 @@ public class Powerup {
         this.description = description;
         this.color = color;
     }
+
+    public Powerup() {}
 
     /**
      * Powerup's type getter

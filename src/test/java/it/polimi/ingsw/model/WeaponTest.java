@@ -20,7 +20,7 @@ public class WeaponTest {
      */
     @BeforeClass
     public static void setUpBeforeClass() {
-        dh = new DecksHandler(new ArrayList<>(), new ArrayList<>());
+        dh = new DecksHandler();
     }
 
     /**

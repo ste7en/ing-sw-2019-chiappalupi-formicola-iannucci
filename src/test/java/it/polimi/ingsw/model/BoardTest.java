@@ -56,7 +56,7 @@ public class BoardTest {
             powerups.add(new Powerup(PowerupType.values()[new Random().nextInt(4)], "TestDescription"+i, AmmoColor.values()[new Random().nextInt(3)]));
         }
 
-        decksHandler = new DecksHandler((ArrayList<AmmoTile>)ammoTiles.clone(), (ArrayList<Powerup>)powerups.clone());
+        decksHandler = new DecksHandler();
 
         userTest = new User(username);
         characterTest = new Character("CharacterTestName", PlayerColor.yellow, "Character user for tests.");

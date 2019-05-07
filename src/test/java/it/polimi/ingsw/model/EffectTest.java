@@ -25,7 +25,7 @@ public class EffectTest {
      */
     @BeforeClass
     public static void setUpBeforeClass() {
-        decks = new DecksHandler(new ArrayList<>(), new ArrayList<>());
+        decks = new DecksHandler();
     }
 
     /**

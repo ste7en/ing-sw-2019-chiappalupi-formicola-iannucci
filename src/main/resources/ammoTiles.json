@@ -1,6 +1,6 @@
 [
   {
-    "ammos": [
+    "ammoColors": [
       "blue",
       "red",
       "red"
@@ -8,7 +8,7 @@
     "powerup": false
   },
   {
-    "ammos": [
+    "ammoColors": [
       "blue",
       "yellow",
       "yellow"
@@ -16,7 +16,7 @@
     "powerup": false
   },
   {
-    "ammos": [
+    "ammoColors": [
       "blue",
       "red",
       "red"
@@ -24,7 +24,7 @@
     "powerup": false
   },
   {
-    "ammos": [
+    "ammoColors": [
       "yellow",
       "red",
       "red"
@@ -32,7 +32,7 @@
     "powerup": false
   },
   {
-    "ammos": [
+    "ammoColors": [
       "blue",
       "red",
       "red"
@@ -40,50 +40,28 @@
     "powerup": false
   },
   {
-    "ammos": [
+    "ammoColors": [
       "blue",
       "blue"
     ],
     "powerup": true
   },
   {
-    "ammos": [
+    "ammoColors": [
       "blue",
       "yellow"
     ],
     "powerup": true
   },
   {
-    "ammos": [
+    "ammoColors": [
       "red",
       "red"
     ],
     "powerup": true
   },
   {
-    "ammos": [
-      "yellow",
-      "red",
-      "red"
-    ],
-    "powerup": false
-  },
-  {
-    "ammos": [
-      "yellow",
-      "yellow"
-    ],
-    "powerup": true
-  },
-  {
-    "ammos": [
-      "blue",
-      "yellow"
-    ],
-    "powerup": true
-  },
-  {
-    "ammos": [
+    "ammoColors": [
       "yellow",
       "red",
       "red"
@@ -91,82 +69,37 @@
     "powerup": false
   },
   {
-    "ammos": [
-      "yellow",
-      "blue",
-      "blue"
-    ],
-    "powerup": false
-  },
-  {
-    "ammos": [
-      "blue",
+    "ammoColors": [
       "yellow",
       "yellow"
-    ],
-    "powerup": false
-  },
-  {
-    "ammos": [
-      "yellow",
-      "red"
     ],
     "powerup": true
   },
   {
-    "ammos": [
+    "ammoColors": [
+      "blue",
+      "yellow"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "yellow",
       "red",
       "red"
     ],
-    "powerup": true
+    "powerup": false
   },
   {
-    "ammos": [
+    "ammoColors": [
       "yellow",
-      "yellow"
-    ],
-    "powerup": true
-  },
-  {
-    "ammos": [
-      "red",
-      "blue"
-    ],
-    "powerup": true
-  },
-  {
-    "ammos": [
-      "red",
       "blue",
       "blue"
     ],
     "powerup": false
   },
   {
-    "ammos": [
-      "red",
-      "blue",
-      "blue"
-    ],
-    "powerup": false
-  },
-  {
-    "ammos": [
-      "red",
-      "blue"
-    ],
-    "powerup": true
-  },
-  {
-    "ammos": [
-      "red",
-      "yellow",
-      "yellow"
-    ],
-    "powerup": false
-  },
-  {
-    "ammos": [
+    "ammoColors": [
       "blue",
       "yellow",
       "yellow"
@@ -174,7 +107,58 @@
     "powerup": false
   },
   {
-    "ammos": [
+    "ammoColors": [
+      "yellow",
+      "red"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "red"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "yellow"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue",
+      "blue"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue",
+      "blue"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
       "red",
       "yellow",
       "yellow"
@@ -182,80 +166,15 @@
     "powerup": false
   },
   {
-    "ammos": [
-      "yellow",
-      "red"
-    ],
-    "powerup": true
-  },
-  {
-    "ammos": [
+    "ammoColors": [
       "blue",
-      "blue"
-    ],
-    "powerup": true
-  },
-  {
-    "ammos": [
       "yellow",
-      "red"
-    ],
-    "powerup": true
-  },
-  {
-    "ammos": [
-      "yellow",
-      "blue",
-      "blue"
-    ],
-    "powerup": false
-  },
-  {
-    "ammos": [
-      "yellow",
-      "blue",
-      "blue"
-    ],
-    "powerup": false
-  },
-  {
-    "ammos": [
-      "blue",
       "yellow"
     ],
-    "powerup": true
-  },
-  {
-    "ammos": [
-      "red",
-      "blue"
-    ],
-    "powerup": true
-  },
-  {
-    "ammos": [
-      "red",
-      "blue",
-      "blue"
-    ],
     "powerup": false
   },
   {
-    "ammos": [
-      "red",
-      "blue"
-    ],
-    "powerup": true
-  },
-  {
-    "ammos": [
-      "yellow",
-      "red"
-    ],
-    "powerup": true
-  },
-  {
-    "ammos": [
+    "ammoColors": [
       "red",
       "yellow",
       "yellow"
@@ -263,7 +182,88 @@
     "powerup": false
   },
   {
-    "ammos": [
+    "ammoColors": [
+      "yellow",
+      "red"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "blue",
+      "blue"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "red"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "blue",
+      "blue"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "blue",
+      "blue"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "blue",
+      "yellow"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue",
+      "blue"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "red"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "yellow",
+      "yellow"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
       "yellow",
       "blue"
     ],

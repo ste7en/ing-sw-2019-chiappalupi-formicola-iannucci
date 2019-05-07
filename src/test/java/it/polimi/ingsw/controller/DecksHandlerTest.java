@@ -13,7 +13,6 @@ import it.polimi.ingsw.model.*;
 public class DecksHandlerTest {
 
     private DecksHandler decksTest;
-    private static ArrayList<AmmoTile> ammoTiles  = new ArrayList<>();
     private static ArrayList<Powerup> powerups = new ArrayList<>();
 
     /**
@@ -28,7 +27,6 @@ public class DecksHandlerTest {
             ArrayList<AmmoColor> colors = new ArrayList<>();
             int costSize = new Random().nextInt(3);
             for(int j=0; j < costSize; j++) colors.add(AmmoColor.values()[new Random().nextInt(3)]);
-            ammoTiles.add(new AmmoTile(colors, new Random().nextBoolean()));
         }
 
         size = rand.nextInt(20) + 1;
@@ -42,7 +40,7 @@ public class DecksHandlerTest {
      */
     @Before
     public void setUp() {
-        decksTest = new DecksHandler((ArrayList<AmmoTile>)ammoTiles.clone(), (ArrayList<Powerup>)powerups.clone());
+        decksTest = new DecksHandler();
     }
 
     /**
@@ -83,7 +81,7 @@ public class DecksHandlerTest {
         Weapon w3 = new Weapon();
         ArrayList<Weapon> weapons1 = new ArrayList<>();
         weapons1.add(w3);
-        decksTest = new DecksHandler(ammoTiles, powerups);
+        decksTest = new DecksHandler();
         assertFalse(weapons1.contains(decksTest.drawWeapon()));
     }
 
@@ -102,18 +100,17 @@ public class DecksHandlerTest {
      */
     @Test
     public void testDrawAmmoTile() {
+        ArrayList<AmmoTile> ammoTiles = decksTest.initializeAmmoTiles();
         int i = 0;
-        AmmoTile a = new AmmoTile(new ArrayList<>(), new Random().nextBoolean());
-        decksTest.wasteAmmoTile(a);
-        while (i < ammoTiles.size()) {
-            assertTrue(ammoTiles.contains(decksTest.drawAmmoTile()));
+        while(i < 36) {
+            AmmoTile a1 = decksTest.drawAmmoTile();
             i++;
+            assertTrue(ammoTiles.contains(a1));
+            AmmoTile a2 = decksTest.drawAmmoTile();
+            i++;
+            assertTrue(ammoTiles.contains(a2));
+            assertNotEquals(a1, a2);
         }
-        decksTest.wasteAmmoTile(a);
-        assertEquals(a, decksTest.drawAmmoTile());
-        decksTest.wasteAmmoTile(a);
-        assertFalse(ammoTiles.contains(decksTest.drawAmmoTile()));
-        assertEquals(i, ammoTiles.size());
     }
 
     /**
@@ -122,18 +119,17 @@ public class DecksHandlerTest {
      */
     @Test
     public void testDrawPowerup() {
+        ArrayList<Powerup> ammoTiles = decksTest.initializePowerups();
         int i = 0;
-        Powerup p = new Powerup(PowerupType.Newton, "Needed to avoid any NullPointerException", AmmoColor.red);
-        decksTest.wastePowerup(p);
-        while (i < powerups.size()) {
-            assertTrue(powerups.contains(decksTest.drawPowerup()));
+        while(i < 24) {
+            Powerup p1 = decksTest.drawPowerup();
             i++;
+            assertTrue(ammoTiles.contains(p1));
+            Powerup p2 = decksTest.drawPowerup();
+            i++;
+            assertTrue(ammoTiles.contains(p2));
+            assertNotEquals(p1, p2);
         }
-        decksTest.wastePowerup(p);
-        assertEquals(p, decksTest.drawPowerup());
-        decksTest.wastePowerup(p);
-        assertFalse(powerups.contains(p));
-        assertEquals(i, powerups.size());
     }
 
     /**
@@ -142,29 +138,23 @@ public class DecksHandlerTest {
      */
     @Test
     public void testWasteAmmoTileRecycleAmmos() {
-        AmmoTile a1 = new AmmoTile(null, new Random().nextBoolean());
-        AmmoTile a2 = new AmmoTile(null, new Random().nextBoolean());
-        AmmoTile a3 = new AmmoTile(null, new Random().nextBoolean());
         ArrayList<AmmoTile> wasted = new ArrayList<>();
-        wasted.add(a1);
-        wasted.add(a2);
-        wasted.add(a3);
-        decksTest.wasteAmmoTile(a1);
-        decksTest.wasteAmmoTile(a2);
-        decksTest.wasteAmmoTile(a3);
+        wasted.add(decksTest.drawAmmoTile());
+        wasted.add(decksTest.drawAmmoTile());
+        wasted.add(decksTest.drawAmmoTile());
+        decksTest.wasteAmmoTile(wasted.get(0));
+        decksTest.wasteAmmoTile(wasted.get(1));
+        decksTest.wasteAmmoTile(wasted.get(2));
         int i = 0;
-        while (i < ammoTiles.size()) {
+        while (i < 33) {
             assertFalse(wasted.contains(decksTest.drawAmmoTile()));
             i++;
         }
-        decksTest.wasteAmmoTile(new AmmoTile(null, new Random().nextBoolean()));
         i=0;
         while(i < 3) {
             assertTrue(wasted.contains(decksTest.drawAmmoTile()));
             i++;
         }
-        decksTest.wasteAmmoTile(a1);
-        assertFalse(wasted.contains(decksTest.drawAmmoTile()));
     }
 
     /**
@@ -181,29 +171,23 @@ public class DecksHandlerTest {
      */
     @Test
     public void testWastePowerupRecyclePowerup() {
-        Powerup p1 = new Powerup(PowerupType.Newton, "testing1", AmmoColor.red);
-        Powerup p2 = new Powerup(PowerupType.TagbackGrenade, "testing2", AmmoColor.blue);
-        Powerup p3 = new Powerup(PowerupType.TargetingScope, "testing3", AmmoColor.yellow);
         ArrayList<Powerup> wasted = new ArrayList<>();
-        wasted.add(p1);
-        wasted.add(p2);
-        wasted.add(p3);
-        decksTest.wastePowerup(p1);
-        decksTest.wastePowerup(p2);
-        decksTest.wastePowerup(p3);
+        wasted.add(decksTest.drawPowerup());
+        wasted.add(decksTest.drawPowerup());
+        wasted.add(decksTest.drawPowerup());
+        decksTest.wastePowerup(wasted.get(0));
+        decksTest.wastePowerup(wasted.get(1));
+        decksTest.wastePowerup(wasted.get(2));
         int i = 0;
-        while (i < powerups.size()) {
+        while (i < 21) {
             assertFalse(wasted.contains(decksTest.drawPowerup()));
             i++;
         }
-        decksTest.wastePowerup(new Powerup(PowerupType.Teleporter, "testing", AmmoColor.red));
         i=0;
         while(i < 3) {
             assertTrue(wasted.contains(decksTest.drawPowerup()));
             i++;
         }
-        decksTest.wastePowerup(p1);
-        assertFalse(wasted.contains(decksTest.drawPowerup()));
     }
 
     /**
