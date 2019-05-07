@@ -23,7 +23,6 @@ public enum EffectProperty {
      * Saves if the target/s must be different from the others effects of the weapon; (-1) if target/s must be the same
      */
     AdditionalTarget,
-    DifferentFromEffect,
 
     /**
      * Saves if a player can move a target before using the effect
