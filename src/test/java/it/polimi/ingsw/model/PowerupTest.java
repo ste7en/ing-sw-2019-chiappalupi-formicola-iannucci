@@ -1,8 +1,10 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.controller.DecksHandler;
 import org.junit.*;
 import static org.junit.Assert.*;
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Test for {@link Powerup} class
@@ -12,18 +14,15 @@ import java.util.Random;
 public class PowerupTest {
 
     private Powerup powTester;
-    private static PowerupType powType;
-    private static String powDescription;
-    private static AmmoColor powColor;
+
+    private static DecksHandler dh;
 
     /**
      * Initializes the attributes for the test class with sample values
      */
     @BeforeClass
     public static void setUpBeforeClass() {
-        powType = PowerupType.values()[new Random().nextInt(4)];
-        powDescription = "This is a sample description";
-        powColor = AmmoColor.values()[new Random().nextInt(3)];
+        dh = new DecksHandler();
     }
 
     /**
@@ -31,7 +30,7 @@ public class PowerupTest {
      */
     @Before
     public void setUp() {
-        powTester = new Powerup(powType, powDescription, powColor);
+        powTester = dh.drawPowerup();
     }
 
     /**
@@ -41,8 +40,14 @@ public class PowerupTest {
     @Test
     public void testGetType() {
         assertNotNull(powTester.getType());
-        assertEquals(powType, powTester.getType());
-        assertNotEquals((powType == PowerupType.Newton) ? PowerupType.TagbackGrenade : PowerupType.Newton, powTester.getType());
+        ArrayList<PowerupType> powerupTypes = new ArrayList<>(Arrays.asList(PowerupType.values()));
+        int i = 0;
+        while(i < 24) {
+            powTester = dh.drawPowerup();
+            assertTrue(powerupTypes.contains(powTester.getType()));
+            dh.wastePowerup(powTester);
+            i++;
+        }
     }
 
     /**
@@ -52,7 +57,6 @@ public class PowerupTest {
     @Test
     public void testGetDescription() {
         assertNotNull(powTester.getDescription());
-        assertEquals(powDescription, powTester.getDescription());
         assertNotEquals("This is a fake description", powTester.getDescription());
     }
 
@@ -63,8 +67,14 @@ public class PowerupTest {
     @Test
     public void testGetColor() {
         assertNotNull(powTester.getColor());
-        assertEquals(powColor, powTester.getColor());
-        assertNotEquals(AmmoColor.blue==powColor ? AmmoColor.red : AmmoColor.blue, powTester.getColor());
+        ArrayList<AmmoColor> ammoColors = new ArrayList<>(Arrays.asList(AmmoColor.values()));
+        int i = 0;
+        while(i < 24) {
+            powTester = dh.drawPowerup();
+            assertTrue(ammoColors.contains(powTester.getColor()));
+            dh.wastePowerup(powTester);
+            i++;
+        }
     }
 
     /**

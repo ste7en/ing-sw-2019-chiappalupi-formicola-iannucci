@@ -16,15 +16,12 @@ public class BoardTest {
     private Board boardTest;
     private static GameMap gameMap;
     private static LinkedHashMap<Player, Cell> playersPosition = new LinkedHashMap<>();
-    private static HashMap<AmmoColor, ArrayList<Weapon>> weaponsdecks = new HashMap<>();
+    private static HashMap<AmmoColor, ArrayList<Weapon>> weaponsDecks = new HashMap<>();
     private static ArrayList<Weapon> deck1 = new ArrayList<>();
     private static ArrayList<Weapon> deck2 = new ArrayList<>();
     private static ArrayList<Weapon> deck3 = new ArrayList<>();
     private static LinkedHashMap<Integer, ArrayList<PlayerColor>> skullsTrack = new LinkedHashMap<>();
     private static DecksHandler decksHandler;
-    private static ArrayList<Weapon> weapons = new ArrayList<>();
-    private static ArrayList<AmmoTile> ammoTiles  = new ArrayList<>();
-    private static ArrayList<Powerup> powerups = new ArrayList<>();
     private static Player playerTest;
     private static User userTest;
     private static Character characterTest;
@@ -39,23 +36,6 @@ public class BoardTest {
      */
     @BeforeClass
     public static void setUpBeforeClass() {
-
-        Random rand = new Random();
-        int size = 20;
-
-        size = rand.nextInt(20) + 1;
-        for (int i=0; i < size; i++) {
-            ArrayList<AmmoColor> colors = new ArrayList<>();
-            int costSize = new Random().nextInt(3);
-            for(int j=0; j < costSize; j++) colors.add(AmmoColor.values()[new Random().nextInt(3)]);
-            ammoTiles.add(new AmmoTile(colors, new Random().nextBoolean()));
-        }
-
-        size = rand.nextInt(20) + 1;
-        for (int i=0; i < size; i++) {
-            powerups.add(new Powerup(PowerupType.values()[new Random().nextInt(4)], "TestDescription"+i, AmmoColor.values()[new Random().nextInt(3)]));
-        }
-
         decksHandler = new DecksHandler();
 
         userTest = new User(username);
@@ -72,17 +52,17 @@ public class BoardTest {
         for(int i=0; i<3; i++){
             deck1.add(decksHandler.drawWeapon());
         }
-        weaponsdecks.put(AmmoColor.blue, deck1);
+        weaponsDecks.put(AmmoColor.blue, deck1);
 
         for(int i=0; i<3; i++){
             deck2.add(decksHandler.drawWeapon());
         }
-        weaponsdecks.put(AmmoColor.red, deck2);
+        weaponsDecks.put(AmmoColor.red, deck2);
 
         for(int i=0; i<3; i++){
             deck3.add(decksHandler.drawWeapon());
         }
-        weaponsdecks.put(AmmoColor.yellow, deck3);
+        weaponsDecks.put(AmmoColor.yellow, deck3);
 
         for (int i=0; i<8; i++){
             skullsTrack.put(i, null);
@@ -94,7 +74,7 @@ public class BoardTest {
      */
     @Before
     public void setUp() {
-        boardTest = new Board(gameMap, weaponsdecks, skullsTrack);
+        boardTest = new Board(gameMap, weaponsDecks, skullsTrack);
     }
 
     /**

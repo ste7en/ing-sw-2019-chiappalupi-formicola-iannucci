@@ -31,7 +31,7 @@ public class DecksHandler {
     private static final Integer NUM_OF_AMMOTILES = 36;
 
     /**
-     * Integer to initialize the weaponsDeck
+     * Integer to initialize the powerupsDeck
      */
     private static final Integer NUM_OF_POWERUPS = 24;
 
@@ -64,7 +64,7 @@ public class DecksHandler {
      * Constructor: creates a new DecksHandler from the jsons of weapons, ammo tiles and powerups
      */
     public DecksHandler() {
-        weapons = initializeWeapons();
+        initializeWeapons();
         initializeAmmoTiles();
         initializePowerups();
         ammoRecycleBin = new ArrayList<>();

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.controller.DecksHandler;
 import org.junit.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,18 +14,14 @@ import static org.junit.Assert.*;
 public class AmmoTileTest {
 
     private AmmoTile ammoTester;
-    private static ArrayList<AmmoColor> ammos;
-    private static boolean powerup;
+    private static DecksHandler dh;
 
     /**
      * Randomly initializes the attributes for the test class
      */
     @BeforeClass
     public static void setUpBeforeClass() {
-        ammos = new ArrayList<>();
-        int costSize = (new Random().nextBoolean()) ? 2 : 3;
-        for(int j=0; j < costSize; j++) ammos.add(AmmoColor.values()[new Random().nextInt(3)]);
-        powerup = (costSize == 2) ? true : false;
+        dh = new DecksHandler();
     }
 
     /**
@@ -32,7 +29,7 @@ public class AmmoTileTest {
      */
     @Before
     public void setUp() {
-        ammoTester = new AmmoTile(ammos, powerup);
+        ammoTester = dh.drawAmmoTile();
     }
 
     /**
@@ -41,9 +38,14 @@ public class AmmoTileTest {
      */
     @Test
     public void testHasPowerup() {
-        assertNotNull(ammoTester.hasPowerup());
-        assertEquals(powerup, ammoTester.hasPowerup());
-        assertNotEquals(powerup ? false : true, ammoTester.hasPowerup());
+        int i = 0;
+        while(i < 36) {
+            assertNotNull(ammoTester.hasPowerup());
+            assertTrue(ammoTester.getAmmoColors().size() == 2 ? ammoTester.hasPowerup() : !ammoTester.hasPowerup());
+            i++;
+            dh.wasteAmmoTile(ammoTester);
+            dh.drawAmmoTile();
+        }
     }
 
     /**
@@ -52,8 +54,13 @@ public class AmmoTileTest {
      */
     @Test
     public void testGetAmmoColors() {
-        assertNotNull(ammoTester.getAmmoColors());
-        assertEquals(ammos, ammoTester.getAmmoColors());
-        assertNotEquals(new ArrayList<AmmoColor>(), ammoTester.getAmmoColors());
+        int i = 0;
+        while(i < 36) {
+            assertNotNull(ammoTester.getAmmoColors());
+            assertTrue(ammoTester.getAmmoColors().size() == 2 || ammoTester.getAmmoColors().size() == 3);
+            i++;
+            dh.wasteAmmoTile(ammoTester);
+            dh.drawAmmoTile();
+        }
     }
 }

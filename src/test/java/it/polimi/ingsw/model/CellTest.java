@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.controller.DecksHandler;
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.ArrayList;
@@ -23,7 +24,8 @@ public class CellTest {
     public static void setUpBeforeClass(){
         colors.add(AmmoColor.red);
         colors.add(AmmoColor.blue);
-        ammoTile = new AmmoTile(colors, true);
+        DecksHandler dh = new DecksHandler();
+        ammoTile = dh.drawAmmoTile();
     }
 
     /**

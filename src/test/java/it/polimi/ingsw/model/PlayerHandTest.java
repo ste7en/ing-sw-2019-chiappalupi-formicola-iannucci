@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.controller.DecksHandler;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,7 +28,8 @@ public class PlayerHandTest {
         testColor = AmmoColor.yellow;
         testAmount = 3;
         testAbsentColor = AmmoColor.blue;
-        testPowerup = new Powerup(PowerupType.Newton, "", testColor);
+        DecksHandler dh = new DecksHandler();
+        testPowerup = dh.drawPowerup();
     }
 
     /**

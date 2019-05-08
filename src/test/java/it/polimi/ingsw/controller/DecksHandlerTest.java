@@ -13,27 +13,6 @@ import it.polimi.ingsw.model.*;
 public class DecksHandlerTest {
 
     private DecksHandler decksTest;
-    private static ArrayList<Powerup> powerups = new ArrayList<>();
-
-    /**
-     * Initializes the attributes for the test class with random values
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        Random rand = new Random();
-        int size;
-        size = rand.nextInt(20) + 1;
-        for (int i=0; i < size; i++) {
-            ArrayList<AmmoColor> colors = new ArrayList<>();
-            int costSize = new Random().nextInt(3);
-            for(int j=0; j < costSize; j++) colors.add(AmmoColor.values()[new Random().nextInt(3)]);
-        }
-
-        size = rand.nextInt(20) + 1;
-        for (int i=0; i < size; i++) {
-            powerups.add(new Powerup(PowerupType.values()[new Random().nextInt(4)], "TestDescription"+i, AmmoColor.values()[new Random().nextInt(3)]));
-        }
-    }
 
     /**
      * Initializes the decksHandler before every test

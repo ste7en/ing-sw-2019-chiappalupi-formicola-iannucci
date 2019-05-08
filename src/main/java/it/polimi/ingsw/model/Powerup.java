@@ -24,20 +24,6 @@ public class Powerup {
     private AmmoColor color;
 
     /**
-     * Constructor: creates a new Powerup from its type, description and color
-     * @param type type of the powerup
-     * @param description description of the powerup
-     * @param color color of the powerup, defined as an AmmoColor
-     */
-    public Powerup(PowerupType type, String description, AmmoColor color) {
-        this.type = type;
-        this.description = description;
-        this.color = color;
-    }
-
-    public Powerup() {}
-
-    /**
      * Powerup's type getter
      * @return the type of the powerup
      */

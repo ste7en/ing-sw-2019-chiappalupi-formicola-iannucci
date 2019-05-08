@@ -19,19 +19,6 @@ public class AmmoTile {
     private boolean powerup;
 
     /**
-     * Constructor: creates a new AmmoTile from an ArrayList of AmmoColors and a boolean
-     * @param ammoColors ArrayList of AmmoColor that saves the list of ammos provided by the card
-     * @param powerup boolean that shows if the card has a powerup
-     */
-    public AmmoTile(ArrayList<AmmoColor> ammoColors, boolean powerup) {
-        this.ammoColors = ammoColors;
-        this.powerup = powerup;
-    }
-
-    public AmmoTile() {
-    }
-
-    /**
      * Boolean that returns true if the AmmoTile provides a powerup when picked
      * @return the attribute {@link AmmoTile#powerup}
      */
