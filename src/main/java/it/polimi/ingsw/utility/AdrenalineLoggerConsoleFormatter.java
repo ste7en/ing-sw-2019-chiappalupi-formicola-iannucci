@@ -1,5 +1,7 @@
 package it.polimi.ingsw.utility;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.logging.*;
 
 /**
@@ -7,7 +9,10 @@ import java.util.logging.*;
  *
  * @author Stefano Formicola
  */
-public class AdrenalineLoggerFormatter extends Formatter {
+public class AdrenalineLoggerConsoleFormatter extends Formatter {
+
+    private static final String space = " ";
+    private static final String dash = "-";
     /**
      * Format the given log record and return the formatted string.
      * <p>
@@ -21,29 +26,43 @@ public class AdrenalineLoggerFormatter extends Formatter {
      */
     @Override
     public String format(LogRecord record) {
-        return formattedLevel(record) + formatMessage(record);
+        return ANSIFromRecordLevel(record.getLevel())
+                .concat(formattedLevel(record))
+                .concat(space)
+                .concat(formattedDate(record))
+                .concat(space)
+                .concat(dash)
+                .concat(space)
+                .concat(record.getMessage())
+                ;
     }
 
     private String formattedLevel(LogRecord record) {
-        String level = record.getLevel().getName();
-        String formatted = "";
-        switch (level) {
-            case "CONFIG":
-                formatted = ANSI_COLORS.ANSI_GREEN.value();
-            case "INFO":
-                formatted = ANSI_COLORS.ANSI_RESET.value();
-            case "SEVERE":
-                formatted = ANSI_COLORS.ANSI_RED.value();
-            case "WARNING":
-                formatted = ANSI_COLORS.ANSI_YELLOW.value();
-        }
-        formatted = formatted + "[" + level + "]";
-        return formatted;
+        var level = record.getLevel().getName();
+        return "[" + level + "]";
+    }
+
+    private String ANSIFromRecordLevel(Level level) {
+        return switch (level.getName()) {
+            case "CONFIG" -> ANSI_COLORS.ANSI_BRIGHT_BLUE.value();
+            case "FINE" -> ANSI_COLORS.ANSI_GREEN.value();
+            case "INFO" -> ANSI_COLORS.ANSI_WHITE.value();
+            case "SEVERE" -> ANSI_COLORS.ANSI_RED.value();
+            case "WARNING" -> ANSI_COLORS.ANSI_YELLOW.value();
+            default -> ANSI_COLORS.ANSI_RESET.value();
+        };
+    }
+
+    private String formattedDate(LogRecord record) {
+        var date = Date.from(record.getInstant());
+        return new SimpleDateFormat("H:mm:ss.S")
+                .format(date);
     }
 
     /**
      * Color values for console text colors
      */
+    @SuppressWarnings("unused")
     private enum ANSI_COLORS {
         ANSI_RESET("\u001B[0m"),
         ANSI_BLACK("\u001B[30m"),
