@@ -1,7 +1,7 @@
 package it.polimi.ingsw.networking;
 
-import it.polimi.ingsw.networking.*;
-import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
+//import it.polimi.ingsw.networking.*;
+//import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
 import it.polimi.ingsw.networking.socket.*;
 import it.polimi.ingsw.utility.Loggable;
 
@@ -52,18 +52,18 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
      */
     private void setupConnections() {
         ServerSocketConnectionHandler socketConnectionHandler;
-        ServerRMIConnectionHandler RMIConnectionHandler;
+        //ServerRMIConnectionHandler RMIConnectionHandler;
         try {
             socketConnectionHandler = new ServerSocketConnectionHandler(portNumberSocket);
             senderDelegate.add(socketConnectionHandler);
-            socketConnectionHandler.startSocketServer();
+            //socketConnectionHandler.startSocketServer();
         } catch (Exception e) {
             logOnException(EXC_SETUP, e);
             return;
         }
         try {
-            RMIConnectionHandler = new ServerRMIConnectionHandler(portNumberRMI);
-            RMIConnectionHandler.launch();
+            //RMIConnectionHandler = new ServerRMIConnectionHandler(portNumberRMI);
+            //RMIConnectionHandler.launch();
         } catch (Exception e) {
             logOnException(EXC_SETUP, e);
             return;

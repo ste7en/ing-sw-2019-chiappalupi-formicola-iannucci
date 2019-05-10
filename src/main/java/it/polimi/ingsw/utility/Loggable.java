@@ -10,7 +10,7 @@ public interface Loggable {
      * Log an operation ended with success
      * @param s message
      */
-    default void logOnSuccess(String s) { AdrenalineLogger.info(s); }
+    default void logOnSuccess(String s) { AdrenalineLogger.success(s); }
     /**
      * Log an operation ended with failure
      * @param s message

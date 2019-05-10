@@ -1,0 +1,272 @@
+[
+  {
+    "ammoColors": [
+      "blue",
+      "red",
+      "red"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "blue",
+      "yellow",
+      "yellow"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "blue",
+      "red",
+      "red"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "red",
+      "red"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "blue",
+      "red",
+      "red"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "blue",
+      "blue"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "blue",
+      "yellow"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "red"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "red",
+      "red"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "yellow"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "blue",
+      "yellow"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "red",
+      "red"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "blue",
+      "blue"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "blue",
+      "yellow",
+      "yellow"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "red"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "red"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "yellow"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue",
+      "blue"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue",
+      "blue"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "yellow",
+      "yellow"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "blue",
+      "yellow",
+      "yellow"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "red",
+      "yellow",
+      "yellow"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "red"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "blue",
+      "blue"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "red"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "blue",
+      "blue"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "blue",
+      "blue"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "blue",
+      "yellow"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue",
+      "blue"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "red",
+      "blue"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "red"
+    ],
+    "powerup": true
+  },
+  {
+    "ammoColors": [
+      "red",
+      "yellow",
+      "yellow"
+    ],
+    "powerup": false
+  },
+  {
+    "ammoColors": [
+      "yellow",
+      "blue"
+    ],
+    "powerup": true
+  }
+]
