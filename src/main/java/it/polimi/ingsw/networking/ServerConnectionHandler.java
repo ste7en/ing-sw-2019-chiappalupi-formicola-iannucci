@@ -1,5 +1,7 @@
 package it.polimi.ingsw.networking;
 
+import java.rmi.RemoteException;
+
 /**
  * Abstract superclass of Server's connectionHandlers for both
  * RMI and Socket connections.
