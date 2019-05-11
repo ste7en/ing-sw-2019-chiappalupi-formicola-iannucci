@@ -43,14 +43,14 @@ public class AdrenalineLoggerConsoleFormatter extends Formatter {
     }
 
     private String ANSIFromRecordLevel(Level level) {
-        return switch (level.getName()) {
-            case "CONFIG" -> ANSI_COLORS.ANSI_BRIGHT_BLUE.value();
-            case "FINE" -> ANSI_COLORS.ANSI_GREEN.value();
-            case "INFO" -> ANSI_COLORS.ANSI_WHITE.value();
-            case "SEVERE" -> ANSI_COLORS.ANSI_RED.value();
-            case "WARNING" -> ANSI_COLORS.ANSI_YELLOW.value();
-            default -> ANSI_COLORS.ANSI_RESET.value();
-        };
+        switch (level.getName()) {
+            case "CONFIG": return ANSI_COLORS.ANSI_BRIGHT_BLUE.value();
+            case "FINE": return ANSI_COLORS.ANSI_GREEN.value();
+            case "INFO": return ANSI_COLORS.ANSI_WHITE.value();
+            case "SEVERE": return ANSI_COLORS.ANSI_RED.value();
+            case "WARNING": return ANSI_COLORS.ANSI_YELLOW.value();
+            default: return ANSI_COLORS.ANSI_RESET.value();
+        }
     }
 
     private String formattedDate(LogRecord record) {
