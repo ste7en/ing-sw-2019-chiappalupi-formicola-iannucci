@@ -31,20 +31,9 @@ public abstract class Weapon {
     private boolean loaded;
 
     /**
-     * Type of the weapon
-     */
-    private WeaponType type;
-
-    /**
      * List of effects of the weapon
      */
     private ArrayList<Effect> effects;
-
-    /**
-     * Weapon's type getter
-     * @return the type of the weapon
-     */
-    public WeaponType getType() { return type; }
 
     /**
      * Weapon's name getter
@@ -106,16 +95,27 @@ public abstract class Weapon {
      */
     @Override
     public String toString() {
-        return "Name: " + name + ";\nCost: " + cost.toString() + ";\nType: " + type.toString() +  ";\nNotes: " + notes;
+        return "Name: " + name + ";\nCost: " + cost.toString() + ";\nNotes: " + notes;
     }
 
-    public abstract ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, Weapon weapon, ArrayList<Damage> forPotentiableWeapons, GameMap map, ArrayList<Player> players);
+    /**
+     * Abstract method that will be overrode in the child-classes: it's the method that creates the possible alternatives of damages when using an effect
+     * @param shooter it's the player who is using the effect
+     * @param effect it's the effect that is being used
+     * @param forPotentiableWeapons it's an ArrayList containing all of the damages made by other effect (if the weapon is potentiable)
+     * @param map it's the GameMap
+     * @param players it's an ArrayList containing all of the Players in game
+     * @return an ArrayList containing all of the different alternatives of damages that can be done
+     */
+    public abstract ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, ArrayList<Damage> forPotentiableWeapons, GameMap map, ArrayList<Player> players);
 
     /**
      * This method computes the possible movements of a target when shot by a weapon that can move the target
      * @param effect it's the effect that is being used by the shooter
      * @param shooter it's the player who is shooting
      * @param target it's the target of the shot
+     * @param shooterPosition it's the position from where the shooter is shooting
+     * @param map it's the GameMap
      * @return an ArrayList containing all the possible cells where the target can be moved
      */
     public ArrayList<Cell> computeMovement(Effect effect, Player shooter, Player target, Cell shooterPosition, GameMap map) {
@@ -197,6 +197,7 @@ public abstract class Weapon {
      * @param shooter it's the Player who is using the weapon
      * @param target it's the Player who is being shot
      * @param map it's a map (not the game one) used for the recursion
+     * @param MaxDistance it's the MaxDistance that can be done through the movement
      */
     private void recursiveMovementsInCell(ArrayList<Cell> movements, Integer distance, Player shooter, Player target, GameMap map, Integer MaxDistance) {
         if(distance == 0) {
@@ -247,6 +248,9 @@ public abstract class Weapon {
      * Computes the ArrayList of damages from the effect and the damage when the former only depends from distances and max number of players
      * @param effect the effect that is being used
      * @param shooter the player who is using the effect
+     * @param forAdditionalEffects it's an ArrayList containing all of the other damages that have been already made (null if there aren't)
+     * @param map it's the GameMap
+     * @param players it's an ArrayList containing all of the players in game
      * @return an ArrayList containing all of the possible solutions of damages
      */
     protected ArrayList<ArrayList<Damage>> computeDamages(Effect effect, Player shooter, ArrayList<Player> forAdditionalEffects, GameMap map, ArrayList<Player> players) {
@@ -344,6 +348,9 @@ public abstract class Weapon {
      * Computes the ArrayList of damages when the effect that is being used has the ability to move players before attacking them
      * @param effect it's the effect that is being used
      * @param shooter it's the player who is using the effect
+     * @param forAdditionalEffects it's an ArrayList containing all of the other damages that have been already made (null if there aren't)
+     * @param map it's the GameMap
+     * @param players it's an ArrayList containing all of the players in game
      * @return an ArrayList containing all of the possible solutions of damages
      */
     protected ArrayList<ArrayList<Damage>> computeDamageCanMoveBefore(Effect effect, Player shooter, ArrayList<Damage> forAdditionalEffects, GameMap map, ArrayList<Player> players) {
@@ -375,7 +382,8 @@ public abstract class Weapon {
      * Generates the list of possible targets from the MinDistance and MaxDistance parameters of the Effect
      * @param e it's the effect of analysis
      * @param p it's the player who is using the effect
-     * @param m it's the game map, needed to find the targets' positions
+     * @param m it's the game map, needed to find the targets positions
+     * @param players it's an ArrayList containing all of the players in game
      * @return the list of possible targets
      */
     private ArrayList<Player> generateTargetsFromDistances(Effect e, Player p, GameMap m, ArrayList<Player> players) {
@@ -430,6 +438,7 @@ public abstract class Weapon {
      * @param e it's the effect of analysis
      * @param p it's the ArrayList the potential targets
      * @param shooter it's the player who is using the weapon
+     * @param map it's the GameMap
      * @return an ArrayList with all the combinations
      */
     public ArrayList<ArrayList<Player>> generateTargetsCombinations(Effect e, ArrayList<Player> p, Player shooter, GameMap map) {

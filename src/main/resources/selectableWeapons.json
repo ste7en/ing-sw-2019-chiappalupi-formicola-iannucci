@@ -5,7 +5,6 @@
         "blue"
       ],
       "notes": null,
-      "type": "SelectableWeapon",
       "effects": [
         {
           "name": "basic mode",
@@ -37,7 +36,6 @@
         "blue"
       ],
       "notes": "You can move a target even if you can't see it. The target ends up in a place where you can see and damage it. The moves do not have to be in the same direction.",
-      "type": "SelectableWeapon",
       "effects": [
         {
           "name": "basic mode",
@@ -72,7 +70,6 @@
         "blue"
       ],
       "notes": null,
-      "type": "SelectableWeapon",
       "effects": [
         {
           "name": "basic mode",
@@ -104,7 +101,6 @@
         "yellow"
       ],
       "notes": null,
-      "type": "SelectableWeapon",
       "effects": [
         {
           "name": "basic mode",
@@ -139,7 +135,6 @@
         "red"
       ],
       "notes": "This weapon cannot damage anyone in your square. However, it can sometimes damage a target you can't see – the flame won't go through walls, but it will go through doors. Think of it as a straight-line blast of flame that can travel 2 squares in a cardinal direction.",
-      "type": "SelectableWeapon",
       "effects": [
         {
           "name": "basic mode",
@@ -172,7 +167,6 @@
         "blue"
       ],
       "notes": "Basically, you're shooting in a straight line and ignoring walls. You don't have to pick a target on the other side of a wall – it could even be someone on your own square – but shooting through walls sure is fun. There are only 4 cardinal directions. You imagine facing one wall or door, square-on, and firing in that direction. Anyone on a square in that direction (including yours) is a valid target. In piercing mode, the 2 targets can be on the same square or on different squares.",
-      "type": "SelectableWeapon",
       "effects": [
         {
           "name": "basic mode",
@@ -202,7 +196,6 @@
         "red"
       ],
       "notes": "Remember that the 3 targets can be in 3 different rooms.",
-      "type": "SelectableWeapon",
       "effects": [
         {
           "name": "basic mode",
@@ -233,7 +226,6 @@
         "yellow"
       ],
       "notes": null,
-      "type": "SelectableWeapon",
       "effects": [
         {
           "name": "basic mode",
@@ -265,7 +257,6 @@
         "blue"
       ],
       "notes": " In rocket fist mode, you're flying 2 squares in a straight line, punching 1 person per square.",
-      "type": "SelectableWeapon",
       "effects": [
         {
           "name": "basic mode",
@@ -302,7 +293,6 @@
         "yellow"
       ],
       "notes": null,
-      "type": "SelectableWeapon",
       "effects": [
         {
           "name": "basic mode",
@@ -336,7 +326,6 @@
         "yellow"
       ],
       "notes": "Remember that moves go through doors, but not walls.",
-      "type": "SelectableWeapon",
       "effects": [
         {
           "name": "basic mode",

@@ -6,7 +6,6 @@
         "blue"
       ],
       "notes": null,
-      "type": "PotentiableWeapon",
       "effects": [
         {
           "name": "basic effect",
@@ -40,7 +39,6 @@
         "red"
       ],
       "notes": "If you deal both additional points of damage, they must be dealt to 2 different targets. If you see only 2 targets, you deal 2 to each if you use both optional effects. If you use the basic effect on only 1 target, you can still use the the turret tripod to give it 1 additional damage.",
-      "type": "PotentiableWeapon",
       "effects": [
         {
           "name": "basic effect",
@@ -82,7 +80,6 @@
         "red"
       ],
       "notes": "This card constrains the order in which you can use its effects. (Most cards don't.) Also note that each target must be a different player.",
-      "type": "PotentiableWeapon",
       "effects": [
         {
           "name": "basic effect",
@@ -127,7 +124,6 @@
         "yellow"
       ],
       "notes": "The two moves have no ammo cost. You don't have to be able to see your target when you play the card.For example, you can move 2 squares and shoot a target you now see. You cannot use 1 move before shooting and 1 move after.",
-      "type": "PotentiableWeapon",
       "effects": [
         {
           "name": "basic effect",
@@ -166,7 +162,6 @@
         "blue"
       ],
       "notes": "The 3 targets must be different, but some might start on the same square. It is legal to choose targets on your square, on the vortex, or even on squares you can't see. They all end up on the vortex.",
-      "type": "PotentiableWeapon",
       "effects": [
         {
           "name": "basic effect",
@@ -200,7 +195,6 @@
         "red"
       ],
       "notes": "For example, you can shoot a target, move it onto a square with other targets, then damage everyone including the first target. Or you can deal 2 to a main target, 1 to everyone else on that square, then move the main target. Or you can deal 1 to an isolated target and 1 to everyone on a different square. If you target your own square, you will not be moved or damaged.",
-      "type": "PotentiableWeapon",
       "effects": [
         {
           "name": "basic effect",
@@ -233,7 +227,6 @@
         "red"
       ],
       "notes": "If you use the rocket jump before the basic effect, you consider only your new square when determining if a target is legal. You can even move off a square so you can shoot someone on it. If you use the fragmenting warhead, you deal damage to everyone on the target's square before you move the target – your target will take 3 damage total.",
-      "type": "PotentiableWeapon",
       "effects": [
         {
           "name": "basic effect",
@@ -277,7 +270,6 @@
         "red"
       ],
       "notes": "Combining all effects allows you to move onto a square and whack 2 people; or whack somebody, move, and whack somebody else; or whack 2 people and then move.",
-      "type": "PotentiableWeapon",
       "effects": [
         {
           "name": "basic effect",

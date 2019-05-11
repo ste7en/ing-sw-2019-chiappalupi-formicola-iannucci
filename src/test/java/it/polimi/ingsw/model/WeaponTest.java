@@ -186,7 +186,7 @@ public class WeaponTest {
         tester.get(0).get(0).setDamage(3);
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(0).setMarks(1);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 1);
@@ -202,20 +202,20 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
         tester.get(2).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 0);
         map.setPlayerPosition(p3, 2, 0);
         map.setPlayerPosition(p4, 1, 1);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
     }
 
     /**
      * Tests the usage of the Heatseeker weapon in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponHeatseeker() {
@@ -231,7 +231,7 @@ public class WeaponTest {
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setDamage(3);
         tester.get(0).get(0).setTarget(p2);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 1, 1);
@@ -245,13 +245,13 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
     }
 
     /**
      * Tests the usage of the Electroscythe weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponElectroscythe() {
@@ -265,7 +265,7 @@ public class WeaponTest {
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setDamage(1);
         tester.get(0).get(0).setTarget(p3);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 3);
@@ -279,7 +279,7 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(1).setTarget(p3);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 1, 1);
@@ -290,7 +290,7 @@ public class WeaponTest {
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setDamage(2);
         tester.get(0).get(0).setTarget(p3);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 3);
@@ -304,7 +304,7 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(1).setTarget(p3);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
     }
 
     /**
@@ -343,7 +343,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Tractor Beam weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponTractorBeam() {
@@ -372,7 +372,7 @@ public class WeaponTest {
         movementsCheck.sort(Cell::compareTo);
         assertEquals(movementsP2, movementsCheck);
         assertEquals(movementsP3, movementsCheck);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 0);
         map.setPlayerPosition(p2, 1, 2);
@@ -392,7 +392,7 @@ public class WeaponTest {
         movementsCheck.add(map.getCell(0, 2));
         movementsCheck.sort(Cell::compareTo);
         assertEquals(movements, movementsCheck);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 0);
         map.setPlayerPosition(p2, 0, 2);
@@ -404,7 +404,7 @@ public class WeaponTest {
         tester.get(0).get(0).setDamage(3);
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(0).setPosition(map.getCell(0, 0));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 0, 0);
         map.setPlayerPosition(p2, 0, 2);
@@ -420,13 +420,13 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
         tester.get(2).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
     }
 
     /**
      * Tests the usage of the Furnace weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponFurnace() {
@@ -450,14 +450,14 @@ public class WeaponTest {
         tester.get(0).get(1).setMarks(1);
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 0, 2);
         map.setPlayerPosition(p3, 0, 3);
         map.setPlayerPosition(p4, 0, 2);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 2, 2);
@@ -473,7 +473,7 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(1).setTarget(p3);
         tester.get(0).get(2).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 2, 2);
@@ -487,14 +487,14 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setTarget(p3);
         tester.get(1).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 2, 2);
         map.setPlayerPosition(p3, 1, 2);
         map.setPlayerPosition(p4, 1, 3);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 0, 0);
@@ -509,13 +509,13 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(1).setTarget(p3);
         tester.get(0).get(2).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
     }
 
     /**
      * Tests the usage of the Furnace weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponHellion() {
@@ -538,7 +538,7 @@ public class WeaponTest {
         tester.get(0).get(1).setTarget(p4);
         tester.get(1).get(0).setTarget(p4);
         tester.get(1).get(1).setTarget(p2);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 1);
         map.setPlayerPosition(p2, 1, 1);
@@ -562,14 +562,14 @@ public class WeaponTest {
         tester.get(2).get(0).setTarget(p4);
         tester.get(2).get(1).setTarget(p2);
         tester.get(2).get(2).setTarget(p3);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 1);
         map.setPlayerPosition(p2, 0, 1);
         map.setPlayerPosition(p3, 2, 1);
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 0);
         map.setPlayerPosition(p2, 0, 0);
@@ -588,7 +588,7 @@ public class WeaponTest {
         tester.get(0).get(1).setTarget(p4);
         tester.get(1).get(0).setTarget(p4);
         tester.get(1).get(1).setTarget(p2);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 0, 1);
         map.setPlayerPosition(p2, 1, 1);
@@ -612,20 +612,20 @@ public class WeaponTest {
         tester.get(2).get(0).setTarget(p4);
         tester.get(2).get(1).setTarget(p2);
         tester.get(2).get(2).setTarget(p3);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 0, 1);
         map.setPlayerPosition(p2, 0, 1);
         map.setPlayerPosition(p3, 2, 1);
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
     }
 
     /**
      * Tests the usage of the Flamethrower weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponFlamethrower() {
@@ -647,14 +647,14 @@ public class WeaponTest {
         tester.get(2).add(new Damage());
         tester.get(2).get(1).setTarget(p4);
         tester.get(2).get(1).setDamage(1);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
         map.setPlayerPosition(p3, 1, 1);
         map.setPlayerPosition(p4, 0, 2);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 2);
@@ -673,7 +673,7 @@ public class WeaponTest {
         tester.get(3).add(new Damage());
         tester.get(3).get(1).setTarget(p4);
         tester.get(3).get(1).setDamage(1);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 2);
@@ -687,7 +687,7 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 2);
@@ -705,14 +705,14 @@ public class WeaponTest {
         tester.get(1).get(1).setDamage(1);
         tester.get(0).get(0).setTarget(p4);
         tester.get(0).get(0).setDamage(1);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 0);
         map.setPlayerPosition(p3, 1, 1);
         map.setPlayerPosition(p4, 1, 2);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 2);
@@ -726,13 +726,13 @@ public class WeaponTest {
         tester.get(0).add(new Damage());
         tester.get(0).get(1).setTarget(p3);
         tester.get(0).get(1).setDamage(1);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
     }
 
     /**
      * Tests the usage of the Railgun weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponRailgun() {
@@ -750,14 +750,14 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setTarget(p3);
         tester.get(1).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
         map.setPlayerPosition(p3, 1, 1);
         map.setPlayerPosition(p4, 0, 2);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 2, 3);
@@ -772,7 +772,7 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
         tester.get(2).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
@@ -790,14 +790,14 @@ public class WeaponTest {
         tester.get(2).add(new Damage());
         tester.get(2).get(1).setTarget(p4);
         tester.get(2).get(1).setDamage(2);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
         map.setPlayerPosition(p3, 1, 1);
         map.setPlayerPosition(p4, 0, 2);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 2, 3);
@@ -825,13 +825,13 @@ public class WeaponTest {
         tester.get(5).add(new Damage());
         tester.get(5).get(1).setTarget(p4);
         tester.get(5).get(1).setDamage(2);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
     }
 
     /**
      * Tests the usage of the ZX-2 weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponZX2() {
@@ -849,7 +849,7 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 1);
@@ -865,14 +865,14 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
         tester.get(2).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 0);
         map.setPlayerPosition(p3, 2, 0);
         map.setPlayerPosition(p4, 1, 1);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 1);
@@ -906,20 +906,20 @@ public class WeaponTest {
         tester.get(6).add(new Damage());
         tester.get(6).get(2).setTarget(p4);
         tester.get(6).get(2).setMarks(1);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 0);
         map.setPlayerPosition(p3, 2, 0);
         map.setPlayerPosition(p4, 1, 1);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
     }
 
     /**
      * Tests the usage of the Shotgun weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponShotgun() {
@@ -941,7 +941,7 @@ public class WeaponTest {
         tester.get(2).get(0).setPosition(map.getCell(1, 3));
         tester.get(3).get(0).setPosition(map.getCell(2, 3));
         tester.sort(Comparator.comparing(a -> a.get(0)));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 2, 3);
@@ -962,14 +962,14 @@ public class WeaponTest {
         tester.get(4).get(0).setPosition(map.getCell(2, 3));
         tester.get(5).get(0).setPosition(map.getCell(2, 2));
         tester.sort(Comparator.comparing(a -> a.get(0)));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 3);
         map.setPlayerPosition(p3, 0, 0);
         map.setPlayerPosition(p4, 0, 3);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 3);
         map.setPlayerPosition(p2, 1, 2);
@@ -980,7 +980,7 @@ public class WeaponTest {
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setDamage(2);
         tester.get(0).get(0).setTarget(p2);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 3);
@@ -995,20 +995,20 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
         tester.get(2).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 2, 3);
         map.setPlayerPosition(p3, 0, 0);
         map.setPlayerPosition(p4, 0, 3);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
     }
 
     /**
      * Tests the usage of the Power Glove weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponPowerGlove() {
@@ -1027,7 +1027,7 @@ public class WeaponTest {
         tester.get(0).add(new Damage());
         tester.get(0).get(1).setPosition(map.getCell(1, 2));
         tester.get(0).get(1).setTarget(p1);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 2);
@@ -1048,14 +1048,14 @@ public class WeaponTest {
         tester.get(0).get(1).setPosition(map.getCell(0, 2));
         tester.get(1).get(1).setPosition(map.getCell(1, 3));
         tester.get(2).get(1).setPosition(map.getCell(1, 3));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 1, 1);
         map.setPlayerPosition(p3, 1, 2);
         map.setPlayerPosition(p4, 1, 0);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 1);
@@ -1079,7 +1079,7 @@ public class WeaponTest {
                 tester.get(i).get(2).setPosition(map.getCellFromPlayer(p4));
             }
         }
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 2);
@@ -1108,20 +1108,20 @@ public class WeaponTest {
                 tester.get(i).get(2).setPosition(map.getCellFromPlayer(p4));
             }
         }
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 1, 2);
         map.setPlayerPosition(p3, 1, 1);
         map.setPlayerPosition(p4, 1, 0);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
     }
 
     /**
      * Tests the usage of the Shockwave weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponShockwave() {
@@ -1148,7 +1148,7 @@ public class WeaponTest {
         tester.get(4).get(0).setTarget(p3);
         tester.get(3).get(1).setTarget(p4);
         tester.get(4).get(1).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 1, 2);
@@ -1168,14 +1168,14 @@ public class WeaponTest {
         tester.get(1).get(0).setTarget(p4);
         tester.get(2).get(0).setTarget(p3);
         tester.get(2).get(1).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 1, 1);
         map.setPlayerPosition(p3, 1, 0);
         map.setPlayerPosition(p4, 1, 2);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 3);
         map.setPlayerPosition(p2, 1, 2);
@@ -1190,7 +1190,7 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(1).setTarget(p3);
         tester.get(0).get(2).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 1, 2);
@@ -1204,20 +1204,20 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setTarget(p3);
         tester.get(0).get(1).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 1, 1);
         map.setPlayerPosition(p3, 1, 0);
         map.setPlayerPosition(p4, 1, 2);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
     }
 
     /**
      * Tests the usage of the Sledgehammer weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponSledgehammer() {
@@ -1236,7 +1236,7 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
         tester.get(2).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 0, 1);
@@ -1247,14 +1247,14 @@ public class WeaponTest {
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setDamage(2);
         tester.get(0).get(0).setTarget(p3);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 1, 1);
         map.setPlayerPosition(p3, 1, 0);
         map.setPlayerPosition(p4, 1, 2);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 1, 1);
@@ -1273,7 +1273,7 @@ public class WeaponTest {
         tester.get(3).get(0).setPosition(map.getCell(0, 1));
         tester.get(4).get(0).setPosition(map.getCell(1, 1));
         tester.get(5).get(0).setPosition(map.getCell(2, 1));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 2, 3);
@@ -1296,20 +1296,20 @@ public class WeaponTest {
         tester.get(7).get(0).setPosition(map.getCell(2, 1));
         tester.get(8).get(0).setPosition(map.getCell(2, 2));
         tester.get(9).get(0).setPosition(map.getCell(2, 3));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 0, 1);
         map.setPlayerPosition(p3, 1, 2);
         map.setPlayerPosition(p4, 2, 1);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
     }
 
     /**
      * Tests the usage of the Lock Rifle weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponLockRifle() {
@@ -1329,20 +1329,20 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
         tester.get(2).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 3);
         map.setPlayerPosition(p2, 0, 0);
         map.setPlayerPosition(p3, 1, 0);
         map.setPlayerPosition(p4, 2, 0);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 3);
         map.setPlayerPosition(p2, 1, 3);
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 1, 3);
-        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(0);
+        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(0);
         tester.clear();
         for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
@@ -1350,21 +1350,21 @@ public class WeaponTest {
             tester.get(i).get(0).setMarks(1);
             tester.get(i).get(0).setTarget(i == 0 ? p3 : p4);
         }
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players));
 
         map.setPlayerPosition(p1, 1, 3);
         map.setPlayerPosition(p2, 1, 3);
         map.setPlayerPosition(p3, 0, 0);
         map.setPlayerPosition(p4, 0, 0);
-        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(0);
+        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(0);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 1);
         map.setPlayerPosition(p3, 0, 2);
         map.setPlayerPosition(p4, 1, 3);
-        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(1);
+        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(1);
         tester.clear();
         for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
@@ -1372,13 +1372,13 @@ public class WeaponTest {
             tester.get(i).get(0).setMarks(1);
             tester.get(i).get(0).setTarget(i == 0 ? p2 : p4);
         }
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players));
     }
 
     /**
      * Tests the usage of the Machine Gun weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponMachineGun() {
@@ -1407,22 +1407,22 @@ public class WeaponTest {
         tester.get(3).get(1).setTarget(p3);
         tester.get(4).get(1).setTarget(p4);
         tester.get(5).get(1).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 0, 0);
         map.setPlayerPosition(p3, 0, 3);
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 1);
         map.setPlayerPosition(p3, 0, 2);
         map.setPlayerPosition(p4, 1, 3);
-        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(3);
+        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(3);
         tester.clear();
-        ArrayList<ArrayList<Damage>> forOrder = weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players);
+        ArrayList<ArrayList<Damage>> forOrder = weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players);
         for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
@@ -1436,8 +1436,8 @@ public class WeaponTest {
         map.setPlayerPosition(p2, 0, 1);
         map.setPlayerPosition(p3, 0, 2);
         map.setPlayerPosition(p4, 1, 3);
-        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(3);
-        forPotentiableWeapon.addAll(weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players).get(0));
+        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(3);
+        forPotentiableWeapon.addAll(weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players).get(0));
         Player alreadyShot = forPotentiableWeapon.get(2).getTarget();
         Player toShoot = (alreadyShot == p2) ? p3 : p2;
         tester.clear();
@@ -1452,13 +1452,13 @@ public class WeaponTest {
                 tester.get(i).get(1).setDamage(1);
             }
         }
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 1);
         map.setPlayerPosition(p3, 0, 2);
         map.setPlayerPosition(p4, 1, 3);
-        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(3);
+        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(3);
         tester.clear();
         for (int i = 0; i < 5; i++) {
             tester.add(new ArrayList<>());
@@ -1475,55 +1475,55 @@ public class WeaponTest {
         tester.get(2).get(0).setTarget(p4);
         tester.get(3).get(0).setTarget(p2);
         tester.get(4).get(0).setTarget(p3);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players));
     }
 
     /**
      * Tests an exception when the Machine Gun weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = NullPointerException.class)
     public void testMachineGunNullPointerExceptionEffect1() {
         while (!(weaponTester.getName().equals("Machine Gun"))) weaponTester = decks.drawWeapon();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players);
     }
 
     /**
      * Tests an exception when the Machine Gun weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = RuntimeException.class)
     public void testMachineGunRuntimeExceptionEffect1() {
         while (!(weaponTester.getName().equals("Machine Gun"))) weaponTester = decks.drawWeapon();
         ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players);
     }
 
     /**
      * Tests an exception when the Machine Gun weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = NullPointerException.class)
     public void testMachineGunNullPointerExceptionEffect2() {
         while (!(weaponTester.getName().equals("Machine Gun"))) weaponTester = decks.drawWeapon();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, null, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), null, map, players);
     }
 
     /**
      * Tests an exception when the Machine Gun weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = RuntimeException.class)
     public void testMachineGunRuntimeExceptionEffect2() {
         while (!(weaponTester.getName().equals("Machine Gun"))) weaponTester = decks.drawWeapon();
         ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players);
     }
 
     /**
      * Tests the usage of the T.H.O.R. weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponTHOR() {
@@ -1538,7 +1538,7 @@ public class WeaponTest {
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(0).setDamage(2);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
@@ -1553,33 +1553,33 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
         tester.get(2).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 1);
         map.setPlayerPosition(p3, 1, 0);
         map.setPlayerPosition(p4, 2, 0);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 1);
         map.setPlayerPosition(p3, 1, 0);
         map.setPlayerPosition(p4, 2, 1);
         tester.clear();
-        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(0);
+        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(0);
         tester.add(new ArrayList<>());
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setTarget(p3);
         tester.get(0).get(0).setDamage(1);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 2, 2);
         tester.clear();
-        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(0);
+        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(0);
         for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
@@ -1587,100 +1587,100 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setTarget(p3);
         tester.get(1).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
         map.setPlayerPosition(p3, 0, 0);
         map.setPlayerPosition(p4, 0, 0);
         tester.clear();
-        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(0);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players));
+        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(0);
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 1);
         map.setPlayerPosition(p3, 1, 0);
         map.setPlayerPosition(p4, 2, 1);
         tester.clear();
-        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(0);
-        forPotentiableWeapon.addAll(weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players).get(0));
+        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(0);
+        forPotentiableWeapon.addAll(weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players).get(0));
         tester.add(new ArrayList<>());
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setTarget(p4);
         tester.get(0).get(0).setDamage(2);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 2, 2);
         tester.clear();
-        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(0);
-        forPotentiableWeapon.addAll(weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players).get(0));
+        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(0);
+        forPotentiableWeapon.addAll(weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players).get(0));
         for (int i = 0; i < 1; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
             tester.get(i).get(0).setDamage(2);
         }
         tester.get(0).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 0, 0);
         tester.clear();
-        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(0);
-        forPotentiableWeapon.addAll(weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players).get(0));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players));
+        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(0);
+        forPotentiableWeapon.addAll(weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players).get(0));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players));
     }
 
     /**
      * Tests an exception when the T.H.O.R. weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = NullPointerException.class)
     public void testTHORNullPointerExceptionEffect1() {
         while (!(weaponTester.getName().equals("T.H.O.R."))) weaponTester = decks.drawWeapon();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players);
     }
 
     /**
      * Tests an exception when the T.H.O.R. weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = RuntimeException.class)
     public void testTHORRuntimeExceptionEffect1() {
         while (!(weaponTester.getName().equals("T.H.O.R."))) weaponTester = decks.drawWeapon();
         ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players);
     }
 
     /**
      * Tests an exception when the T.H.O.R. weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = NullPointerException.class)
     public void testTHORNullPointerExceptionEffect2() {
         while (!(weaponTester.getName().equals("T.H.O.R."))) weaponTester = decks.drawWeapon();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, null, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), null, map, players);
     }
 
     /**
      * Tests an exception when the T.H.O.R. weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = RuntimeException.class)
     public void testTHORRuntimeExceptionEffect2() {
         while (!(weaponTester.getName().equals("T.H.O.R."))) weaponTester = decks.drawWeapon();
         ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players);
     }
 
     /**
      * Tests the usage of the Plasma Gun weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponPlasmaGun() {
@@ -1695,7 +1695,7 @@ public class WeaponTest {
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(0).setDamage(2);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
@@ -1710,14 +1710,14 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
         tester.get(2).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 1);
         map.setPlayerPosition(p3, 1, 0);
         map.setPlayerPosition(p4, 2, 0);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 0, 0);
@@ -1735,7 +1735,7 @@ public class WeaponTest {
         tester.get(3).get(0).setPosition(map.getCell(2, 0));
         tester.get(4).get(0).setPosition(map.getCell(2, 1));
         tester.get(5).get(0).setPosition(map.getCell(2, 2));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 1, 2);
         map.setPlayerPosition(p2, 0, 0);
@@ -1754,7 +1754,7 @@ public class WeaponTest {
         tester.get(4).get(0).setPosition(map.getCell(2, 1));
         tester.get(5).get(0).setPosition(map.getCell(2, 2));
         tester.get(6).get(0).setPosition(map.getCell(2, 3));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 0, 0);
         map.setPlayerPosition(p2, 0, 0);
@@ -1771,58 +1771,58 @@ public class WeaponTest {
         tester.get(2).get(0).setPosition(map.getCell(1, 0));
         tester.get(3).get(0).setPosition(map.getCell(1, 1));
         tester.get(4).get(0).setPosition(map.getCell(2, 0));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 1);
         map.setPlayerPosition(p3, 1, 0);
         map.setPlayerPosition(p4, 2, 1);
         tester.clear();
-        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(0);
+        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(0);
         tester.add(new ArrayList<>());
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(0).setDamage(1);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
         map.setPlayerPosition(p3, 1, 3);
         map.setPlayerPosition(p4, 2, 2);
         tester.clear();
-        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(1);
+        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(1);
         tester.add(new ArrayList<>());
         tester.get(0).add(new Damage());
         tester.get(0).get(0).setTarget(p3);
         tester.get(0).get(0).setDamage(1);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players));
     }
 
     /**
      * Tests an exception when the Plasma Gun weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = NullPointerException.class)
     public void testPlasmaGunNullPointerException() {
         while (!(weaponTester.getName().equals("Plasma Gun"))) weaponTester = decks.drawWeapon();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, null, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), null, map, players);
     }
 
     /**
      * Tests an exception when the Plasma Gun weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = RuntimeException.class)
     public void testPlasmaGunRuntimeException() {
         while (!(weaponTester.getName().equals("Plasma Gun"))) weaponTester = decks.drawWeapon();
         ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players);
     }
 
     /**
      * Tests the usage of the Vortex Cannon weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponVortexCannon() {
@@ -1845,7 +1845,7 @@ public class WeaponTest {
         tester.get(3).get(0).setPosition(map.getCell(1, 2));
         tester.get(4).get(0).setPosition(map.getCell(1, 3));
         tester.get(5).get(0).setPosition(map.getCell(2, 2));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 3);
@@ -1862,7 +1862,7 @@ public class WeaponTest {
         tester.get(1).get(0).setPosition(map.getCell(1, 3));
         tester.get(2).get(0).setPosition(map.getCell(1, 2));
         tester.get(3).get(0).setPosition(map.getCell(2, 2));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 0);
         map.setPlayerPosition(p2, 0, 3);
@@ -1880,21 +1880,21 @@ public class WeaponTest {
         tester.get(1).get(0).setPosition(map.getCell(1, 0));
         tester.get(2).get(0).setPosition(map.getCell(0, 1));
         tester.get(3).get(0).setPosition(map.getCell(1, 0));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 0);
         map.setPlayerPosition(p2, 1, 3);
         map.setPlayerPosition(p3, 2, 1);
         map.setPlayerPosition(p4, 2, 2);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 3);
         map.setPlayerPosition(p3, 2, 2);
         map.setPlayerPosition(p4, 1, 3);
-        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(0);
+        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(0);
         tester.clear();
         for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
@@ -1904,13 +1904,13 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setPosition(map.getCell(1, 2));
         tester.get(1).get(0).setPosition(map.getCell(1, 2));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), forPotentiableWeapon, map, players));
     }
 
     /**
      * Tests the usage of the Grenade Launcher weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponGrenadeLauncher() {
@@ -1935,7 +1935,7 @@ public class WeaponTest {
         tester.get(5).get(0).setPosition(map.getCell(1, 2));
         tester.get(6).get(0).setPosition(map.getCell(1, 3));
         tester.get(7).get(0).setPosition(map.getCell(2, 2));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 1, 1);
@@ -1954,7 +1954,7 @@ public class WeaponTest {
         tester.get(3).get(0).setPosition(map.getCell(1, 0));
         tester.get(4).get(0).setPosition(map.getCell(2, 0));
         tester.get(5).get(0).setPosition(map.getCell(2, 1));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 0, 2);
@@ -1974,14 +1974,14 @@ public class WeaponTest {
         tester.get(4).get(0).setPosition(map.getCell(1, 0));
         tester.get(5).get(0).setPosition(map.getCell(2, 0));
         tester.get(6).get(0).setPosition(map.getCell(2, 1));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 1);
         map.setPlayerPosition(p3, 1, 0);
         map.setPlayerPosition(p4, 0, 0);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
@@ -2000,7 +2000,7 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(1).setTarget(p3);
         tester.get(1).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 0, 3);
         map.setPlayerPosition(p2, 0, 3);
@@ -2019,20 +2019,20 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(1).setTarget(p3);
         tester.get(1).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 1);
         map.setPlayerPosition(p3, 0, 2);
         map.setPlayerPosition(p4, 1, 0);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
     }
 
     /**
      * Tests the usage of the Rocket Launcher weapon and all of its effects, except the "with rocket jump" one, as it is the same as the "with phase glide" effect of the "Plasma Gun" weapon
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponRocketLauncher() {
@@ -2057,7 +2057,7 @@ public class WeaponTest {
         tester.get(5).get(0).setPosition(map.getCell(1, 2));
         tester.get(6).get(0).setPosition(map.getCell(1, 3));
         tester.get(7).get(0).setPosition(map.getCell(2, 2));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 0, 2);
@@ -2074,21 +2074,21 @@ public class WeaponTest {
         tester.get(1).get(0).setPosition(map.getCell(0, 2));
         tester.get(2).get(0).setPosition(map.getCell(0, 3));
         tester.get(3).get(0).setPosition(map.getCell(1, 2));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 1);
         map.setPlayerPosition(p3, 1, 0);
         map.setPlayerPosition(p4, 0, 0);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 1, 2);
         map.setPlayerPosition(p3, 1, 2);
         map.setPlayerPosition(p4, 1, 2);
         tester.clear();
-        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(1);
+        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(1);
         tester.add(new ArrayList<>());
         for (int i = 0; i < 3; i++) {
             tester.get(0).add(new Damage());
@@ -2097,14 +2097,14 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(1).setTarget(p3);
         tester.get(0).get(2).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 0, 2);
         map.setPlayerPosition(p3, 0, 2);
         map.setPlayerPosition(p4, 0, 2);
         tester.clear();
-        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(0);
+        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(0);
         tester.add(new ArrayList<>());
         for (int i = 0; i < 3; i++) {
             tester.get(0).add(new Damage());
@@ -2113,34 +2113,34 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(0).get(1).setTarget(p3);
         tester.get(0).get(2).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players));
     }
 
     /**
      * Tests an exception when the Rocket Launcher weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = NullPointerException.class)
     public void testRocketLauncherNullPointerException() {
         while (!(weaponTester.getName().equals("Rocket Launcher"))) weaponTester = decks.drawWeapon();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, null, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), null, map, players);
     }
 
     /**
      * Tests an exception when the Rocket Launcher weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = RuntimeException.class)
     public void testRocketLauncherRuntimeException() {
         while (!(weaponTester.getName().equals("Rocket Launcher"))) weaponTester = decks.drawWeapon();
         ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players);
     }
 
     /**
      * Tests the usage of the Rocket Launcher weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test
     public void testWeaponCyberblade() {
@@ -2159,14 +2159,14 @@ public class WeaponTest {
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
         tester.get(2).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 0, 0);
         map.setPlayerPosition(p3, 1, 1);
         map.setPlayerPosition(p4, 0, 1);
         tester.clear();
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players));
 
         map.setPlayerPosition(p1, 0, 0);
         map.setPlayerPosition(p2, 2, 3);
@@ -2180,7 +2180,7 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setPosition(map.getCell(0,1));
         tester.get(1).get(0).setPosition(map.getCell(1,0));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 1, 1);
         map.setPlayerPosition(p2, 2, 3);
@@ -2194,7 +2194,7 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setPosition(map.getCell(0,1));
         tester.get(1).get(0).setPosition(map.getCell(2,1));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 1, 2);
         map.setPlayerPosition(p2, 2, 3);
@@ -2209,14 +2209,14 @@ public class WeaponTest {
         tester.get(0).get(0).setPosition(map.getCell(0,2));
         tester.get(1).get(0).setPosition(map.getCell(1,3));
         tester.get(2).get(0).setPosition(map.getCell(2,2));
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), weaponTester, null, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(1), null, map, players));
 
         map.setPlayerPosition(p1, 2, 3);
         map.setPlayerPosition(p2, 2, 3);
         map.setPlayerPosition(p3, 2, 3);
         map.setPlayerPosition(p4, 2, 3);
         tester.clear();
-        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(0);
+        ArrayList<Damage> forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(0);
         for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
@@ -2224,14 +2224,14 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setTarget(p3);
         tester.get(1).get(0).setTarget(p4);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players));
 
         map.setPlayerPosition(p1, 0, 0);
         map.setPlayerPosition(p2, 0, 0);
         map.setPlayerPosition(p3, 0, 0);
         map.setPlayerPosition(p4, 0, 0);
         tester.clear();
-        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), weaponTester, null, map, players).get(2);
+        forPotentiableWeapon = weaponTester.useEffect(p1, weaponTester.getEffects().get(0), null, map, players).get(2);
         for (int i = 0; i < 2; i++) {
             tester.add(new ArrayList<>());
             tester.get(i).add(new Damage());
@@ -2239,27 +2239,27 @@ public class WeaponTest {
         }
         tester.get(0).get(0).setTarget(p2);
         tester.get(1).get(0).setTarget(p3);
-        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players));
+        assertEquals(tester, weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players));
     }
 
     /**
      * Tests an exception when the Cyberblade weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = NullPointerException.class)
     public void testCyberbladeNullPointerException() {
         while (!(weaponTester.getName().equals("Cyberblade"))) weaponTester = decks.drawWeapon();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, null, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), null, map, players);
     }
 
     /**
      * Tests an exception when the Cyberblade weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, Weapon, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
     @Test (expected = RuntimeException.class)
     public void testCyberbladeRuntimeException() {
         while (!(weaponTester.getName().equals("Cyberblade"))) weaponTester = decks.drawWeapon();
         ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
-        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), weaponTester, forPotentiableWeapon, map, players);
+        weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players);
     }
 }

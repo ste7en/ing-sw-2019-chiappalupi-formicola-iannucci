@@ -7,7 +7,6 @@
         "yellow"
       ],
       "notes": "For example, in the 2-by-2 room, you cannot shoot a target on an adjacent square, but you can shoot a target on the diagonal. If you are beside a door, you can't shoot a target on the other side of the door, but you can shoot a target on a different square of that room.",
-      "type": "SimpleWeapon",
       "effects": [
         {
           "name": "effect",
@@ -31,7 +30,6 @@
         "yellow"
       ],
       "notes": "Yes, this can only hit targets you cannot see.",
-      "type": "SimpleWeapon",
       "effects": [
         {
           "name": "effect",

@@ -36,7 +36,7 @@ public class GameLogic {
     public void addPlayer(Player player) { }
 
     public ArrayList<ArrayList<Damage>> useEffect(Weapon weapon, Effect effect, Player shooter, ArrayList<Damage> forPotentiableWeapons) {
-        return weapon.useEffect(shooter, effect, weapon, forPotentiableWeapons, board.getMap(), players);
+        return weapon.useEffect(shooter, effect, forPotentiableWeapons, board.getMap(), players);
     }
 
 }

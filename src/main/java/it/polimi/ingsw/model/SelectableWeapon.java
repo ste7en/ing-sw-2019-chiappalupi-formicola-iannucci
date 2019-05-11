@@ -2,9 +2,22 @@ package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
 
+/**
+ *
+ * @author Daniele Chiappalupi
+ */
 public class SelectableWeapon extends Weapon {
+    /**
+     * Override of the useEffect method when the Weapon is a selectable one
+     * @param shooter it's the player who is using the effect
+     * @param effect it's the effect that is being used
+     * @param forPotentiableWeapons it's an ArrayList containing all of the damages made by other effect (if the weapon is potentiable)
+     * @param map it's the GameMap
+     * @param players it's an ArrayList containing all of the Players in game
+     * @return an ArrayList containing all of the possible solutions of damages
+     */
     @Override
-    public ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, Weapon weapon, ArrayList<Damage> forPotentiableWeapons, GameMap map, ArrayList<Player> players) {
+    public ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, ArrayList<Damage> forPotentiableWeapons, GameMap map, ArrayList<Player> players) {
         if (effect.getProperties().containsKey(EffectProperty.CanMoveBefore))
             return computeDamageCanMoveBefore(effect, shooter, null, map, players);
         if(effect.getProperties().containsKey(EffectProperty.Hard))
@@ -15,6 +28,7 @@ public class SelectableWeapon extends Weapon {
     /**
      * This method computes the different solutions of damages when using the "in barbecue mode" effect, of the "Flamethrower" weapon
      * @param shooter it's the Player who is using the effect
+     * @param map it's the GameMap
      * @return an ArrayList containing all of the different solutions
      */
     private ArrayList<ArrayList<Damage>> inBarbecueMode(Player shooter, GameMap map) {

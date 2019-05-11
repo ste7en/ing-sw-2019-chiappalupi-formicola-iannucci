@@ -5,11 +5,24 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ *
+ * @author Daniele Chiappalupi
+ */
 public class PotentiableWeapon extends Weapon {
+    /**
+     * Override of the useEffect method when the Weapon is a potentiable one
+     * @param shooter it's the player who is using the effect
+     * @param effect it's the effect that is being used
+     * @param forPotentiableWeapons it's an ArrayList containing all of the damages made by other effect (if the weapon is potentiable)
+     * @param map it's the GameMap
+     * @param players it's an ArrayList containing all of the Players in game
+     * @return an ArrayList containing all of the possible solutions of damages
+     */
     @Override
-    public ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, Weapon weapon, ArrayList<Damage> forPotentiableWeapons, GameMap map, ArrayList<Player> players) {
+    public ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, ArrayList<Damage> forPotentiableWeapons, GameMap map, ArrayList<Player> players) {
         ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
-        if(weapon.getEffects().get(0) == effect) {
+        if(getEffects().get(0) == effect) {
             boolean canMoveBefore = effect.getProperties().containsKey(EffectProperty.CanMoveBefore);
             return canMoveBefore ? computeDamageCanMoveBefore(effect, shooter, null, map, players) : computeDamages(effect, shooter, null, map, players);
         }
@@ -49,10 +62,10 @@ public class PotentiableWeapon extends Weapon {
                 ArrayList<Player> toNotShoot = new ArrayList<>();
                 toNotShoot.add(shooter);
                 if(! effect.getProperties().containsKey(EffectProperty.MultipleCell)) for(Damage damage : forPotentiableWeapons) toNotShoot.add(damage.getTarget());
-                if(effect.getProperties().get(EffectProperty.EffectOnTarget) >= 0) solutions = useEffect(forPotentiableWeapons.get(effectOnTarget).getTarget(), weapon.getEffects().get(0), weapon, null, map, players);
+                if(effect.getProperties().get(EffectProperty.EffectOnTarget) >= 0) solutions = useEffect(forPotentiableWeapons.get(effectOnTarget).getTarget(), getEffects().get(0), null, map, players);
                 else {
                     Effect box = new Effect();
-                    HashMap<EffectProperty, Integer> boxProperties = (HashMap<EffectProperty, Integer>)weapon.getEffects().get(effectOnTarget).getProperties().clone();
+                    HashMap<EffectProperty, Integer> boxProperties = (HashMap<EffectProperty, Integer>) getEffects().get(effectOnTarget).getProperties().clone();
                     boxProperties.remove(EffectProperty.EffectOnTarget);
                     box.setProperties(boxProperties);
                     solutions = computeDamages(box, forPotentiableWeapons.get(0).getTarget(), null, map, players);
@@ -69,7 +82,7 @@ public class PotentiableWeapon extends Weapon {
 
                 }
                 ArrayList<ArrayList<Damage>> toRemove = new ArrayList<>();
-                boolean condition = !effect.getProperties().get(EffectProperty.Damage).equals(weapon.getEffects().get(0).getProperties().get(EffectProperty.Damage));
+                boolean condition = !effect.getProperties().get(EffectProperty.Damage).equals(getEffects().get(0).getProperties().get(EffectProperty.Damage));
                 int updatedDamage = effect.getProperties().get(EffectProperty.Damage);
                 if(condition) updatedDamage = effect.getProperties().get(EffectProperty.Damage);
                 for(ArrayList<Damage> damages : solutions)
