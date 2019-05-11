@@ -1,0 +1,48 @@
+[
+    {
+      "name": "Whisper",
+      "cost": [
+        "blue",
+        "blue",
+        "yellow"
+      ],
+      "notes": "For example, in the 2-by-2 room, you cannot shoot a target on an adjacent square, but you can shoot a target on the diagonal. If you are beside a door, you can't shoot a target on the other side of the door, but you can shoot a target on a different square of that room.",
+      "type": "SimpleWeapon",
+      "effects": [
+        {
+          "name": "effect",
+          "description": "Deal 3 damage and 1 mark to 1 target you can see.Your target must be at least 2 moves away from you.",
+          "cost": null,
+          "properties": {
+            "MinDistance": 2,
+            "MaxDistance": -1,
+            "MaxPlayer": 1,
+            "Damage": 3,
+            "Mark": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "Heatseeker",
+      "cost": [
+        "red",
+        "red",
+        "yellow"
+      ],
+      "notes": "Yes, this can only hit targets you cannot see.",
+      "type": "SimpleWeapon",
+      "effects": [
+        {
+          "name": "effect",
+          "description": "Choose 1 target you cannot see and deal 3 damage to it.",
+          "cost": null,
+          "properties": {
+            "MinDistance": -1,
+            "MaxPlayer": 1,
+            "Damage": 3
+          }
+        }
+      ]
+    }
+]

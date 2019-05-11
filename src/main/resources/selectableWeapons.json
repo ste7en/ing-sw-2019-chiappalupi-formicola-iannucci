@@ -1,0 +1,365 @@
+[
+    {
+      "name": "Electroscythe",
+      "cost": [
+        "blue"
+      ],
+      "notes": null,
+      "type": "SelectableWeapon",
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Deal 1 damage to every other player on your square.",
+          "cost": null,
+          "properties": {
+            "MaxDistance": 0,
+            "MaxPlayer": -1,
+            "Damage": 1
+          }
+        }, {
+          "name": "in reaper mode",
+          "description": "Deal 2 damage to every other player on your square.",
+          "cost": {
+            "blue": 1,
+            "red": 1
+          },
+          "properties": {
+            "MaxDistance": 0,
+            "MaxPlayer": -1,
+            "Damage": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tractor Beam",
+      "cost": [
+        "blue"
+      ],
+      "notes": "You can move a target even if you can't see it. The target ends up in a place where you can see and damage it. The moves do not have to be in the same direction.",
+      "type": "SelectableWeapon",
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Move a target 0, 1, or 2 squares to a square you can see, and give it 1 damage.",
+          "cost": null,
+          "properties": {
+            "CanMoveBefore": 2,
+            "MaxDistance": -1,
+            "MaxPlayer": 1,
+            "Damage": 1
+          }
+        }, {
+          "name": "in punisher mode",
+          "description": "Choose a target 0, 1, or 2 moves away from you. Move the target to your square and deal 3 damage to it.",
+          "cost": {
+            "yellow": 1,
+            "red": 1
+          },
+          "properties": {
+            "CanMoveBefore": 2,
+            "MaxDistance": 0,
+            "MaxPlayer": 1,
+            "Damage": 3
+          }
+        }
+      ]
+    },
+    {
+      "name": "Furnace",
+      "cost": [
+        "red",
+        "blue"
+      ],
+      "notes": null,
+      "type": "SelectableWeapon",
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Choose a room you can see, but not the room you are in. Deal 1 damage to everyone in that room.",
+          "cost": null,
+          "properties": {
+            "MinDistance": -1,
+            "MultipleCell": -1,
+            "Damage": 1
+          }
+        }, {
+          "name": "in cozy fire mode",
+          "description": "Choose a square exactly one move away. Deal 1 damage and 1 mark to everyone on that square.",
+          "cost": null,
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": 1,
+            "MultipleCell": 0,
+            "Damage": 1,
+            "Mark": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hellion",
+      "cost": [
+        "red",
+        "yellow"
+      ],
+      "notes": null,
+      "type": "SelectableWeapon",
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Deal 1 damage to 1 target you can see at least 1 move away. Then give 1 mark to that target and everyone else on that square.",
+          "cost": null,
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": -1,
+            "MaxPlayer": 1,
+            "Damage": 1,
+            "Mark": -1
+          }
+        }, {
+          "name": "in nano-tracer mode",
+          "description": "Deal 1 damage to 1 target you can see at least 1 move away. Then give 2 mark to that target and everyone else on that square.",
+          "cost": {
+            "red": 1
+          },
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": -1,
+            "MaxPlayer": 1,
+            "Damage": 1,
+            "Mark": -2
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flamethrower",
+      "cost": [
+        "red"
+      ],
+      "notes": "This weapon cannot damage anyone in your square. However, it can sometimes damage a target you can't see – the flame won't go through walls, but it will go through doors. Think of it as a straight-line blast of flame that can travel 2 squares in a cardinal direction.",
+      "type": "SelectableWeapon",
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Choose a square 1 move away and possibly a second square 1 more move away in the same direction. On each square, you may choose 1 target and give it 1 damage.",
+          "cost": null,
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": 2,
+            "MultipleCell": -2,
+            "MaxPlayer": 2,
+            "Damage": 1
+          }
+        }, {
+          "name": "in barbecue mode",
+          "description": "Choose 2 squares as above. Deal 2 damage to everyone on the first square and 1 damage to everyone on the second square.",
+          "cost": {
+            "yellow": 2
+          },
+          "properties": {
+            "Hard": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "Railgun",
+      "cost": [
+        "yellow",
+        "yellow",
+        "blue"
+      ],
+      "notes": "Basically, you're shooting in a straight line and ignoring walls. You don't have to pick a target on the other side of a wall – it could even be someone on your own square – but shooting through walls sure is fun. There are only 4 cardinal directions. You imagine facing one wall or door, square-on, and firing in that direction. Anyone on a square in that direction (including yours) is a valid target. In piercing mode, the 2 targets can be on the same square or on different squares.",
+      "type": "SelectableWeapon",
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Choose a cardinal direction and 1 target in that direction. Deal 3 damage to it.",
+          "cost": null,
+          "properties": {
+            "MaxPlayer": 1,
+            "MultipleCell": -2,
+            "Damage": 3
+          }
+        }, {
+          "name": "in piercing mode",
+          "description": "Choose a cardinal direction and 1 or 2 targets in that direction. Deal 2 damage to each.",
+          "cost": null,
+          "properties": {
+            "MaxPlayer": 2,
+            "MultipleCell": -2,
+            "Damage": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "ZX-2",
+      "cost": [
+        "yellow",
+        "red"
+      ],
+      "notes": "Remember that the 3 targets can be in 3 different rooms.",
+      "type": "SelectableWeapon",
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Deal 1 damage and 2 marks to 1 target you can see.",
+          "cost": null,
+          "properties": {
+            "MaxPlayer": 1,
+            "MaxDistance": -1,
+            "Damage": 1,
+            "Mark": 2
+          }
+        }, {
+          "name": "in scanner mode",
+          "description": "Choose up to 3 targets you can see and deal 1 mark to each.",
+          "cost": null,
+          "properties": {
+            "MaxPlayer": 3,
+            "MaxDistance": -1,
+            "Mark": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shotgun",
+      "cost": [
+        "yellow",
+        "yellow"
+      ],
+      "notes": null,
+      "type": "SelectableWeapon",
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Deal 3 damage to 1 target on your square. If you want, you may then move the target 1 square.",
+          "cost": null,
+          "properties": {
+            "MaxPlayer": 1,
+            "MaxDistance": 0,
+            "CanMoveAfter": 1,
+            "Damage": 3
+          }
+        }, {
+          "name": "in long barrel mode",
+          "description": "Deal 2 damage to 1 target on any square exactly one move away.",
+          "cost": null,
+          "properties": {
+            "MaxPlayer": 1,
+            "MinDistance": 1,
+            "MaxDistance": 1,
+            "Damage": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "Power Glove",
+      "cost": [
+        "yellow",
+        "blue"
+      ],
+      "notes": " In rocket fist mode, you're flying 2 squares in a straight line, punching 1 person per square.",
+      "type": "SelectableWeapon",
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Choose 1 target on any square exactly 1 move away. Move onto that square and give the target 1 damage and 2 marks.",
+          "cost": null,
+          "properties": {
+            "MaxPlayer": 1,
+            "MaxDistance": 1,
+            "MinDistance": 1,
+            "Damage": 1,
+            "Mark": 2,
+            "MoveMe": -1
+          }
+        }, {
+          "name": "in rocket fist mode",
+          "description": "Choose a square exactly 1 move away. Move onto that square. You may deal 2 damage to 1 target there. If you want, you may move 1 more square in that same direction (but only if it is a legal move). You may deal 2 damage to 1 target there, as well.",
+          "cost": {
+            "blue": 1
+          },
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": 2,
+            "MultipleCell": -2,
+            "MaxPlayer": 2,
+            "Damage": 2,
+            "MoveMe": -2
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shockwave",
+      "cost": [
+        "yellow"
+      ],
+      "notes": null,
+      "type": "SelectableWeapon",
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Choose up to 3 targets on different squares, each exactly 1 move away. Deal 1 damage to each target.",
+          "cost": null,
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": 1,
+            "MultipleCell": 1,
+            "MaxPlayer": 3,
+            "Damage": 1
+            }
+        }, {
+          "name": "in tsunami mode",
+          "description": "Deal 1 damage to all targets that are exactly 1 move away.",
+          "cost": {
+            "yellow": 1
+          },
+          "properties": {
+            "MinDistance": 1,
+            "MaxDistance": 1,
+            "MaxPlayer": -1,
+            "Damage": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sledgehammer",
+      "cost": [
+        "yellow"
+      ],
+      "notes": "Remember that moves go through doors, but not walls.",
+      "type": "SelectableWeapon",
+      "effects": [
+        {
+          "name": "basic mode",
+          "description": "Deal 2 damage to 1 target on your square.",
+          "cost": null,
+          "properties": {
+            "MaxDistance": 0,
+            "MaxPlayer": 1,
+            "Damage": 2
+          }
+        }, {
+          "name": "in pulverize mode",
+          "description": "Deal 3 damage to 1 target on your square, then move that target 0, 1, or 2 squares in one direction.",
+          "cost": {
+            "red": 1
+          },
+          "properties": {
+            "MaxPlayer": 1,
+            "MaxDistance": 0,
+            "CanMoveAfter": -2,
+            "Damage": 3
+          }
+        }
+      ]
+    }
+]

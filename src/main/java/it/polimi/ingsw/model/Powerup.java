@@ -75,7 +75,6 @@ public class Powerup {
             }
             case Teleporter: {
                 teleporter(user, gameMap);
-                return;
             }
         }
     }
