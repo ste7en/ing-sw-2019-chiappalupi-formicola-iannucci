@@ -9,6 +9,7 @@ package it.polimi.ingsw.networking;
 public interface ConnectionHandlerReceiverDelegate {
     /**
      * Receives a message from a delegator
+     * @param message the message received
      */
-    public void receive();
+    void receive(String message);
 }

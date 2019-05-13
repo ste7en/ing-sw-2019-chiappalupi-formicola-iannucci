@@ -34,9 +34,10 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
 
     /**
      * Receives a message from a delegator
+     * @param message
      */
     @Override
-    public void receive() {
+    public void receive(String message) {
 
     }
 }

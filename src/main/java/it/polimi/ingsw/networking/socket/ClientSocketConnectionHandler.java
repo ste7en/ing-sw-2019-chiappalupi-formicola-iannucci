@@ -1,7 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.networking.ClientConnectionHandler;
-import it.polimi.ingsw.networking.ConnectionHandlerSenderDelegate;
+import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
 import it.polimi.ingsw.utility.Loggable;
 
 /**
@@ -36,9 +36,10 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
 
     /**
      * Sends a message through its connection
+     * @param message
      */
     @Override
-    public void send() {
+    public void send(String message) {
 
     }
 }
