@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
 import it.polimi.ingsw.networking.utility.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -39,10 +40,12 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
     /**
      * Class constructor
      * @param portNumber port number on which the connection has to be opened
+     * @param receiverDelegate the server object
      */
-    public ServerSocketConnectionHandler(int portNumber) throws IllegalPortNumber {
+    public ServerSocketConnectionHandler(int portNumber, ConnectionHandlerReceiverDelegate receiverDelegate) throws IllegalPortNumber {
         if (portNumber > 65535 || portNumber < 1024) throw new IllegalPortNumber();
         super.portNumber = portNumber;
+        super.receiverDelegate = receiverDelegate;
     }
 
     /**
@@ -55,10 +58,10 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             logOnSuccess(SERVER_SOCKET_SUCCESS);
             logDescription();
-            while(true) {
+            while(!serverSocket.isClosed()) {
                 try (Socket socket = serverSocket.accept()) {
                     logOnSuccess(SOCKET_SUCCESS + socket.toString());
-                    var connection = new ServerSocketClientConnection(socket);
+                    var connection = new ServerSocketClientConnection(socket, receiverDelegate);
                     senders.add(connection);
                     executor.submit(connection);
                 } catch (IOException e) {
@@ -92,6 +95,6 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
      */
     @Override
     public void send(String message) {
-        senders.forEach(ServerSocketClientConnection::send);
+        senders.forEach( s->s.send(message));
     }
 }

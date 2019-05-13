@@ -20,7 +20,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
 
     private Integer portNumberSocket;
     private Integer portNumberRMI;
-    private List<ConnectionHandlerSenderDelegate> senderDelegate = new LinkedList<>();
+    private List<ConnectionHandlerSenderDelegate> senderDelegate;
 
     private String EXC_SETUP = "Error while setting up a ServerSocketConnectionHandler :: ";
 
@@ -36,6 +36,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
     Server(Integer portNumberSocket, Integer portNumberRMI) {
         this.portNumberSocket = portNumberSocket;
         this.portNumberRMI = portNumberRMI;
+        this.senderDelegate = new LinkedList<>();
         setupConnections();
     }
 
@@ -55,7 +56,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
         ServerSocketConnectionHandler socketConnectionHandler;
         //ServerRMIConnectionHandler RMIConnectionHandler;
         try {
-            socketConnectionHandler = new ServerSocketConnectionHandler(portNumberSocket);
+            socketConnectionHandler = new ServerSocketConnectionHandler(portNumberSocket, this);
             senderDelegate.add(socketConnectionHandler);
             //socketConnectionHandler.startSocketServer();
         } catch (Exception e) {
