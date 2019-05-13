@@ -58,7 +58,9 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
             while(true) {
                 try (Socket socket = serverSocket.accept()) {
                     logOnSuccess(SOCKET_SUCCESS + socket.toString());
-                    executor.submit(new ServerSocketClientConnection(socket));
+                    var connection = new ServerSocketClientConnection(socket);
+                    senders.add(connection);
+                    executor.submit(connection);
                 } catch (IOException e) {
                     logOnException(EXC_ON_CLIENT_CONNECTION, e);
                     break;
@@ -86,9 +88,10 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
 
     /**
      * Sends a message through its connection
+     * @param message
      */
     @Override
-    public void send() {
+    public void send(String message) {
         senders.forEach(ServerSocketClientConnection::send);
     }
 }
