@@ -59,7 +59,8 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
             logOnSuccess(SERVER_SOCKET_SUCCESS);
             logDescription();
             while(!serverSocket.isClosed()) {
-                try (Socket socket = serverSocket.accept()) {
+                try {
+                    var socket = serverSocket.accept();
                     logOnSuccess(SOCKET_SUCCESS + socket.toString());
                     var connection = new ServerSocketClientConnection(socket, receiverDelegate);
                     senders.add(connection);
