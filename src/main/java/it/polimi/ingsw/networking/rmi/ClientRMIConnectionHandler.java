@@ -1,20 +1,31 @@
 package it.polimi.ingsw.networking.rmi;
 
-import it.polimi.ingsw.networking.Server;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class ClientRMIConnectionHandler{
-    private Registry registry;
 
-    private ClientRMIConnectionHandler() {}
-    public static void main(String[] args) {
+    private Registry registry;
+    private RMIInterface server;
+
+    public ClientRMIConnectionHandler() {
         try {
-            Registry registry = LocateRegistry.getRegistry(null);
-            Server server = (Server) registry.lookup("RemoteObject");
+            registry = LocateRegistry.getRegistry(null);
+            server = (RMIInterface) registry.lookup("rmiInterface");
         } catch (Exception e) {
             System.err.println("Client exception: " + e.toString());
             e.printStackTrace();
         }
+    }
+
+
+    public void getMessage(){
+        try{
+            server.newUser("Elena");
+        } catch (RemoteException e){
+            System.err.println("Client exception: " + e.toString());
+        }
+
     }
 }
