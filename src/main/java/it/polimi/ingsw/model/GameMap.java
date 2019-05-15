@@ -13,10 +13,29 @@ import java.util.Set;
 
 public class GameMap {
 
+    /**
+     * Rep of the game's map through a matrix
+     */
     private Cell[][] map;
+
+    /**
+     * Players' positions on the map
+     */
     private LinkedHashMap<Player, Cell> playersPosition;
+
+    /**
+     * Number of rows in the map
+     */
     private int rows;
+
+    /**
+     * Number of columns in the map
+     */
     private int columns;
+
+    /**
+     * Configuration's type of the map
+     */
     private MapType mapType;
 
     public GameMap(MapType mapType, LinkedHashMap<Player, Cell> playersPosition){

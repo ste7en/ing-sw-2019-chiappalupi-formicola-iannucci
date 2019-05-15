@@ -12,8 +12,19 @@ import it.polimi.ingsw.controller.*;
 
 public class Board {
 
+    /**
+     * Map of the board
+     */
     private GameMap map;
+
+    /**
+     * Weapons placed on the board near the spawpoints divided by colors
+     */
     private HashMap<AmmoColor, ArrayList<Weapon>> weapons;
+
+    /**
+     * Killshot track on the board that takes into account the deaths occured during the game
+     */
     private LinkedHashMap<Integer, ArrayList<PlayerColor>> skullsTrack;
 
     public Board(GameMap map, HashMap<AmmoColor, ArrayList<Weapon>> weapons, LinkedHashMap<Integer, ArrayList<PlayerColor>> skullsTrack){
