@@ -35,7 +35,7 @@ public class Cell implements Comparable<Cell> {
 
 
     /**
-     * Constructor: creates a new Cell based on its name, color and description.
+     * Constructor: creates a new Cell based on its borders, color, ammo tile, position on the map and whether it is a respawner cell
      * @param b1 northern border of the cell, defined as a Border Enum value
      * @param b2 eastern border of the cell, defined as a Border Enum value
      * @param b3 southern border of the cell, defined as a Border Enum value
