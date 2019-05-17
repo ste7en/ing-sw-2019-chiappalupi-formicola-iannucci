@@ -64,7 +64,7 @@ public class Cell implements Comparable<Cell> {
      * @param direction defined as a Direction Enum value
      * @return the border's type of the cell in the given direction
      */
-    public Border adiacency(Direction direction) {
+    public Border adiajency(Direction direction) {
         switch(direction) {
             case North:
                 return borders.get(0);

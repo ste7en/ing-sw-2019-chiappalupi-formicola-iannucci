@@ -83,14 +83,30 @@ public class GameMap {
         return clone;
     }
 
+    /**
+     * Method that gets the cell that is in a given position on the map
+     * @param row the row of the position
+     * @param column the column of the position
+     * @return the map's cell selected
+     */
     public Cell getCell(int row, int column) {
         return map[row][column];
     }
 
+    /**
+     * Method that gets the cell where a given player is positioned
+     * @param player the player of whom we want to know the position in terms of cell
+     * @return the cell where the player is positioned
+     */
     public Cell getCellFromPlayer(Player player){
         return playersPosition.get(player);
     }
 
+    /**
+     * Method that gets all the cells that belong to a certain room
+     * @param cell the cell from which we get the room
+     * @return a collection of cells belonging to the room that contains the given cell
+     */
     public ArrayList<Cell> getRoomFromCell(Cell cell) {
         ArrayList<Cell> room = new ArrayList<>();
         int i,j;
@@ -102,6 +118,12 @@ public class GameMap {
         return room;
     }
 
+    /**
+     * Method that gets the cell adjacent to a given cell in a given direction
+     * @param cell the cell from which we get the adjacent cell
+     * @param direction the direction in which we find the adjacent cell we are looking far
+     * @return the adjacent cell
+     */
     public Cell getCellFromDirection(Cell cell, Direction direction){
         int i,j;
         for (i=0; i<rows; i++)
@@ -123,6 +145,11 @@ public class GameMap {
         return null;
     }
 
+    /**
+     * Method that gets the players that are placed on a given cell
+     * @param cell the cell from which we want to get the players
+     * @return a collection of players in the same cell
+     */
     private ArrayList<Player> getPlayersFromCell(Cell cell){
         ArrayList<Player> playersInThatCell = new ArrayList<>();
         for (Player player : playersPosition.keySet()){
@@ -131,18 +158,35 @@ public class GameMap {
         return playersInThatCell;
     }
 
+    /**
+     * Method that gets the targets in the same cell as a given player
+     * @param player the player that wants to know the targets that are in his cell
+     * @return a collection of players in the same cell
+     */
     public ArrayList<Player> getTargetsInMyCell(Player player){
         ArrayList<Player> targets = getPlayersFromCell(playersPosition.get(player));
         targets.remove(player);
         return targets;
     }
 
+    /**
+     * Method that gets the targets that are at less than a certain distance (in terms of valid steps) from a given player
+     * @param player the player that wants to know his targets
+     * @param distance the maximum distance accepted
+     * @return a collection of players at certain values of distance
+     */
     public ArrayList<Player> getTargetsAtMaxDistance(Player player, int distance){
         ArrayList<Player> targets = getTargetsAtMaxDistanceHelper(getCellFromPlayer(player), distance);
         targets.remove(player);
         return targets;
     }
 
+    /**
+     * Method that gets the targets that are at less than a certain distance (in terms of valid steps) from a given cell
+     * @param cell the cell from which we get the distance
+     * @param distance the maximum distance accepted
+     * @return a collection of players at certain values of distance
+     */
     private ArrayList<Player> getTargetsAtMaxDistanceHelper(Cell cell, int distance){
         ArrayList<Player> targets = new ArrayList<>();
         if (distance==0){
@@ -150,7 +194,7 @@ public class GameMap {
             return targets;
         }
         for (Direction direction : Direction.values()) {
-            if ((getCellFromDirection(cell, direction) != null) && (cell.adiacency(direction) != Border.wall)) {
+            if ((getCellFromDirection(cell, direction) != null) && (cell.adiajency(direction) != Border.wall)) {
                 targets.addAll(getTargetsAtMaxDistanceHelper(getCellFromDirection(cell, direction), distance - 1));
             }
         }
@@ -164,6 +208,12 @@ public class GameMap {
         return targets;
     }
 
+    /**
+     * Method that gets the targets that are at more than a certain distance (in terms of valid steps) from a given player
+     * @param player the player that want to know his targets
+     * @param distance the minimum distance accepted
+     * @return a collection of players at certain values of distance
+     */
     public ArrayList<Player> getTargetsAtMinDistance(Player player, int distance){
         ArrayList<Player> targets = new ArrayList<>();
         for(Player tempPlayer : playersPosition.keySet() ){
@@ -178,20 +228,30 @@ public class GameMap {
         return targets;
     }
 
+    /**
+     * Method that gets the targets that are adjacent to a certain player in terms of cells
+     * @param cell the cell of the player that wants to know his adjacent targets
+     * @return a collection of adjacent players
+     */
     public ArrayList<Player> getAdiacentTargets (Cell cell){
         ArrayList<Player> targets = new ArrayList<>();
         for (Direction direction : Direction.values()) {
-            if (cell.adiacency(direction) != Border.wall) {
+            if (cell.adiajency(direction) != Border.wall) {
                 targets.addAll(getPlayersFromCell(getCellFromDirection(cell, direction)));
             }
         }
         return targets;
     }
 
+    /**
+     * Method that gets the targets that are visible to a certain player
+     * @param player the player that wants to know his targets in sight
+     * @return a collection of visible players
+     */
     public ArrayList<Player> getSeenTargets(Player player) {
         ArrayList<Player> targets = new ArrayList<>();
         for (Direction direction : Direction.values()) {
-            if(playersPosition.get(player).adiacency(direction)==Border.door) {
+            if(playersPosition.get(player).adiajency(direction)==Border.door) {
                 for (Cell cell : getRoomFromCell(getCellFromDirection(playersPosition.get(player), direction))) {
                     targets.addAll(getPlayersFromCell(cell));
                 }
@@ -205,6 +265,11 @@ public class GameMap {
         return targets;
     }
 
+    /**
+     * Method that gets the targets that are invisible to a certain player
+     * @param player the player that wants to know his hidden targets
+     * @return a collection of not visible players
+     */
     public ArrayList<Player> getUnseenTargets(Player player) {
         ArrayList<Player> targets = new ArrayList<>();
         ArrayList<Player> seenTargets = getSeenTargets(player);
@@ -214,6 +279,12 @@ public class GameMap {
         return targets;
     }
 
+    /**
+     * Method that gets the targets that are in a certain direction from a given player
+     * @param player the player that wants to know his targets in a certain direction
+     * @param direction the direction where we want to look for the targets
+     * @return a collection of targets in a direction from the player
+     */
     public ArrayList<Player> getTargetsFromDirection(Player player, Direction direction) {
         ArrayList<Player> targets = new ArrayList<>();
         targets.addAll(getTargetsInMyCell(player));
@@ -226,24 +297,46 @@ public class GameMap {
         return targets;
     }
 
+    /**
+     * Method that tells us if a player can move to a certain cell in one single step
+     * @param player the player that would like to make the move
+     * @param cell the destination cell that needs to be validated
+     * @return a boolean that is true if the move is valid, false otherwise
+     */
     public boolean isAOneStepValidMove(Player player, Cell cell) {
         for (Direction direction : Direction.values()) {
-            if (playersPosition.get(player).adiacency(direction) != Border.wall && getCellFromDirection(playersPosition.get(player), direction) == cell) {
+            if (playersPosition.get(player).adiajency(direction) != Border.wall && getCellFromDirection(playersPosition.get(player), direction) == cell) {
                 return true;
             }
         }
         return false;
     }
 
+    /**
+     * Method that sets the position of a given player to a certain point in the map defined by its raw and column
+     * @param player the player whose position is the one we want to set
+     * @param i raw of the cell where the player has to be positioned
+     * @param j column of the cell where the player has to be positioned
+     */
     public void setPlayerPosition (Player player, int i, int j){
         Cell cell = getCell(i,j);
         playersPosition.put(player, cell);
     }
 
+    /**
+     * Method that sets the position of a given player to a given cell
+     * @param player the player whose position is the one we want to set
+     * @param cell the cell where the player has to be positioned
+     */
     public void setPlayerPosition (Player player, Cell cell){
         playersPosition.put(player, cell);
     }
 
+    /**
+     * Player's position getter
+     * @param player the player whose position is the one we want to get
+     * @return the cell where the player is positioned
+     */
     public Cell getPositionFromPlayer (Player player) {
         return playersPosition.get(player);
     }

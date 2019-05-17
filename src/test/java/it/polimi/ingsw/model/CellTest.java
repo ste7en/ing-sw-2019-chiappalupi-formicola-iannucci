@@ -38,15 +38,15 @@ public class CellTest {
     }
 
     /**
-     * Tests the adiacency method
-     * @see Cell#adiacency(Direction)
+     * Tests the adiajency method
+     * @see Cell#adiajency(Direction)
      */
     @Test
     public void testAdiacency(){
-        assertEquals(Border.door, cellTest.adiacency(Direction.North));
-        assertEquals(Border.space, cellTest.adiacency(Direction.East));
-        assertEquals(Border.space, cellTest.adiacency(Direction.South));
-        assertEquals(Border.wall, cellTest.adiacency(Direction.West));
+        assertEquals(Border.door, cellTest.adiajency(Direction.North));
+        assertEquals(Border.space, cellTest.adiajency(Direction.East));
+        assertEquals(Border.space, cellTest.adiajency(Direction.South));
+        assertEquals(Border.wall, cellTest.adiajency(Direction.West));
     }
 
     /**
