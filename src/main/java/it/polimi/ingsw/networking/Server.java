@@ -3,10 +3,14 @@ package it.polimi.ingsw.networking;
 //import it.polimi.ingsw.networking.*;
 //import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
 import it.polimi.ingsw.networking.socket.*;
+import it.polimi.ingsw.utility.AdrenalineLogger;
+import it.polimi.ingsw.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
+import it.polimi.ingsw.utility.Ping;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Executors;
 //import it.polimi.ingsw.networking.rmi.*;
 
 /**
@@ -20,12 +24,17 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
 
     private Integer portNumberSocket;
     private Integer portNumberRMI;
-    private List<ConnectionHandlerSenderDelegate> senderDelegate = new LinkedList<>();
+    private List<ConnectionHandlerSenderDelegate> senderDelegate;
 
     private String EXC_SETUP = "Error while setting up a ServerSocketConnectionHandler :: ";
 
-    public static void main(String args[]) {
-
+    /**
+     * Entry point of the server application
+     * @param args arguments
+     */
+    public static void main(String[] args) {
+        AdrenalineLogger.setLogName("Server");
+        new Server(3334, 4444);
 
     }
 
@@ -36,15 +45,8 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
     Server(Integer portNumberSocket, Integer portNumberRMI) {
         this.portNumberSocket = portNumberSocket;
         this.portNumberRMI = portNumberRMI;
+        this.senderDelegate = new LinkedList<>();
         setupConnections();
-    }
-
-    /**
-     * Receives a message from a delegator
-     */
-    @Override
-    public void receive() {
-
     }
 
     /**
@@ -54,9 +56,9 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
         ServerSocketConnectionHandler socketConnectionHandler;
         //ServerRMIConnectionHandler RMIConnectionHandler;
         try {
-            socketConnectionHandler = new ServerSocketConnectionHandler(portNumberSocket);
+            socketConnectionHandler = new ServerSocketConnectionHandler(portNumberSocket, this);
             senderDelegate.add(socketConnectionHandler);
-            //socketConnectionHandler.startSocketServer();
+            Executors.newCachedThreadPool().submit(socketConnectionHandler);
         } catch (Exception e) {
             logOnException(EXC_SETUP, e);
             return;
@@ -69,6 +71,25 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
             return;
         }
 
+    }
 
+    /**
+     * Receives a message from a delegator
+     * @param message received message
+     */
+    @Override
+    public void receive(String message) {
+        var communicationMessage = CommunicationMessage.getCommunicationMessageFrom(message);
+        var id = CommunicationMessage.getConnectionIDFrom(message);
+
+        switch (communicationMessage) {
+            case PONG:
+                Ping.getInstance().didPong(id);
+                break;
+            default:
+                break;
+        }
+        logDescription(communicationMessage);
+        System.out.println(message);
     }
 }

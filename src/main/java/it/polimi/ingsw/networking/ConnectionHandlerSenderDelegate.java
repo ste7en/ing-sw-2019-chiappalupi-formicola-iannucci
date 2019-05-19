@@ -9,6 +9,7 @@ package it.polimi.ingsw.networking;
 public interface ConnectionHandlerSenderDelegate {
     /**
      * Sends a message through its connection
+     * @param message the message to send
      */
-    public void send();
+    void send(String message);
 }
