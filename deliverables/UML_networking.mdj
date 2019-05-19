@@ -1607,30 +1607,11 @@
 									"model": {
 										"$ref": "AAAAAAFqidqqaEwCWIs="
 									},
-									"subViews": [
-										{
-											"_type": "UMLOperationView",
-											"_id": "AAAAAAFqieb+V02z6II=",
-											"_parent": {
-												"$ref": "AAAAAAFqidqqaEwLVXU="
-											},
-											"model": {
-												"$ref": "AAAAAAFqieb+KE2wme4="
-											},
-											"font": "Arial;13;0",
-											"left": 717,
-											"top": 309,
-											"width": 160.37353515625,
-											"height": 13,
-											"text": "+start()",
-											"horizontalAlignment": 0
-										}
-									],
 									"font": "Arial;13;0",
 									"left": 712,
 									"top": 304,
 									"width": 170.37353515625,
-									"height": 23
+									"height": 10
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -6460,16 +6441,6 @@
 									"name": "senders",
 									"visibility": "protected",
 									"type": "List<Object>"
-								}
-							],
-							"operations": [
-								{
-									"_type": "UMLOperation",
-									"_id": "AAAAAAFqieb+KE2wme4=",
-									"_parent": {
-										"$ref": "AAAAAAFqidqqaEwCWIs="
-									},
-									"name": "start"
 								}
 							],
 							"isAbstract": true
