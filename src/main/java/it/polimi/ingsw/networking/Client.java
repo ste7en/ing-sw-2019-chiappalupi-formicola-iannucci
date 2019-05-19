@@ -3,18 +3,22 @@ package it.polimi.ingsw.networking;
 import it.polimi.ingsw.networking.socket.ClientSocketConnectionHandler;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
+import it.polimi.ingsw.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
+
+import static it.polimi.ingsw.utility.CommunicationMessage.*;
 
 /**
  * Main class of the client. It will set up the networking and send/receive events and requests.
  *
  * @author Stefano Formicola
  */
-
 public final class Client implements Loggable, ConnectionHandlerReceiverDelegate {
+
     /**
      * Instance attributes that describe the connection
      */
@@ -31,9 +35,12 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
      * Log strings
      */
     private static String UNKNOWN_HOST = "Can't find the hostname. Asking for user input...";
-    private static String IO_EXC = "An IOException has been thrown. Connection retrying...";
+    private static String IO_EXC = "An IOException has been thrown. ";
+    private static String CONN_RETRY = "Connection retrying...";
     private static String ON_SUCCESS = "Client successfully connected to the server.";
     private static String ASK_SERVER_DETAILS = "Asking for server hostname and connection port.";
+    private static String INFO = "Setting up connection...";
+    private static String CONNECTION_REFUSED = "Connection refused. Asking for user input...";
 
     /**
      * Class constructor
@@ -51,7 +58,7 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
     }
 
     private void setupConnection() {
-        AdrenalineLogger.info("Setting up connection...");
+        AdrenalineLogger.info(INFO);
         AdrenalineLogger.config("A " + connectionType.toString() + " connection is setting up...");
         if (connectionType == ConnectionType.SOCKET) {
             try {
@@ -61,8 +68,13 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
                 logOnException(UNKNOWN_HOST, e);
                 askForUserInput();
                 setupConnection();
-            } catch (IOException e) {
-                logOnException(IO_EXC, e);
+            } catch (ConnectException e) {
+                logOnException(CONNECTION_REFUSED, e);
+                askForUserInput();
+                setupConnection();
+            }
+            catch (IOException e) {
+                logOnException(IO_EXC+CONN_RETRY, e);
                 setupConnection();
             }
 
@@ -75,7 +87,7 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
      * Helper strings for the following method
      */
     private static String ASK_HOSTNAME = "Please, insert server's address or hostname: ";
-    private static String ASK_PORTNUMBER = "Please, insert server's port number";
+    private static String ASK_PORTNUMBER = "Please, insert server's port number: ";
 
     /**
      * When an UnknownHostException is thrown, the user is asked to
@@ -83,21 +95,44 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
      */
     private void askForUserInput() {
         AdrenalineLogger.info(ASK_SERVER_DETAILS);
-        var console = System.console();
-        console.flush();
-        this.serverName = console.readLine(ASK_HOSTNAME);
-        this.connectionPort = Integer.parseInt(console.readLine(ASK_PORTNUMBER));
+        var in = new BufferedReader(new InputStreamReader(System.in));
+        var out = System.out;
+
+        try {
+            out.print(ASK_HOSTNAME);
+            this.serverName = in.readLine();
+            out.print(ASK_PORTNUMBER);
+            this.connectionPort = Integer.parseInt(in.readLine());
+        } catch (IOException e) {
+            logOnException(IO_EXC, e);
+        }
     }
 
     /**
-     * Receives a message from a delegator
-     * @param message
+     * Receives a json message from a delegator
+     * and parses its content
+     * @param message json message
      */
     @Override
     public void receive(String message) {
         System.out.println(message);
+        var communicationMessage = CommunicationMessage.getCommunicationMessageFrom(message);
+        var id = CommunicationMessage.getConnectionIDFrom(message);
+
+        switch (communicationMessage) {
+            case PING:
+                this.send(CommunicationMessage.from(id, PONG));
+                break;
+            default:
+                break;
+        }
+        logDescription(communicationMessage);
     }
 
+    /**
+     * Sends a json message through its sender delegate
+     * @param message a json message to send
+     */
     public void send(String message) {
         senderDelegate.send(message);
     }

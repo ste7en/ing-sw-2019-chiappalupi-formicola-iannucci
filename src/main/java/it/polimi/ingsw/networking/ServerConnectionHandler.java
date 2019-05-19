@@ -9,9 +9,4 @@ import java.rmi.RemoteException;
  * @author Stefano Formicola
  */
 
-public abstract class ServerConnectionHandler extends ConnectionHandler {
-    /**
-     * Starts the listening server connection
-     */
-    public abstract void start();
-}
+public abstract class ServerConnectionHandler extends ConnectionHandler { }
