@@ -25,12 +25,16 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  *
  * @author Stefano Formicola feat. Elena Iannucci
  */
-public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
+public class Server implements Loggable, ConnectionHandlerReceiverDelegate, WaitingRoomObserver {
 
     private Integer portNumberSocket;
     private Integer portNumberRMI;
     private List<ConnectionHandlerSenderDelegate> senderDelegate;
+    private WaitingRoom waitingRoom;
 
+    /**
+     * Log strings
+     */
     private String EXC_SETUP = "Error while setting up a ServerSocketConnectionHandler :: ";
 
     /**
@@ -51,6 +55,10 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
         this.portNumberSocket = portNumberSocket;
         this.portNumberRMI = portNumberRMI;
         this.senderDelegate = new LinkedList<>();
+
+        // TODO: - The following is a test with test parameters, the real waiting room settings must be read from a file
+        this.waitingRoom = new WaitingRoom(3, 5, 50000, this);
+
         setupConnections();
     }
 
@@ -75,6 +83,18 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
             logOnException(EXC_SETUP, e);
             return;
         }
+
+    }
+
+    /**
+     * Method called by a WaitingRoom instance on the implementing server
+     * to start a new game when the minimum number of logged users has
+     * reached and after a timeout expiration.
+     *
+     * @param userList a collection of the logged users ready to start a game
+     */
+    @Override
+    public void startNewGame(List<User> userList) {
 
     }
 
@@ -118,6 +138,13 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
                 }
 
                 sender.send(responseMessage);
+                break;
+            }
+
+            case USER_LOGIN: {
+                //TODO: - implement a deserialize method for User (??)
+                var username = args.get(User.username_key);
+                waitingRoom.addUser(new User(username));
                 break;
             }
 
