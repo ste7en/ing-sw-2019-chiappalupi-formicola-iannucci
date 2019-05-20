@@ -119,4 +119,10 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
         this.connectionState = ConnectionState.CLOSED;
         AdrenalineLogger.info(PING_TIMEOUT + socket.toString());
     }
+
+    /**
+     * @return true if the socket is connected and the connection is available
+     */
+    public boolean isAvailable() { return this.connectionState == ONLINE; }
+
 }
