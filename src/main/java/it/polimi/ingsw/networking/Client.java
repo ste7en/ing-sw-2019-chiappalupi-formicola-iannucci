@@ -3,14 +3,14 @@ package it.polimi.ingsw.networking;
 import it.polimi.ingsw.networking.socket.ClientSocketConnectionHandler;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
-import it.polimi.ingsw.utility.CommunicationMessage;
+import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
 
 import java.io.*;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 
-import static it.polimi.ingsw.utility.CommunicationMessage.*;
+import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
 /**
  * Main class of the client. It will set up the networking and send/receive events and requests.

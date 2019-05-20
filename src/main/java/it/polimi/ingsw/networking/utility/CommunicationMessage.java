@@ -1,10 +1,12 @@
-package it.polimi.ingsw.utility;
+package it.polimi.ingsw.networking.utility;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Messages sent through the network
@@ -17,7 +19,14 @@ public enum CommunicationMessage {
      * check client connectivity
      */
     PING,
-    PONG;
+    PONG,
+    /**
+     * User login messages
+     */
+    CREATE_USER,
+    CREATE_USER_OK,
+    CREATE_USER_FAILED,
+    USER_LOGIN;
 
     private static String EXC_MESS_JSON = "Exception while converting the message to json";
     private static String EXC_JSON_MESS = "Exception while converting the json to message";
@@ -26,26 +35,26 @@ public enum CommunicationMessage {
     private static class Message {
         int connectionID;
         CommunicationMessage message;
-        String[] arguments;
+        Map<String, String> arguments;
 
-        public Message(int id, CommunicationMessage format, String[] arguments) {
+        Message(int id, CommunicationMessage format, Map<String, String> arguments) {
             this.connectionID = id;
             this.message = format;
             this.arguments = arguments;
         }
 
-        public Message() {}
+        Message() {}
 
-        public int getConnectionID() { return connectionID; }
+        int getConnectionID() { return connectionID; }
         public CommunicationMessage getMessage() { return message; }
-        public String[] getArguments() { return arguments; }
+        Map<String, String> getArguments() { return arguments; }
     }
 
     public static String from(int id, CommunicationMessage format) {
-        return from(id, format, new String[0]);
+        return from(id, format, new HashMap<>());
     }
 
-    public static String from(int id, CommunicationMessage format, String[] args) {
+    public static String from(int id, CommunicationMessage format, Map<String, String> args) {
         var message = new Message(id, format, args);
         var mapper = new ObjectMapper();
         var jsonMessage = "";
@@ -77,6 +86,10 @@ public enum CommunicationMessage {
 
     public static int getConnectionIDFrom(String json) {
         return getMessageFrom(json).getConnectionID();
+    }
+
+    public static Map<String, String> getMessageArgsFrom(String json) {
+        return getMessageFrom(json).getArguments();
     }
 
 }

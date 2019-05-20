@@ -1,6 +1,10 @@
 package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
+import it.polimi.ingsw.networking.utility.CommunicationMessage;
+import it.polimi.ingsw.networking.utility.ConnectionState;
+import it.polimi.ingsw.networking.utility.Ping;
+import it.polimi.ingsw.networking.utility.Pingable;
 import it.polimi.ingsw.utility.*;
 
 import java.io.*;
@@ -8,7 +12,7 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-import static it.polimi.ingsw.utility.ConnectionState.*;
+import static it.polimi.ingsw.networking.utility.ConnectionState.*;
 
 /**
  * This class is responsible for handling a single client socket connection,

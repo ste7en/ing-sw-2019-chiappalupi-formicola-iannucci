@@ -2,11 +2,12 @@ package it.polimi.ingsw.networking;
 
 //import it.polimi.ingsw.networking.*;
 //import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.networking.socket.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
-import it.polimi.ingsw.utility.CommunicationMessage;
+import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
-import it.polimi.ingsw.utility.Ping;
+import it.polimi.ingsw.networking.utility.Ping;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -80,7 +81,8 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
     @Override
     public void receive(String message) {
         var communicationMessage = CommunicationMessage.getCommunicationMessageFrom(message);
-        var id = CommunicationMessage.getConnectionIDFrom(message);
+        var connectionID = CommunicationMessage.getConnectionIDFrom(message);
+        var args = CommunicationMessage.getMessageArgsFrom(message);
 
         switch (communicationMessage) {
             case PONG:
