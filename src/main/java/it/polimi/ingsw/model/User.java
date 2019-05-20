@@ -19,6 +19,11 @@ public class User {
     private final String username;
 
     /**
+     * String constants used in messages between client-server
+     */
+    public final static String username_key = "USERNAME";
+
+    /**
      * Constructor: creates a new User from a username and generating a random UUID
      * @param username username of the user
      */

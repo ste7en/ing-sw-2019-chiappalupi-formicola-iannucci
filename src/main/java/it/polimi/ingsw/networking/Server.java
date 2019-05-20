@@ -9,10 +9,14 @@ import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
 import it.polimi.ingsw.networking.utility.Ping;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 //import it.polimi.ingsw.networking.rmi.*;
+
+import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
+
 
 /**
  * Main class of the game server. It will set up the networking and create controllers and games.
@@ -75,8 +79,16 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
     }
 
     /**
+     * @param name user name
+     * @return true if the user doesn't exist or isn't connected, false otherwise
+     */
+    // TODO: - Implement the following method regardless the connection type
+    private boolean checkUserAvailability(String name) { return true; }
+
+    /**
      * Receives a message from a delegator
      * @param message received message
+     * @param sender a the connection handler delegated to send messages
      */
     @Override
     public void receive(String message, ConnectionHandlerSenderDelegate sender) {
@@ -85,9 +97,30 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
         var args = CommunicationMessage.getMessageArgsFrom(message);
 
         switch (communicationMessage) {
+
             case PONG:
                 Ping.getInstance().didPong(connectionID);
                 break;
+
+            case CREATE_USER: {
+                var username = args.get(User.username_key);
+
+                String responseMessage;
+                var responseArgs = new HashMap<String, String>();
+                responseArgs.put(User.username_key, username);
+
+                if (checkUserAvailability(username)) {
+                    new User(username);
+                    //TODO: - Add the created user to a private collection
+                    responseMessage = CommunicationMessage.from(connectionID, CREATE_USER_OK, responseArgs);
+                } else {
+                    responseMessage = CommunicationMessage.from(connectionID, CREATE_USER_FAILED, responseArgs);
+                }
+
+                sender.send(responseMessage);
+                break;
+            }
+
             default:
                 break;
         }
