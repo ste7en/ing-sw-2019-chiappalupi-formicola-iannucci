@@ -3,7 +3,7 @@ package it.polimi.ingsw.networking.socket;
 import it.polimi.ingsw.networking.ClientConnectionHandler;
 import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
 import it.polimi.ingsw.utility.AdrenalineLogger;
-import it.polimi.ingsw.utility.ConnectionState;
+import it.polimi.ingsw.networking.utility.ConnectionState;
 import it.polimi.ingsw.utility.Loggable;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 
-import static it.polimi.ingsw.utility.ConnectionState.*;
+import static it.polimi.ingsw.networking.utility.ConnectionState.*;
 
 /**
  * Class used by the client to handle a socket connection

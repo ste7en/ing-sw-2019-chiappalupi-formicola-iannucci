@@ -1,4 +1,4 @@
-package it.polimi.ingsw.utility;
+package it.polimi.ingsw.networking.utility;
 
 /**
  * Enum representing in which states the connection can be

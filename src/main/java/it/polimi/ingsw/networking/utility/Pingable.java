@@ -1,4 +1,4 @@
-package it.polimi.ingsw.utility;
+package it.polimi.ingsw.networking.utility;
 
 /**
  * Interface used to make a ServerSocketClientConnection

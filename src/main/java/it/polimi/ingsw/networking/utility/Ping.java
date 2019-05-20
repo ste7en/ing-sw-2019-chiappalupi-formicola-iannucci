@@ -1,4 +1,6 @@
-package it.polimi.ingsw.utility;
+package it.polimi.ingsw.networking.utility;
+
+import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
