@@ -23,7 +23,17 @@ public class DecksHandler {
     /**
      * Integer to initialize the weaponsDeck
      */
-    private static final Integer NUM_OF_WEAPONS = 21;
+    private static final Integer NUM_OF_SIMPLEWEAPONS = 2;
+
+    /**
+     * Integer to initialize the weaponsDeck
+     */
+    private static final Integer NUM_OF_POTENTIABLEWEAPONS = 8;
+
+    /**
+     * Integer to initialize the weaponsDeck
+     */
+    private static final Integer NUM_OF_SELECTABLEWEAPONS = 11;
 
     /**
      * Integer to initialize the ammoTilesDeck
@@ -77,15 +87,28 @@ public class DecksHandler {
      */
     public ArrayList<Weapon> initializeWeapons() {
         ObjectMapper objectMapper = new ObjectMapper();
-        Weapon[] box = new Weapon[NUM_OF_WEAPONS];
+        SimpleWeapon[] boxSimple = new SimpleWeapon[NUM_OF_SIMPLEWEAPONS];
+        PotentiableWeapon[] boxPotentiable = new PotentiableWeapon[NUM_OF_POTENTIABLEWEAPONS];
+        SelectableWeapon[] boxSelectable = new SelectableWeapon[NUM_OF_SELECTABLEWEAPONS];
         try {
-            File json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "weapons.json");
-            box = objectMapper.readValue(json, Weapon[].class);
+            File json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "simpleWeapons.json");
+            boxSimple = objectMapper.readValue(json, SimpleWeapon[].class);
+            json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "potentiableWeapons.json");
+            boxPotentiable = objectMapper.readValue(json, PotentiableWeapon[].class);
+            json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "selectableWeapons.json");
+            boxSelectable = objectMapper.readValue(json, SelectableWeapon[].class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        weapons = new ArrayList<>(Arrays.asList(box));
+        ArrayList<SimpleWeapon> simpleWeapons = new ArrayList<>(Arrays.asList(boxSimple));
+        ArrayList<PotentiableWeapon> potentiableWeapons = new ArrayList<>(Arrays.asList(boxPotentiable));
+        ArrayList<SelectableWeapon> selectableWeapons = new ArrayList<>(Arrays.asList(boxSelectable));
+        weapons = new ArrayList<>();
+        weapons.addAll(simpleWeapons);
+        weapons.addAll(selectableWeapons);
+        weapons.addAll(potentiableWeapons);
         for(Weapon w : weapons) w.reload();
+        Collections.shuffle(weapons);
         return (ArrayList<Weapon>) weapons.clone();
     }
 

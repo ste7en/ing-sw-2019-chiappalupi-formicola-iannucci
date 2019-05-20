@@ -57,7 +57,7 @@ public class DecksHandlerTest {
             }
         }
         assertEquals(weapons.size(), i);
-        Weapon w3 = new Weapon();
+        Weapon w3 = new SimpleWeapon();
         ArrayList<Weapon> weapons1 = new ArrayList<>();
         weapons1.add(w3);
         decksTest = new DecksHandler();

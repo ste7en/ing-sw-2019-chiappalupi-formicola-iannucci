@@ -1,7 +1,5 @@
 package it.polimi.ingsw.networking.rmi;
 
-import it.polimi.ingsw.networking.Server;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -21,6 +19,7 @@ public class ClientRMIConnectionHandler{
         }
     }
 
+
     public void getMessage(){
         try{
             server.newUser("Elena");
@@ -30,4 +29,3 @@ public class ClientRMIConnectionHandler{
 
     }
 }
-

@@ -33,5 +33,3 @@ public class ServerRMIConnectionHandler implements RMIInterface {
     }
 
 }
-
-
