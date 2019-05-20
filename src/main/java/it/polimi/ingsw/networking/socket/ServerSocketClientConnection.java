@@ -1,6 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
+import it.polimi.ingsw.networking.ConnectionHandlerSenderDelegate;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionState;
 import it.polimi.ingsw.networking.utility.Ping;
@@ -9,8 +10,8 @@ import it.polimi.ingsw.utility.*;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static it.polimi.ingsw.networking.utility.ConnectionState.*;
 
@@ -20,7 +21,7 @@ import static it.polimi.ingsw.networking.utility.ConnectionState.*;
  *
  * @author Stefano Formicola
  */
-public class ServerSocketClientConnection implements Runnable, Loggable, Pingable {
+public class ServerSocketClientConnection implements Runnable, Loggable, Pingable, ConnectionHandlerSenderDelegate {
 
     /**
      * The socket instance, the object that represents a connection
@@ -36,7 +37,7 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
     /**
      * A buffered outbox for messages
      */
-    private LinkedList<String> outBuf;
+    private ConcurrentLinkedQueue<String> outBuf;
 
     /**
      * Log strings
@@ -59,7 +60,7 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
     ServerSocketClientConnection(Socket socket, ConnectionHandlerReceiverDelegate receiverDelegate) {
         this.socket = socket;
         this.receiverDelegate = receiverDelegate;
-        this.outBuf = new LinkedList<>();
+        this.outBuf = new ConcurrentLinkedQueue<>();
         this.connectionState = ONLINE;
     }
 
@@ -78,8 +79,8 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
             logOnSuccess(STREAM_SUCC);
 
             while(connectionState == ONLINE) {
-                if (inStr.available() != 0) receiverDelegate.receive(inScanner.nextLine());
-                if (!outBuf.isEmpty()) printWriter.println(outBuf.pop());
+                if (inStr.available() != 0) receiverDelegate.receive(inScanner.nextLine(), this);
+                if (!outBuf.isEmpty()) outBuf.forEach(printWriter::println);
 
             }
             if (connectionState == CLOSED) socket.close();
@@ -93,8 +94,9 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
      * Sends a message through its connection
      * @param message the message to send
      */
-    public synchronized void send(String message) {
-        outBuf.addLast(message);
+    @Override
+    public void send(String message) {
+        outBuf.add(message);
     }
 
     /**

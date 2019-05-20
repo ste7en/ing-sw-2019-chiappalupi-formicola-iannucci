@@ -79,14 +79,14 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate {
      * @param message received message
      */
     @Override
-    public void receive(String message) {
+    public void receive(String message, ConnectionHandlerSenderDelegate sender) {
         var communicationMessage = CommunicationMessage.getCommunicationMessageFrom(message);
         var connectionID = CommunicationMessage.getConnectionIDFrom(message);
         var args = CommunicationMessage.getMessageArgsFrom(message);
 
         switch (communicationMessage) {
             case PONG:
-                Ping.getInstance().didPong(id);
+                Ping.getInstance().didPong(connectionID);
                 break;
             default:
                 break;
