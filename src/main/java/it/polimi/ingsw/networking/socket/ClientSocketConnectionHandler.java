@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 
 import static it.polimi.ingsw.networking.utility.ConnectionState.*;
@@ -34,7 +34,7 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
     /**
      * A buffered outbox for messages
      */
-    private LinkedList<String> outBuf;
+    private ConcurrentLinkedQueue<String> outBuf;
 
     /**
      * The state of the connection
@@ -66,7 +66,7 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
         super.serverName = server;
         super.portNumber = port;
         super.receiverDelegate = receiverDelegate;
-        this.outBuf = new LinkedList<>();
+        this.outBuf = new ConcurrentLinkedQueue<>();
         this.connectionState = ONLINE;
 
         try {
@@ -105,9 +105,9 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
 
                 if (inStr.available() != 0) {
                     var received = inScanner.nextLine();
-                    receiverDelegate.receive(received);
+                    receiverDelegate.receive(received, this);
                 }
-                if (!outBuf.isEmpty()) printWriter.println(outBuf.pop());
+                if (!outBuf.isEmpty()) outBuf.forEach(printWriter::println);
             }
 
             if (connectionState == CLOSED) socket.close();
@@ -134,6 +134,6 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
      * @param message the message to send
      */
     public void send(String message) {
-        outBuf.addLast(message);
+        outBuf.add(message);
     }
 }

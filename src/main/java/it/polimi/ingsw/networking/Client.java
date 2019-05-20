@@ -112,9 +112,10 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
      * Receives a json message from a delegator
      * and parses its content
      * @param message json message
+     * @param sender a the connection handler delegated to send messages
      */
     @Override
-    public void receive(String message) {
+    public void receive(String message, ConnectionHandlerSenderDelegate sender) {
         System.out.println(message);
         var communicationMessage = CommunicationMessage.getCommunicationMessageFrom(message);
         var id = CommunicationMessage.getConnectionIDFrom(message);

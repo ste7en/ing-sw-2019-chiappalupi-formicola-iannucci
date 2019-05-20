@@ -10,6 +10,7 @@ public interface ConnectionHandlerReceiverDelegate {
     /**
      * Receives a message from a delegator
      * @param message the message received
+     * @param sender a the connection handler delegated to send messages
      */
-    void receive(String message);
+    void receive(String message, ConnectionHandlerSenderDelegate sender);
 }

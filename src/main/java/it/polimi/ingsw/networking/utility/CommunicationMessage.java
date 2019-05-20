@@ -15,23 +15,38 @@ import java.util.Map;
  */
 public enum CommunicationMessage {
     /**
-     * Ping and Pong messages used to
-     * check client connectivity
+     * Ping and Pong messages used to check client connectivity.
+     * PING is sent by the server, PONG is the reply to the PING message and is sent by the client
+     *
+     * Arguments: none
      */
     PING,
     PONG,
+
     /**
-     * User login messages
+     * User login messages.
+     * CREATE_USER is sent by the client to the server to create a new User, the server will process the request and send a
+     * CREATE_USER_OK or CREATE_USER_FAILED in case of success or failure.
+     *
+     * USER_LOGIN is sent by the client when a CREATE_USER_OK is received, in order to join a waiting room or a game.
+     *
+     * Arguments: <User.username_key, value>
      */
     CREATE_USER,
     CREATE_USER_OK,
     CREATE_USER_FAILED,
     USER_LOGIN;
 
+
+    /**
+     * Log strings
+     */
     private static String EXC_MESS_JSON = "Exception while converting the message to json";
     private static String EXC_JSON_MESS = "Exception while converting the json to message";
 
-
+    /**
+     * Private class used to create json messages
+     */
     private static class Message {
         int connectionID;
         CommunicationMessage message;
@@ -50,10 +65,23 @@ public enum CommunicationMessage {
         Map<String, String> getArguments() { return arguments; }
     }
 
+    /**
+     * Returns a json message from a connectionID and a CommunicationMessage identifier
+     * @param id connectionID
+     * @param format message identifier
+     * @return json message
+     */
     public static String from(int id, CommunicationMessage format) {
         return from(id, format, new HashMap<>());
     }
 
+    /**
+     * Returns a json message from a connectionID, a CommunicationMessage identifier and some arguments
+     * @param id connectionID
+     * @param format message identifier
+     * @param args arguments
+     * @return json message
+     */
     public static String from(int id, CommunicationMessage format, Map<String, String> args) {
         var message = new Message(id, format, args);
         var mapper = new ObjectMapper();
@@ -67,6 +95,11 @@ public enum CommunicationMessage {
         return jsonMessage;
     }
 
+    /**
+     * Returns a Message instance from a json message
+     * @param json message
+     * @return Message object
+     */
     private static Message getMessageFrom(String json) {
         var message = new Message();
         try {
@@ -79,15 +112,30 @@ public enum CommunicationMessage {
         return message;
     }
 
+    /**
+     * Returns a message identifier
+     * @param json message
+     * @return message identifier
+     */
     public static CommunicationMessage getCommunicationMessageFrom(String json) {
         var message = getMessageFrom(json);
         return message.getMessage();
     }
 
+    /**
+     * Returns the connectionID of the message
+     * @param json message
+     * @return connectionID of the message
+     */
     public static int getConnectionIDFrom(String json) {
         return getMessageFrom(json).getConnectionID();
     }
 
+    /**
+     * Returns the arguments of the message
+     * @param json message
+     * @return message arguments
+     */
     public static Map<String, String> getMessageArgsFrom(String json) {
         return getMessageFrom(json).getArguments();
     }
