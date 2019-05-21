@@ -5,12 +5,30 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.stage.Stage;
 
 public class JavaFXApp extends Application {
     public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("Button test");
+        Button button = new Button();
+        button.setText("click me");
+        StackPane layout = new StackPane();
+        layout.getChildren().add(button);
+        Scene scene = new Scene(layout, 300, 250);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    /*public static void main(String[] args) {
         launch(args);
     }
 
@@ -27,6 +45,7 @@ public class JavaFXApp extends Application {
     }
 
     private void drawShapes(GraphicsContext gc) {
+        Button button = new Button("ciao");
         gc.setFill(Color.GREEN);
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(5);
@@ -47,5 +66,5 @@ public class JavaFXApp extends Application {
                 new double[]{210, 210, 240, 240}, 4);
         gc.strokePolyline(new double[]{110, 140, 110, 140},
                 new double[]{210, 210, 240, 240}, 4);
-    }
+    }*/
 }
