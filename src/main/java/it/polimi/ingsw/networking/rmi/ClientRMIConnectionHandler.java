@@ -9,9 +9,19 @@ public class ClientRMIConnectionHandler{
     private Registry registry;
     private RMIInterface server;
 
+    /*public static void main( String[] s){
+        try {
+            ServerRMIConnectionHandler server = new ServerRMIConnectionHandler(1080);
+            server.launch();
+        } catch (RemoteException e){
+
+        }
+        ClientRMIConnectionHandler connection = new ClientRMIConnectionHandler();
+    }*/
+
     public ClientRMIConnectionHandler() {
         try {
-            registry = LocateRegistry.getRegistry(null);
+            registry = LocateRegistry.getRegistry(" ");
             server = (RMIInterface) registry.lookup("rmiInterface");
         } catch (Exception e) {
             System.err.println("Client exception: " + e.toString());

@@ -1,5 +1,11 @@
 package it.polimi.ingsw;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.canvas.Canvas;
@@ -20,12 +26,33 @@ public class JavaFXApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Button test");
-        Button button = new Button();
-        button.setText("click me");
+        Button buttonRMI = new Button();
+        buttonRMI.setText("RMI");
+        Button buttonTCP = new Button();
+        buttonTCP.setText("TCP");
+
+        /*
         StackPane layout = new StackPane();
         layout.getChildren().add(button);
         Scene scene = new Scene(layout, 300, 250);
         primaryStage.setScene(scene);
+        primaryStage.show();*/
+
+        BorderPane root = new BorderPane(new Label("Choose your connection!"));
+
+        HBox boxRMI = new HBox(buttonRMI);
+        boxRMI.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(boxRMI, Priority.ALWAYS);
+
+        HBox boxTCP = new HBox(buttonTCP);
+        boxTCP.setAlignment(Pos.CENTER_RIGHT);
+        HBox.setHgrow(boxTCP, Priority.ALWAYS);
+
+        HBox bottom = new HBox(boxRMI, boxTCP);
+        bottom.setPadding(new Insets(10));
+        root.setBottom(bottom);
+
+        primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.show();
     }
 
