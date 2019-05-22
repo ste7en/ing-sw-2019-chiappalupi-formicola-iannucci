@@ -168,32 +168,32 @@ public abstract class View implements Observer{
     public abstract void didReload();
 
     /**
-     * Ste
+     * Ste ft. Ele
      */
     public abstract void willUsePowerup();
 
     /**
-     * Ste
+     * Ste ft. Ele
      */
     public abstract void didUsePowerup();
 
     /**
-     * Ste
+     * Ste ft. Ele
      */
     public abstract void willChoosePowerup();
 
     /**
-     * Ste
+     * Ste ft. Ele
      */
     public abstract void didChoosePowerup();
 
     /**
-     * Ste
+     * Ste ft. Ele
      */
     public abstract void willChoosePowerupEffect();
 
     /**
-     * Ste
+     * Ste ft. Ele
      */
     public abstract void didChoosePowerupEffect();
 }
