@@ -2138,7 +2138,7 @@ public class WeaponTest {
     }
 
     /**
-     * Tests the usage of the Rocket Launcher weapon and all of its effects
+     * Tests the usage of the Cyberblade weapon and all of its effects
      *
      * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
      */
