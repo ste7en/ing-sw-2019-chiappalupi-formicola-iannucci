@@ -10,6 +10,7 @@ import java.util.Set;
  * @author Daniele Chiappalupi
  */
 public class PotentiableWeapon extends Weapon {
+
     /**
      * Override of the useEffect method when the Weapon is a potentiable one
      * @param shooter it's the player who is using the effect
@@ -154,4 +155,48 @@ public class PotentiableWeapon extends Weapon {
         return solutions;
     }
 
+    @Override
+    public ArrayList<ArrayList<Integer>> effectsCombinations() {
+        HashMap<Integer, ArrayList<Integer>> combinationsBox = combinationsWithLowerValues(effects.size(), effects.size());
+        ArrayList<ArrayList<Integer>> combinations = new ArrayList<>();
+        for(Integer i : combinationsBox.keySet())
+            if (combinationsBox.get(i).contains(1))
+                combinations.add(combinationsBox.get(i));
+        boolean moveMe = false;
+        Integer effectPosition = -1;
+        for(Effect effect : effects)
+            if(effect.getProperties().containsKey(EffectProperty.MoveMe) || effect.getName().equals("with extra grenade")) {
+                moveMe = true;
+                effectPosition = effects.indexOf(effect) + 1;
+            }
+        if(moveMe) {
+            ArrayList<ArrayList<Integer>> box = new ArrayList<>();
+            for(ArrayList<Integer> combination : combinations)
+                box.add((ArrayList<Integer>)combination.clone());
+            ArrayList<ArrayList<Integer>> toRemove = new ArrayList<>();
+            for(ArrayList<Integer> combination : box) {
+                if(!combination.contains(effectPosition)) toRemove.add(combination);
+                else {
+                    ArrayList<Integer> temp = (ArrayList<Integer>)combination.clone();
+                    temp.remove(effectPosition);
+                    combination.clear();
+                    combination.add(effectPosition);
+                    combination.addAll(temp);
+                }
+            }
+            box.removeAll(toRemove);
+            combinations.addAll(box);
+        }
+        if(constraintOrder) {
+            ArrayList<ArrayList<Integer>> toRemove = new ArrayList<>();
+            for(int i = 0; i < combinations.size(); i++)
+                for(int j = 0; j < combinations.get(i).size() - 1; j++)
+                    if(combinations.get(i).get(j+1) - combinations.get(i).get(j) > 1) {
+                        toRemove.add(combinations.get(i));
+                        j = combinations.get(i).size();
+                    }
+            combinations.removeAll(toRemove);
+        }
+        return combinations;
+    }
 }

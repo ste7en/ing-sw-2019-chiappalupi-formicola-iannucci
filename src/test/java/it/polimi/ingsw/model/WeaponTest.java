@@ -2262,4 +2262,170 @@ public class WeaponTest {
         ArrayList<Damage> forPotentiableWeapon = new ArrayList<>();
         weaponTester.useEffect(p1, weaponTester.getEffects().get(2), forPotentiableWeapon, map, players);
     }
+
+    /**
+     * Tests an exception when effectsCombination method gets called on a weapon that isn't a Potentiable one
+     * @see Weapon#effectsCombinations()
+     */
+    @Test (expected = RuntimeException.class)
+    public void testEffectsCombinationRuntimeException() {
+        while (!(weaponTester.getName().equals("Whisper"))) weaponTester = decks.drawWeapon();
+        weaponTester.effectsCombinations();
+    }
+
+    /**
+     * Tests the method that generates the possible effects combination runs properly when using the Lock Rifle weapon
+     * @see PotentiableWeapon#effectsCombinations()
+     */
+    @Test
+    public void testEffectsCombinationLockRifle() {
+        while (!(weaponTester.getName().equals("Lock Rifle"))) weaponTester = decks.drawWeapon();
+        ArrayList<ArrayList<Integer>> combinationsTester = new ArrayList<>();
+        combinationsTester.add(new ArrayList<>());
+        combinationsTester.get(0).add(1);
+        combinationsTester.add(new ArrayList<>());
+        combinationsTester.get(1).add(1);
+        combinationsTester.get(1).add(2);
+        assertEquals(weaponTester.effectsCombinations(), combinationsTester);
+    }
+
+    /**
+     * Tests the method that generates the possible effects combination runs properly when using the Machine Gun weapon
+     * @see PotentiableWeapon#effectsCombinations()
+     */
+    @Test
+    public void testEffectsCombinationMachineGun() {
+        ArrayList<ArrayList<Integer>> combinationsTester = new ArrayList<>();
+        while (!(weaponTester.getName().equals("Machine Gun"))) weaponTester = decks.drawWeapon();
+        for (int i = 0; i < 4; i++) {
+            combinationsTester.add(new ArrayList<>());
+            combinationsTester.get(i).add(1);
+        }
+        combinationsTester.get(1).add(2);
+        combinationsTester.get(2).add(3);
+        combinationsTester.get(3).add(2);
+        combinationsTester.get(3).add(3);
+        assertEquals(weaponTester.effectsCombinations(), combinationsTester);
+    }
+
+    /**
+     * Tests the method that generates the possible effects combination runs properly when using the T.H.O.R. weapon
+     * @see PotentiableWeapon#effectsCombinations()
+     */
+    @Test
+    public void testEffectsCombinationTHOR() {
+        ArrayList<ArrayList<Integer>> combinationsTester = new ArrayList<>();
+        while (!(weaponTester.getName().equals("T.H.O.R."))) weaponTester = decks.drawWeapon();
+        for(int i = 0; i < 3; i++) {
+            combinationsTester.add(new ArrayList<>());
+            combinationsTester.get(i).add(1);
+        }
+        combinationsTester.get(1).add(2);
+        combinationsTester.get(2).add(2);
+        combinationsTester.get(2).add(3);
+        assertEquals(weaponTester.effectsCombinations(), combinationsTester);
+    }
+
+    /**
+     * Tests the method that generates the possible effects combination runs properly when using the Plasma Gun weapon
+     * @see PotentiableWeapon#effectsCombinations()
+     */
+    @Test
+    public void testEffectsCombinationPlasmaGun() {
+        ArrayList<ArrayList<Integer>> combinationsTester = new ArrayList<>();
+        while (!(weaponTester.getName().equals("Plasma Gun"))) weaponTester = decks.drawWeapon();
+        for(int i = 0; i < 6; i++) {
+            combinationsTester.add(new ArrayList<>());
+            if(i < 4) combinationsTester.get(i).add(1);
+            else combinationsTester.get(i).add(2);
+        }
+        combinationsTester.get(1).add(2);
+        combinationsTester.get(2).add(3);
+        combinationsTester.get(3).add(2);
+        combinationsTester.get(3).add(3);
+        combinationsTester.get(4).add(1);
+        combinationsTester.get(5).add(1);
+        combinationsTester.get(5).add(3);
+        assertEquals(weaponTester.effectsCombinations(), combinationsTester);
+    }
+
+    /**
+     * Tests the method that generates the possible effects combination runs properly when using the Vortex Cannon weapon
+     * @see PotentiableWeapon#effectsCombinations()
+     */
+    @Test
+    public void testEffectsCombinationVortexCannon() {
+        ArrayList<ArrayList<Integer>> combinationsTester = new ArrayList<>();
+        while (!(weaponTester.getName().equals("Vortex Cannon"))) weaponTester = decks.drawWeapon();
+        for(int i = 0; i < 2; i++) {
+            combinationsTester.add(new ArrayList<>());
+            combinationsTester.get(i).add(1);
+        }
+        combinationsTester.get(1).add(2);
+        assertEquals(weaponTester.effectsCombinations(), combinationsTester);
+    }
+
+    /**
+     * Tests the method that generates the possible effects combination runs properly when using the Grenade Launcher weapon
+     * @see PotentiableWeapon#effectsCombinations()
+     */
+    @Test
+    public void testEffectsCombinationGrenadeLauncher() {
+        ArrayList<ArrayList<Integer>> combinationsTester = new ArrayList<>();
+        while (!(weaponTester.getName().equals("Grenade Launcher"))) weaponTester = decks.drawWeapon();
+        for(int i = 0; i < 3; i++) {
+            combinationsTester.add(new ArrayList<>());
+            if(i < 2) combinationsTester.get(i).add(1);
+            else combinationsTester.get(i).add(2);
+        }
+        combinationsTester.get(1).add(2);
+        combinationsTester.get(2).add(1);
+        assertEquals(weaponTester.effectsCombinations(), combinationsTester);
+    }
+
+    /**
+     * Tests the method that generates the possible effects combination runs properly when using the Rocket Launcher weapon
+     * @see PotentiableWeapon#effectsCombinations()
+     */
+    @Test
+    public void testEffectsCombinationRocketLauncher() {
+        ArrayList<ArrayList<Integer>> combinationsTester = new ArrayList<>();
+        while (!(weaponTester.getName().equals("Rocket Launcher"))) weaponTester = decks.drawWeapon();
+        for(int i = 0; i < 6; i++) {
+            combinationsTester.add(new ArrayList<>());
+            if(i < 4) combinationsTester.get(i).add(1);
+            else combinationsTester.get(i).add(2);
+        }
+        combinationsTester.get(1).add(2);
+        combinationsTester.get(2).add(3);
+        combinationsTester.get(3).add(2);
+        combinationsTester.get(3).add(3);
+        combinationsTester.get(4).add(1);
+        combinationsTester.get(5).add(1);
+        combinationsTester.get(5).add(3);
+        assertEquals(weaponTester.effectsCombinations(), combinationsTester);
+    }
+
+    /**
+     * Tests the method that generates the possible effects combination runs properly when using the Cyberblade weapon
+     * @see PotentiableWeapon#effectsCombinations()
+     */
+    @Test
+    public void testEffectsCombinationCyberblade() {
+        ArrayList<ArrayList<Integer>> combinationsTester = new ArrayList<>();
+        while (!(weaponTester.getName().equals("Cyberblade"))) weaponTester = decks.drawWeapon();
+        for(int i = 0; i < 6; i++) {
+            combinationsTester.add(new ArrayList<>());
+            if(i < 4) combinationsTester.get(i).add(1);
+            else combinationsTester.get(i).add(2);
+        }
+        combinationsTester.get(1).add(2);
+        combinationsTester.get(2).add(3);
+        combinationsTester.get(3).add(2);
+        combinationsTester.get(3).add(3);
+        combinationsTester.get(4).add(1);
+        combinationsTester.get(5).add(1);
+        combinationsTester.get(5).add(3);
+        assertEquals(weaponTester.effectsCombinations(), combinationsTester);
+    }
 }

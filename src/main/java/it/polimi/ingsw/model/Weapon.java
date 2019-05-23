@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
 import java.util.*;
-
 import static java.lang.Math.pow;
 
 /**
@@ -9,6 +8,8 @@ import static java.lang.Math.pow;
  * @author Daniele Chiappalupi
  */
 public abstract class Weapon {
+
+    protected boolean constraintOrder = false;
 
     /**
      * Name of the weapon
@@ -33,7 +34,7 @@ public abstract class Weapon {
     /**
      * List of effects of the weapon
      */
-    private ArrayList<Effect> effects;
+    protected ArrayList<Effect> effects;
 
     /**
      * Weapon's name getter
@@ -96,6 +97,10 @@ public abstract class Weapon {
     @Override
     public String toString() {
         return "Name: " + name + ";\nCost: " + cost.toString() + ";\nNotes: " + notes;
+    }
+
+    public void setConstraintOrder(boolean constraintOrder) {
+        this.constraintOrder = constraintOrder;
     }
 
     /**
@@ -611,4 +616,11 @@ public abstract class Weapon {
         }
     }
 
+    /**
+     * Calculates the combinations of effects that can be chosen from the Player who is using the Weapon
+     * @return an ArrayList of effects combinations
+     */
+    public ArrayList<ArrayList<Integer>> effectsCombinations() {
+        throw new RuntimeException("This is not a Potentiable Weapon!");
+    };
 }
