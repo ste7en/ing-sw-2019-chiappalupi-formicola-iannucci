@@ -5,6 +5,7 @@ import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
+import it.polimi.ingsw.view.View;
 
 import java.io.*;
 import java.net.ConnectException;
@@ -22,8 +23,9 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
     /**
      * Instance attributes that describe the connection
      */
-    private String serverName;
+    private String  serverName;
     private Integer connectionPort;
+    private View    viewObserver;
     private final ConnectionType connectionType;
 
     /**
@@ -55,6 +57,10 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
         this.connectionType = connectionType;
 
         setupConnection();
+    }
+
+    public void registerObserver(View viewObserver) {
+        this.viewObserver = viewObserver;
     }
 
     private void setupConnection() {
@@ -137,4 +143,6 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
     public void send(String message) {
         senderDelegate.send(message);
     }
+
+
 }
