@@ -10,7 +10,7 @@ import java.util.Observer;
  * View class of the MVC paradigm.
  * It's abstract because several methods will be either overridden or implemented in its children classes.
  *
- * @authors Daniele Chiappalupi, Stefano Formicola, Elena Iannucci
+ * @author Daniele Chiappalupi, Stefano Formicola, Elena Iannucci
  */
 public abstract class View implements Observer{
 
