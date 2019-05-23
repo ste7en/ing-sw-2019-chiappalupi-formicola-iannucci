@@ -2,6 +2,8 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.PlayerColor;
 import it.polimi.ingsw.networking.Client;
+import it.polimi.ingsw.networking.utility.ConnectionType;
+import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.util.Observer;
 
@@ -18,19 +20,47 @@ public abstract class View implements Observer{
 
     private PlayerColor playerColor;
 
+    /**
+     * Log strings
+     */
+    private static String APPLICATION_STARTED   = "Adrenaline application started. View instance created.";
+    private static String DID_ASK_CONNECTION    = "Connection parameters chosen: ";
+    private static String ONLOGIN               = "";
+    private static String ONLOGIN_FAILURE       = "";
+    private static String ONLOGIN_SUCCESS       = "";
+    private static String JOIN_WAITING_ROOM     = "";
+    private static String DID_JOIN_WAITING_ROOM = "";
+
+
     public abstract void onViewUpdate();
 
     public abstract void onFailure();
 
-    /**
-     * Ste
-     */
-    public abstract void willChooseConnection();
+    public abstract void onStart();
 
     /**
-     * Ste
+     * Public method implemented by subclasses when starting a new application instance.
+     * Both subclasses will implement a convenience method to let the user choose the connection.
      */
-    public abstract void didChooseConnection();
+    private void willChooseConnection() {
+        chooseConnection();
+    }
+
+    /**
+     * Subclass method to be implemented, that will prompt
+     * the user to choose connection parameters.
+     */
+    protected abstract void chooseConnection();
+
+    /**
+     * Method called after a user choice of the connection.
+     * Shouldn't be reimplemented by a subclass.
+     */
+    protected void didChooseConnection(ConnectionType type, int port, String host) {
+        AdrenalineLogger.info(DID_ASK_CONNECTION + type + " " + host + ":" + port);
+        this.client = new Client(type, host, port);
+        client.registerObserver(this);
+    }
 
     /**
      * Ste
