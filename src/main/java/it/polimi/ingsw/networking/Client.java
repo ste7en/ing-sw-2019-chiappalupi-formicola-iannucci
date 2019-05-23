@@ -36,13 +36,14 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
     /**
      * Log strings
      */
-    private static String UNKNOWN_HOST = "Can't find the hostname. Asking for user input...";
-    private static String IO_EXC = "An IOException has been thrown. ";
-    private static String CONN_RETRY = "Connection retrying...";
-    private static String ON_SUCCESS = "Client successfully connected to the server.";
+    private static String UNKNOWN_HOST       = "Can't find the hostname. Asking for user input...";
+    private static String IO_EXC             = "An IOException has been thrown. ";
+    private static String CONN_RETRY         = "Connection retrying...";
+    private static String ON_SUCCESS         = "Client successfully connected to the server.";
     private static String ASK_SERVER_DETAILS = "Asking for server hostname and connection port.";
-    private static String INFO = "Setting up connection...";
+    private static String INFO               = "Setting up connection...";
     private static String CONNECTION_REFUSED = "Connection refused. Asking for user input...";
+    private static String OBS_REGISTERED     = "Observer successfully registered.";
 
     /**
      * Class constructor
@@ -61,6 +62,7 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
 
     public void registerObserver(View viewObserver) {
         this.viewObserver = viewObserver;
+        AdrenalineLogger.config(OBS_REGISTERED);
     }
 
     private void setupConnection() {
