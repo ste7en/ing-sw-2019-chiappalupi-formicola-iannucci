@@ -131,7 +131,13 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
         switch (communicationMessage) {
             case PING:
                 this.send(CommunicationMessage.from(id, PONG));
+            case CREATE_USER_OK:
+                this.viewObserver.onLoginSuccess();
                 break;
+            case CREATE_USER_FAILED:
+                this.viewObserver.onLoginFailure();
+                break;
+
             default:
                 break;
         }
