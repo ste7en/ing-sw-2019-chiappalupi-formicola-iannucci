@@ -40,17 +40,9 @@ public abstract class View implements Observer{
 
     /**
      * Public method implemented by subclasses when starting a new application instance.
-     * Both subclasses will implement a convenience method to let the user choose the connection.
+     * The user will be prompted to choose the connection parameters.
      */
-    private void willChooseConnection() {
-        chooseConnection();
-    }
-
-    /**
-     * Subclass method to be implemented, that will prompt
-     * the user to choose connection parameters.
-     */
-    protected abstract void chooseConnection();
+    protected abstract void willChooseConnection();
 
     /**
      * Method called after a user choice of the connection.
