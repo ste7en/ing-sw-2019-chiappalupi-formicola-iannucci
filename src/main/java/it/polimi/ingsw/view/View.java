@@ -1,11 +1,16 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.PlayerColor;
+import it.polimi.ingsw.model.User;
 import it.polimi.ingsw.networking.Client;
+import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
+import java.util.HashMap;
 import java.util.Observer;
+
+import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
 
 /**
@@ -16,20 +21,19 @@ import java.util.Observer;
  */
 public abstract class View implements Observer{
 
-    private Client client;
+    protected Client client;
 
     private PlayerColor playerColor;
 
     /**
      * Log strings
      */
-    private static String APPLICATION_STARTED   = "Adrenaline application started. View instance created.";
-    private static String DID_ASK_CONNECTION    = "Connection parameters chosen: ";
-    private static String ONLOGIN               = "";
-    private static String ONLOGIN_FAILURE       = "";
-    private static String ONLOGIN_SUCCESS       = "";
-    private static String JOIN_WAITING_ROOM     = "";
-    private static String DID_JOIN_WAITING_ROOM = "";
+    protected static String APPLICATION_STARTED   = "Adrenaline application started. View instance created.";
+    protected static String DID_ASK_CONNECTION    = "Connection parameters chosen: ";
+    protected static String ONLOGIN_FAILURE       = "Username creation failed.";
+    protected static String ONLOGIN_SUCCESS       = "Username logged in.";
+    protected static String JOIN_WAITING_ROOM     = "Joining the waiting room...";
+    protected static String DID_JOIN_WAITING_ROOM = "";
 
 
     public abstract void onViewUpdate();
@@ -55,24 +59,38 @@ public abstract class View implements Observer{
     }
 
     /**
-     * Ste
+     * Abstract method implemented by subclasses and used to create a new user
+     * logged to the server.
      */
-    public abstract void login();
+    protected abstract void login();
 
     /**
-     * Ste
+     * Called to notify a login failure
      */
-    public abstract void onLoginFailure();
+    public void onLoginFailure() {
+        AdrenalineLogger.error(ONLOGIN_FAILURE);
+        login();
+    }
 
     /**
-     * Ste
+     * Called to notify a successful login
+     * @param username username
      */
-    public abstract void onLoginSuccess();
+    public void onLoginSuccess(String username) {
+        AdrenalineLogger.success(ONLOGIN_SUCCESS);
+        joinWaitingRoom(username);
+    }
 
     /**
-     * Ste
+     * Called to join the server's waiting room for a new game
+     * @param username username
      */
-    public abstract void joinWaitingRoom();
+    private void joinWaitingRoom(String username) {
+        AdrenalineLogger.info(JOIN_WAITING_ROOM);
+        var args = new HashMap<String, String>();
+        args.put(User.username_key, username);
+        this.client.send(CommunicationMessage.from(0, USER_LOGIN, args));
+    }
 
     /**
      * Ste
