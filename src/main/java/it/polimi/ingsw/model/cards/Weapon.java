@@ -629,4 +629,10 @@ public abstract class Weapon {
     public ArrayList<ArrayList<Integer>> effectsCombinations() {
         throw new RuntimeException("This is not a Potentiable Weapon!");
     };
+
+    /**
+     * Used to ask the type of the weapon.
+     * @return a string containing the type of the weapon.
+     */
+    public abstract String type();
 }

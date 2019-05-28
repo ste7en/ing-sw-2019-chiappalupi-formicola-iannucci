@@ -1,7 +1,8 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.model.utility.PlayerColor;
+import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.player.User;
+import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
@@ -157,25 +158,29 @@ public abstract class View implements Observer{
     /**
      * Public method implemented by subclasses when choosing a weapon.
      * The user will be prompted to choose which weapon he wants to use.
+     *
+     * @param weapons it's an ArrayList containing all of the weapons that the player can use.
      */
     public abstract void willChooseWeapon(ArrayList<String> weapons); {
 
     }
 
     /**
-     * Called when the Weapon to be used is chosen;
+     * Called when the Weapon to be used is chosen.
+     *
+     * @param weaponSelected it's the weapon that has been selected by the player.
      */
     public void didChooseWeapon(String weaponSelected) {
         AdrenalineLogger.info(DID_CHOOSE_WEAPON + weaponSelected);
         var args = new HashMap<String, String>();
-        args.put("Weapon", weaponSelected);
+        args.put("0", weaponSelected);
         this.client.send(CommunicationMessage.from(0, WEAPON_TO_USE, args));
     }
 
     /**
      * Dani
      */
-    public abstract void willChooseDamage();
+    public abstract void willChooseDamage(ArrayList<ArrayList<Damage>> possibleDamages);
 
     /**
      * Dani

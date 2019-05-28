@@ -13,6 +13,11 @@ public class GameLogic {
     private ArrayList<Player> players;
     private Board board;
     private boolean finalFrenzy;
+    private UUID gameID;
+
+    public UUID getGameID() {
+        return gameID;
+    }
 
     public void setBoard(Board board) {
         this.board = board;

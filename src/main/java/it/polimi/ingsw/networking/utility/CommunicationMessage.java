@@ -7,6 +7,7 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Messages sent through the network
@@ -40,7 +41,9 @@ public enum CommunicationMessage {
     /**
      * Weapon selection messages.
      *
-     * Arguments: [weapon_name]
+     * WEAPON_TO_USE is sent by the client to the server to notify the selection of the Weapon to use in game.
+     *
+     * Arguments: <Integer index, Weapon_name>
      */
     WEAPON_TO_USE;
 
@@ -57,16 +60,19 @@ public enum CommunicationMessage {
         int connectionID;
         CommunicationMessage message;
         Map<String, String> arguments;
+        UUID gameID;
 
-        Message(int id, CommunicationMessage format, Map<String, String> arguments) {
+        Message(int id, CommunicationMessage format, Map<String, String> arguments, UUID gameID) {
             this.connectionID = id;
             this.message = format;
             this.arguments = arguments;
+            this.gameID = gameID;
         }
 
         Message() {}
         @SuppressWarnings("all")
         public int getConnectionID() { return connectionID; }
+        public UUID getGameID() { return gameID; }
         public CommunicationMessage getMessage() { return message; }
         @SuppressWarnings("all")
         public Map<String, String> getArguments() { return arguments; }
@@ -91,7 +97,28 @@ public enum CommunicationMessage {
      * @return json message
      */
     public static String from(int id, CommunicationMessage format, Map<String, String> args) {
-        var message = new Message(id, format, args);
+        var message = new Message(id, format, args, UUID.randomUUID());
+        var mapper = new ObjectMapper();
+        var jsonMessage = "";
+
+        try {
+            jsonMessage = mapper.writeValueAsString(message);
+        } catch (JsonProcessingException e) {
+            AdrenalineLogger.errorException(EXC_MESS_JSON, e);
+        }
+        return jsonMessage;
+    }
+
+    /**
+     * Returns a json message from a connectionID, a CommunicationMessage identifier and some arguments
+     * @param id connectionID
+     * @param format message identifier
+     * @param args arguments
+     * @param gameID game identifier
+     * @return json message
+     */
+    public static String from(int id, CommunicationMessage format, Map<String, String> args, UUID gameID) {
+        var message = new Message(id, format, args, gameID);
         var mapper = new ObjectMapper();
         var jsonMessage = "";
 
@@ -146,6 +173,15 @@ public enum CommunicationMessage {
      */
     public static Map<String, String> getMessageArgsFrom(String json) {
         return getMessageFrom(json).getArguments();
+    }
+
+    /**
+     * Returns the UUID of the game
+     * @param json message
+     * @return game identifier
+     */
+    public static UUID getMessageGameIDFrom(String json) {
+        return getMessageFrom(json).getGameID();
     }
 
 }

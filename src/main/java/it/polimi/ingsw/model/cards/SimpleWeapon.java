@@ -25,4 +25,14 @@ public class SimpleWeapon extends Weapon {
         return computeDamages(effect, shooter, null, map, players);
     }
 
+    /**
+     * Used to ask the type of the weapon.
+     *
+     * @return a string containing the type of the weapon.
+     */
+    @Override
+    public String type() {
+        return "Simple";
+    }
+
 }

@@ -2,6 +2,10 @@ package it.polimi.ingsw.networking;
 
 //import it.polimi.ingsw.networking.*;
 //import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
+import it.polimi.ingsw.controller.DecksHandler;
+import it.polimi.ingsw.controller.GameLogic;
+import it.polimi.ingsw.model.cards.Damage;
+import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.socket.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -9,6 +13,7 @@ import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
 import it.polimi.ingsw.networking.utility.Ping;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +35,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
     private Integer portNumberRMI;
     private List<ConnectionHandlerSenderDelegate> senderDelegate;
     private WaitingRoom waitingRoom;
+    private ArrayList<GameLogic> gamesControllers;
 
     /**
      * Log strings

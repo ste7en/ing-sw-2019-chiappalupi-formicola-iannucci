@@ -203,4 +203,14 @@ public class PotentiableWeapon extends Weapon {
         }
         return combinations;
     }
+
+    /**
+     * Used to ask the type of the weapon.
+     *
+     * @return a string containing the type of the weapon.
+     */
+    @Override
+    public String type() {
+        return "Potentiable";
+    }
 }

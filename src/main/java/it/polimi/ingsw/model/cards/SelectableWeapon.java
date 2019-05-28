@@ -30,6 +30,16 @@ public class SelectableWeapon extends Weapon {
     }
 
     /**
+     * Used to ask the type of the weapon.
+     *
+     * @return a string containing the type of the weapon.
+     */
+    @Override
+    public String type() {
+        return "Selectable";
+    }
+
+    /**
      * This method computes the different solutions of damages when using the "in barbecue mode" effect, of the "Flamethrower" weapon
      * @param shooter it's the Player who is using the effect
      * @param map it's the GameMap

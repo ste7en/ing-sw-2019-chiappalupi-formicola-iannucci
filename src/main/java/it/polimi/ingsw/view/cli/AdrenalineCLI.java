@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.cli;
 
+import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
@@ -198,7 +199,7 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChooseDamage() {
+    public void willChooseDamage(ArrayList<ArrayList<Damage>> possibleDamages) {
 
     }
 
