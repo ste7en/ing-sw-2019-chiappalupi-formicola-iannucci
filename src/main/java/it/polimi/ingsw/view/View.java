@@ -7,6 +7,7 @@ import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observer;
 
@@ -34,6 +35,7 @@ public abstract class View implements Observer{
     protected static String ONLOGIN_SUCCESS       = "Username logged in.";
     protected static String JOIN_WAITING_ROOM     = "Joining the waiting room...";
     protected static String DID_JOIN_WAITING_ROOM = "";
+    protected static String DID_CHOOSE_WEAPON     = "Weapon chosen: ";
 
 
     public abstract void onViewUpdate();
@@ -153,14 +155,22 @@ public abstract class View implements Observer{
     public abstract void didChooseWhatToGrab();
 
     /**
-     * Dani
+     * Public method implemented by subclasses when choosing a weapon.
+     * The user will be prompted to choose which weapon he wants to use.
      */
-    public abstract void willChooseWeapon();
+    public abstract void willChooseWeapon(ArrayList<String> weapons); {
+
+    }
 
     /**
-     * Dani
+     * Called when the Weapon to be used is chosen;
      */
-    public abstract void didChooseWeapon();
+    public void didChooseWeapon(String weaponSelected) {
+        AdrenalineLogger.info(DID_CHOOSE_WEAPON + weaponSelected);
+        var args = new HashMap<String, String>();
+        args.put("Weapon", weaponSelected);
+        this.client.send(CommunicationMessage.from(0, WEAPON_TO_USE, args));
+    }
 
     /**
      * Dani

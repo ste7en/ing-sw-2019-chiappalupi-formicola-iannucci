@@ -6,6 +6,7 @@ import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.view.View;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Scanner;
@@ -30,6 +31,7 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_SERVER_ADDR  = "Insert the server host address: ";
     private static final String CHOOSE_USERNAME     = "Please, insert your username to log in: ";
     private static final String USER_NOT_AVAILABLE  = "The username you provided is not available. Try again, please";
+    private static final String CHOOSE_WEAPON       = "Which weapon do you want to use?";
 
     /**
      * Private constructor of the Command Line Interface
@@ -168,13 +170,31 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChooseWeapon() {
-
-    }
-
-    @Override
-    public void didChooseWeapon() {
-
+    public void willChooseWeapon(ArrayList<String> weaponsAvailable) {
+        out.println(CHOOSE_WEAPON);
+        boolean selected = false;
+        String weaponSelected = "-1";
+        int i = 1;
+        for(String s : weaponsAvailable) {
+            out.println(i + ") " + s);
+            i++;
+        }
+        var scanInput = in.nextLine();
+        try {
+            int choice = Integer.parseInt(scanInput);
+            if(choice <= weaponsAvailable.size()) {
+                weaponSelected = weaponsAvailable.get(choice - 1);
+                selected = true;
+            }
+        } catch(NumberFormatException exception) {
+            for(String s : weaponsAvailable)
+                if(scanInput.equalsIgnoreCase(s)) {
+                    weaponSelected = s;
+                    selected = true;
+                }
+        }
+        if(!selected) throw new IllegalArgumentException(INCORRECT_CHOICE);
+        this.didChooseWeapon(weaponSelected);
     }
 
     @Override

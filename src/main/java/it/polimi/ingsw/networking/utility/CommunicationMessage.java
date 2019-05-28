@@ -35,8 +35,14 @@ public enum CommunicationMessage {
     CREATE_USER,
     CREATE_USER_OK,
     CREATE_USER_FAILED,
-    USER_LOGIN;
+    USER_LOGIN,
 
+    /**
+     * Weapon selection messages.
+     *
+     * Arguments: [weapon_name]
+     */
+    WEAPON_TO_USE;
 
     /**
      * Log strings
