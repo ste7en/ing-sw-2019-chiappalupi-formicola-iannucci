@@ -47,7 +47,7 @@ public enum CommunicationMessage {
     /**
      * Private class used to create json messages
      */
-    private static class Message {
+    protected static class Message {
         int connectionID;
         CommunicationMessage message;
         Map<String, String> arguments;
@@ -59,10 +59,12 @@ public enum CommunicationMessage {
         }
 
         Message() {}
-
-        int getConnectionID() { return connectionID; }
+        @SuppressWarnings("all")
+        public int getConnectionID() { return connectionID; }
         public CommunicationMessage getMessage() { return message; }
-        Map<String, String> getArguments() { return arguments; }
+        @SuppressWarnings("all")
+        public Map<String, String> getArguments() { return arguments; }
+
     }
 
     /**

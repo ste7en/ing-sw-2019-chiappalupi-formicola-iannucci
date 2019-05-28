@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
@@ -35,6 +33,7 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
     private static String SERVER_SOCKET_SUCCESS = "ServerSocket is running...";
     private static String SOCKET_SUCCESS = "A new socket connection with a client has been created :: ";
     private static String SERVER_SOCKET_SHUTDOWN = "SocketServer is shutting down and closing its connections";
+    private static String INTERRUPTED_EXCEPTION = "Thread interrupted exception.";
 
     /**
      * Socket timeout
@@ -57,7 +56,6 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
      * that are handled by the {@link ServerSocketClientConnection}.
      */
     private void startSocketServer() {
-        ExecutorService executor = Executors.newCachedThreadPool();
         AdrenalineLogger.config(SERVER_SOCKET_CONFIG + portNumber);
 
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
@@ -66,25 +64,27 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
             logDescription(serverSocket);
 
             while(!serverSocket.isClosed()) {
-                acceptConnection(serverSocket, executor);
+                acceptConnection(serverSocket);
+                Thread.sleep(750);
             }
 
         } catch (IOException e) {
             logOnException(EXC_ON_SOCKET + e.getLocalizedMessage(), e);
             return;
+        } catch (InterruptedException e) {
+            logOnException(INTERRUPTED_EXCEPTION, e);
+            Thread.currentThread().interrupt();
         }
 
         AdrenalineLogger.info(SERVER_SOCKET_SHUTDOWN);
-        executor.shutdown();
     }
 
     /**
      * Private convenience method used to accept incoming connections
      * @param serverSocket a serverSocket object on which connection requests are sent
-     * @param executor an executor to run Runnable tasks
      * @throws IOException exception thrown when a connection is accepted/opened
      */
-    private void acceptConnection(ServerSocket serverSocket, ExecutorService executor) throws IOException {
+    private void acceptConnection(ServerSocket serverSocket) throws IOException {
         try {
             var socket = serverSocket.accept();
             socket.setSoTimeout(SOCKET_SO_TIMEOUT);
@@ -93,7 +93,10 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
             var connection = new ServerSocketClientConnection(socket, receiverDelegate);
 
             senders.add(connection);
-            executor.submit(connection);
+            var connectionThread = new Thread(connection);
+            connectionThread.setDaemon(true);
+            connectionThread.setPriority(Thread.MIN_PRIORITY);
+            connectionThread.start();
         } catch (IOException e) {
             logOnException(EXC_ON_CLIENT_CONNECTION, e);
             throw e;

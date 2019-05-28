@@ -71,7 +71,9 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         try {
             socketConnectionHandler = new ServerSocketConnectionHandler(portNumberSocket, this);
             senderDelegate.add(socketConnectionHandler);
-            Executors.newCachedThreadPool().submit(socketConnectionHandler);
+            var socketConnectionHandlerThread = new Thread(socketConnectionHandler);
+            socketConnectionHandlerThread.setPriority(Thread.MIN_PRIORITY);
+            socketConnectionHandlerThread.start();
         } catch (Exception e) {
             logOnException(EXC_SETUP, e);
             return;
@@ -151,7 +153,5 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
             default:
                 break;
         }
-        logDescription(communicationMessage);
-        System.out.println(message);
     }
 }

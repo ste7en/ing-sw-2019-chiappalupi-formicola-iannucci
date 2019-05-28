@@ -20,4 +20,10 @@ public interface Pingable {
      * determined delay.
      */
     void closeConnection();
+
+    /**
+     * Used to distinguish between connected pingable clients
+     * @return a Pingable instance identifier
+     */
+    int getConnectionHashCode();
 }

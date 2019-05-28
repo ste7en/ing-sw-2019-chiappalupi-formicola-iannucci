@@ -12,7 +12,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
 
 import static it.polimi.ingsw.networking.utility.ConnectionState.*;
 
@@ -50,6 +49,7 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
     private static String STREAM_SUCC = "Socket Input/Output streams successfully created.";
     private static String IO_EXC_CLOSING = "An IOException has occurred while trying to close the socket.";
     private static String CONN_CLOSED = "Connection closed with the server :: ";
+    private static String INTERRUPTED_EXCEPTION = "Thread interrupted exception.";
 
     /**
      * Socket timeout
@@ -71,7 +71,9 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
 
         try {
             this.socket = new Socket(serverName, portNumber);
-            Executors.newCachedThreadPool().submit(this);
+            var clientSocketConnectionHandlerThread = new Thread(this);
+            clientSocketConnectionHandlerThread.setPriority(Thread.MIN_PRIORITY);
+            clientSocketConnectionHandlerThread.start();
         } catch (UnknownHostException e) {
             logOnException(INIT_EXCEPTION+UNKNOWN_HOST, e);
             throw e;
@@ -108,6 +110,8 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
                     receiverDelegate.receive(received, this);
                 }
                 if (!outBuf.isEmpty()) outBuf.forEach(printWriter::println);
+                outBuf.clear();
+                Thread.sleep(200);
             }
 
             if (connectionState == CLOSED) socket.close();
@@ -115,6 +119,9 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
         } catch (IOException e) {
             logOnException(IO_EXC_STREAMS, e);
             close();
+        } catch (InterruptedException e) {
+            logOnException(INTERRUPTED_EXCEPTION , e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -133,7 +140,7 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
      * Sends a message through its connection
      * @param message the message to send
      */
-    public void send(String message) {
+    public synchronized void send(String message) {
         outBuf.add(message);
     }
 }

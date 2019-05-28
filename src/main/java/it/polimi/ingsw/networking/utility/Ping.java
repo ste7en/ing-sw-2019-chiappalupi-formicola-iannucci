@@ -24,12 +24,12 @@ public class Ping {
     /**
      * Period between a scheduled pings
      */
-    private static final long EXECUTION_PERIOD_MILLISEC = 750;
+    private static final long EXECUTION_PERIOD_MILLISEC = 1200;
 
     /**
      * Delay when executing a ping for the first time
      */
-    private static final long EXECUTION_DELAY_MILLISEC = 250;
+    private static final long EXECUTION_DELAY_MILLISEC = 500;
 
     /**
      * Collection that manages pings over time
@@ -100,7 +100,7 @@ public class Ping {
      */
     public void didPong(int connectionID) {
         getPingHandler().keySet().forEach( connection -> {
-            if (connection.hashCode() == connectionID) {
+            if (connection.getConnectionHashCode() == connectionID) {
                 getPingHandler().replace(connection, true);
             }
         });

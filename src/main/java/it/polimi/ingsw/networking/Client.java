@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking;
 
+import it.polimi.ingsw.model.User;
 import it.polimi.ingsw.networking.socket.ClientSocketConnectionHandler;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -124,15 +125,16 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
      */
     @Override
     public void receive(String message, ConnectionHandlerSenderDelegate sender) {
-        System.out.println(message);
         var communicationMessage = CommunicationMessage.getCommunicationMessageFrom(message);
         var id = CommunicationMessage.getConnectionIDFrom(message);
+        var args = CommunicationMessage.getMessageArgsFrom(message);
 
         switch (communicationMessage) {
             case PING:
                 this.send(CommunicationMessage.from(id, PONG));
+                break;
             case CREATE_USER_OK:
-                this.viewObserver.onLoginSuccess();
+                this.viewObserver.onLoginSuccess(args.get(User.username_key));
                 break;
             case CREATE_USER_FAILED:
                 this.viewObserver.onLoginFailure();
@@ -141,7 +143,6 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
             default:
                 break;
         }
-        logDescription(communicationMessage);
     }
 
     /**

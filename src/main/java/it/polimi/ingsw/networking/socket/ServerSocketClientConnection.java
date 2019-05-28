@@ -46,6 +46,7 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
     private static String STREAM_SUCC = "Socket Input/Output streams successfully created.";
     private static String CONN_CLOSED = "Connection closed with the client :: ";
     private static String PING_TIMEOUT = "Ping timeout. Closing connection socket :: ";
+    private static String INTERRUPTED_EXCEPTION = "Thread interrupted exception.";
 
     /**
      * The state of the connection
@@ -81,12 +82,16 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
             while(connectionState == ONLINE) {
                 if (inStr.available() != 0) receiverDelegate.receive(inScanner.nextLine(), this);
                 if (!outBuf.isEmpty()) outBuf.forEach(printWriter::println);
-
+                outBuf.clear();
+                Thread.sleep(500);
             }
             if (connectionState == CLOSED) socket.close();
             AdrenalineLogger.info(CONN_CLOSED + socket.toString());
         } catch (IOException e) {
             logOnException(IO_EXC, e);
+        } catch (InterruptedException e) {
+            logOnException(INTERRUPTED_EXCEPTION , e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -95,7 +100,7 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
      * @param message the message to send
      */
     @Override
-    public void send(String message) {
+    public synchronized void send(String message) {
         outBuf.add(message);
     }
 
@@ -105,7 +110,7 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
      */
     @Override
     public synchronized void ping() {
-        var pingMessage = CommunicationMessage.from(this.hashCode(), CommunicationMessage.PING);
+        var pingMessage = CommunicationMessage.from(getConnectionHashCode(), CommunicationMessage.PING);
         this.send(pingMessage);
     }
 
@@ -118,6 +123,16 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
     public synchronized void closeConnection() {
         this.connectionState = ConnectionState.CLOSED;
         AdrenalineLogger.info(PING_TIMEOUT + socket.toString());
+    }
+
+    /**
+     * Used to distinguish between connected pingable clients
+     *
+     * @return a Pingable instance identifier
+     */
+    @Override
+    public int getConnectionHashCode() {
+        return this.hashCode();
     }
 
     /**
