@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Class that manages the connectivity state of a connection.
- * When a client doesn't respond after EXECUTION_PERIOD_MILLISEC ms,
+ * When a client doesn't respond after EXECUTION_PERIOD ms,
  * the server-side connection is closed.
  *
  * @author Stefano Formicola
@@ -24,12 +24,17 @@ public class Ping {
     /**
      * Period between a scheduled pings
      */
-    private static final long EXECUTION_PERIOD_MILLISEC = 1200;
+    private static final long EXECUTION_PERIOD = 1;
 
     /**
      * Delay when executing a ping for the first time
      */
-    private static final long EXECUTION_DELAY_MILLISEC = 500;
+    private static final long EXECUTION_DELAY = 0;
+
+    /**
+     * TimeUnit
+     */
+    private static final TimeUnit timeUnit = TimeUnit.SECONDS;
 
     /**
      * Collection that manages pings over time
@@ -45,12 +50,12 @@ public class Ping {
      * Private constructor responsible for scheduling the ping command
      */
     private Ping() {
-        /**
+        /*
          * This lambda iterates over the pingHandler collection and pings every connection,
          * setting each state in the collection as false, meaning that a PONG message hasn't
          * been received yet. When a PONG message is received, the convenience didPong(int)
          * method re-sets the state to true. If a PONG message hasn't been received after
-         * EXECUTION_PERIOD_MILLISEC ms, the connection is interrupted meaning the client
+         * EXECUTION_PERIOD ms, the connection is interrupted meaning the client
          * isn't connected anymore.
          */
         new ScheduledThreadPoolExecutor(1)
@@ -70,9 +75,9 @@ public class Ping {
                             }
 
                         },
-                        EXECUTION_DELAY_MILLISEC,
-                        EXECUTION_PERIOD_MILLISEC,
-                        TimeUnit.MILLISECONDS
+                        EXECUTION_DELAY,
+                        EXECUTION_PERIOD,
+                        timeUnit
                 );
     }
 

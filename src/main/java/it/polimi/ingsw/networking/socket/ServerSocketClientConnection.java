@@ -42,11 +42,12 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
     /**
      * Log strings
      */
-    private static String IO_EXC = "An IOException has occurred during a socket operation";
-    private static String STREAM_SUCC = "Socket Input/Output streams successfully created.";
-    private static String CONN_CLOSED = "Connection closed with the client :: ";
-    private static String PING_TIMEOUT = "Ping timeout. Closing connection socket :: ";
-    private static String INTERRUPTED_EXCEPTION = "Thread interrupted exception.";
+    @SuppressWarnings("squid:S3008")
+    private static final String IO_EXC = "An IOException has occurred during a socket operation";
+    private static final String STREAM_SUCC = "Socket Input/Output streams successfully created.";
+    private static final String CONN_CLOSED = "Connection closed with the client :: ";
+    private static final String PING_TIMEOUT = "Ping timeout. Closing connection socket :: ";
+    private static final String INTERRUPTED_EXCEPTION = "Thread interrupted exception.";
 
     /**
      * The state of the connection
@@ -83,7 +84,7 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
                 if (inStr.available() != 0) receiverDelegate.receive(inScanner.nextLine(), this);
                 if (!outBuf.isEmpty()) outBuf.forEach(printWriter::println);
                 outBuf.clear();
-                Thread.sleep(500);
+                Thread.sleep(250);
             }
             if (connectionState == CLOSED) socket.close();
             AdrenalineLogger.info(CONN_CLOSED + socket.toString());
@@ -138,6 +139,8 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
     /**
      * @return true if the socket is connected and the connection is available
      */
-    public boolean isAvailable() { return this.connectionState == ONLINE; }
-
+    @Override
+    public boolean isConnectionAvailable() {
+        return connectionState == ONLINE;
+    }
 }

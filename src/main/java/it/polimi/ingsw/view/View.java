@@ -33,7 +33,7 @@ public abstract class View implements Observer{
     protected static String APPLICATION_STARTED   = "Adrenaline application started. View instance created.";
     protected static String DID_ASK_CONNECTION    = "Connection parameters chosen: ";
     protected static String ONLOGIN_FAILURE       = "Username creation failed.";
-    protected static String ONLOGIN_SUCCESS       = "Username logged in.";
+    protected static String ONLOGIN_SUCCESS       = "User login completed.";
     protected static String JOIN_WAITING_ROOM     = "Joining the waiting room...";
     protected static String DID_JOIN_WAITING_ROOM = "";
     protected static String DID_CHOOSE_WEAPON     = "Weapon chosen: ";

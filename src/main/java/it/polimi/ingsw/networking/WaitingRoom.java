@@ -26,6 +26,7 @@ public class WaitingRoom {
     private static final String MIN_NUM_REACHED      = "Minimum number of users for a game reached";
     private static final String MAX_NUM_REACHED      = "Maximum number of users for a game reached. Next users will be added for a new game.";
     private static final String COUNTDOWN_STARTED    = "A new game is going to be created. Countdown started...";
+    private static final String NEXT_GAME_CREATION   = "Next game will be created in ";
 
     /**
      * The minimum number of users needed to create a game
@@ -53,9 +54,17 @@ public class WaitingRoom {
     private final ConcurrentLinkedQueue<User> userQueue;
 
     /**
-     *
+     * A helper collection of users needed to create one game
+     * at time with max maximumNumberOfPlayers players
      */
     private final LinkedList<User> userWaitingList;
+
+    /**
+     * Boolean variable, true when the countdown has started,
+     * otherwise it is false.
+     */
+    private boolean isRunning = false;
+
 
     /**
      * WaitingRoom constructor
@@ -101,6 +110,7 @@ public class WaitingRoom {
      */
     private void flushQueue() {
         userQueue.clear();
+        isRunning = false;
         while(userQueue.size() < maximumNumberOfPlayers || !userWaitingList.isEmpty()) {
             addUser(userWaitingList.pop());
         }
@@ -108,12 +118,14 @@ public class WaitingRoom {
 
     /**
      * Called when a new user is added to the waiting room
-     * @return true if a minumum number has been reached, false otherwise
+     * @return true if a minimum number has been reached, false otherwise
      */
     private boolean didAddUser() {
         if (userQueue.size() >= minimumNumberOfPlayers) {
-            AdrenalineLogger.success(MIN_NUM_REACHED);
-            didReachMinimumNumberOfPlayers();
+            if (!isRunning) {
+                AdrenalineLogger.success(MIN_NUM_REACHED);
+                didReachMinimumNumberOfPlayers();
+            }
             return true;
         }
         return false;
@@ -126,6 +138,8 @@ public class WaitingRoom {
      */
     private void didReachMinimumNumberOfPlayers() {
         AdrenalineLogger.info(COUNTDOWN_STARTED);
+        AdrenalineLogger.success(NEXT_GAME_CREATION + timeout + "ms");
+        isRunning = true;
         Executors.newSingleThreadScheduledExecutor()
                  .schedule(
                          () -> {

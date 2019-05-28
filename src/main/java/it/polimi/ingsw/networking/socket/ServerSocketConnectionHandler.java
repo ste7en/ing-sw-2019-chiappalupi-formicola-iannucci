@@ -27,18 +27,19 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
     /**
      * Log strings
      */
-    private static String EXC_ON_CLIENT_CONNECTION = "Error while trying to accept a client :: ";
-    private static String EXC_ON_SOCKET = "Error while creating a SocketServer :: ";
-    private static String SERVER_SOCKET_CONFIG = "ServerSocket configured on port ";
-    private static String SERVER_SOCKET_SUCCESS = "ServerSocket is running...";
-    private static String SOCKET_SUCCESS = "A new socket connection with a client has been created :: ";
-    private static String SERVER_SOCKET_SHUTDOWN = "SocketServer is shutting down and closing its connections";
-    private static String INTERRUPTED_EXCEPTION = "Thread interrupted exception.";
+    @SuppressWarnings("squid:S008")
+    private static final String EXC_ON_CLIENT_CONNECTION = "Error while trying to accept a client :: ";
+    private static final String EXC_ON_SOCKET = "Error while creating a SocketServer :: ";
+    private static final String SERVER_SOCKET_CONFIG = "ServerSocket configured on port ";
+    private static final String SERVER_SOCKET_SUCCESS = "ServerSocket is running...";
+    private static final String SOCKET_SUCCESS = "A new socket connection with a client has been created :: ";
+    private static final String SERVER_SOCKET_SHUTDOWN = "SocketServer is shutting down and closing its connections";
+    private static final String INTERRUPTED_EXCEPTION = "Thread interrupted exception.";
 
     /**
      * Socket timeout
      */
-    private static int SOCKET_SO_TIMEOUT = 250;
+    private static final int SOCKET_SO_TIMEOUT = 250;
 
     /**
      * Class constructor
@@ -65,7 +66,7 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
 
             while(!serverSocket.isClosed()) {
                 acceptConnection(serverSocket);
-                Thread.sleep(750);
+                Thread.sleep(500);
             }
 
         } catch (IOException e) {
@@ -128,5 +129,13 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
     @Override
     public void send(String message) {
         senders.forEach( s->s.send(message));
+    }
+
+    /**
+     * @return true if the socket is connected and the connection is available
+     */
+    @Override
+    public boolean isConnectionAvailable() {
+        return true;
     }
 }

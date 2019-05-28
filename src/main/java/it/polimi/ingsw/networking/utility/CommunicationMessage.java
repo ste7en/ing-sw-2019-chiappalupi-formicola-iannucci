@@ -50,8 +50,8 @@ public enum CommunicationMessage {
     /**
      * Log strings
      */
-    private static String EXC_MESS_JSON = "Exception while converting the message to json";
-    private static String EXC_JSON_MESS = "Exception while converting the json to message";
+    private static final String EXC_MESS_JSON = "Exception while converting the message to json";
+    private static final String EXC_JSON_MESS = "Exception while converting the json to message";
 
     /**
      * Private class used to create json messages
@@ -142,7 +142,6 @@ public enum CommunicationMessage {
             return message;
         } catch (IOException e) {
             AdrenalineLogger.errorException(EXC_JSON_MESS, e);
-//            throw new RuntimeException(EXC_JSON_MESS);
         }
         return message;
     }

@@ -12,4 +12,9 @@ public interface ConnectionHandlerSenderDelegate {
      * @param message the message to send
      */
     void send(String message);
+
+    /**
+     * @return true if the socket is connected and the connection is available
+     */
+    boolean isConnectionAvailable();
 }
