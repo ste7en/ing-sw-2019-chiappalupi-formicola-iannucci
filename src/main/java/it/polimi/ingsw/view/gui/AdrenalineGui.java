@@ -4,3 +4,4 @@ import it.polimi.ingsw.view.View;
 
 public abstract class AdrenalineGui extends View {
 }
+

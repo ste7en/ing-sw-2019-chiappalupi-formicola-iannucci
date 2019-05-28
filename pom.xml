@@ -46,7 +46,7 @@
     <!--end of JACKSON-->
     <!--JAVA FX-->
     <dependency>
-      <groupId>org.openjfx</groupId>
+      <gr<zoupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
       <version>11.0.2</version>
     </dependency>

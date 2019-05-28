@@ -6,6 +6,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Logger;
 
+
 public class ServerRMIConnectionHandler implements RMIInterface {
 
     private Registry registry;
@@ -16,7 +17,7 @@ public class ServerRMIConnectionHandler implements RMIInterface {
     }
 
     public void launch() throws RemoteException {
-        registry = LocateRegistry.getRegistry(portNumber);
+        registry = LocateRegistry.createRegistry(portNumber);
         registry.rebind("rmiInterface", this);
         UnicastRemoteObject.exportObject(this, 0);
         Logger.getGlobal().info("rmi Server running correctly...");
@@ -24,7 +25,7 @@ public class ServerRMIConnectionHandler implements RMIInterface {
 
     @Override
     public void newUser(String username) throws RemoteException {
-        System.out.print("Elena, you are logged");
+        System.out.print(username + ", you are logged");
     }
 
     @Override
