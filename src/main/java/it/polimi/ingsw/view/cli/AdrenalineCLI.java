@@ -64,7 +64,7 @@ public class AdrenalineCLI extends View {
                     throw new IllegalArgumentException(INCORRECT_CHOICE);
             }
         } catch (NumberFormatException exc) {
-            connectionType = ConnectionType.valueOf(connection);
+            connectionType = ConnectionType.parse(connection);
         }
 
         out.println(CHOOSE_SERVER_ADDR);

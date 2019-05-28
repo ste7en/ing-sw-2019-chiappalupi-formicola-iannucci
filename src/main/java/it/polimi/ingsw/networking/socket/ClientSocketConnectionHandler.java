@@ -43,13 +43,14 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
     /**
      * Log strings
      */
-    private static String INIT_EXCEPTION = "An error has occurred while connecting to the server. ";
-    private static String UNKNOWN_HOST = "Unable to find the hostname provided.";
-    private static String IO_EXC_STREAMS = "An IOException has occurred while trying to get in/out streams.";
-    private static String STREAM_SUCC = "Socket Input/Output streams successfully created.";
-    private static String IO_EXC_CLOSING = "An IOException has occurred while trying to close the socket.";
-    private static String CONN_CLOSED = "Connection closed with the server :: ";
-    private static String INTERRUPTED_EXCEPTION = "Thread interrupted exception.";
+    @SuppressWarnings("squid:S008")
+    private static final String INIT_EXCEPTION = "An error has occurred while connecting to the server. ";
+    private static final String UNKNOWN_HOST = "Unable to find the hostname provided.";
+    private static final String IO_EXC_STREAMS = "An IOException has occurred while trying to get in/out streams.";
+    private static final String STREAM_SUCC = "Socket Input/Output streams successfully created.";
+    private static final String IO_EXC_CLOSING = "An IOException has occurred while trying to close the socket.";
+    private static final String CONN_CLOSED = "Connection closed with the server :: ";
+    private static final String INTERRUPTED_EXCEPTION = "Thread interrupted exception.";
 
     /**
      * Socket timeout
@@ -72,7 +73,7 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
         try {
             this.socket = new Socket(serverName, portNumber);
             var clientSocketConnectionHandlerThread = new Thread(this);
-            clientSocketConnectionHandlerThread.setPriority(Thread.MIN_PRIORITY);
+            clientSocketConnectionHandlerThread.setPriority(Thread.NORM_PRIORITY);
             clientSocketConnectionHandlerThread.start();
         } catch (UnknownHostException e) {
             logOnException(INIT_EXCEPTION+UNKNOWN_HOST, e);
@@ -111,7 +112,7 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
                 }
                 if (!outBuf.isEmpty()) outBuf.forEach(printWriter::println);
                 outBuf.clear();
-                Thread.sleep(200);
+                Thread.sleep(250);
             }
 
             if (connectionState == CLOSED) socket.close();
@@ -142,5 +143,13 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
      */
     public synchronized void send(String message) {
         outBuf.add(message);
+    }
+
+    /**
+     * @return true if the socket is connected and the connection is available
+     */
+    @Override
+    public boolean isConnectionAvailable() {
+        return connectionState == ONLINE;
     }
 }

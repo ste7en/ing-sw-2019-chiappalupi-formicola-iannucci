@@ -21,7 +21,7 @@ public enum ConnectionType {
      * @param s user's choice (rmi or socket)
      * @return a valid connection type or
      */
-    static ConnectionType parse(String s) {
+    public static ConnectionType parse(String s) {
         switch (s.toLowerCase().substring(0,3)) {
             case "soc":
                 return SOCKET;
