@@ -8,7 +8,7 @@
   <artifactId>AM019</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>AM019</name>
+  <name>AM19</name>
   <url>https://github.com/ste7en/ing-sw-2019-chiappalupi-formicola-iannucci</url>
 
   <properties>
@@ -46,7 +46,7 @@
     <!--end of JACKSON-->
     <!--JAVA FX-->
     <dependency>
-      <gr<zoupId>org.openjfx</groupId>
+      <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
       <version>11.0.2</version>
     </dependency>
