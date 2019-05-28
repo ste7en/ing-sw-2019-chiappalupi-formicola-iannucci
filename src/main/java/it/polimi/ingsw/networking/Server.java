@@ -13,10 +13,7 @@ import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
 import it.polimi.ingsw.networking.utility.Ping;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 //import it.polimi.ingsw.networking.rmi.*;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
@@ -30,17 +27,33 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  * @author Stefano Formicola feat. Elena Iannucci
  */
 public class Server implements Loggable, ConnectionHandlerReceiverDelegate, WaitingRoomObserver {
-
+    /**
+     * The port on which the server socket is listening
+     */
     private Integer portNumberSocket;
+    /**
+     * The port on which the server rmi is listening
+     */
     private Integer portNumberRMI;
+    /**
+     * The delegates to send messages via socket/rmi
+     */
     private List<ConnectionHandlerSenderDelegate> senderDelegate;
+    /**
+     * The game waiting room, when new users log in
+     */
     private WaitingRoom waitingRoom;
     private ArrayList<GameLogic> gamesControllers;
+    /**
+     * Collection of the connected users, useful to implement unicast
+     * or to check username availability, but also users availability
+     */
+    private Map<String, ConnectionHandlerSenderDelegate> users;
 
     /**
      * Log strings
      */
-    private String EXC_SETUP = "Error while setting up a ServerSocketConnectionHandler :: ";
+    private static final String EXC_SETUP = "Error while setting up a ServerSocketConnectionHandler :: ";
 
     /**
      * Entry point of the server application
@@ -60,9 +73,10 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         this.portNumberSocket = portNumberSocket;
         this.portNumberRMI = portNumberRMI;
         this.senderDelegate = new LinkedList<>();
+        this.users = new HashMap<>();
 
         // TODO: - The following is a test with test parameters, the real waiting room settings must be read from a file
-        this.waitingRoom = new WaitingRoom(3, 5, 50000, this);
+        this.waitingRoom = new WaitingRoom(3, 5, 30000, this);
 
         setupConnections();
     }
@@ -109,8 +123,12 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
      * @param name user name
      * @return true if the user doesn't exist or isn't connected, false otherwise
      */
-    // TODO: - Implement the following method regardless the connection type
-    private boolean checkUserAvailability(String name) { return true; }
+    @SuppressWarnings("all")
+    private boolean checkUserAvailability(String name) {
+        var connectionHandler = users.get(name);
+        if ( connectionHandler != null ) return !connectionHandler.isConnectionAvailable();
+        return true;
+    }
 
     /**
      * Receives a message from a delegator
@@ -137,8 +155,8 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                 responseArgs.put(User.username_key, username);
 
                 if (checkUserAvailability(username)) {
-                    new User(username);
-                    //TODO: - Add the created user to a private collection
+                    var newUser = new User(username);
+                    users.put(username, sender);
                     responseMessage = CommunicationMessage.from(connectionID, CREATE_USER_OK, responseArgs);
                 } else {
                     responseMessage = CommunicationMessage.from(connectionID, CREATE_USER_FAILED, responseArgs);
