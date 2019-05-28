@@ -126,7 +126,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
     @SuppressWarnings("all")
     private boolean checkUserAvailability(String name) {
         var connectionHandler = users.get(name);
-        if ( connectionHandler != null ) return !connectionHandler.isConnectionAvailable();
+        //if ( connectionHandler != null ) return !connectionHandler.isConnectionAvailable();
         return true;
     }
 

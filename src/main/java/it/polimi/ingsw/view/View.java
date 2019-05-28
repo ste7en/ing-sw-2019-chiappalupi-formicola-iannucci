@@ -55,7 +55,7 @@ public abstract class View implements Observer{
      * Method called after a user choice of the connection.
      * Shouldn't be reimplemented by a subclass.
      */
-    protected void didChooseConnection(ConnectionType type, int port, String host) {
+    public void didChooseConnection(ConnectionType type, int port, String host) {
         AdrenalineLogger.info(DID_ASK_CONNECTION + type + " " + host + ":" + port);
         this.client = new Client(type, host, port);
         client.registerObserver(this);

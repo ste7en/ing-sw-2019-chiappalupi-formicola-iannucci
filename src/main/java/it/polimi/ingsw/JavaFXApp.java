@@ -1,17 +1,24 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.networking.utility.ConnectionType;
+import it.polimi.ingsw.view.gui.AdrenalineGUI;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class JavaFXApp extends Application {
+
+    private BorderPane root;
+
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -26,7 +33,7 @@ public class JavaFXApp extends Application {
         button.setOnAction(e -> handleOptions(checkBoxRMI, checkBoxTCP));
         checkBoxRMI.setOnAction(e -> handleOptionsRMI(checkBoxRMI, checkBoxTCP));
         checkBoxTCP.setOnAction(e -> handleOptionsTCP(checkBoxRMI, checkBoxTCP));
-        BorderPane root = new BorderPane();
+        root = new BorderPane();
 
         HBox boxRMI = new HBox(checkBoxRMI);
         boxRMI.setAlignment(Pos.CENTER);
@@ -55,15 +62,51 @@ public class JavaFXApp extends Application {
 
     public void handleOptions(CheckBox rmi, CheckBox tcp){
         if(rmi.isSelected()){
-            System.out.println("Hai selezionato RMI!");
+            System.out.println();
         }
         if(tcp.isSelected()){
             System.out.println("Hai selezionato TCP!");
+            root.getChildren().clear();
+            VBox generalBox = new VBox();
+            Text text = new Text("Please provide a port number and an address");
+            HBox boxText = new HBox(text);
+            boxText.setAlignment(Pos.CENTER);
+
+            Text portText = new Text("port number:  ");
+            TextField portField = new TextField();
+            HBox boxPort = new HBox(portText, portField);
+            boxPort.setAlignment(Pos.CENTER_LEFT);
+
+            Text addressText = new Text("address:         ");
+            TextField addressField = new TextField();
+            HBox boxAddress = new HBox(addressText, addressField);
+            boxAddress.setAlignment(Pos.CENTER_LEFT);
+
+            Button button = new Button();
+            button.setText("Continue");
+            HBox boxButton = new HBox(button);
+            boxButton.setAlignment(Pos.CENTER);
+            button.setOnAction(e -> handlePortOptions(portField, addressField));
+
+            generalBox.setFillWidth(true);
+            generalBox.getChildren().add(boxPort);
+            generalBox.getChildren().add(boxAddress);
+            generalBox.setAlignment(Pos.CENTER);
+
+            boxButton.setMargin(button, new Insets(0, 0, 50, 0));
+            boxText.setMargin(text, new Insets(50, 0, 0, 0));
+            generalBox.setMargin(boxPort, new Insets(10, 50, 10, 50));
+            generalBox.setMargin(boxAddress, new Insets(10, 50, 10, 50));
+            root.setCenter(generalBox);
+            root.setTop(boxText);
+            root.setBottom(boxButton);
         }
         if(!tcp.isSelected() && !rmi.isSelected()){
             System.out.println("Seleziona qualcosa!");
         }
     }
+
+
 
     public void handleOptionsRMI(CheckBox rmi, CheckBox tcp){
         if(rmi.isSelected()) {
@@ -75,5 +118,14 @@ public class JavaFXApp extends Application {
         if(tcp.isSelected()) {
             rmi.setSelected(false);
         }
+    }
+
+    public void handlePortOptions(TextField portTextfield, TextField addressTextfield){
+        String port = portTextfield.getText();
+        Integer portNumber = Integer.parseInt(port);
+        String address = addressTextfield.getText();
+        AdrenalineGUI connectionHandler = new AdrenalineGUI();
+        connectionHandler.didChooseConnection(ConnectionType.SOCKET, portNumber, address);
+
     }
 }
