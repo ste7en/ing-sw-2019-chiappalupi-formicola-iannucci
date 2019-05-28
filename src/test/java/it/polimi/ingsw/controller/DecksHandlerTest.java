@@ -1,9 +1,12 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.model.cards.AmmoTile;
+import it.polimi.ingsw.model.cards.Powerup;
+import it.polimi.ingsw.model.cards.SimpleWeapon;
+import it.polimi.ingsw.model.cards.Weapon;
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.*;
-import it.polimi.ingsw.model.*;
 
 /**
  * Test for {@link DecksHandler} class

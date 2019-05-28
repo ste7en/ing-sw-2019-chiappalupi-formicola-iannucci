@@ -1,7 +1,10 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.cards.Effect;
+import it.polimi.ingsw.model.cards.Weapon;
+import it.polimi.ingsw.model.utility.AmmoColor;
 import org.junit.*;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.Random;
 import static org.junit.Assert.*;

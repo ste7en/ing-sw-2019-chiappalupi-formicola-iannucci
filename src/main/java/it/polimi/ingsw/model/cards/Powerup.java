@@ -1,4 +1,11 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.cards;
+
+import it.polimi.ingsw.model.board.GameMap;
+import it.polimi.ingsw.model.utility.AmmoColor;
+import it.polimi.ingsw.model.utility.PlayerColor;
+import it.polimi.ingsw.model.utility.PowerupType;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.PlayerBoard;
 
 import java.util.ArrayList;
 

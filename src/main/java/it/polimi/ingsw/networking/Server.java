@@ -2,7 +2,7 @@ package it.polimi.ingsw.networking;
 
 //import it.polimi.ingsw.networking.*;
 //import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
-import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.socket.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
@@ -12,7 +12,6 @@ import it.polimi.ingsw.networking.utility.Ping;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Executors;
 //import it.polimi.ingsw.networking.rmi.*;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;

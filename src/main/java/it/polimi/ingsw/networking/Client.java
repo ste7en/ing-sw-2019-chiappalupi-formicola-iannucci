@@ -1,6 +1,6 @@
 package it.polimi.ingsw.networking;
 
-import it.polimi.ingsw.model.User;
+import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.socket.ClientSocketConnectionHandler;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;

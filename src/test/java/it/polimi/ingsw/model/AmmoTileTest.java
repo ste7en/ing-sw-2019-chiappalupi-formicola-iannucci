@@ -1,9 +1,9 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller.DecksHandler;
+import it.polimi.ingsw.model.cards.AmmoTile;
 import org.junit.*;
-import java.util.ArrayList;
-import java.util.Random;
+
 import static org.junit.Assert.*;
 
 /**

@@ -1,5 +1,9 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.player.Character;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.User;
+import it.polimi.ingsw.model.utility.PlayerColor;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

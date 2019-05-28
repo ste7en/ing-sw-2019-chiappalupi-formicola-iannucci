@@ -1,4 +1,6 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.player;
+
+import it.polimi.ingsw.model.utility.PlayerColor;
 
 /**
  * A class containing attributes that identify a single player

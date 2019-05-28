@@ -1,6 +1,12 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller.DecksHandler;
+import it.polimi.ingsw.model.board.Cell;
+import it.polimi.ingsw.model.cards.AmmoTile;
+import it.polimi.ingsw.model.utility.AmmoColor;
+import it.polimi.ingsw.model.utility.Border;
+import it.polimi.ingsw.model.utility.CellColor;
+import it.polimi.ingsw.model.utility.Direction;
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.ArrayList;

@@ -1,8 +1,11 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.player;
+
+import it.polimi.ingsw.model.cards.Powerup;
+import it.polimi.ingsw.model.cards.Weapon;
+import it.polimi.ingsw.model.utility.AmmoColor;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 
 /**
  * This class provides methods and attributes to manage every card the player

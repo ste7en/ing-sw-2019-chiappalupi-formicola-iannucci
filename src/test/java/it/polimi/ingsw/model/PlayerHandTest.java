@@ -1,6 +1,9 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller.DecksHandler;
+import it.polimi.ingsw.model.cards.Powerup;
+import it.polimi.ingsw.model.player.PlayerHand;
+import it.polimi.ingsw.model.utility.AmmoColor;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

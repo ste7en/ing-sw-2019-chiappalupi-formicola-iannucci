@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.player.User;
 import org.junit.*;
 import java.util.UUID;
 import static org.junit.Assert.*;

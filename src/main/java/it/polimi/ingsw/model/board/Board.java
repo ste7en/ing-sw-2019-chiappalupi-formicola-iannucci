@@ -1,9 +1,12 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.board;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import it.polimi.ingsw.controller.*;
+import it.polimi.ingsw.model.cards.Weapon;
+import it.polimi.ingsw.model.utility.AmmoColor;
+import it.polimi.ingsw.model.utility.PlayerColor;
 
 /**
  *

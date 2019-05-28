@@ -1,4 +1,9 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.board;
+
+import it.polimi.ingsw.model.utility.CellColor;
+import it.polimi.ingsw.model.cards.AmmoTile;
+import it.polimi.ingsw.model.utility.Border;
+import it.polimi.ingsw.model.utility.Direction;
 
 import java.util.ArrayList;
 

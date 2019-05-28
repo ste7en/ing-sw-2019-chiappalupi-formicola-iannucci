@@ -1,4 +1,7 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.utility;
+
+import it.polimi.ingsw.model.utility.MapType;
+import it.polimi.ingsw.model.player.Player;
 
 import java.util.UUID;
 

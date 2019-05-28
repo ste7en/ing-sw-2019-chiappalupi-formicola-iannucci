@@ -1,6 +1,6 @@
 package it.polimi.ingsw.networking;
 
-import it.polimi.ingsw.model.User;
+import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.util.Arrays;

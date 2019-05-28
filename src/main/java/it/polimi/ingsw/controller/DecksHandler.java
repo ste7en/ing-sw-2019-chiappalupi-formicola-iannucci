@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.ingsw.model.cards.*;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,6 +1,7 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.cards;
 
-import java.util.ArrayList;
+import it.polimi.ingsw.model.board.Cell;
+import it.polimi.ingsw.model.player.Player;
 
 public class Damage implements Comparable<Damage> {
 

@@ -1,5 +1,13 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.board.Cell;
+import it.polimi.ingsw.model.board.GameMap;
+import it.polimi.ingsw.model.player.Character;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.User;
+import it.polimi.ingsw.model.utility.Direction;
+import it.polimi.ingsw.model.utility.MapType;
+import it.polimi.ingsw.model.utility.PlayerColor;
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.ArrayList;

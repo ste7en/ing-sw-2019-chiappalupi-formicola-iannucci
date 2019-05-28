@@ -1,6 +1,11 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.model.cards.Damage;
+import it.polimi.ingsw.model.cards.Effect;
+import it.polimi.ingsw.model.cards.Weapon;
+import it.polimi.ingsw.model.player.Player;
+
 import java.util.*;
 
 public class GameLogic {

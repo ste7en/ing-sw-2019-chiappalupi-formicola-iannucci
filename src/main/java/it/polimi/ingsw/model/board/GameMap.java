@@ -1,4 +1,10 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.board;
+
+import it.polimi.ingsw.model.utility.Border;
+import it.polimi.ingsw.model.utility.CellColor;
+import it.polimi.ingsw.model.utility.Direction;
+import it.polimi.ingsw.model.utility.MapType;
+import it.polimi.ingsw.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;

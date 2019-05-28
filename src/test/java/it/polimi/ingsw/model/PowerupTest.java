@@ -1,6 +1,13 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller.DecksHandler;
+import it.polimi.ingsw.model.cards.Powerup;
+import it.polimi.ingsw.model.player.Character;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.User;
+import it.polimi.ingsw.model.utility.AmmoColor;
+import it.polimi.ingsw.model.utility.PlayerColor;
+import it.polimi.ingsw.model.utility.PowerupType;
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.ArrayList;
