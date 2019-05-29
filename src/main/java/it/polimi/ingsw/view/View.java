@@ -161,9 +161,7 @@ public abstract class View implements Observer{
      *
      * @param weapons it's an ArrayList containing all of the weapons that the player can use.
      */
-    public abstract void willChooseWeapon(ArrayList<String> weapons); {
-
-    }
+    public abstract void willChooseWeapon(ArrayList<String> weapons);
 
     /**
      * Called when the Weapon to be used is chosen.
@@ -173,19 +171,22 @@ public abstract class View implements Observer{
     public void didChooseWeapon(String weaponSelected) {
         AdrenalineLogger.info(DID_CHOOSE_WEAPON + weaponSelected);
         var args = new HashMap<String, String>();
-        args.put("0", weaponSelected);
+        args.put("Weapon Selected", weaponSelected);
+        args.put("Player Color", playerColor.toString());
         this.client.send(CommunicationMessage.from(0, WEAPON_TO_USE, args));
     }
 
     /**
-     * Dani
+     * Public method implemented by subclasses when choosing the damages to make.
+     *
+     * @param possibleDamages it's a list containing all of the possible damages that can be made
      */
-    public abstract void willChooseDamage(ArrayList<ArrayList<Damage>> possibleDamages);
+    public abstract void willChooseDamage(ArrayList<String> possibleDamages);
 
     /**
      * Dani
      */
-    public abstract void didChooseDamage();
+    public abstract void didChooseDamage(int index);
 
     /**
      * Dani

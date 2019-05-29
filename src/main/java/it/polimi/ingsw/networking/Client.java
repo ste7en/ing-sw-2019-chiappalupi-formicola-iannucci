@@ -11,6 +11,7 @@ import it.polimi.ingsw.view.View;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
@@ -143,7 +144,12 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
                     case CREATE_USER_FAILED:
                         this.viewObserver.onLoginFailure();
                         break;
-
+                    case DAMAGE_LIST: {
+                        ArrayList<String> possibleDamages = new ArrayList<>();
+                        possibleDamages.addAll(args.values());
+                        this.viewObserver.willChooseDamage(possibleDamages);
+                        break;
+                    }
                     default:
                         break;
                 }

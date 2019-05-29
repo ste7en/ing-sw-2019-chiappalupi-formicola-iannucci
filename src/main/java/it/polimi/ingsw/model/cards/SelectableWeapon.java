@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.cards;
 import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.utility.Direction;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.networking.utility.CommunicationMessage;
 
 import java.util.ArrayList;
 
@@ -30,13 +31,13 @@ public class SelectableWeapon extends Weapon {
     }
 
     /**
-     * Used to ask the type of the weapon.
+     * Used to ask the message to return when using the weapon of the weapon.
      *
-     * @return a string containing the type of the weapon.
+     * @return the message type that needs to be sent.
      */
     @Override
-    public String type() {
-        return "Selectable";
+    public CommunicationMessage type() {
+        return CommunicationMessage.MODES_LIST;
     }
 
     /**

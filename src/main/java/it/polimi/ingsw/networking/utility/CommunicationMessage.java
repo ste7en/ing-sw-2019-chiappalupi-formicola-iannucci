@@ -39,13 +39,41 @@ public enum CommunicationMessage {
     USER_LOGIN,
 
     /**
-     * Weapon selection messages.
+     * Weapon selection message.
      *
      * WEAPON_TO_USE is sent by the client to the server to notify the selection of the Weapon to use in game.
+     * DAMAGE_LIST is sent from the server to the client to ask for the damage to make with the Weapon that is being used.
      *
      * Arguments: <Integer index, Weapon_name>
      */
-    WEAPON_TO_USE;
+    WEAPON_TO_USE,
+
+    /**
+     * Damage selection message.
+     *
+     * DAMAGE_LIST is sent from the server to the client to ask for the damage to make with the Weapon that is being used.
+     *
+     * Arguments: <Integer index, Damages>
+     */
+    DAMAGE_LIST,
+
+    /**
+     * Modalities selection message.
+     *
+     * MODE_LIST is sent from the server to the client to ask which modality does the player want to use.
+     *
+     * Arguments: <Integer index, Modality>
+     */
+    MODES_LIST,
+
+    /**
+     * Effects selection message.
+     *
+     * EFFECTS_LIST is sent from the server to the client to ask which effects does the player want to use.
+     *
+     * Arguments: <Integer index, Effect>
+     */
+    EFFECTS_LIST;
 
     /**
      * Log strings

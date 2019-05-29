@@ -5,8 +5,11 @@ package it.polimi.ingsw.networking;
 import it.polimi.ingsw.controller.DecksHandler;
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.cards.Damage;
+import it.polimi.ingsw.model.cards.Effect;
 import it.polimi.ingsw.model.cards.Weapon;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.User;
+import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.socket.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
@@ -43,7 +46,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
      * The game waiting room, when new users log in
      */
     private WaitingRoom waitingRoom;
-    private ArrayList<GameLogic> gamesControllers;
+    private HashMap<UUID, GameLogic> gamesControllers;
     /**
      * Collection of the connected users, useful to implement unicast
      * or to check username availability, but also users availability
@@ -140,6 +143,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         var communicationMessage = CommunicationMessage.getCommunicationMessageFrom(message);
         var connectionID = CommunicationMessage.getConnectionIDFrom(message);
         var args = CommunicationMessage.getMessageArgsFrom(message);
+        var gameID = CommunicationMessage.getMessageGameIDFrom(message);
 
         switch (communicationMessage) {
 
@@ -170,6 +174,47 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                 //TODO: - implement a deserialize method for User (??)
                 var username = args.get(User.username_key);
                 waitingRoom.addUser(new User(username));
+                break;
+            }
+
+            case WEAPON_TO_USE: {
+                String weaponSelected = args.get("Weapon Selected");
+                PlayerColor playerColor = PlayerColor.valueOf(args.get("PlayerColor"));
+                DecksHandler dh = new DecksHandler();
+                Weapon weapon = dh.drawWeapon();
+                while(!weapon.getName().equals(weaponSelected)) weapon = dh.drawWeapon();
+                CommunicationMessage weaponMessage = weapon.type();
+                Map<String, String> responseArgs = new HashMap<>();
+                String responseMessage = new String();
+                switch (weaponMessage) {
+                    case DAMAGE_LIST: {
+                        responseArgs = new HashMap<>();
+                        Player shooter = gamesControllers.get(gameID).getPlayer(playerColor);
+                        ArrayList<ArrayList<Damage>> possibleDamages = gamesControllers.get(gameID).useEffect(weapon, weapon.getEffects().get(0), shooter, null);
+                        for(ArrayList<Damage> damages : possibleDamages)
+                            responseArgs.put(Integer.toString(possibleDamages.indexOf(damages)), damages.toString());
+                        responseMessage = CommunicationMessage.from(connectionID, weaponMessage, responseArgs, gameID);
+                        sender.send(responseMessage);
+                        break;
+                    }
+                    case MODES_LIST: {
+                        int i = 0;
+                        for(Effect effect : weapon.getEffects()) {
+                            responseArgs.put(Integer.toString(i), effect.getName());
+                            i++;
+                        }
+                        responseMessage = CommunicationMessage.from(connectionID, weaponMessage, responseArgs, gameID);
+                        break;
+                    }
+                    case EFFECTS_LIST: {
+                        ArrayList<ArrayList<Integer>> effectsCombinations = weapon.effectsCombinations();
+                        for(ArrayList<Integer> combination : effectsCombinations)
+                            responseArgs.put(Integer.toString(effectsCombinations.indexOf(combination)), combination.toString());
+                        responseMessage = CommunicationMessage.from(connectionID, weaponMessage, responseArgs, gameID);
+                        break;
+                    }
+                }
+                sender.send(responseMessage);
                 break;
             }
 

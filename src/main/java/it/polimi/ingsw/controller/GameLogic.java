@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Effect;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.utility.PlayerColor;
 
 import java.util.*;
 
@@ -44,6 +45,12 @@ public class GameLogic {
     public void gameOver() { }
 
     public void addPlayer(Player player) { }
+
+    public Player getPlayer(PlayerColor playerColor) {
+        for(Player player : players)
+            if(player.getCharacter().getColor() == playerColor) return player;
+        throw new IllegalArgumentException("This player is not playing!");
+    }
 
     public ArrayList<ArrayList<Damage>> useEffect(Weapon weapon, Effect effect, Player shooter, ArrayList<Damage> forPotentiableWeapons) {
         return weapon.useEffect(shooter, effect, forPotentiableWeapons, board.getMap(), players);

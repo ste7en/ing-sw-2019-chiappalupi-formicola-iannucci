@@ -33,6 +33,7 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_USERNAME     = "Please, insert your username to log in: ";
     private static final String USER_NOT_AVAILABLE  = "The username you provided is not available. Try again, please";
     private static final String CHOOSE_WEAPON       = "Which weapon do you want to use?";
+    private static final String CHOOSE_DAMAGE       = "What damage do you want to make?";
 
     /**
      * Private constructor of the Command Line Interface
@@ -176,8 +177,8 @@ public class AdrenalineCLI extends View {
         boolean selected = false;
         String weaponSelected = "-1";
         int i = 1;
-        for(String s : weaponsAvailable) {
-            out.println(i + ") " + s);
+        for(String weapon : weaponsAvailable) {
+            out.println(i + ") " + weapon);
             i++;
         }
         var scanInput = in.nextLine();
@@ -199,13 +200,28 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChooseDamage(ArrayList<ArrayList<Damage>> possibleDamages) {
-
+    public void willChooseDamage(ArrayList<String> possibleDamages) {
+        out.println(CHOOSE_DAMAGE);
+        int i = 1;
+        for(String damage : possibleDamages) {
+            out.println(i + ") " + damage);
+            i++;
+        }
+        var scanInput = in.nextLine();
+        try {
+            int choice = Integer.parseInt(scanInput);
+            if(!(choice <= possibleDamages.size()))
+                throw new IllegalArgumentException(INCORRECT_CHOICE);
+            i = choice;
+        } catch(NumberFormatException exception) {
+            throw new IllegalArgumentException(INCORRECT_CHOICE);
+        }
+        this.didChooseDamage(i-1);
     }
 
     @Override
-    public void didChooseDamage() {
-
+    public void didChooseDamage(int index) {
+        //TODO + javadoc
     }
 
     @Override
