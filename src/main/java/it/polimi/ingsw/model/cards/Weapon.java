@@ -44,6 +44,11 @@ public abstract class Weapon {
     protected ArrayList<Effect> effects;
 
     /**
+     * String constant used in messages between client-server
+     */
+    public final static String weapon_key = "WEAPON";
+
+    /**
      * Weapon's name getter
      * @return the name of the weapon
      */

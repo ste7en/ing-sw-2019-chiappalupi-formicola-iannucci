@@ -1,16 +1,16 @@
 package it.polimi.ingsw.view.cli;
 
 import it.polimi.ingsw.model.cards.Damage;
+import it.polimi.ingsw.model.cards.Effect;
+import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
+import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.view.View;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Observable;
-import java.util.Scanner;
+import java.util.*;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
@@ -200,7 +200,12 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChooseDamage(ArrayList<String> possibleDamages) {
+    public void willChooseDamage(Map<String, String> damagesToChoose) {
+        String weapon = damagesToChoose.get(Weapon.weapon_key);
+        damagesToChoose.remove(Weapon.weapon_key);
+        String indexOfEffect = damagesToChoose.get(Effect.effect_key);
+        damagesToChoose.remove(Effect.effect_key);
+        ArrayList<String> possibleDamages = new ArrayList<>(damagesToChoose.values());
         out.println(CHOOSE_DAMAGE);
         int i = 1;
         for(String damage : possibleDamages) {
@@ -216,12 +221,11 @@ public class AdrenalineCLI extends View {
         } catch(NumberFormatException exception) {
             throw new IllegalArgumentException(INCORRECT_CHOICE);
         }
-        this.didChooseDamage(i-1);
-    }
-
-    @Override
-    public void didChooseDamage(int index) {
-        //TODO + javadoc
+        Map<String, String> damageToDo = new HashMap<>();
+        damageToDo.put(Damage.damage_key, possibleDamages.get(i-1));
+        damageToDo.put(Weapon.weapon_key, weapon);
+        damageToDo.put(Effect.effect_key, indexOfEffect);
+        this.didChooseDamage(damageToDo);
     }
 
     @Override
