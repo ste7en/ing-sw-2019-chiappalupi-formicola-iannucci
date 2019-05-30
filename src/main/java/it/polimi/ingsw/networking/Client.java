@@ -30,7 +30,6 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
     private Integer connectionPort;
     private View    viewObserver;
     private final ConnectionType connectionType;
-    private ClientRMIConnectionHandler clientRMIConnectionHandler;
 
     /**
      * Delegate class responsible to send messages
@@ -165,10 +164,6 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
      */
     public void send(String message) {
         senderDelegate.send(message);
-    }
-
-    public ClientRMIConnectionHandler getClientRMIConnectionHandler(){
-        return clientRMIConnectionHandler;
     }
 
 }
