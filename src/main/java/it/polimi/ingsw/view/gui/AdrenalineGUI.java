@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.networking.Client;
+import it.polimi.ingsw.networking.rmi.ClientRMIConnectionHandler;
 import it.polimi.ingsw.view.View;
 
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ public class AdrenalineGUI extends View {
 
     @Override
     protected void login() {
-        GUIHandler.login(this.connectionType, this.client);
     }
 
     @Override
@@ -187,8 +187,12 @@ public class AdrenalineGUI extends View {
 
     }
 
-    public Client getClient(){
+    Client getClient(){
         return this.client;
+    }
+
+    ClientRMIConnectionHandler getClientRMIConnectionHandler() {
+        return this.clientRMI;
     }
 
 }

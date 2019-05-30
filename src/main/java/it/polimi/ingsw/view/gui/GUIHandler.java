@@ -24,6 +24,9 @@ public class GUIHandler extends Application {
 
     private BorderPane root;
     private AdrenalineGUI adrenalineGUI;
+    private HBox boxButton;
+    private Button button;
+    private ConnectionType connectionType;
 
     public static void main(String[] args) {
         launch(args);
@@ -36,9 +39,9 @@ public class GUIHandler extends Application {
         primaryStage.setTitle("Button test");
         CheckBox checkBoxRMI = new CheckBox("RMI");
         CheckBox checkBoxTCP = new CheckBox("TCP");
-        Button button = new Button("Continue");
+        button = new Button("Continue");
         Label label = new Label("Select a connection");
-        button.setOnAction(e -> handleOptions(checkBoxRMI, checkBoxTCP));
+        button.setOnAction(e -> handleConnectionOptions(checkBoxRMI, checkBoxTCP));
         checkBoxRMI.setOnAction(e -> handleOptionsRMI(checkBoxRMI, checkBoxTCP));
         checkBoxTCP.setOnAction(e -> handleOptionsTCP(checkBoxRMI, checkBoxTCP));
         root = new BorderPane();
@@ -49,7 +52,7 @@ public class GUIHandler extends Application {
         HBox boxTCP = new HBox(checkBoxTCP);
         boxTCP.setAlignment(Pos.CENTER);
 
-        HBox boxButton = new HBox(button);
+        boxButton = new HBox(button);
         boxButton.setAlignment(Pos.CENTER);
         boxButton.setMargin(button, new Insets(0, 0, 50, 0));
 
@@ -68,65 +71,52 @@ public class GUIHandler extends Application {
         primaryStage.show();
     }
 
-    public void handleOptions(CheckBox rmi, CheckBox tcp){
+    public void handleConnectionOptions(CheckBox rmi, CheckBox tcp){
+        root.getChildren().clear();
+
+        Text portText = new Text("port number:  ");
+        TextField portField = new TextField();
+        HBox boxPort = new HBox(portText, portField);
+        boxPort.setAlignment(Pos.CENTER_LEFT);
+        boxPort.setMargin(portText,  new Insets(10, 0, 10, 50));
+        boxPort.setMargin(portField,  new Insets(10, 50, 10, 0));
+
         if(rmi.isSelected()){
-            root.getChildren().clear();
+            connectionType = ConnectionType.RMI;
             Text text = new Text("Please provide a port number");
             HBox boxTextRMI = new HBox(text);
             boxTextRMI.setAlignment(Pos.CENTER);
+            boxTextRMI.setMargin(text, new Insets(50, 0, 0, 0));
 
-            Text portText = new Text("port number:  ");
-            TextField portField = new TextField();
-            HBox boxPort = new HBox(portText, portField);
-            boxPort.setAlignment(Pos.CENTER_LEFT);
-
-            Button button = new Button();
-            button.setText("Continue");
-            HBox boxButton = new HBox(button);
-            boxButton.setAlignment(Pos.CENTER);
             button.setOnAction(e -> handlePortOptionsRMI(portField));
 
-
-            boxButton.setMargin(button, new Insets(0, 0, 50, 0));
-            boxTextRMI.setMargin(text, new Insets(50, 0, 0, 0));
-            boxPort.setMargin(portText,  new Insets(0, 0, 0, 50));
-            boxPort.setMargin(portField,  new Insets(0, 50, 0, 0));
             root.setCenter(boxPort);
             root.setTop(boxTextRMI);
             root.setBottom(boxButton);
         }
         if(tcp.isSelected()){
-            root.getChildren().clear();
+            connectionType = ConnectionType.SOCKET;
             VBox generalBox = new VBox();
+
             Text text = new Text("Please provide a port number and an address");
             HBox boxTextTCP = new HBox(text);
             boxTextTCP.setAlignment(Pos.CENTER);
-
-            Text portText = new Text("port number:  ");
-            TextField portField = new TextField();
-            HBox boxPort = new HBox(portText, portField);
-            boxPort.setAlignment(Pos.CENTER_LEFT);
 
             Text addressText = new Text("address:         ");
             TextField addressField = new TextField();
             HBox boxAddress = new HBox(addressText, addressField);
             boxAddress.setAlignment(Pos.CENTER_LEFT);
 
-            Button button = new Button();
-            button.setText("Continue");
-            HBox boxButton = new HBox(button);
-            boxButton.setAlignment(Pos.CENTER);
             button.setOnAction(e -> handlePortOptionsTCP(portField, addressField));
 
-            generalBox.setFillWidth(true);
             generalBox.getChildren().add(boxPort);
             generalBox.getChildren().add(boxAddress);
+            generalBox.setFillWidth(true);
             generalBox.setAlignment(Pos.CENTER);
 
-            boxButton.setMargin(button, new Insets(0, 0, 50, 0));
             boxTextTCP.setMargin(text, new Insets(50, 0, 0, 0));
-            generalBox.setMargin(boxPort, new Insets(10, 50, 10, 50));
-            generalBox.setMargin(boxAddress, new Insets(10, 50, 10, 50));
+            boxAddress.setMargin(addressText, new Insets(10, 0, 10, 50));
+            boxAddress.setMargin(addressField, new Insets(10, 50, 10, 0));
             root.setCenter(generalBox);
             root.setTop(boxTextTCP);
             root.setBottom(boxButton);
@@ -155,16 +145,17 @@ public class GUIHandler extends Application {
         Integer portNumber = Integer.parseInt(port);
         String address = addressTextfield.getText();
         this.adrenalineGUI.didChooseConnection(ConnectionType.SOCKET, portNumber, address);
-        login(ConnectionType.SOCKET, this.adrenalineGUI.getClient());
+        login();
     }
 
     public void handlePortOptionsRMI(TextField portTextfield){
         String port = portTextfield.getText();
         Integer portNumber = Integer.parseInt(port);
         adrenalineGUI.didChooseConnection(ConnectionType.RMI, portNumber, null);
+        login();
     }
 
-    public void login(ConnectionType connectionType, Client client){
+    public void login(){
         root.getChildren().clear();
         Text text = new Text("Please provide a username");
         HBox boxTextlogin = new HBox(text);
@@ -175,14 +166,8 @@ public class GUIHandler extends Application {
         HBox boxUsername = new HBox(usernameText, usernameField);
         boxUsername.setAlignment(Pos.CENTER_LEFT);
 
-        Button button = new Button();
-        button.setText("Continue");
-        HBox boxButton = new HBox(button);
-        boxButton.setAlignment(Pos.CENTER);
-        button.setOnAction(e -> handleLoginOptions(usernameField, connectionType, client));
+        button.setOnAction(e -> handleLoginOptions(usernameField));
 
-
-        boxButton.setMargin(button, new Insets(0, 0, 50, 0));
         boxTextlogin.setMargin(text, new Insets(50, 0, 0, 0));
         boxUsername.setMargin(usernameText,  new Insets(0, 0, 0, 50));
         boxUsername.setMargin(usernameField,  new Insets(0, 50, 0, 0));
@@ -191,12 +176,20 @@ public class GUIHandler extends Application {
         root.setBottom(boxButton);
     }
 
-    public void handleLoginOptions(TextField usernameTextfield, ConnectionType connectionType, Client client){
+    public void handleLoginOptions(TextField usernameTextfield){
         String username = usernameTextfield.getText();
         if(connectionType==ConnectionType.SOCKET) {
             var args = new HashMap<String, String>();
             args.put(User.username_key, username);
-            client.send(CommunicationMessage.from(0, CREATE_USER, args));
+            adrenalineGUI.getClient().send(CommunicationMessage.from(0, CREATE_USER, args));
+        }
+        if(connectionType==ConnectionType.RMI) {
+            adrenalineGUI.getClientRMIConnectionHandler().login(username);
         }
     }
+
+
+
+
+
 }

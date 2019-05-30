@@ -26,6 +26,8 @@ public abstract class View implements Observer{
 
     protected Client client;
 
+    protected ClientRMIConnectionHandler clientRMI;
+
     private PlayerColor playerColor;
 
     protected ConnectionType connectionType;
@@ -66,7 +68,7 @@ public abstract class View implements Observer{
             client.registerObserver(this);
         }
         if (type==ConnectionType.RMI){
-            ClientRMIConnectionHandler clientRMIConnectionHandler = new ClientRMIConnectionHandler(port);
+            clientRMI = new ClientRMIConnectionHandler(port);
         }
 
     }
@@ -234,32 +236,32 @@ public abstract class View implements Observer{
     public abstract void didReload();
 
     /**
-     * Ste
+     *
      */
     public abstract void willUsePowerup();
 
     /**
-     * Ste
+     *
      */
     public abstract void didUsePowerup();
 
     /**
-     * Ste
+     *
      */
     public abstract void willChoosePowerup();
 
     /**
-     * Ste
+     *
      */
     public abstract void didChoosePowerup();
 
     /**
-     * Ste
+     *
      */
     public abstract void willChoosePowerupEffect();
 
     /**
-     * Ste
+     *
      */
     public abstract void didChoosePowerupEffect();
 }

@@ -1,11 +1,13 @@
 package it.polimi.ingsw.networking.rmi;
 
+import it.polimi.ingsw.networking.Client;
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 
-public class ClientRMIConnectionHandler{
+public class ClientRMIConnectionHandler {
 
     private Registry registry;
     private RMIInterface server;
@@ -21,7 +23,6 @@ public class ClientRMIConnectionHandler{
             e.printStackTrace();
         }
         this.setUpConnection();
-        this.getMessage();
     }
 
     public void setUpConnection() {
@@ -36,9 +37,9 @@ public class ClientRMIConnectionHandler{
     }
 
 
-    public void getMessage(){
+    public void login(String username){
         try{
-            server.newUser("Daniele");
+            server.newUser(username);
         } catch (RemoteException e){
             System.err.println("Client exception: " + e.toString());
         }

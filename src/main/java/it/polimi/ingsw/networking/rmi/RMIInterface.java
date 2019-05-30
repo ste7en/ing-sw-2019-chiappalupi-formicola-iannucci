@@ -8,7 +8,4 @@ public interface RMIInterface extends Remote {
 
     void newUser(String username) throws RemoteException;
 
-    void checkUsernameAvailability(String username) throws RemoteException;
-
-
 }

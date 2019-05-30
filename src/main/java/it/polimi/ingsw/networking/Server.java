@@ -144,7 +144,6 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         var connectionID = CommunicationMessage.getConnectionIDFrom(message);
         var args = CommunicationMessage.getMessageArgsFrom(message);
         var gameID = CommunicationMessage.getMessageGameIDFrom(message);
-
         switch (communicationMessage) {
 
             case PONG:

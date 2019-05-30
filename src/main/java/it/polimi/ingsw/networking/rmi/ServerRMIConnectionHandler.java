@@ -25,12 +25,11 @@ public class ServerRMIConnectionHandler implements RMIInterface {
 
     @Override
     public void newUser(String username) throws RemoteException {
-        System.out.print(username + ", you are logged");
+        if (checkUsernameAvailability(username)==true) System.out.print(username + ", you are logged in");
     }
 
-    @Override
-    public void checkUsernameAvailability(String username) {
-
+    public boolean checkUsernameAvailability(String username) {
+        return true;
     }
 
 }
