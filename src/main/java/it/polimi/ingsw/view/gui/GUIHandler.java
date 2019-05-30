@@ -1,7 +1,9 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.player.User;
+import it.polimi.ingsw.networking.Client;
+import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
-import it.polimi.ingsw.view.gui.AdrenalineGUI;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
@@ -14,10 +16,14 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class JavaFXApp extends Application {
+import java.util.HashMap;
+
+import static it.polimi.ingsw.networking.utility.CommunicationMessage.CREATE_USER;
+
+public class GUIHandler extends Application {
 
     private BorderPane root;
-
+    private AdrenalineGUI adrenalineGUI;
 
     public static void main(String[] args) {
         launch(args);
@@ -25,6 +31,8 @@ public class JavaFXApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        this.adrenalineGUI = new AdrenalineGUI(this);
         primaryStage.setTitle("Button test");
         CheckBox checkBoxRMI = new CheckBox("RMI");
         CheckBox checkBoxTCP = new CheckBox("TCP");
@@ -62,15 +70,37 @@ public class JavaFXApp extends Application {
 
     public void handleOptions(CheckBox rmi, CheckBox tcp){
         if(rmi.isSelected()){
-            System.out.println();
+            root.getChildren().clear();
+            Text text = new Text("Please provide a port number");
+            HBox boxTextRMI = new HBox(text);
+            boxTextRMI.setAlignment(Pos.CENTER);
+
+            Text portText = new Text("port number:  ");
+            TextField portField = new TextField();
+            HBox boxPort = new HBox(portText, portField);
+            boxPort.setAlignment(Pos.CENTER_LEFT);
+
+            Button button = new Button();
+            button.setText("Continue");
+            HBox boxButton = new HBox(button);
+            boxButton.setAlignment(Pos.CENTER);
+            button.setOnAction(e -> handlePortOptionsRMI(portField));
+
+
+            boxButton.setMargin(button, new Insets(0, 0, 50, 0));
+            boxTextRMI.setMargin(text, new Insets(50, 0, 0, 0));
+            boxPort.setMargin(portText,  new Insets(0, 0, 0, 50));
+            boxPort.setMargin(portField,  new Insets(0, 50, 0, 0));
+            root.setCenter(boxPort);
+            root.setTop(boxTextRMI);
+            root.setBottom(boxButton);
         }
         if(tcp.isSelected()){
-            System.out.println("Hai selezionato TCP!");
             root.getChildren().clear();
             VBox generalBox = new VBox();
             Text text = new Text("Please provide a port number and an address");
-            HBox boxText = new HBox(text);
-            boxText.setAlignment(Pos.CENTER);
+            HBox boxTextTCP = new HBox(text);
+            boxTextTCP.setAlignment(Pos.CENTER);
 
             Text portText = new Text("port number:  ");
             TextField portField = new TextField();
@@ -86,7 +116,7 @@ public class JavaFXApp extends Application {
             button.setText("Continue");
             HBox boxButton = new HBox(button);
             boxButton.setAlignment(Pos.CENTER);
-            button.setOnAction(e -> handlePortOptions(portField, addressField));
+            button.setOnAction(e -> handlePortOptionsTCP(portField, addressField));
 
             generalBox.setFillWidth(true);
             generalBox.getChildren().add(boxPort);
@@ -94,11 +124,11 @@ public class JavaFXApp extends Application {
             generalBox.setAlignment(Pos.CENTER);
 
             boxButton.setMargin(button, new Insets(0, 0, 50, 0));
-            boxText.setMargin(text, new Insets(50, 0, 0, 0));
+            boxTextTCP.setMargin(text, new Insets(50, 0, 0, 0));
             generalBox.setMargin(boxPort, new Insets(10, 50, 10, 50));
             generalBox.setMargin(boxAddress, new Insets(10, 50, 10, 50));
             root.setCenter(generalBox);
-            root.setTop(boxText);
+            root.setTop(boxTextTCP);
             root.setBottom(boxButton);
         }
         if(!tcp.isSelected() && !rmi.isSelected()){
@@ -120,12 +150,53 @@ public class JavaFXApp extends Application {
         }
     }
 
-    public void handlePortOptions(TextField portTextfield, TextField addressTextfield){
+    public void handlePortOptionsTCP(TextField portTextfield, TextField addressTextfield){
         String port = portTextfield.getText();
         Integer portNumber = Integer.parseInt(port);
         String address = addressTextfield.getText();
-        AdrenalineGUI connectionHandler = new AdrenalineGUI();
-        connectionHandler.didChooseConnection(ConnectionType.SOCKET, portNumber, address);
+        this.adrenalineGUI.didChooseConnection(ConnectionType.SOCKET, portNumber, address);
+        login(ConnectionType.SOCKET, this.adrenalineGUI.getClient());
+    }
 
+    public void handlePortOptionsRMI(TextField portTextfield){
+        String port = portTextfield.getText();
+        Integer portNumber = Integer.parseInt(port);
+        adrenalineGUI.didChooseConnection(ConnectionType.RMI, portNumber, null);
+    }
+
+    public void login(ConnectionType connectionType, Client client){
+        root.getChildren().clear();
+        Text text = new Text("Please provide a username");
+        HBox boxTextlogin = new HBox(text);
+        boxTextlogin.setAlignment(Pos.CENTER);
+
+        Text usernameText = new Text("username: ");
+        TextField usernameField = new TextField();
+        HBox boxUsername = new HBox(usernameText, usernameField);
+        boxUsername.setAlignment(Pos.CENTER_LEFT);
+
+        Button button = new Button();
+        button.setText("Continue");
+        HBox boxButton = new HBox(button);
+        boxButton.setAlignment(Pos.CENTER);
+        button.setOnAction(e -> handleLoginOptions(usernameField, connectionType, client));
+
+
+        boxButton.setMargin(button, new Insets(0, 0, 50, 0));
+        boxTextlogin.setMargin(text, new Insets(50, 0, 0, 0));
+        boxUsername.setMargin(usernameText,  new Insets(0, 0, 0, 50));
+        boxUsername.setMargin(usernameField,  new Insets(0, 50, 0, 0));
+        root.setCenter(boxUsername);
+        root.setTop(boxTextlogin);
+        root.setBottom(boxButton);
+    }
+
+    public void handleLoginOptions(TextField usernameTextfield, ConnectionType connectionType, Client client){
+        String username = usernameTextfield.getText();
+        if(connectionType==ConnectionType.SOCKET) {
+            var args = new HashMap<String, String>();
+            args.put(User.username_key, username);
+            client.send(CommunicationMessage.from(0, CREATE_USER, args));
+        }
     }
 }

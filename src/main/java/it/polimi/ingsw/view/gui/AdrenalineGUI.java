@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.JavaFXApp;
-import it.polimi.ingsw.model.cards.Damage;
+import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.view.View;
 
 import java.util.ArrayList;
@@ -9,27 +8,20 @@ import java.util.Observable;
 
 public class AdrenalineGUI extends View {
 
-    public void launch() {
-        this.willChooseConnection();
-        //this.login();
-    }
+    private GUIHandler GUIHandler;
 
-    public static void main(String[] args) {
-        AdrenalineGUI adrenalineGUI = new AdrenalineGUI();
-        adrenalineGUI.launch();
-
+    public AdrenalineGUI(GUIHandler GUIHandler){
+        this.GUIHandler = GUIHandler;
     }
 
     @Override
     protected void willChooseConnection() {
-        JavaFXApp startConnection = new JavaFXApp();
-        String[] arguments = new String[] {"123"};
-        startConnection.main(arguments);
+
     }
 
     @Override
     protected void login() {
-
+        GUIHandler.login(this.connectionType, this.client);
     }
 
     @Override
@@ -116,12 +108,12 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChooseDamage(ArrayList<ArrayList<Damage>> possibleDamages) {
+    public void willChooseDamage(ArrayList<String> possibleDamages) {
 
     }
 
     @Override
-    public void didChooseDamage() {
+    public void didChooseDamage(int index) {
 
     }
 
@@ -193,6 +185,10 @@ public class AdrenalineGUI extends View {
     @Override
     public void update(Observable o, Object arg) {
 
+    }
+
+    public Client getClient(){
+        return this.client;
     }
 
 }

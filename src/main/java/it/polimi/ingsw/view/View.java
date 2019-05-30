@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.Client;
+import it.polimi.ingsw.networking.rmi.ClientRMIConnectionHandler;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -26,6 +27,8 @@ public abstract class View implements Observer{
     protected Client client;
 
     private PlayerColor playerColor;
+
+    protected ConnectionType connectionType;
 
     /**
      * Log strings
@@ -56,9 +59,16 @@ public abstract class View implements Observer{
      * Shouldn't be reimplemented by a subclass.
      */
     public void didChooseConnection(ConnectionType type, int port, String host) {
+        connectionType = type;
         AdrenalineLogger.info(DID_ASK_CONNECTION + type + " " + host + ":" + port);
-        this.client = new Client(type, host, port);
-        client.registerObserver(this);
+        if (type==ConnectionType.SOCKET){
+            this.client = new Client(type, host, port);
+            client.registerObserver(this);
+        }
+        if (type==ConnectionType.RMI){
+            ClientRMIConnectionHandler clientRMIConnectionHandler = new ClientRMIConnectionHandler(port);
+        }
+
     }
 
     /**
@@ -224,32 +234,32 @@ public abstract class View implements Observer{
     public abstract void didReload();
 
     /**
-     * Ste ft. Ele
+     * Ste
      */
     public abstract void willUsePowerup();
 
     /**
-     * Ste ft. Ele
+     * Ste
      */
     public abstract void didUsePowerup();
 
     /**
-     * Ste ft. Ele
+     * Ste
      */
     public abstract void willChoosePowerup();
 
     /**
-     * Ste ft. Ele
+     * Ste
      */
     public abstract void didChoosePowerup();
 
     /**
-     * Ste ft. Ele
+     * Ste
      */
     public abstract void willChoosePowerupEffect();
 
     /**
-     * Ste ft. Ele
+     * Ste
      */
     public abstract void didChoosePowerupEffect();
 }

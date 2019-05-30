@@ -9,22 +9,24 @@ public class ClientRMIConnectionHandler{
 
     private Registry registry;
     private RMIInterface server;
+    int port;
 
-    public static void main( String[] s){
+    public ClientRMIConnectionHandler(int port){
         try {
-            ServerRMIConnectionHandler server = new ServerRMIConnectionHandler(1080);
+            this.port = port;
+            ServerRMIConnectionHandler server = new ServerRMIConnectionHandler(port);
             server.launch();
         } catch (RemoteException e){
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
         }
-        ClientRMIConnectionHandler connection = new ClientRMIConnectionHandler();
-        connection.getMessage();
+        this.setUpConnection();
+        this.getMessage();
     }
 
-    public ClientRMIConnectionHandler() {
+    public void setUpConnection() {
         try{
-            registry = LocateRegistry.getRegistry(1080);
+            registry = LocateRegistry.getRegistry(port);
             System.out.println(registry);
             server = (RMIInterface) registry.lookup("rmiInterface");
         } catch (Exception e) {
