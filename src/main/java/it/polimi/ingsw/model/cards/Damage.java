@@ -10,6 +10,11 @@ public class Damage implements Comparable<Damage> {
     private int damage;
     private int marks;
 
+    /**
+     * String constant used in messages between client-server
+     */
+    public final static String damage_key = "DAMAGE";
+
     public Damage() {
         target = null;
         position = null;
@@ -17,34 +22,66 @@ public class Damage implements Comparable<Damage> {
         marks = 0;
     }
 
+    /**
+     * Target getter.
+     * @return the Player target of the Damage.
+     */
     public Player getTarget() {
         return target;
     }
 
+    /**
+     * Sets the target of the Damage.
+     * @param target it's the player to set as target.
+     */
     public void setTarget(Player target) {
         this.target = target;
     }
 
+    /**
+     * Position getter.
+     * @return the Cell where the target has to be moved; null if no movement has to be done.
+     */
     public Cell getPosition() {
         return position;
     }
 
+    /**
+     * Sets the position where the target has to be moved.
+     * @param position it's the cell to be set as position.
+     */
     public void setPosition(Cell position) {
         this.position = position;
     }
 
+    /**
+     * Damage getter.
+     * @return the damage that has to be applied to the target.
+     */
     public int getDamage() {
         return damage;
     }
 
+    /**
+     * Sets the damage that has to be applied to the target.
+     * @param damage it's an inteher containing the damage to set.
+     */
     public void setDamage(int damage) {
         this.damage = damage;
     }
 
+    /**
+     * Marks getter.
+     * @return the marks that has to be applied to the target.
+     */
     public int getMarks() {
         return marks;
     }
 
+    /**
+     * Sets the marks that has to be applied to the target.
+     * @param marks it's an integer containing the marks to set.
+     */
     public void setMarks(int marks) {
         this.marks = marks;
     }

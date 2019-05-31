@@ -30,6 +30,11 @@ public class Effect {
      */
     private HashMap<EffectProperty, Integer> properties;
 
+    /**
+     * String constant used in messages between client-server
+     */
+    public final static String effect_key = "EFFECT";
+
 
     public String getName() {
         return name;

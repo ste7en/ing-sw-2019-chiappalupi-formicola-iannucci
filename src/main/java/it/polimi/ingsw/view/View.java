@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.cards.Damage;
+import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.Client;
@@ -9,9 +10,7 @@ import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Observer;
+import java.util.*;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
@@ -25,11 +24,9 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 public abstract class View implements Observer{
 
     protected Client client;
-
+    protected UUID gameID;
+    protected PlayerColor playerColor;
     protected ClientRMIConnectionHandler clientRMI;
-
-    private PlayerColor playerColor;
-
     protected ConnectionType connectionType;
 
     /**
@@ -42,6 +39,7 @@ public abstract class View implements Observer{
     protected static String JOIN_WAITING_ROOM     = "Joining the waiting room...";
     protected static String DID_JOIN_WAITING_ROOM = "";
     protected static String DID_CHOOSE_WEAPON     = "Weapon chosen: ";
+    protected static String DID_CHOOSE_DAMAGE     = "Damage chosen.";
 
 
     public abstract void onViewUpdate();
@@ -182,23 +180,29 @@ public abstract class View implements Observer{
      */
     public void didChooseWeapon(String weaponSelected) {
         AdrenalineLogger.info(DID_CHOOSE_WEAPON + weaponSelected);
-        var args = new HashMap<String, String>();
-        args.put("Weapon Selected", weaponSelected);
-        args.put("Player Color", playerColor.toString());
-        this.client.send(CommunicationMessage.from(0, WEAPON_TO_USE, args));
+        Map args = new HashMap<String, String>();
+        args.put(Weapon.weapon_key, weaponSelected);
+        args.put(PlayerColor.playerColor_key, playerColor.toString());
+        this.client.send(CommunicationMessage.from(0, WEAPON_TO_USE, args, gameID));
     }
 
     /**
      * Public method implemented by subclasses when choosing the damages to make.
      *
-     * @param possibleDamages it's a list containing all of the possible damages that can be made
+     * @param damagesToChoose it's a map containing all of the possible damages that can be made and the weapon used to make them
      */
-    public abstract void willChooseDamage(ArrayList<String> possibleDamages);
+    public abstract void willChooseDamage(Map<String, String> damagesToChoose);
 
     /**
-     * Dani
+     * Called when the damages to be done have been chosen by the player.
+     *
+     * @param damageToDo it's a Map<String, String> containing the damages to make and some other information needed to apply them.
      */
-    public abstract void didChooseDamage(int index);
+    public void didChooseDamage(Map<String, String> damageToDo) {
+        AdrenalineLogger.info(DID_CHOOSE_DAMAGE);
+        damageToDo.put(PlayerColor.playerColor_key, playerColor.toString());
+        this.client.send(CommunicationMessage.from(0, DAMAGE_TO_MAKE, damageToDo, gameID));
+    }
 
     /**
      * Dani
@@ -236,32 +240,32 @@ public abstract class View implements Observer{
     public abstract void didReload();
 
     /**
-     *
+     * Ste
      */
     public abstract void willUsePowerup();
 
     /**
-     *
+     * Ste
      */
     public abstract void didUsePowerup();
 
     /**
-     *
+     * Ste
      */
     public abstract void willChoosePowerup();
 
     /**
-     *
+     * Ste
      */
     public abstract void didChoosePowerup();
 
     /**
-     *
+     * Ste
      */
     public abstract void willChoosePowerupEffect();
 
     /**
-     *
+     * Ste
      */
     public abstract void didChoosePowerupEffect();
 }

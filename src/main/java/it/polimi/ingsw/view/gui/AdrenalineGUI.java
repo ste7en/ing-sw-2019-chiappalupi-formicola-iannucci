@@ -5,6 +5,8 @@ import it.polimi.ingsw.networking.rmi.ClientRMIConnectionHandler;
 import it.polimi.ingsw.view.View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 
 public class AdrenalineGUI extends View {
@@ -108,12 +110,12 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChooseDamage(ArrayList<String> possibleDamages) {
+    public void willChooseDamage(Map<String, String> damagesToChoose) {
 
     }
 
     @Override
-    public void didChooseDamage(int index) {
+    public void didChooseDamage(Map<String, String> damageToDo) {
 
     }
 

@@ -42,9 +42,8 @@ public enum CommunicationMessage {
      * Weapon selection message.
      *
      * WEAPON_TO_USE is sent by the client to the server to notify the selection of the Weapon to use in game.
-     * DAMAGE_LIST is sent from the server to the client to ask for the damage to make with the Weapon that is being used.
      *
-     * Arguments: <Integer index, Weapon_name>
+     * Arguments: <Weapon.weapon_key, Weapon_name>, <PlayerColor.playerColor_key, Player_color>
      */
     WEAPON_TO_USE,
 
@@ -53,9 +52,18 @@ public enum CommunicationMessage {
      *
      * DAMAGE_LIST is sent from the server to the client to ask for the damage to make with the Weapon that is being used.
      *
-     * Arguments: <Integer index, Damages>
+     * Arguments: <Integer index, Damages>, <Weapon.weapon_key, Weapon_name>, <Effect.effect_key, indexOf_effect>
      */
     DAMAGE_LIST,
+
+    /**
+     * Damage apply message.
+     *
+     * DAMAGE_TO_MAKE is sent from the client to the server to notify the selection of the damage that has to be applied to the other players.
+     *
+     * Arguments: <Damage.damage_key, damage>, <Weapon.weapon_key, Weapon_name>, <Effect.effect_key, indexOf_effect>, <PlayerColor.playerColor_key, playerColor>
+     */
+    DAMAGE_TO_MAKE,
 
     /**
      * Modalities selection message.

@@ -177,18 +177,18 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
             }
 
             case WEAPON_TO_USE: {
-                String weaponSelected = args.get("Weapon Selected");
-                PlayerColor playerColor = PlayerColor.valueOf(args.get("PlayerColor"));
-                DecksHandler dh = new DecksHandler();
-                Weapon weapon = dh.drawWeapon();
-                while(!weapon.getName().equals(weaponSelected)) weapon = dh.drawWeapon();
+                String weaponSelected = args.get(Weapon.weapon_key);
+                PlayerColor playerColor = PlayerColor.valueOf(args.get(PlayerColor.playerColor_key));
+                Weapon weapon = lookForWeapon(weaponSelected);
                 CommunicationMessage weaponMessage = weapon.type();
                 Map<String, String> responseArgs = new HashMap<>();
+                responseArgs.put(Weapon.weapon_key, weaponSelected);
                 String responseMessage = new String();
 
                 switch (weaponMessage) {
                     case DAMAGE_LIST: {
                         responseArgs = new HashMap<>();
+                        responseArgs.put(Effect.effect_key, "0");
                         Player shooter = gamesControllers.get(gameID).getPlayer(playerColor);
                         ArrayList<ArrayList<Damage>> possibleDamages = gamesControllers.get(gameID).useEffect(weapon, weapon.getEffects().get(0), shooter, null);
                         for(ArrayList<Damage> damages : possibleDamages)
@@ -218,8 +218,32 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                 break;
             }
 
+            case DAMAGE_TO_MAKE: {
+                String damage = args.get(Damage.damage_key);
+                String weapon = args.get(Weapon.weapon_key);
+                Weapon weaponToUse = lookForWeapon(weapon);
+                PlayerColor playerColor = PlayerColor.valueOf(args.get(PlayerColor.playerColor_key));
+                Player shooter = gamesControllers.get(gameID).getPlayer(playerColor);
+                int indexOfEffect = Integer.parseInt(args.get(Effect.effect_key));
+                ArrayList<ArrayList<Damage>> possibleDamages = gamesControllers.get(gameID).useEffect(weaponToUse, weaponToUse.getEffects().get(indexOfEffect), shooter, null);
+                ArrayList<Damage> damageToMake = new ArrayList<>();
+                for(ArrayList<Damage> damages : possibleDamages)
+                    if(damages.toString().equals(damage)) damageToMake = damages;
+                if(damageToMake.isEmpty()) throw new IllegalArgumentException("This damage doesn't exist!");
+                for(Damage d : damageToMake)
+                    gamesControllers.get(gameID).applyDamage(d, playerColor);
+                break;
+            }
+
             default:
                 break;
         }
+    }
+
+    private Weapon lookForWeapon(String weapon) {
+        DecksHandler deck = new DecksHandler();
+        Weapon weaponToUse = deck.drawWeapon();
+        while(!weaponToUse.getName().equals(weapon)) weaponToUse = deck.drawWeapon();
+        return weaponToUse;
     }
 }

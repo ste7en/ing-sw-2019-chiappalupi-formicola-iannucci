@@ -5,5 +5,10 @@ public enum PlayerColor {
     green,
     purple,
     grey,
-    blue
+    blue;
+
+    /**
+     * String constant used in messages between client-server
+     */
+    public final static String playerColor_key = "PLAYER_COLOR";
 }
