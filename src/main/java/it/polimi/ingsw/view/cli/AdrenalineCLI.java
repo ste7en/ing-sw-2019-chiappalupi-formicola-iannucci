@@ -34,6 +34,7 @@ public class AdrenalineCLI extends View {
     private static final String USER_NOT_AVAILABLE  = "The username you provided is not available. Try again, please";
     private static final String CHOOSE_WEAPON       = "Which weapon do you want to use?";
     private static final String CHOOSE_DAMAGE       = "What damage do you want to make?";
+    private static final String CHOOSE_MODALITY     = "Which modality do you want to use?";
 
     /**
      * Private constructor of the Command Line Interface
@@ -220,7 +221,7 @@ public class AdrenalineCLI extends View {
         var scanInput = in.nextLine();
         try {
             int choice = Integer.parseInt(scanInput);
-            if(!(choice <= possibleDamages.size()))
+            if(choice > possibleDamages.size())
                 throw new IllegalArgumentException(INCORRECT_CHOICE);
             i = choice;
         } catch(NumberFormatException exception) {
@@ -234,13 +235,34 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChooseMode() {
-
-    }
-
-    @Override
-    public void didChooseMode() {
-
+    public void willChooseMode(Map<String, String> modalitiesToChoose) {
+        String weapon = modalitiesToChoose.get(Weapon.weapon_key);
+        modalitiesToChoose.remove(Weapon.weapon_key);
+        out.println(CHOOSE_MODALITY);
+        ArrayList<String> modalities = new ArrayList<>(modalitiesToChoose.values());
+        for(int i = 1; i <= modalities.size(); i++)
+            out.println(i + ") " + modalities.get(i-1));
+        String modalitySelected = null;
+        boolean selected = false;
+        var scanInput = in.nextLine();
+        try {
+            int choice = Integer.parseInt(scanInput);
+            if(choice <= modalities.size()) {
+                modalitySelected = modalities.get(choice);
+                selected = true;
+            }
+        } catch (NumberFormatException exception) {
+            for(String s : modalitiesToChoose.values())
+                if(scanInput.equalsIgnoreCase(s)) {
+                    modalitySelected = s;
+                    selected = true;
+                }
+        }
+        if(!selected) throw new IllegalArgumentException(INCORRECT_CHOICE);
+        Map<String, String> modalityChosen = new HashMap<>();
+        modalityChosen.put(Weapon.weapon_key, weapon);
+        modalityChosen.put(Effect.effect_key, modalitySelected);
+        this.didChooseMode(modalityChosen);
     }
 
     @Override

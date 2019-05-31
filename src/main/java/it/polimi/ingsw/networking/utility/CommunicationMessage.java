@@ -81,7 +81,16 @@ public enum CommunicationMessage {
      *
      * Arguments: <Integer index, Effect>
      */
-    EFFECTS_LIST;
+    EFFECTS_LIST,
+
+    /**
+     * Effect selection message.
+     *
+     * EFFECT is sent by the client to the server to notify the selection of the Effect to use in game.
+     *
+     * Arguments: <Effect.effect_key, Effect_name>, <PlayerColor.playerColor_key, Player_color>, <Weapon.weapon_key, Weapon_name>
+     */
+    EFFECT_TO_USE;
 
     /**
      * Log strings

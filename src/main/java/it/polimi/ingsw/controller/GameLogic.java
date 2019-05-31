@@ -15,6 +15,7 @@ public class GameLogic {
     private Board board;
     private boolean finalFrenzy;
     private UUID gameID;
+    private ArrayList<Damage> forPotentiableWeapon;
 
     public UUID getGameID() {
         return gameID;
@@ -45,6 +46,33 @@ public class GameLogic {
     public void gameOver() { }
 
     public void addPlayer(Player player) { }
+
+    /**
+     * Getter of the list of damage that has already been done with the weapon that is being used.
+     *
+     * @return an array list containing the damage.
+     */
+    public ArrayList<Damage> getForPotentiableWeapon() {
+        return forPotentiableWeapon;
+    }
+
+    /**
+     * Adds damages to the list of damages that is being done using a potentiable weapon.
+     *
+     * @param damage it's the damage that is being done.
+     */
+    public void appendPotentiableWeapon(ArrayList<Damage> damage) {
+        if(forPotentiableWeapon == null)
+            forPotentiableWeapon = new ArrayList<>(damage);
+        else forPotentiableWeapon.addAll(damage);
+    }
+
+    /**
+     * Clears the damage that has been done with a potentiable weapon after that it has been used.
+     */
+    public void wipePotentiableWeapon() {
+        if(forPotentiableWeapon != null || forPotentiableWeapon.size() != 0) forPotentiableWeapon.clear();
+    }
 
     /**
      * This method is used to get a Player from its color.

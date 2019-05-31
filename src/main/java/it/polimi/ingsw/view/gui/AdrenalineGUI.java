@@ -120,12 +120,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChooseMode() {
-
-    }
-
-    @Override
-    public void didChooseMode() {
+    public void willChooseMode(Map<String, String> modalitiesToChoose) {
 
     }
 

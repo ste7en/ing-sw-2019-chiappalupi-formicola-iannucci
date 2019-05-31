@@ -147,10 +147,12 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
                     case CREATE_USER_FAILED:
                         this.viewObserver.onLoginFailure();
                         break;
-                    case DAMAGE_LIST: {
+                    case DAMAGE_LIST:
                         this.viewObserver.willChooseDamage(args);
                         break;
-                    }
+                    case MODES_LIST:
+                        this.viewObserver.willChooseMode(args);
+                        break;
                     default:
                         break;
                 }

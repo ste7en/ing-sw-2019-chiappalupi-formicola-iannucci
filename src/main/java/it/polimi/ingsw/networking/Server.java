@@ -187,7 +187,6 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
 
                 switch (weaponMessage) {
                     case DAMAGE_LIST: {
-                        responseArgs = new HashMap<>();
                         responseArgs.put(Effect.effect_key, "0");
                         Player shooter = gamesControllers.get(gameID).getPlayer(playerColor);
                         ArrayList<ArrayList<Damage>> possibleDamages = gamesControllers.get(gameID).useEffect(weapon, weapon.getEffects().get(0), shooter, null);
@@ -213,6 +212,8 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                         responseMessage = CommunicationMessage.from(connectionID, weaponMessage, responseArgs, gameID);
                         break;
                     }
+                    default:
+                        break;
                 }
                 sender.send(responseMessage);
                 break;
@@ -225,13 +226,45 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                 PlayerColor playerColor = PlayerColor.valueOf(args.get(PlayerColor.playerColor_key));
                 Player shooter = gamesControllers.get(gameID).getPlayer(playerColor);
                 int indexOfEffect = Integer.parseInt(args.get(Effect.effect_key));
-                ArrayList<ArrayList<Damage>> possibleDamages = gamesControllers.get(gameID).useEffect(weaponToUse, weaponToUse.getEffects().get(indexOfEffect), shooter, null);
+                boolean potentiable = false;
+                if(weaponToUse.type() == EFFECTS_LIST) potentiable = true;
+                ArrayList<ArrayList<Damage>> possibleDamages;
+                if(!potentiable) possibleDamages = gamesControllers.get(gameID).useEffect(weaponToUse, weaponToUse.getEffects().get(indexOfEffect), shooter, null);
+                else {
+                    ArrayList<Damage> forPotentiableWeapon = gamesControllers.get(gameID).getForPotentiableWeapon();
+                    if(forPotentiableWeapon.isEmpty()) forPotentiableWeapon = null;
+                    possibleDamages = gamesControllers.get(gameID).useEffect(weaponToUse, weaponToUse.getEffects().get(indexOfEffect), shooter, forPotentiableWeapon);
+                }
                 ArrayList<Damage> damageToMake = new ArrayList<>();
                 for(ArrayList<Damage> damages : possibleDamages)
                     if(damages.toString().equals(damage)) damageToMake = damages;
                 if(damageToMake.isEmpty()) throw new IllegalArgumentException("This damage doesn't exist!");
                 for(Damage d : damageToMake)
                     gamesControllers.get(gameID).applyDamage(d, playerColor);
+                break;
+            }
+
+            case EFFECT_TO_USE: {
+                Map<String, String> responseArgs = new HashMap<>();
+                String effectSelected = args.get(Effect.effect_key);
+                String weaponSelected = args.get(Weapon.weapon_key);
+                responseArgs.put(Weapon.weapon_key, weaponSelected);
+                PlayerColor playerColor = PlayerColor.valueOf(args.get(PlayerColor.playerColor_key));
+                Weapon weapon = lookForWeapon(weaponSelected);
+                Player shooter = gamesControllers.get(gameID).getPlayer(playerColor);
+                Effect effect = null;
+                for(Effect e : weapon.getEffects())
+                    if(e.getName().equals(effectSelected)) effect = e;
+                int indexOfEffect = weapon.getEffects().indexOf(effect);
+                responseArgs.put(Effect.effect_key, Integer.toString(indexOfEffect));
+                ArrayList<Damage> forPotentiableWeapon = gamesControllers.get(gameID).getForPotentiableWeapon();
+                if(forPotentiableWeapon.isEmpty()) forPotentiableWeapon = null;
+                ArrayList<ArrayList<Damage>> possibleDamages = gamesControllers.get(gameID).useEffect(weapon, effect, shooter, forPotentiableWeapon);
+                String responseMessage;
+                for(ArrayList<Damage> damages : possibleDamages)
+                    responseArgs.put(Integer.toString(possibleDamages.indexOf(damages)), damages.toString());
+                responseMessage = CommunicationMessage.from(connectionID, DAMAGE_LIST, responseArgs, gameID);
+                sender.send(responseMessage);
                 break;
             }
 

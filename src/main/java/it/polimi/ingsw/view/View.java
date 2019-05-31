@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.cards.Damage;
+import it.polimi.ingsw.model.cards.Effect;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
@@ -40,6 +41,7 @@ public abstract class View implements Observer{
     protected static String DID_JOIN_WAITING_ROOM = "";
     protected static String DID_CHOOSE_WEAPON     = "Weapon chosen: ";
     protected static String DID_CHOOSE_DAMAGE     = "Damage chosen.";
+    protected static String DID_CHOOSE_MODALITY   = "Modality chosen: ";
 
 
     public abstract void onViewUpdate();
@@ -189,7 +191,7 @@ public abstract class View implements Observer{
     /**
      * Public method implemented by subclasses when choosing the damages to make.
      *
-     * @param damagesToChoose it's a map containing all of the possible damages that can be made and the weapon used to make them
+     * @param damagesToChoose it's a map containing all of the possible damages that can be made and the weapon used to make them.
      */
     public abstract void willChooseDamage(Map<String, String> damagesToChoose);
 
@@ -205,14 +207,22 @@ public abstract class View implements Observer{
     }
 
     /**
-     * Dani
+     * Public method implemented by subclasses when choosing which modality of a selectable weapon does the player want to use.
+     *
+     * @param modalitiesToChoose it's a map containing the modalities to choose and the weapon that is being used.
      */
-    public abstract void willChooseMode();
+    public abstract void willChooseMode(Map<String, String> modalitiesToChoose);
 
     /**
-     * Dani
+     * Called when the modality has been chosen by the player.
+     *
+     * @param modalityChosen it's a map containing the modality chosen and the weapon that is being used.
      */
-    public abstract void didChooseMode();
+    public void didChooseMode(Map<String, String> modalityChosen) {
+        AdrenalineLogger.info(DID_CHOOSE_MODALITY + modalityChosen.get(Effect.effect_key));
+        modalityChosen.put(PlayerColor.playerColor_key, playerColor.toString());
+        this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, modalityChosen, gameID));
+    }
 
     /**
      * Dani
