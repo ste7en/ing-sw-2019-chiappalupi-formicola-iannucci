@@ -69,8 +69,8 @@ public abstract class View implements Observer{
         }
         if (type==ConnectionType.RMI){
             clientRMI = new ClientRMIConnectionHandler(port);
+            clientRMI.registerObserver(this);
         }
-
     }
 
     /**
