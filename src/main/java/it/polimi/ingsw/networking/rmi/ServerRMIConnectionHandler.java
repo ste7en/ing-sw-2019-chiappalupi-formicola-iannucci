@@ -2,8 +2,6 @@ package it.polimi.ingsw.networking.rmi;
 
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.utility.AmmoColor;
-import it.polimi.ingsw.networking.ConnectionHandlerSenderDelegate;
-import jdk.jfr.Percentage;
 
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
@@ -96,7 +94,7 @@ public class ServerRMIConnectionHandler implements RMIInterface {
 
     @Override
     public ArrayList<String> getAvailableWeapons() throws RemoteException{
-
+        return null;
     }
 
     @Override
@@ -114,24 +112,54 @@ public class ServerRMIConnectionHandler implements RMIInterface {
 
     }
 
-    Map<String, String> getAvailableModes() throws RemoteException;
+    @Override
+    public Map<String, String> getAvailableModes() throws RemoteException{
+        return null;
+    }
 
-    void chooseMode(Map<String, String> modalityChosen) throws RemoteException;
+    @Override
+    public void chooseMode(Map<String, String> modalityChosen) throws RemoteException{
 
-    void getAvailableEffect() throws RemoteException;
+    }
 
-    void chooseEffects() throws RemoteException;
+    @Override
+    public void getAvailableEffect() throws RemoteException{
 
-    void getAvailablePowerups() throws RemoteException;
+    }
 
-    void getAvailablePowerupsEffects() throws RemoteException;
+    @Override
+    public void chooseEffects() throws RemoteException{
 
-    void choosePowerup() throws RemoteException;
+    }
 
-    void choosePowerupEffects() throws RemoteException;
+    @Override
+    public void getAvailablePowerups() throws RemoteException{
 
-    ArrayList<String> canReload() throws RemoteException;
+    }
 
-    void reload(String weaponSelected) throws RemoteException;
+    @Override
+    public void getAvailablePowerupsEffects() throws RemoteException{
+
+    }
+
+    @Override
+    public void choosePowerup() throws RemoteException{
+
+    }
+
+    @Override
+    public void choosePowerupEffects() throws RemoteException{
+
+    }
+
+    @Override
+    public ArrayList<String> canReload() throws RemoteException{
+        return null;
+    }
+
+    @Override
+    public void reload(String weaponSelected) throws RemoteException{
+
+    }
 
 }
