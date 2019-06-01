@@ -5,7 +5,6 @@ import it.polimi.ingsw.networking.rmi.ClientRMIConnectionHandler;
 import it.polimi.ingsw.view.View;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 
