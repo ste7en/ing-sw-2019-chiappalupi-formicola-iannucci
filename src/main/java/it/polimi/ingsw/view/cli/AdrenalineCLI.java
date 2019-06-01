@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.cli;
 
 import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Effect;
+import it.polimi.ingsw.model.cards.PotentiableWeapon;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
@@ -35,6 +36,7 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_WEAPON       = "Which weapon do you want to use?";
     private static final String CHOOSE_DAMAGE       = "What damage do you want to make?";
     private static final String CHOOSE_MODALITY     = "Which modality do you want to use?";
+    private static final String CHOOSE_EFFECT       = "What effect/s do you want to use?";
 
     /**
      * Private constructor of the Command Line Interface
@@ -228,6 +230,10 @@ public class AdrenalineCLI extends View {
             throw new IllegalArgumentException(INCORRECT_CHOICE);
         }
         Map<String, String> damageToDo = new HashMap<>();
+        if(damagesToChoose.containsKey(PotentiableWeapon.forPotentiableWeapon_key)) {
+            String forPotentiableWeapon = damagesToChoose.get(PotentiableWeapon.forPotentiableWeapon_key);
+            damageToDo.put(PotentiableWeapon.forPotentiableWeapon_key, forPotentiableWeapon);
+        }
         damageToDo.put(Damage.damage_key, possibleDamages.get(i-1));
         damageToDo.put(Weapon.weapon_key, weapon);
         damageToDo.put(Effect.effect_key, indexOfEffect);
@@ -239,40 +245,61 @@ public class AdrenalineCLI extends View {
         String weapon = modalitiesToChoose.get(Weapon.weapon_key);
         modalitiesToChoose.remove(Weapon.weapon_key);
         out.println(CHOOSE_MODALITY);
-        ArrayList<String> modalities = new ArrayList<>(modalitiesToChoose.values());
-        for(int i = 1; i <= modalities.size(); i++)
-            out.println(i + ") " + modalities.get(i-1));
-        String modalitySelected = null;
-        boolean selected = false;
-        var scanInput = in.nextLine();
-        try {
-            int choice = Integer.parseInt(scanInput);
-            if(choice <= modalities.size()) {
-                modalitySelected = modalities.get(choice);
-                selected = true;
-            }
-        } catch (NumberFormatException exception) {
-            for(String s : modalitiesToChoose.values())
-                if(scanInput.equalsIgnoreCase(s)) {
-                    modalitySelected = s;
-                    selected = true;
-                }
-        }
-        if(!selected) throw new IllegalArgumentException(INCORRECT_CHOICE);
+        String modalitySelected = decisionHandler(modalitiesToChoose);
         Map<String, String> modalityChosen = new HashMap<>();
         modalityChosen.put(Weapon.weapon_key, weapon);
         modalityChosen.put(Effect.effect_key, modalitySelected);
         this.didChooseMode(modalityChosen);
     }
 
-    @Override
-    public void willChooseEffects() {
-
+    /**
+     * Private method that handles the decision process, added to avoid code repetitions.
+     * @param args it's the map containing the choices.
+     * @return the choice.
+     * @throws IllegalArgumentException if an incorrect choice is made.
+     */
+    private String decisionHandler(Map<String, String> args) {
+        ArrayList<String> options = new ArrayList<>(args.values());
+        for(int i = 1; i <= options.size(); i++)
+            out.println(i + ") " + options.get(i-1));
+        for(int i = 1; i <= options.size(); i++)
+            out.println(i + ") " + options.get(i-1));
+        String optionSelected = null;
+        boolean selected = false;
+        var scanInput = in.nextLine();
+        try {
+            int choice = Integer.parseInt(scanInput);
+            if(choice <= options.size()) {
+                optionSelected = options.get(choice);
+                selected = true;
+            }
+        } catch (NumberFormatException exception) {
+            for(String s : args.values())
+                if(scanInput.equalsIgnoreCase(s)) {
+                    optionSelected = s;
+                    selected = true;
+                }
+        }
+        if(!selected) throw new IllegalArgumentException(INCORRECT_CHOICE);
+        return optionSelected;
     }
 
     @Override
-    public void didChooseEffects() {
-
+    public void willChooseEffects(Map<String, String> effectsToChoose) {
+        Map<String, String> effectsChosen = new HashMap<>();
+        String weapon = effectsToChoose.get(Weapon.weapon_key);
+        effectsToChoose.remove(Weapon.weapon_key);
+        out.println(CHOOSE_EFFECT);
+        String effectsSelected = decisionHandler(effectsToChoose);
+        effectsChosen.put(Weapon.weapon_key, weapon);
+        String box = effectsSelected.replaceAll("\\[|\\]", "");
+        List<String> effects = List.of(box.split(", "));
+        Map<String, List<String>> args = new HashMap<>();
+        List<String> weaponToUse = new ArrayList<>();
+        weaponToUse.add(weapon);
+        args.put(Weapon.weapon_key, weaponToUse);
+        args.put(Effect.effect_key, effects); //[1, 2, 3]
+        this.didChooseEffects(args);
     }
 
     @Override

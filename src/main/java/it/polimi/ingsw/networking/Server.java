@@ -4,9 +4,7 @@ package it.polimi.ingsw.networking;
 //import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
 import it.polimi.ingsw.controller.DecksHandler;
 import it.polimi.ingsw.controller.GameLogic;
-import it.polimi.ingsw.model.cards.Damage;
-import it.polimi.ingsw.model.cards.Effect;
-import it.polimi.ingsw.model.cards.Weapon;
+import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
@@ -46,6 +44,9 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
      * The game waiting room, when new users log in
      */
     private WaitingRoom waitingRoom;
+    /**
+     * Instances of the game that are running, connected with their unique identifier.
+     */
     private HashMap<UUID, GameLogic> gamesControllers;
     /**
      * Collection of the connected users, useful to implement unicast
@@ -180,7 +181,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                 String weaponSelected = args.get(Weapon.weapon_key);
                 PlayerColor playerColor = PlayerColor.valueOf(args.get(PlayerColor.playerColor_key));
                 Weapon weapon = lookForWeapon(weaponSelected);
-                CommunicationMessage weaponMessage = weapon.type();
+                CommunicationMessage weaponMessage = weapon.communicationMessageGenerator();
                 Map<String, String> responseArgs = new HashMap<>();
                 responseArgs.put(Weapon.weapon_key, weaponSelected);
                 String responseMessage = new String();
@@ -227,20 +228,34 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                 Player shooter = gamesControllers.get(gameID).getPlayer(playerColor);
                 int indexOfEffect = Integer.parseInt(args.get(Effect.effect_key));
                 boolean potentiable = false;
-                if(weaponToUse.type() == EFFECTS_LIST) potentiable = true;
+                if(weaponToUse.communicationMessageGenerator() == EFFECTS_LIST) potentiable = true;
                 ArrayList<ArrayList<Damage>> possibleDamages;
+                boolean toApply = true;
                 if(!potentiable) possibleDamages = gamesControllers.get(gameID).useEffect(weaponToUse, weaponToUse.getEffects().get(indexOfEffect), shooter, null);
                 else {
+                    toApply = false;
+                    Effect effect = weaponToUse.getEffects().get(indexOfEffect);
                     ArrayList<Damage> forPotentiableWeapon = gamesControllers.get(gameID).getForPotentiableWeapon();
-                    if(forPotentiableWeapon.isEmpty()) forPotentiableWeapon = null;
-                    possibleDamages = gamesControllers.get(gameID).useEffect(weaponToUse, weaponToUse.getEffects().get(indexOfEffect), shooter, forPotentiableWeapon);
+                    if(forPotentiableWeapon.isEmpty() || effect.getProperties().containsKey(EffectProperty.MoveMe)) forPotentiableWeapon = null;
+                    if(effect.getProperties().containsKey(EffectProperty.MoveMe)) toApply = true;
+                    possibleDamages = gamesControllers.get(gameID).useEffect(weaponToUse, effect, shooter, forPotentiableWeapon);
                 }
                 ArrayList<Damage> damageToMake = new ArrayList<>();
                 for(ArrayList<Damage> damages : possibleDamages)
                     if(damages.toString().equals(damage)) damageToMake = damages;
                 if(damageToMake.isEmpty()) throw new IllegalArgumentException("This damage doesn't exist!");
-                for(Damage d : damageToMake)
-                    gamesControllers.get(gameID).applyDamage(d, playerColor);
+                if(toApply) {
+                    for(Damage d : damageToMake)
+                        gamesControllers.get(gameID).applyDamage(d, playerColor);
+                } else {
+                    boolean applyPotentiableDamage = Boolean.parseBoolean(args.get(PotentiableWeapon.forPotentiableWeapon_key));
+                    if(applyPotentiableDamage) {
+                        damageToMake.addAll(gamesControllers.get(gameID).getForPotentiableWeapon());
+                        for(Damage d : damageToMake)
+                            gamesControllers.get(gameID).applyDamage(d, playerColor);
+                        gamesControllers.get(gameID).wipePotentiableWeapon();
+                    } else gamesControllers.get(gameID).appendPotentiableWeapon(damageToMake);
+                }
                 break;
             }
 
@@ -253,8 +268,15 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                 Weapon weapon = lookForWeapon(weaponSelected);
                 Player shooter = gamesControllers.get(gameID).getPlayer(playerColor);
                 Effect effect = null;
-                for(Effect e : weapon.getEffects())
-                    if(e.getName().equals(effectSelected)) effect = e;
+                if(weapon.communicationMessageGenerator().equals(MODES_LIST)) {
+                    for(Effect e : weapon.getEffects())
+                        if(e.getName().equals(effectSelected)) effect = e;
+                } else {
+                    String forPotentiableWeapon = args.get(PotentiableWeapon.forPotentiableWeapon_key);
+                    responseArgs.put(PotentiableWeapon.forPotentiableWeapon_key, forPotentiableWeapon);
+                    int index = Integer.parseInt(effectSelected);
+                    effect = weapon.getEffects().get(index - 1);
+                }
                 int indexOfEffect = weapon.getEffects().indexOf(effect);
                 responseArgs.put(Effect.effect_key, Integer.toString(indexOfEffect));
                 ArrayList<Damage> forPotentiableWeapon = gamesControllers.get(gameID).getForPotentiableWeapon();

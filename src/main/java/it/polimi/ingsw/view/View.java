@@ -2,6 +2,7 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Effect;
+import it.polimi.ingsw.model.cards.PotentiableWeapon;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
@@ -42,6 +43,7 @@ public abstract class View implements Observer{
     protected static String DID_CHOOSE_WEAPON     = "Weapon chosen: ";
     protected static String DID_CHOOSE_DAMAGE     = "Damage chosen.";
     protected static String DID_CHOOSE_MODALITY   = "Modality chosen: ";
+    protected static String DID_CHOOSE_EFFECTS     = "Effects chosen.";
 
 
     public abstract void onViewUpdate();
@@ -180,7 +182,7 @@ public abstract class View implements Observer{
      *
      * @param weaponSelected it's the weapon that has been selected by the player.
      */
-    public void didChooseWeapon(String weaponSelected) {
+    protected void didChooseWeapon(String weaponSelected) {
         AdrenalineLogger.info(DID_CHOOSE_WEAPON + weaponSelected);
         Map args = new HashMap<String, String>();
         args.put(Weapon.weapon_key, weaponSelected);
@@ -200,7 +202,7 @@ public abstract class View implements Observer{
      *
      * @param damageToDo it's a Map<String, String> containing the damages to make and some other information needed to apply them.
      */
-    public void didChooseDamage(Map<String, String> damageToDo) {
+    protected void didChooseDamage(Map<String, String> damageToDo) {
         AdrenalineLogger.info(DID_CHOOSE_DAMAGE);
         damageToDo.put(PlayerColor.playerColor_key, playerColor.toString());
         this.client.send(CommunicationMessage.from(0, DAMAGE_TO_MAKE, damageToDo, gameID));
@@ -218,21 +220,40 @@ public abstract class View implements Observer{
      *
      * @param modalityChosen it's a map containing the modality chosen and the weapon that is being used.
      */
-    public void didChooseMode(Map<String, String> modalityChosen) {
+    protected void didChooseMode(Map<String, String> modalityChosen) {
         AdrenalineLogger.info(DID_CHOOSE_MODALITY + modalityChosen.get(Effect.effect_key));
         modalityChosen.put(PlayerColor.playerColor_key, playerColor.toString());
         this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, modalityChosen, gameID));
     }
 
     /**
-     * Dani
+     * Public method implemented by subclasses when choosing which effects of a potentiable weapon does the player want to use.
      */
-    public abstract void willChooseEffects();
+    public abstract void willChooseEffects(Map<String, String> effectsToChoose);
 
     /**
-     * Dani
+     * Called when the effects to use have been chosen by the player.
+     *
+     * @param effectsChosen it's a map containing the effects chosen and the weapon that is being used.
      */
-    public abstract void didChooseEffects();
+    protected void didChooseEffects(Map<String, List<String>> effectsChosen) {
+        AdrenalineLogger.info(DID_CHOOSE_EFFECTS);
+        HashMap<String, String> args = new HashMap<>();
+        String weapon = effectsChosen.get(Weapon.weapon_key).get(0);
+        args.put(Weapon.weapon_key, weapon);
+        args.put(PlayerColor.playerColor_key, playerColor.toString());
+        List<String> effectsToUse = effectsChosen.get(Effect.effect_key);
+        while(!effectsToUse.isEmpty()) {
+            boolean forPotentiableWeapon;
+            forPotentiableWeapon = effectsToUse.size() == 1;
+            args.put(PotentiableWeapon.forPotentiableWeapon_key, Boolean.toString(forPotentiableWeapon));
+            args.put(Effect.effect_key, effectsToUse.get(0));
+            effectsToUse.remove(0);
+            this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, (HashMap<String, String>)args.clone(), gameID));
+            args.remove(PotentiableWeapon.forPotentiableWeapon_key);
+            args.remove(Effect.effect_key);
+        }
+    }
 
     /**
      * Ste

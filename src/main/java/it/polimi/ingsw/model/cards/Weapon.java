@@ -640,5 +640,5 @@ public abstract class Weapon {
      * Used to ask the message to return when using the weapon of the weapon.
      * @return the message type that needs to be sent.
      */
-    public abstract CommunicationMessage type();
+    public abstract CommunicationMessage communicationMessageGenerator();
 }

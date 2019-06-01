@@ -153,6 +153,9 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
                     case MODES_LIST:
                         this.viewObserver.willChooseMode(args);
                         break;
+                    case EFFECT_TO_USE:
+                        this.viewObserver.willChooseEffects(args);
+                        break;
                     default:
                         break;
                 }

@@ -12,10 +12,8 @@ import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.model.utility.PlayerColor;
 import org.junit.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+
+import java.util.*;
 
 import static org.junit.Assert.*;
 import it.polimi.ingsw.controller.*;
@@ -2345,7 +2343,7 @@ public class WeaponTest {
     public void testEffectsCombinationPlasmaGun() {
         ArrayList<ArrayList<Integer>> combinationsTester = new ArrayList<>();
         while (!(weaponTester.getName().equals("Plasma Gun"))) weaponTester = decks.drawWeapon();
-        for(int i = 0; i < 6; i++) {
+        for(int i = 0; i < 7; i++) {
             combinationsTester.add(new ArrayList<>());
             if(i < 4) combinationsTester.get(i).add(1);
             else combinationsTester.get(i).add(2);
@@ -2357,6 +2355,10 @@ public class WeaponTest {
         combinationsTester.get(4).add(1);
         combinationsTester.get(5).add(1);
         combinationsTester.get(5).add(3);
+        combinationsTester.get(6).clear();
+        combinationsTester.get(6).add(1);
+        combinationsTester.get(6).add(3);
+        combinationsTester.get(6).add(2);
         assertEquals(weaponTester.effectsCombinations(), combinationsTester);
     }
 
@@ -2402,7 +2404,7 @@ public class WeaponTest {
     public void testEffectsCombinationRocketLauncher() {
         ArrayList<ArrayList<Integer>> combinationsTester = new ArrayList<>();
         while (!(weaponTester.getName().equals("Rocket Launcher"))) weaponTester = decks.drawWeapon();
-        for(int i = 0; i < 6; i++) {
+        for(int i = 0; i < 7; i++) {
             combinationsTester.add(new ArrayList<>());
             if(i < 4) combinationsTester.get(i).add(1);
             else combinationsTester.get(i).add(2);
@@ -2414,6 +2416,10 @@ public class WeaponTest {
         combinationsTester.get(4).add(1);
         combinationsTester.get(5).add(1);
         combinationsTester.get(5).add(3);
+        combinationsTester.get(6).clear();
+        combinationsTester.get(6).add(1);
+        combinationsTester.get(6).add(3);
+        combinationsTester.get(6).add(2);
         assertEquals(weaponTester.effectsCombinations(), combinationsTester);
     }
 
@@ -2425,7 +2431,7 @@ public class WeaponTest {
     public void testEffectsCombinationCyberblade() {
         ArrayList<ArrayList<Integer>> combinationsTester = new ArrayList<>();
         while (!(weaponTester.getName().equals("Cyberblade"))) weaponTester = decks.drawWeapon();
-        for(int i = 0; i < 6; i++) {
+        for(int i = 0; i < 7; i++) {
             combinationsTester.add(new ArrayList<>());
             if(i < 4) combinationsTester.get(i).add(1);
             else combinationsTester.get(i).add(2);
@@ -2437,6 +2443,10 @@ public class WeaponTest {
         combinationsTester.get(4).add(1);
         combinationsTester.get(5).add(1);
         combinationsTester.get(5).add(3);
+        combinationsTester.get(6).clear();
+        combinationsTester.get(6).add(1);
+        combinationsTester.get(6).add(3);
+        combinationsTester.get(6).add(2);
         assertEquals(weaponTester.effectsCombinations(), combinationsTester);
     }
 }

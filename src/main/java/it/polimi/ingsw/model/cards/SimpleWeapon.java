@@ -32,7 +32,7 @@ public class SimpleWeapon extends Weapon {
      * @return the message type that needs to be sent.
      */
     @Override
-    public CommunicationMessage type() {
+    public CommunicationMessage communicationMessageGenerator() {
         return CommunicationMessage.DAMAGE_LIST;
     }
 

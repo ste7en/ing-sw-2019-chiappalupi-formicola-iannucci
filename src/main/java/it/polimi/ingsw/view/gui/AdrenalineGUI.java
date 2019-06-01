@@ -115,22 +115,12 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void didChooseDamage(Map<String, String> damageToDo) {
-
-    }
-
-    @Override
     public void willChooseMode(Map<String, String> modalitiesToChoose) {
 
     }
 
     @Override
-    public void willChooseEffects() {
-
-    }
-
-    @Override
-    public void didChooseEffects() {
+    public void willChooseEffects(Map<String, String> effectsToChoose) {
 
     }
 

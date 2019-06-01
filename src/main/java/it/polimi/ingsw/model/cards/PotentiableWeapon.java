@@ -17,6 +17,11 @@ import java.util.Set;
 public class PotentiableWeapon extends Weapon {
 
     /**
+     * String constant used in messages between client-server
+     */
+    public final static String forPotentiableWeapon_key = "FOR_POTENTIABLE_WEAPON";
+
+    /**
      * Override of the useEffect method when the Weapon is a potentiable one
      * @param shooter it's the player who is using the effect
      * @param effect it's the effect that is being used
@@ -168,9 +173,11 @@ public class PotentiableWeapon extends Weapon {
             if (combinationsBox.get(i).contains(1))
                 combinations.add(combinationsBox.get(i));
         boolean moveMe = false;
+        boolean grenader = false;
         Integer effectPosition = -1;
         for(Effect effect : effects)
             if(effect.getProperties().containsKey(EffectProperty.MoveMe) || effect.getName().equals("with extra grenade")) {
+                if(effect.getName().equals("with extra grenade")) grenader = true;
                 moveMe = true;
                 effectPosition = effects.indexOf(effect) + 1;
             }
@@ -191,6 +198,13 @@ public class PotentiableWeapon extends Weapon {
             }
             box.removeAll(toRemove);
             combinations.addAll(box);
+            if(!grenader) {
+                ArrayList<Integer> addendum = new ArrayList<>();
+                addendum.add(1);
+                addendum.add(3);
+                addendum.add(2);
+                combinations.add(addendum);
+            }
         }
         if(constraintOrder) {
             ArrayList<ArrayList<Integer>> toRemove = new ArrayList<>();
@@ -211,7 +225,7 @@ public class PotentiableWeapon extends Weapon {
      * @return the message type that needs to be sent.
      */
     @Override
-    public CommunicationMessage type() {
+    public CommunicationMessage communicationMessageGenerator() {
         return CommunicationMessage.EFFECTS_LIST;
     }
 }
