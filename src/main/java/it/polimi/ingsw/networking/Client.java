@@ -1,7 +1,7 @@
 package it.polimi.ingsw.networking;
 
+import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.player.User;
-import it.polimi.ingsw.networking.rmi.ClientRMIConnectionHandler;
 import it.polimi.ingsw.networking.socket.ClientSocketConnectionHandler;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -12,9 +12,8 @@ import it.polimi.ingsw.view.View;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
@@ -146,6 +145,13 @@ public final class Client implements Loggable, ConnectionHandlerReceiverDelegate
                         break;
                     case CREATE_USER_FAILED:
                         this.viewObserver.onLoginFailure();
+                        break;
+                    case USER_JOINED_WAITING_ROOM:
+                        this.viewObserver.didJoinWaitingRoom();
+                        break;
+                    case USER_JOINED_GAME:
+                        var gameUUID = UUID.fromString(args.get(GameLogic.gameID_key));
+                        this.viewObserver.onStart(gameUUID);
                         break;
                     case DAMAGE_LIST:
                         this.viewObserver.willChooseDamage(args);

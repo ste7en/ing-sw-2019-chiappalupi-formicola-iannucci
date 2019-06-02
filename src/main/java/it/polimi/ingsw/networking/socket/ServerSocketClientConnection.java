@@ -84,7 +84,7 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
                 if (inStr.available() != 0) receiverDelegate.receive(inScanner.nextLine(), this);
                 if (!outBuf.isEmpty()) outBuf.forEach(printWriter::println);
                 outBuf.clear();
-                Thread.sleep(250);
+                Thread.sleep(100);
             }
             if (connectionState == CLOSED) socket.close();
             AdrenalineLogger.info(CONN_CLOSED + socket.toString());
@@ -101,7 +101,7 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
      * @param message the message to send
      */
     @Override
-    public synchronized void send(String message) {
+    public void send(String message) {
         outBuf.add(message);
     }
 
@@ -110,7 +110,7 @@ public class ServerSocketClientConnection implements Runnable, Loggable, Pingabl
      * send a PING message to the client when asked.
      */
     @Override
-    public synchronized void ping() {
+    public void ping() {
         var pingMessage = CommunicationMessage.from(getConnectionHashCode(), CommunicationMessage.PING);
         this.send(pingMessage);
     }

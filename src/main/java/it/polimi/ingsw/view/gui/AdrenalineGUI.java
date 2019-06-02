@@ -7,6 +7,7 @@ import it.polimi.ingsw.view.View;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Observable;
+import java.util.UUID;
 
 public class AdrenalineGUI extends View {
 
@@ -40,7 +41,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onStart() {
+    public void onStart(UUID gameID) {
 
     }
 

@@ -21,7 +21,9 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  * View class of the MVC paradigm.
  * It's abstract because several methods will be either overridden or implemented in its children classes.
  *
- * @author Daniele Chiappalupi, Stefano Formicola, Elena Iannucci
+ * @author Daniele Chiappalupi
+ * @author Stefano Formicola
+ * @author Elena Iannucci
  */
 public abstract class View implements Observer{
 
@@ -50,7 +52,15 @@ public abstract class View implements Observer{
 
     public abstract void onFailure();
 
-    public abstract void onStart();
+    /**
+     * Method implemented by subclasses when a new game starts.
+     * This super method should be called in order to set View's
+     * gameID attribute.
+     * @param gameID the game identifier used by tbe server
+     */
+    public void onStart(UUID gameID) {
+        this.gameID = gameID;
+    }
 
     /**
      * Public method implemented by subclasses when starting a new application instance.
@@ -110,7 +120,8 @@ public abstract class View implements Observer{
     }
 
     /**
-     * Ste
+     * Confirmation message sent by the server when the user
+     * is added to the game waiting room
      */
     public abstract void didJoinWaitingRoom();
 

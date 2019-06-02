@@ -19,7 +19,7 @@ public class AdrenalineLogger {
     private static final String APP_NAME = "Adrenaline";
     private static final String SEPARATOR = "_";
     private static final String EXTENSION = ".log";
-    private static String LOG_TYPE = "LOG";
+    public static String LOG_TYPE = "LOG";
 
     /**
      * Error string for logging
@@ -34,7 +34,9 @@ public class AdrenalineLogger {
     /**
      * Setter to change the default log name basing on the user (client/server)
      */
-    public static void setLogName(String n) { LOG_TYPE = n; }
+    public static void setLogName(String n) {
+        LOG_TYPE = n;
+    }
 
     /**
      * @return a string used to save the log in a file

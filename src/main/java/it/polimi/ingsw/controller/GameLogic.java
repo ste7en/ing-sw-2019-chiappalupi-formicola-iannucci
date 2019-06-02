@@ -17,6 +17,13 @@ public class GameLogic {
     private UUID gameID;
     private ArrayList<Damage> forPotentiableWeapon;
 
+    /**
+     * String constants used in messages between client-server
+     */
+    public static final String gameID_key = "GAME_ID";
+
+    //TODO: - Game Logic constructor and method implementation
+
     public UUID getGameID() {
         return gameID;
     }

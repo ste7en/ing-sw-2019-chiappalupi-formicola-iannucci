@@ -43,7 +43,7 @@ public class WaitingRoom {
     private final int maximumNumberOfPlayers;
 
     /**
-     * The time to wait before notifying the observer
+     * The time to wait before notifying the observer, in seconds
      */
     private final long timeout;
 
@@ -99,14 +99,14 @@ public class WaitingRoom {
         if (userQueue.contains(user) || userWaitingList.contains(user)) throw new RuntimeException(USER_ALREADY_ADDED_EXC + user.toString());
         if (userQueue.size() < maximumNumberOfPlayers) {
             userQueue.add(user);
+            AdrenalineLogger.info(USER_JOINED + user.getUsername());
+            didAddUser();
+            return true;
         } else {
             userWaitingList.add(user);
+            if (userQueue.size() == maximumNumberOfPlayers) AdrenalineLogger.info(MAX_NUM_REACHED);
+            return false;
         }
-
-        AdrenalineLogger.info(USER_JOINED + user.getUsername());
-        if (userQueue.size() == maximumNumberOfPlayers) AdrenalineLogger.info(MAX_NUM_REACHED);
-
-        return didAddUser();
     }
 
     /**
@@ -123,17 +123,12 @@ public class WaitingRoom {
 
     /**
      * Called when a new user is added to the waiting room
-     * @return true if a minimum number has been reached, false otherwise
      */
-    private boolean didAddUser() {
-        if (userQueue.size() >= minimumNumberOfPlayers) {
-            if (!isRunning) {
-                AdrenalineLogger.success(MIN_NUM_REACHED);
-                didReachMinimumNumberOfPlayers();
-            }
-            return true;
+    private void didAddUser() {
+        if (userQueue.size() >= minimumNumberOfPlayers && !isRunning) {
+            AdrenalineLogger.success(MIN_NUM_REACHED);
+            didReachMinimumNumberOfPlayers();
         }
-        return false;
     }
 
     /**
@@ -152,7 +147,7 @@ public class WaitingRoom {
                              flushQueue();
                             },
                          timeout,
-                         TimeUnit.MILLISECONDS
+                         TimeUnit.SECONDS
                  );
     }
 }

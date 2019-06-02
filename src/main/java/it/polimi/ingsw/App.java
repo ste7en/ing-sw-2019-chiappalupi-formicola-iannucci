@@ -12,7 +12,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        AdrenalineLogger.setLogName("Client");
+        AdrenalineLogger.LOG_TYPE = "Client";
         var client = new Client(ConnectionType.SOCKET, "localhost", 3334);
     }
 }

@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.cards.Effect;
 import it.polimi.ingsw.model.cards.PotentiableWeapon;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
-import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.view.View;
@@ -15,6 +14,13 @@ import java.util.*;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
+/**
+ * Command Line Interface version of the game.
+ *
+ * @author Daniele Chiappalupi
+ * @author Stefano Formicola
+ * @author Elena Iannucci
+ */
 public class AdrenalineCLI extends View {
     @SuppressWarnings("squid:S106")
     private PrintWriter out = new PrintWriter(System.out, true);
@@ -33,6 +39,8 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_SERVER_ADDR  = "Insert the server host address: ";
     private static final String CHOOSE_USERNAME     = "Please, insert your username to log in: ";
     private static final String USER_NOT_AVAILABLE  = "The username you provided is not available. Try again, please";
+    private static final String DID_JOIN_WAITING_R  = "Waiting Room joined successfully. A new game will start as soon as other players will login.";
+    private static final String ON_START            = "Game started.";
     private static final String CHOOSE_WEAPON       = "Which weapon do you want to use?";
     private static final String CHOOSE_DAMAGE       = "What damage do you want to make?";
     private static final String CHOOSE_MODALITY     = "Which modality do you want to use?";
@@ -115,13 +123,14 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void onStart() {
-
+    public void onStart(UUID gameID) {
+        super.onStart(gameID);
+        out.println(ON_START);
     }
 
     @Override
     public void didJoinWaitingRoom() {
-
+        out.println(DID_JOIN_WAITING_R);
     }
 
     @Override

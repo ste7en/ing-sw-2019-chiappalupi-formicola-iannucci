@@ -112,7 +112,7 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
                 }
                 if (!outBuf.isEmpty()) outBuf.forEach(printWriter::println);
                 outBuf.clear();
-                Thread.sleep(250);
+                Thread.sleep(100);
             }
 
             if (connectionState == CLOSED) socket.close();
@@ -141,7 +141,7 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
      * Sends a message through its connection
      * @param message the message to send
      */
-    public synchronized void send(String message) {
+    public void send(String message) {
         outBuf.add(message);
     }
 
