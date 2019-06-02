@@ -29,6 +29,10 @@ public class WaitingRoom {
     private static final String NEXT_GAME_CREATION   = "Next game will be created in ";
 
     /**
+     * Exception strings
+     */
+    private static final String USER_ALREADY_ADDED_EXC = "User already added :: ";
+    /**
      * The minimum number of users needed to create a game
      */
     private final int minimumNumberOfPlayers;
@@ -90,8 +94,9 @@ public class WaitingRoom {
      * @param user User instance
      * @return true if the minimum number of users has reached
      */
+    @SuppressWarnings("squid:S00112")
     public boolean addUser(User user) {
-        //TODO: - Add a UserAlreadyAddedException
+        if (userQueue.contains(user) || userWaitingList.contains(user)) throw new RuntimeException(USER_ALREADY_ADDED_EXC + user.toString());
         if (userQueue.size() < maximumNumberOfPlayers) {
             userQueue.add(user);
         } else {
