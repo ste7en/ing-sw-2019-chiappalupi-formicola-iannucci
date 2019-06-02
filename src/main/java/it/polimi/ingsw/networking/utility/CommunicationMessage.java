@@ -13,6 +13,7 @@ import java.util.UUID;
  * Messages sent through the network
  *
  * @author Stefano Formicola
+ * @author Daniele Chiappalupi
  */
 public enum CommunicationMessage {
     /**

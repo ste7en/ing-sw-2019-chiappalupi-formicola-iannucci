@@ -1,18 +1,11 @@
 package it.polimi.ingsw.model.player;
 
-import java.util.UUID;
-
 /**
  * The User class describes a single user of the network
  * @author Daniele Chiappalupi
  * @author Stefano Formicola
  */
 public class User {
-
-    /**
-     * ID of the user
-     */
-    private final UUID userID;
 
     /**
      * Username of the user
@@ -30,25 +23,6 @@ public class User {
      */
     public User(String username) {
         this.username = username;
-        userID = UUID.randomUUID();
-    }
-
-    /**
-     * Constructor: creates a new User from a username and a given UUID
-     * @param username username of the user
-     * @param uuid unique user identifier assigned by the server
-     */
-    public User(String username, UUID uuid) {
-        this.username = username;
-        userID = uuid;
-    }
-
-    /**
-     * User's ID getter
-     * @return the ID of the user
-     */
-    public UUID getUserID() {
-        return userID;
     }
 
     /**
@@ -59,4 +33,28 @@ public class User {
         return username;
     }
 
+    /**
+     * Used in HashMap objects, to identify the user
+     * @return an hashcode of the user's username
+     */
+    @Override
+    public int hashCode() {
+        return getUsername().hashCode();
+    }
+
+    /**
+     * Reference and username equality. Two user instances are equal
+     * when they have the same object reference or the same username.
+     * @param obj a user object
+     * @return true if the two users are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) return true; // reference equality
+
+        if (obj instanceof User) {
+            return ((User) obj).getUsername().equals(this.getUsername()); // User equality
+        }
+        return false;
+    }
 }

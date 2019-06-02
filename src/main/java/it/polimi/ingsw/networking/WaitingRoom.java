@@ -98,7 +98,7 @@ public class WaitingRoom {
             userWaitingList.add(user);
         }
 
-        AdrenalineLogger.info(USER_JOINED + user.getUsername() + " " + user.getUserID());
+        AdrenalineLogger.info(USER_JOINED + user.getUsername());
         if (userQueue.size() == maximumNumberOfPlayers) AdrenalineLogger.info(MAX_NUM_REACHED);
 
         return didAddUser();

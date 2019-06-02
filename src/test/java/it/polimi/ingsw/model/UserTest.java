@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
  * Test for {@link User} class
  *
  * @author Daniele Chiappalupi
+ * @author Stefano Formicola
  */
 public class UserTest {
 
@@ -34,14 +35,25 @@ public class UserTest {
     }
 
     /**
-     * Tests the getUserID() method, proving both its type and the fact that two users don't get the same one
-     * @see User#getUserID()
+     * Tests the equals(Object) method, proving two users may be equal if they have the same username
+     * @see User#equals(Object)
      */
     @Test
-    public void testGetUserID() {
-        assertNotNull(userTester1.getUserID());
-        assertEquals(UUID.class, userTester1.getUserID().getClass());
-        assertNotEquals(userTester1.getUserID(), userTester2.getUserID());
+    public void testEquality() {
+        var user2 = new User(username1);
+        @SuppressWarnings("")
+        var user1Reference = userTester1;
+        assertEquals(userTester1, user2);
+        assertEquals(userTester1, user1Reference);
+    }
+
+    /**
+     * Tests the hashCode() method, proving it returns username's hashcode
+     * @see User#hashCode()
+     */
+    @Test
+    public void testHashcode() {
+        assertEquals(userTester1.hashCode(), username1.hashCode());
     }
 
     /**
