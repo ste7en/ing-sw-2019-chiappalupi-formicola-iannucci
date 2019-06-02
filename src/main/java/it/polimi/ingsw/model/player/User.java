@@ -3,8 +3,9 @@ package it.polimi.ingsw.model.player;
 import java.util.UUID;
 
 /**
- *
- * @author  Daniele Chiappalupi
+ * The User class describes a single user of the network
+ * @author Daniele Chiappalupi
+ * @author Stefano Formicola
  */
 public class User {
 
@@ -21,7 +22,7 @@ public class User {
     /**
      * String constants used in messages between client-server
      */
-    public final static String username_key = "USERNAME";
+    public static final String username_key = "USERNAME";
 
     /**
      * Constructor: creates a new User from a username and generating a random UUID
@@ -30,6 +31,16 @@ public class User {
     public User(String username) {
         this.username = username;
         userID = UUID.randomUUID();
+    }
+
+    /**
+     * Constructor: creates a new User from a username and a given UUID
+     * @param username username of the user
+     * @param uuid unique user identifier assigned by the server
+     */
+    public User(String username, UUID uuid) {
+        this.username = username;
+        userID = uuid;
     }
 
     /**
