@@ -34,16 +34,16 @@ public abstract class View implements Observer{
     /**
      * Log strings
      */
-    protected static String APPLICATION_STARTED   = "Adrenaline application started. View instance created.";
-    protected static String DID_ASK_CONNECTION    = "Connection parameters chosen: ";
-    protected static String ONLOGIN_FAILURE       = "Username creation failed.";
-    protected static String ONLOGIN_SUCCESS       = "User login completed.";
-    protected static String JOIN_WAITING_ROOM     = "Joining the waiting room...";
-    protected static String DID_JOIN_WAITING_ROOM = "";
-    protected static String DID_CHOOSE_WEAPON     = "Weapon chosen: ";
-    protected static String DID_CHOOSE_DAMAGE     = "Damage chosen.";
-    protected static String DID_CHOOSE_MODALITY   = "Modality chosen: ";
-    protected static String DID_CHOOSE_EFFECTS     = "Effects chosen.";
+    protected static final String APPLICATION_STARTED   = "Adrenaline application started. View instance created.";
+    protected static final String DID_ASK_CONNECTION    = "Connection parameters chosen: ";
+    protected static final String ONLOGIN_FAILURE       = "Username creation failed.";
+    protected static final String ONLOGIN_SUCCESS       = "User login completed.";
+    protected static final String JOIN_WAITING_ROOM     = "Joining the waiting room...";
+    protected static final String DID_JOIN_WAITING_ROOM = "";
+    protected static final String DID_CHOOSE_WEAPON     = "Weapon chosen: ";
+    protected static final String DID_CHOOSE_DAMAGE     = "Damage chosen.";
+    protected static final String DID_CHOOSE_MODALITY   = "Modality chosen: ";
+    protected static final String DID_CHOOSE_EFFECTS     = "Effects chosen.";
 
 
     public abstract void onViewUpdate();
@@ -65,11 +65,11 @@ public abstract class View implements Observer{
     public void didChooseConnection(ConnectionType type, int port, String host) {
         connectionType = type;
         AdrenalineLogger.info(DID_ASK_CONNECTION + type + " " + host + ":" + port);
-        if (type==ConnectionType.SOCKET){
+        if (type == ConnectionType.SOCKET){
             this.client = new Client(type, host, port);
             client.registerObserver(this);
         }
-        if (type==ConnectionType.RMI){
+        if (type == ConnectionType.RMI){
             clientRMI = new ClientRMIConnectionHandler(port);
             clientRMI.registerObserver(this);
         }
