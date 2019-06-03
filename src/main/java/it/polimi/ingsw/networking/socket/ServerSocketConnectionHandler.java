@@ -1,6 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +32,7 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
     private static final String EXC_ON_CLIENT_CONNECTION = "Error while trying to accept a client :: ";
     private static final String EXC_ON_SOCKET = "Error while creating a SocketServer :: ";
     private static final String SERVER_SOCKET_CONFIG = "ServerSocket configured on port ";
-    private static final String SERVER_SOCKET_SUCCESS = "ServerSocket is running...";
+    private static final String SERVER_SOCKET_SUCCESS = "ServerSocket is running on ";
     private static final String SOCKET_SUCCESS = "A new socket connection with a client has been created :: ";
     private static final String SERVER_SOCKET_SHUTDOWN = "SocketServer is shutting down and closing its connections";
     private static final String INTERRUPTED_EXCEPTION = "Thread interrupted exception.";
@@ -61,8 +62,7 @@ public final class ServerSocketConnectionHandler extends ServerConnectionHandler
 
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
 
-            logOnSuccess(SERVER_SOCKET_SUCCESS);
-            logDescription(serverSocket);
+            logOnSuccess(SERVER_SOCKET_SUCCESS+InetAddress.getLocalHost()+":"+serverSocket.getLocalPort());
 
             while(!serverSocket.isClosed()) {
                 acceptConnection(serverSocket);
