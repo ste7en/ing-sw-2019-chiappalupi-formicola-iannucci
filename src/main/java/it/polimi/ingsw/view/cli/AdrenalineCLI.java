@@ -7,9 +7,12 @@ import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
+import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.view.View;
 
 import java.io.PrintWriter;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.util.*;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
@@ -47,6 +50,15 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_EFFECT       = "What effect/s do you want to use?";
 
     /**
+     * Log strings or exceptions
+     */
+    private static final String INCORRECT_HOSTNAME  = "Incorrect cli argument: hostname";
+    private static final String INCORRECT_PORT      = "Incorrect cli argument: server port";
+    private static final String INCORRECT_CONN_TYPE = "Incorrect cli argument: connection type";
+    private static final String MISSING_ARGUMENTS   = "Missing CLI arguments. Asking for user insertion.";
+
+
+    /**
      * Private constructor of the Command Line Interface
      */
     private AdrenalineCLI() {
@@ -54,8 +66,35 @@ public class AdrenalineCLI extends View {
         this.login();
     }
 
+    private AdrenalineCLI(String connectionType, String hostname, String port) {
+        try {
+            var connection = ConnectionType.parse(connectionType);
+            var serverPort  = Integer.parseInt(port);
+            Inet4Address.getByName(hostname);
+            this.didChooseConnection(connection, serverPort, hostname);
+        } catch (NumberFormatException e) {
+            AdrenalineLogger.errorException(INCORRECT_PORT, e);
+            this.willChooseConnection();
+        } catch (IllegalArgumentException e) {
+            AdrenalineLogger.errorException(INCORRECT_CONN_TYPE, e);
+            this.willChooseConnection();
+        } catch (UnknownHostException e) {
+            AdrenalineLogger.errorException(INCORRECT_HOSTNAME, e);
+            this.willChooseConnection();
+        }
+        this.login();
+    }
+
     public static void main(String[] args) {
-        new AdrenalineCLI();
+        if (args.length < 3) {
+            AdrenalineLogger.warning(MISSING_ARGUMENTS);
+            new AdrenalineCLI();
+        } else {
+            var connectionType = args[0];
+            var serverName     = args[1];
+            var serverPort     = args[2];
+            new AdrenalineCLI(connectionType, serverName, serverPort);
+        }
     }
 
     @Override
