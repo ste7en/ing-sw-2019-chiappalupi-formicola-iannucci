@@ -5,14 +5,22 @@ import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.User;
+import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.PlayerColor;
+import it.polimi.ingsw.networking.rmi.ClientRMI;
+import it.polimi.ingsw.networking.rmi.RMIInterface;
 import it.polimi.ingsw.networking.socket.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
 import it.polimi.ingsw.networking.utility.Ping;
 
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.logging.Logger;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
@@ -22,9 +30,16 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  * It is designed to support multiple games and players in a waiting room before starting a game,
  * plus it manages loss of connections and users re-connections.
  *
- * @author Stefano Formicola feat. Elena Iannucci
+ * @author Daniele Chiappalupi
+ * @author Stefano Formicola
+ * @author Elena Iannucci
  */
-public class Server implements Loggable, ConnectionHandlerReceiverDelegate, WaitingRoomObserver {
+public class Server implements Loggable, ConnectionHandlerReceiverDelegate, WaitingRoomObserver, RMIInterface {
+
+
+
+
+    private Registry registry;
     /**
      * The port on which the server socket is listening
      */
@@ -88,7 +103,6 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
      */
     private void setupConnections() {
         ServerSocketConnectionHandler socketConnectionHandler;
-        //ServerRMIConnectionHandler RMIConnectionHandler;
         try {
             socketConnectionHandler = new ServerSocketConnectionHandler(portNumberSocket, this);
             senderDelegate.add(socketConnectionHandler);
@@ -100,8 +114,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
             return;
         }
         try {
-            //RMIConnectionHandler = new ServerRMIConnectionHandler(portNumberRMI);
-            //RMIConnectionHandler.launch();
+            launch();
         } catch (Exception e) {
             logOnException(EXC_SETUP, e);
             return;
@@ -329,4 +342,145 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         while(!weaponToUse.getName().equals(weapon)) weaponToUse = deck.drawWeapon();
         return weaponToUse;
     }
+
+
+
+    public void launch() throws RemoteException {
+        registry = LocateRegistry.createRegistry(portNumberRMI);
+        registry.rebind("rmiInterface", this);
+        UnicastRemoteObject.exportObject(this, 0);
+        Logger.getGlobal().info("rmi Server running correctly...");
+    }
+
+
+
+    @Override
+    public void newUser(String username) throws RemoteException {
+        if (checkUsernameAvailability(username)==true) System.out.print(username + ", you are logged in");
+    }
+
+    @Override
+    public void registerClient(ClientRMI clientRMI){
+    }
+
+    public boolean checkUsernameAvailability(String username) {
+        return true;
+    }
+
+    @Override
+    public void joinWaitingRoom() throws RemoteException {
+
+    }
+
+    @Override
+    public ArrayList<Character> getAvailableCharacters() throws RemoteException{
+        return null;
+    }
+
+    @Override
+    public void chooseCharacter(Character character) throws RemoteException{
+
+    }
+
+    @Override
+    public void chooseGameSettings() throws RemoteException{
+
+    }
+
+    @Override
+    public ArrayList<AmmoColor> displaySpawnPoints() throws RemoteException{
+        return null;
+    }
+
+    @Override
+    public void chooseSpawnPoint() throws RemoteException{
+
+    }
+
+    @Override
+    public void chooseMove() throws RemoteException{
+
+    }
+
+    @Override
+    public void chooseMovement() throws RemoteException{
+
+    }
+
+    @Override
+    public void chooseWhatToGrab() throws RemoteException{
+
+    }
+
+    @Override
+    public ArrayList<String> getAvailableWeapons() throws RemoteException{
+        return null;
+    }
+
+    @Override
+    public void chooseWeapon(String weaponSelected) throws RemoteException{
+
+    }
+
+    @Override
+    public Map<String, String> getAvailableDamages() throws RemoteException{
+        return null;
+    }
+
+    @Override
+    public void chooseDamage(Map<String, String> damageToDo) throws RemoteException{
+
+    }
+
+    @Override
+    public Map<String, String> getAvailableModes() throws RemoteException{
+        return null;
+    }
+
+    @Override
+    public void chooseMode(Map<String, String> modalityChosen) throws RemoteException{
+
+    }
+
+    @Override
+    public void getAvailableEffect() throws RemoteException{
+
+    }
+
+    @Override
+    public void chooseEffects() throws RemoteException{
+
+    }
+
+    @Override
+    public void getAvailablePowerups() throws RemoteException{
+
+    }
+
+    @Override
+    public void getAvailablePowerupsEffects() throws RemoteException{
+
+    }
+
+    @Override
+    public void choosePowerup() throws RemoteException{
+
+    }
+
+    @Override
+    public void choosePowerupEffects() throws RemoteException{
+
+    }
+
+    @Override
+    public ArrayList<String> canReload() throws RemoteException{
+        return null;
+    }
+
+    @Override
+    public void reload(String weaponSelected) throws RemoteException{
+
+    }
+
+
 }
