@@ -11,7 +11,7 @@ public interface RMIInterface extends Remote {
 
     void newUser(String username) throws RemoteException;
 
-    void registerClient(String username, ClientRMIConnectionHandler clientRMI) throws RemoteException;
+    void registerClient(ClientRMI clientRMI) throws RemoteException;
 
     void joinWaitingRoom() throws RemoteException;
 

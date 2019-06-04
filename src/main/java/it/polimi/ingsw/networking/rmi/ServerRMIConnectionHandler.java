@@ -19,7 +19,7 @@ public class ServerRMIConnectionHandler implements RMIInterface {
     private Registry registry;
     private Integer portNumber;
     private HashMap<UUID, GameLogic> gamesControllers;
-    private Map<String, ClientRMIConnectionHandler> users;
+    private Map<String, ClientRMI> users;
 
     public ServerRMIConnectionHandler(Integer portNumber) throws RemoteException {
         this.portNumber = portNumber;
@@ -39,8 +39,7 @@ public class ServerRMIConnectionHandler implements RMIInterface {
     }
 
     @Override
-    public void registerClient(String username, ClientRMIConnectionHandler clientRMI){
-        users.put(username, clientRMI);
+    public void registerClient(ClientRMI clientRMI){
     }
 
     public boolean checkUsernameAvailability(String username) {

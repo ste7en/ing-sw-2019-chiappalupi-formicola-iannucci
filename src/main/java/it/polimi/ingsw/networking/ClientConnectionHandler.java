@@ -1,7 +1,7 @@
 package it.polimi.ingsw.networking;
 
 /**
- * Abstract superclass of Client's connectionHandlers for both
+ * Abstract superclass of ClientSocket's connectionHandlers for both
  * Socket and RMI connections.
  *
  * @author Stefano Formicola

@@ -3,7 +3,7 @@ package it.polimi.ingsw.networking;
 import it.polimi.ingsw.utility.Loggable;
 
 /**
- * Abstract superclass of Server and Client's connectionHandlers.
+ * Abstract superclass of Server and ClientSocket's connectionHandlers.
  * This implements ConnectionHandlerSenderDelegate's methods in order to implement
  * sending methods through the network with a delegator pattern and a protected
  * ConnectionHandlerReceiverDelegate instance attribute to process received messages.

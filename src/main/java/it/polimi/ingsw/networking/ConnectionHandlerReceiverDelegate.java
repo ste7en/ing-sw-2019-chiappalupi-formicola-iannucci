@@ -2,7 +2,7 @@ package it.polimi.ingsw.networking;
 
 /**
  * Delegator interface used to receive messages through
- * the network and implemented by Client and Server classes.
+ * the network and implemented by ClientSocket and Server classes.
  *
  * @author Stefano Formicola
  */

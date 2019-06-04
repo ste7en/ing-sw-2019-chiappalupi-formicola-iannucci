@@ -61,7 +61,7 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
      * Public constructor of the socket connection between client and server
      * @param server IP address of the server
      * @param port socket port number of the listening server
-     * @param receiverDelegate the Client instance, responsible to handle received messages
+     * @param receiverDelegate the ClientSocket instance, responsible to handle received messages
      */
     public ClientSocketConnectionHandler(String server, Integer port, ConnectionHandlerReceiverDelegate receiverDelegate) throws IOException {
         super.serverName = server;

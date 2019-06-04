@@ -1,13 +1,12 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Effect;
 import it.polimi.ingsw.model.cards.PotentiableWeapon;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
-import it.polimi.ingsw.networking.Client;
-import it.polimi.ingsw.networking.rmi.ClientRMIConnectionHandler;
+import it.polimi.ingsw.networking.ClientSocket;
+import it.polimi.ingsw.networking.rmi.ClientRMI;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -27,10 +26,10 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  */
 public abstract class View implements Observer{
 
-    protected Client client;
+    protected ClientSocket client;
     protected UUID gameID;
     protected PlayerColor playerColor;
-    protected ClientRMIConnectionHandler clientRMI;
+    protected ClientRMI clientRMI;
     protected ConnectionType connectionType;
 
     /**
@@ -76,12 +75,12 @@ public abstract class View implements Observer{
         connectionType = type;
         AdrenalineLogger.info(DID_ASK_CONNECTION + type + " " + host + ":" + port);
         if (type == ConnectionType.SOCKET){
-            this.client = new Client(type, host, port);
+            this.client = new ClientSocket(type, host, port);
             client.registerObserver(this);
         }
         if (type == ConnectionType.RMI){
-            clientRMI = new ClientRMIConnectionHandler(port);
-            clientRMI.registerObserver(this);
+            clientRMI = new ClientRMI(port, host);
+            //clientRMI.registerObserver(this);
         }
     }
 

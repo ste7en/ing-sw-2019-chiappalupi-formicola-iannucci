@@ -135,14 +135,7 @@ public class AdrenalineCLI extends View {
         out.println();
         out.println(CHOOSE_USERNAME);
         var username = in.next();
-        if(connectionType == ConnectionType.SOCKET) {
-            var args = new HashMap<String, String>();
-            args.put(User.username_key, username);
-            this.client.send(CommunicationMessage.from(0, CREATE_USER, args));
-        }
-        if(connectionType == ConnectionType.RMI) {
-           clientRMI.login(username);
-        }
+        this.client.login(username);
     }
 
     @Override

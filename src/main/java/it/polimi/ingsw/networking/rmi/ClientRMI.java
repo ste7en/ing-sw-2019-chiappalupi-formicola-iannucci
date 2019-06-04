@@ -1,5 +1,7 @@
 package it.polimi.ingsw.networking.rmi;
 
+import it.polimi.ingsw.networking.Client;
+import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.view.View;
 
 import java.rmi.RemoteException;
@@ -7,43 +9,42 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 
-public class ClientRMIConnectionHandler {
+public class ClientRMI extends Client {
 
     private Registry registry;
     private RMIInterface server;
-    int port;
-    private View viewObserver;
 
-    public ClientRMIConnectionHandler(int port){
+    public ClientRMI(Integer port, String host){
+        super(ConnectionType.RMI, host, port);
         try {
-            this.port = port;
+            this.connectionPort = port;
             ServerRMIConnectionHandler server = new ServerRMIConnectionHandler(port);
             server.launch();
         } catch (RemoteException e){
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
         }
-        this.setUpConnection();
+        this.setupConnection();
     }
 
-    public void setUpConnection() {
+    @Override
+    protected void setupConnection() {
         try{
-            registry = LocateRegistry.getRegistry(port);
+            registry = LocateRegistry.getRegistry(connectionPort);
             System.out.println(registry);
             server = (RMIInterface) registry.lookup("rmiInterface");
         } catch (Exception e) {
-            System.err.println("Client exception: " + e.toString());
+            System.err.println("ClientSocket exception: " + e.toString());
             e.printStackTrace();
         }
     }
 
-
+    @Override
     public void login(String username){
         try{
             server.newUser(username);
-            server.registerClient(username, this);
         } catch (RemoteException e){
-            System.err.println("Client exception: " + e.toString());
+            System.err.println("ClientSocket exception: " + e.toString());
         }
     }
 

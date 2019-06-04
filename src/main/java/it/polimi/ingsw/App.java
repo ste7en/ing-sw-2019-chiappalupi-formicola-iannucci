@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.networking.Client;
+import it.polimi.ingsw.networking.ClientSocket;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
@@ -12,7 +12,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        AdrenalineLogger.LOG_TYPE = "Client";
-        var client = new Client(ConnectionType.SOCKET, "localhost", 3334);
+        AdrenalineLogger.LOG_TYPE = "ClientSocket";
+        var client = new ClientSocket(ConnectionType.SOCKET, "localhost", 3334);
     }
 }

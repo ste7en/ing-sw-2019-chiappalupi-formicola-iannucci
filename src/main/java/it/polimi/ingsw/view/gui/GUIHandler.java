@@ -8,6 +8,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -15,11 +17,13 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.CREATE_USER;
 
-public class GUIHandler extends Application {
+public class GUIHandler extends Application  {
 
     private BorderPane root;
     private AdrenalineGUI adrenalineGUI;
@@ -184,7 +188,19 @@ public class GUIHandler extends Application {
         }
         if(connectionType==ConnectionType.RMI) {
             adrenalineGUI.getClientRMIConnectionHandler().login(username);
+            try { this.characterChoice();}
+            catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    public void characterChoice() throws FileNotFoundException{
+        root.getChildren().clear();
+        Image image = new Image(new FileInputStream("src/main/resources/images/board/board1.png"));
+        ImageView iv1 = new ImageView();
+        iv1.setImage(image);
+        root.getChildren().add(iv1);
     }
 
 
