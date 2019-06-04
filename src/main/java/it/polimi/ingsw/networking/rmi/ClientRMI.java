@@ -1,7 +1,6 @@
 package it.polimi.ingsw.networking.rmi;
 
 import it.polimi.ingsw.networking.Client;
-import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.view.View;
 
 import java.rmi.RemoteException;
@@ -15,7 +14,7 @@ public class ClientRMI extends Client {
     private RMIInterface server;
 
     public ClientRMI(Integer port, String host){
-        super(ConnectionType.RMI, host, port);
+        super(host, port);
         try {
             this.connectionPort = port;
             ServerRMIConnectionHandler server = new ServerRMIConnectionHandler(port);

@@ -75,7 +75,7 @@ public abstract class View implements Observer{
         connectionType = type;
         AdrenalineLogger.info(DID_ASK_CONNECTION + type + " " + host + ":" + port);
         if (type == ConnectionType.SOCKET){
-            this.client = new ClientSocket(type, host, port);
+            this.client = new ClientSocket(host, port);
             client.registerObserver(this);
         }
         if (type == ConnectionType.RMI){

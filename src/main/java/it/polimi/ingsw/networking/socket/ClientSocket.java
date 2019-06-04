@@ -5,12 +5,9 @@ import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
 import it.polimi.ingsw.networking.ConnectionHandlerSenderDelegate;
-import it.polimi.ingsw.networking.socket.ClientSocketConnectionHandler;
-import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
-import it.polimi.ingsw.view.View;
 
 import java.io.*;
 import java.net.ConnectException;
@@ -33,14 +30,14 @@ public class ClientSocket extends Client implements Loggable, ConnectionHandlerR
      */
     private ConnectionHandlerSenderDelegate senderDelegate;
 
-    public ClientSocket(ConnectionType connectionType, String host, Integer port) {
-        super(connectionType, host, port);
+    public ClientSocket(String host, Integer port) {
+        super(host, port);
     }
 
     @Override
     protected void setupConnection() {
         AdrenalineLogger.info(INFO);
-        AdrenalineLogger.config("A " + connectionType.toString() + " connection is setting up...");
+        AdrenalineLogger.config("A SOCKET connection is setting up...");
         try {
                 senderDelegate = new ClientSocketConnectionHandler(serverName, connectionPort, this);
                 logOnSuccess(ON_SUCCESS);

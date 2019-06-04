@@ -1,6 +1,5 @@
 package it.polimi.ingsw.networking;
 
-import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.utility.Loggable;
 import it.polimi.ingsw.view.View;
@@ -24,7 +23,6 @@ public abstract class Client implements Loggable {
     protected String serverName;
     protected Integer connectionPort;
     protected View viewObserver;
-    protected ConnectionType connectionType;
     //toDO: DELETE CONNECTION TYPE
 
     /**
@@ -49,14 +47,12 @@ public abstract class Client implements Loggable {
     /**
      * Class constructor
      *
-     * @param connectionType to distinguish between RMI or SOCKET connections
      * @param host           hostname (IP address)
      * @param port           port number of the listening server
      */
-    public Client(ConnectionType connectionType, String host, Integer port) {
+    public Client(String host, Integer port) {
         this.serverName = host;
         this.connectionPort = port;
-        this.connectionType = connectionType;
 
         setupConnection();
     }
