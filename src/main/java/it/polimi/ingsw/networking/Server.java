@@ -182,8 +182,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                             responseArgs.put(Effect.effect_key, "0");
                             Player shooter = gamesControllers.get(gameID).getPlayer(playerColor);
                             ArrayList<ArrayList<Damage>> possibleDamages = gamesControllers.get(gameID).useEffect(weapon, weapon.getEffects().get(0), shooter, null);
-                            for (ArrayList<Damage> damages : possibleDamages)
-                                responseArgs.put(Integer.toString(possibleDamages.indexOf(damages)), damages.toString());
+                            stringifyDamages(possibleDamages, responseArgs);
                             responseMessage = CommunicationMessage.from(connectionID, weaponMessage, responseArgs, gameID);
                             sender.send(responseMessage);
                             break;
@@ -275,10 +274,8 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                     ArrayList<Damage> forPotentiableWeapon = gamesControllers.get(gameID).getForPotentiableWeapon();
                     if (forPotentiableWeapon.isEmpty()) forPotentiableWeapon = null;
                     ArrayList<ArrayList<Damage>> possibleDamages = gamesControllers.get(gameID).useEffect(weapon, effect, shooter, forPotentiableWeapon);
-                    String responseMessage;
-                    for (ArrayList<Damage> damages : possibleDamages)
-                        responseArgs.put(Integer.toString(possibleDamages.indexOf(damages)), damages.toString());
-                    responseMessage = CommunicationMessage.from(connectionID, DAMAGE_LIST, responseArgs, gameID);
+                    stringifyDamages(possibleDamages, responseArgs);
+                    String responseMessage = CommunicationMessage.from(connectionID, DAMAGE_LIST, responseArgs, gameID);
                     sender.send(responseMessage);
                     break;
                 }
@@ -287,6 +284,16 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                     break;
             }
         }).start();
+    }
+
+    /**
+     * Helper method to avoid code repetition.
+     * @param possibleDamages it's an arrayList containing all of the possible damages.
+     * @param responseArgs it's the HashMap where all the damages has to be stored.
+     */
+    private void stringifyDamages(ArrayList<ArrayList<Damage>> possibleDamages, Map<String, String> responseArgs) {
+        for (ArrayList<Damage> damages : possibleDamages)
+            responseArgs.put(Integer.toString(possibleDamages.indexOf(damages)), damages.toString());
     }
 
     private void createUser(ConnectionHandlerSenderDelegate sender, int connectionID, Map<String, String> args) {
