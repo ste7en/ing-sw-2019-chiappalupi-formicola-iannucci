@@ -1,7 +1,10 @@
-package it.polimi.ingsw.networking;
+package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.player.User;
+import it.polimi.ingsw.networking.Client;
+import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
+import it.polimi.ingsw.networking.ConnectionHandlerSenderDelegate;
 import it.polimi.ingsw.networking.socket.ClientSocketConnectionHandler;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
