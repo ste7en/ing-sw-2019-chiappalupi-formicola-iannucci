@@ -336,6 +336,11 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         sender.send(responseMessage);
     }
 
+    /**
+     * Helper method to avoid code repetition: looks for a Weapon from its name;
+     * @param weapon name of the weapon that is being searched;
+     * @return the Weapon object searched
+     */
     private Weapon lookForWeapon(String weapon) {
         DecksHandler deck = new DecksHandler();
         Weapon weaponToUse = deck.drawWeapon();
