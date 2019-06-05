@@ -9,7 +9,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 
-public class ClientRMI extends Client{
+public class ClientRMI extends Client implements RMIClientInterface {
 
     private Registry registry;
     private RMIInterface server;
@@ -18,9 +18,10 @@ public class ClientRMI extends Client{
         super(host, port);
     }
 
-    public void stampa(){
+    @Override
+    public void stampa() throws RemoteException{
         try {
-            System.out.println("NO VABBE GUARDA DANNIIIII");
+            System.out.println("It works");
         }
         catch (Exception e){
             System.err.println("ClientSocket exception: " + e.toString());
@@ -36,7 +37,7 @@ public class ClientRMI extends Client{
             server = (RMIInterface) registry.lookup("rmiInterface");
             try {
                 exportClient();
-                server.registerClient(this);
+                server.registerClient();
 
             } catch (RemoteException e) {
                 System.err.println("ClientSocket exception: " + e.toString());
@@ -49,7 +50,10 @@ public class ClientRMI extends Client{
     }
 
     public void exportClient() throws RemoteException{
-        UnicastRemoteObject.exportObject(this);
+        LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+        Registry registry = LocateRegistry.getRegistry();
+        RMIClientInterface stub = (RMIClientInterface) UnicastRemoteObject.exportObject(this, 0);
+        registry.rebind("RMIClientInterface", stub);
     }
 
     @Override

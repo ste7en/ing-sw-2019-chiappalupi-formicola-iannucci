@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.rmi.ClientRMI;
+import it.polimi.ingsw.networking.rmi.RMIClientInterface;
 import it.polimi.ingsw.networking.rmi.RMIInterface;
 import it.polimi.ingsw.networking.socket.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -37,7 +38,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 public class Server implements Loggable, ConnectionHandlerReceiverDelegate, WaitingRoomObserver, RMIInterface {
 
 
-
+    private RMIClientInterface clientRMI;
 
     private Registry registry;
     /**
@@ -365,7 +366,23 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
     }
 
     @Override
-    public void registerClient(ClientRMI clientRMI){
+    public void registerClient(){
+        try {
+            Registry remoteRegistry = LocateRegistry.getRegistry();
+            System.out.println(registry);
+            this.clientRMI = (RMIClientInterface) remoteRegistry.lookup("RMIClientInterface");
+            try {
+                clientRMI.stampa();
+            } catch (RemoteException e){
+                System.err.println("ClientSocket exception: " + e.toString());
+                e.printStackTrace();
+            }
+        }catch (Exception e) {
+            System.err.println("ClientSocket exception: " + e.toString());
+            e.printStackTrace();
+        }
+
+
     }
 
     public boolean checkUsernameAvailability(String username) {
