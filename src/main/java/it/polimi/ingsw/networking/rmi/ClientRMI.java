@@ -31,6 +31,7 @@ public class ClientRMI extends Client implements RMIClientInterface {
 
     @Override
     protected void setupConnection() {
+
         try{
             registry = LocateRegistry.getRegistry(connectionPort);
             System.out.println(registry);
@@ -38,7 +39,6 @@ public class ClientRMI extends Client implements RMIClientInterface {
             try {
                 exportClient();
                 server.registerClient();
-
             } catch (RemoteException e) {
                 System.err.println("ClientSocket exception: " + e.toString());
                 e.printStackTrace();
@@ -50,8 +50,6 @@ public class ClientRMI extends Client implements RMIClientInterface {
     }
 
     public void exportClient() throws RemoteException{
-        LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
-        Registry registry = LocateRegistry.getRegistry();
         RMIClientInterface stub = (RMIClientInterface) UnicastRemoteObject.exportObject(this, 0);
         registry.rebind("RMIClientInterface", stub);
     }

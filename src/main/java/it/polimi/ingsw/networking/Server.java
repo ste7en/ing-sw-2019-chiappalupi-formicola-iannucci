@@ -97,6 +97,12 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         this.waitingRoom = new WaitingRoom(3, 5, 30, this);
 
         setupConnections();
+        try {
+            launch();
+        }catch (RemoteException e){
+            System.err.println("ClientSocket exception: " + e.toString());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -368,7 +374,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
     @Override
     public void registerClient(){
         try {
-            Registry remoteRegistry = LocateRegistry.getRegistry();
+            Registry remoteRegistry = LocateRegistry.getRegistry(portNumberRMI);
             System.out.println(registry);
             this.clientRMI = (RMIClientInterface) remoteRegistry.lookup("RMIClientInterface");
             try {
@@ -381,8 +387,6 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
             System.err.println("ClientSocket exception: " + e.toString());
             e.printStackTrace();
         }
-
-
     }
 
     public boolean checkUsernameAvailability(String username) {
