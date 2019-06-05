@@ -1,6 +1,6 @@
 package it.polimi.ingsw.networking;
 
-import java.rmi.RemoteException;
+import it.polimi.ingsw.utility.Loggable;
 
 /**
  * Abstract superclass of Server's connectionHandlers for both
@@ -9,4 +9,15 @@ import java.rmi.RemoteException;
  * @author Stefano Formicola
  */
 
-public abstract class ServerConnectionHandler extends ConnectionHandler { }
+public abstract class ServerConnectionHandler implements Loggable {
+    /**
+     * The server instance which exposes communication methods
+     */
+    protected Server server;
+
+    /**
+     * @return true if the connection is available
+     */
+    public abstract boolean isConnectionAvailable();
+
+}

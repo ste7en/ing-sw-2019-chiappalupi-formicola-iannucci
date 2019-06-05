@@ -23,7 +23,6 @@ public abstract class Client implements Loggable {
     protected String serverName;
     protected Integer connectionPort;
     protected View viewObserver;
-    //toDO: DELETE CONNECTION TYPE
 
     /**
      * Log strings
