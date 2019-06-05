@@ -14,21 +14,22 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 
-public class ServerRMIConnectionHandler implements RMIInterface {
+public class ServerRMI implements RMIInterface {
 
     private Registry registry;
     private Integer portNumber;
+    private ClientRMI clientRMI;
     private HashMap<UUID, GameLogic> gamesControllers;
     private Map<String, ClientRMI> users;
 
-    public ServerRMIConnectionHandler(Integer portNumber) throws RemoteException {
+    public ServerRMI(Integer portNumber) throws RemoteException {
         this.portNumber = portNumber;
     }
 
     public void launch() throws RemoteException {
         registry = LocateRegistry.createRegistry(portNumber);
         registry.rebind("rmiInterface", this);
-        UnicastRemoteObject.exportObject(this, 0);
+        UnicastRemoteObject.exportObject(this);
         Logger.getGlobal().info("rmi Server running correctly...");
     }
 
@@ -40,6 +41,8 @@ public class ServerRMIConnectionHandler implements RMIInterface {
 
     @Override
     public void registerClient(ClientRMI clientRMI){
+        this.clientRMI = clientRMI;
+        clientRMI.stampa();
     }
 
     public boolean checkUsernameAvailability(String username) {

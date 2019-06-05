@@ -179,20 +179,9 @@ public class GUIHandler extends Application  {
         root.setBottom(boxButton);
     }
 
-    public void handleLoginOptions(TextField usernameTextfield){
+    public void handleLoginOptions(TextField usernameTextfield) {
         String username = usernameTextfield.getText();
-        if(connectionType==ConnectionType.SOCKET) {
-            var args = new HashMap<String, String>();
-            args.put(User.username_key, username);
-            adrenalineGUI.getClient().send(CommunicationMessage.from(0, CREATE_USER, args));
-        }
-        if(connectionType==ConnectionType.RMI) {
-            adrenalineGUI.getClientRMIConnectionHandler().login(username);
-            try { this.characterChoice();}
-            catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+        adrenalineGUI.getClient().login(username);
     }
 
     public void characterChoice() throws FileNotFoundException{

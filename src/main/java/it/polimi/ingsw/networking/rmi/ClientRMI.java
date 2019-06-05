@@ -6,24 +6,26 @@ import it.polimi.ingsw.view.View;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 
-public class ClientRMI extends Client {
+public class ClientRMI extends Client{
 
     private Registry registry;
     private RMIInterface server;
 
-    public ClientRMI(Integer port, String host){
+    public ClientRMI(String host, Integer port){
         super(host, port);
+    }
+
+    public void stampa(){
         try {
-            this.connectionPort = port;
-            ServerRMIConnectionHandler server = new ServerRMIConnectionHandler(port);
-            server.launch();
-        } catch (RemoteException e){
-            System.err.println("Server exception: " + e.toString());
+            System.out.println("NO VABBE GUARDA DANNIIIII");
+        }
+        catch (Exception e){
+            System.err.println("ClientSocket exception: " + e.toString());
             e.printStackTrace();
         }
-        this.setupConnection();
     }
 
     @Override
@@ -32,10 +34,22 @@ public class ClientRMI extends Client {
             registry = LocateRegistry.getRegistry(connectionPort);
             System.out.println(registry);
             server = (RMIInterface) registry.lookup("rmiInterface");
+            try {
+                exportClient();
+                server.registerClient(this);
+
+            } catch (RemoteException e) {
+                System.err.println("ClientSocket exception: " + e.toString());
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             System.err.println("ClientSocket exception: " + e.toString());
             e.printStackTrace();
         }
+    }
+
+    public void exportClient() throws RemoteException{
+        UnicastRemoteObject.exportObject(this);
     }
 
     @Override
