@@ -9,9 +9,9 @@ import java.util.Map;
 
 public interface RMIInterface extends Remote {
 
-    void newUser(String username) throws RemoteException;
+    void registerClient(Integer clientPort) throws RemoteException;
 
-    void registerClient(ClientRMI clientRMI) throws RemoteException;
+    void newUser(String username) throws RemoteException;
 
     void joinWaitingRoom() throws RemoteException;
 

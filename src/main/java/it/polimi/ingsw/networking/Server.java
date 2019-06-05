@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.rmi.ClientRMI;
 import it.polimi.ingsw.networking.rmi.RMIInterface;
+import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
 import it.polimi.ingsw.networking.socket.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
@@ -38,7 +39,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 public class Server implements Loggable, ConnectionHandlerReceiverDelegate, WaitingRoomObserver, RMIInterface {
 
 
-
+    private ServerRMIConnectionHandler serverRMI;
 
     private Registry registry;
     /**
@@ -98,6 +99,11 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         this.waitingRoom = new WaitingRoom(3, 5, 30, this);
 
         setupConnections();
+        try {
+            launch();
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -105,6 +111,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
      */
     private void setupConnections() {
         ServerSocketHandler socketConnectionHandler;
+        ServerRMIConnectionHandler RMIConnectionHandler;
         try {
             socketConnectionHandler = new ServerSocketHandler(portNumberSocket);
 //            senderDelegate.add(socketConnectionHandler);
@@ -334,15 +341,13 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         Logger.getGlobal().info("rmi Server running correctly...");
     }
 
-
+    public void registerClient(Integer clientPort) throws RemoteException{
+        serverRMI = new ServerRMIConnectionHandler(this, clientPort);
+    }
 
     @Override
     public void newUser(String username) throws RemoteException {
         if (checkUsernameAvailability(username)==true) System.out.print(username + ", you are logged in");
-    }
-
-    @Override
-    public void registerClient(ClientRMI clientRMI){
     }
 
     public boolean checkUsernameAvailability(String username) {
@@ -464,5 +469,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
 
     }
 
-
+    public Integer getPortNumberRMI() {
+        return portNumberRMI;
+    }
 }

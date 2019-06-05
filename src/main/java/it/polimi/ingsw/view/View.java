@@ -78,7 +78,8 @@ public abstract class View implements Observer{
             this.client = new ClientSocket(host, port);
         }
         if (type == ConnectionType.RMI){
-            client = new ClientRMI(host, port);
+            client = new ClientRMI(host, port, 5555);
+            ((ClientRMI) client).registerOnServer();
         }
         client.registerObserver(this);
     }
@@ -259,6 +260,13 @@ public abstract class View implements Observer{
             args.put(Effect.effect_key, effectsToUse.get(0));
             effectsToUse.remove(0);
             //this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, (HashMap<String, String>)args.clone(), gameID));
+
+
+
+
+
+
+
             args.remove(PotentiableWeapon.forPotentiableWeapon_key);
             args.remove(Effect.effect_key);
         }

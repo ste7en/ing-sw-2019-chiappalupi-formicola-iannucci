@@ -86,12 +86,12 @@ public final class ServerSocketHandler implements Runnable, Loggable {
             socket.setSoTimeout(SOCKET_SO_TIMEOUT);
             logOnSuccess(SOCKET_SUCCESS + socket.toString());
 
-            var connection = new ServerSocketConnectionHandler(socket, );
+            /*var connection = new ServerSocketConnectionHandler(socket, );
 
             var connectionThread = new Thread(connection);
             connectionThread.setDaemon(true);
             connectionThread.setPriority(Thread.MIN_PRIORITY);
-            connectionThread.start();
+            connectionThread.start();*/
         } catch (IOException e) {
             logOnException(EXC_ON_CLIENT_CONNECTION, e);
             throw e;
