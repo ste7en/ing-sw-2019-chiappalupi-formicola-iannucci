@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking.socket;
 
+import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.Server;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
@@ -205,5 +206,12 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         responseArgs.put(User.username_key, username);
         var responseMessage = CommunicationMessage.from(connectionID, USER_JOINED_WAITING_ROOM, responseArgs);
         send(responseMessage);
+    }
+
+    @Override
+    protected void gameDidStart(String gameID) {
+        var args = new HashMap<String, String>();
+        args.put(GameLogic.gameID_key, gameID);
+        send(CommunicationMessage.from(0, USER_JOINED_GAME, args));
     }
 }

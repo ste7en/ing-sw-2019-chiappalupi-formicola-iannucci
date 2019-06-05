@@ -139,10 +139,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         gameControllers.put(gameID, gameLogic);
         userList.forEach(user -> {
             var connection = users.get(user);
-            var args = new HashMap<String, String>();
-            args.put(User.username_key, user.getUsername());
-            args.put(GameLogic.gameID_key, gameID.toString());
-            connection.send(CommunicationMessage.from(0, USER_JOINED_GAME, args));
+            connection.gameDidStart(gameID.toString());
         });
     }
 

@@ -20,4 +20,6 @@ public abstract class ServerConnectionHandler implements Loggable {
      */
     public abstract boolean isConnectionAvailable();
 
+
+    protected abstract void gameDidStart(String gameID);
 }
