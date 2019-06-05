@@ -7,6 +7,8 @@ import it.polimi.ingsw.view.View;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.rmi.Remote;
+import java.rmi.server.UnicastRemoteObject;
 
 /**
  * Abstract class that will be reimplemented in ClientSocket and ClientRMI.
@@ -15,7 +17,7 @@ import java.io.InputStreamReader;
  * @author Stefano Formicola
  * @author Elena Iannucci
  */
-public abstract class Client implements Loggable {
+public abstract class Client implements Remote, Loggable {
 
     /**
      * Instance attributes that describe the connection
