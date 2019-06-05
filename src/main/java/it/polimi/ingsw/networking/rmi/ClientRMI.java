@@ -13,17 +13,8 @@ public class ClientRMI extends Client {
     private Registry registry;
     private RMIInterface server;
 
-    public ClientRMI(Integer port, String host){
+    public ClientRMI(String host, Integer port){
         super(host, port);
-        try {
-            this.connectionPort = port;
-            ServerRMIConnectionHandler server = new ServerRMIConnectionHandler(port);
-            server.launch();
-        } catch (RemoteException e){
-            System.err.println("Server exception: " + e.toString());
-            e.printStackTrace();
-        }
-        this.setupConnection();
     }
 
     @Override
