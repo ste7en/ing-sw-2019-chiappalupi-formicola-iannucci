@@ -7,9 +7,8 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.PlayerColor;
-import it.polimi.ingsw.networking.rmi.ClientRMI;
-import it.polimi.ingsw.networking.rmi.RMIClientInterface;
-import it.polimi.ingsw.networking.rmi.RMIInterface;
+import it.polimi.ingsw.networking.rmi.ClientInterface;
+import it.polimi.ingsw.networking.rmi.ServerInterface;
 import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
 import it.polimi.ingsw.networking.socket.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -37,11 +36,11 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  * @author Elena Iannucci
  */
 @SuppressWarnings("all")
-public class Server implements Loggable, ConnectionHandlerReceiverDelegate, WaitingRoomObserver, RMIInterface {
+public class Server implements Loggable, ConnectionHandlerReceiverDelegate, WaitingRoomObserver, ServerInterface {
 
     private ServerRMIConnectionHandler serverRMIConnectionHandler;
 
-    private RMIClientInterface clientRMI;
+    private ClientInterface clientRMI;
 
     private Registry registry;
     /**
@@ -364,7 +363,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         try {
             Registry remoteRegistry = LocateRegistry.getRegistry(portNumberRMI);
             System.out.println(registry);
-            this.clientRMI = (RMIClientInterface) remoteRegistry.lookup("RMIClientInterface");
+            this.clientRMI = (ClientInterface) remoteRegistry.lookup("ClientInterface");
         }catch (Exception e) {
             System.err.println("ServerRMI exception: " + e.toString());
             e.printStackTrace();

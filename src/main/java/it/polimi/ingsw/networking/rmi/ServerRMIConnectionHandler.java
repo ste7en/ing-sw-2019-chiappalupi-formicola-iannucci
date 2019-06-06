@@ -7,11 +7,11 @@ import java.rmi.RemoteException;
 
 public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
-    private RMIClientInterface clientRMI;
+    private ClientInterface clientRMI;
 
     private Server server;
 
-    public void registerClient(RMIClientInterface clientRMI){
+    public void registerClient(ClientInterface clientRMI){
         this.clientRMI = clientRMI;
     }
 

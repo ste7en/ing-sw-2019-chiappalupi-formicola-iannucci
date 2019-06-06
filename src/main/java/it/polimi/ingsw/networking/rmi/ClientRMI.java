@@ -1,6 +1,5 @@
 package it.polimi.ingsw.networking.rmi;
 
-import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.view.View;
@@ -13,10 +12,10 @@ import java.util.Map;
 import java.util.UUID;
 
 
-public class ClientRMI extends Client implements RMIClientInterface {
+public class ClientRMI extends Client implements ClientInterface {
 
     private Registry registry;
-    private RMIInterface server;
+    private ServerInterface server;
 
     public ClientRMI(String host, Integer port){
         super(host, port);
@@ -28,7 +27,7 @@ public class ClientRMI extends Client implements RMIClientInterface {
         try{
             registry = LocateRegistry.getRegistry(connectionPort);
             System.out.println(registry);
-            server = (RMIInterface) registry.lookup("rmiInterface");
+            server = (ServerInterface) registry.lookup("rmiInterface");
             try {
                 exportClient();
                 server.registerClient();
@@ -43,8 +42,8 @@ public class ClientRMI extends Client implements RMIClientInterface {
     }
 
     public void exportClient() throws RemoteException{
-        RMIClientInterface stub = (RMIClientInterface) UnicastRemoteObject.exportObject(this, 0);
-        registry.rebind("RMIClientInterface", stub);
+        ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
+        registry.rebind("ClientInterface", stub);
     }
 
     public void registerObserver(View viewObserver) {

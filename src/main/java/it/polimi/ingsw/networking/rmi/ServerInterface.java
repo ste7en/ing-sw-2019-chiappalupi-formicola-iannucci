@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 
-public interface RMIInterface extends Remote {
+public interface ServerInterface extends Remote {
 
     void registerClient() throws RemoteException;
 
