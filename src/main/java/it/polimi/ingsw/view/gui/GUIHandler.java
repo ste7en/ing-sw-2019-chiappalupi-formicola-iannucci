@@ -1,7 +1,4 @@
 package it.polimi.ingsw.view.gui;
-
-import it.polimi.ingsw.model.player.User;
-import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,9 +16,6 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-
-import static it.polimi.ingsw.networking.utility.CommunicationMessage.CREATE_USER;
 
 public class GUIHandler extends Application  {
 

@@ -4,18 +4,13 @@ import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Effect;
 import it.polimi.ingsw.model.cards.PotentiableWeapon;
 import it.polimi.ingsw.model.cards.Weapon;
-import it.polimi.ingsw.model.player.User;
-import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.view.View;
-
 import java.io.PrintWriter;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.*;
-
-import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
 /**
  * Command Line Interface version of the game.

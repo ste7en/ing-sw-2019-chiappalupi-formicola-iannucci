@@ -1,20 +1,12 @@
 package it.polimi.ingsw.view;
-
-import it.polimi.ingsw.model.cards.Effect;
-import it.polimi.ingsw.model.cards.PotentiableWeapon;
-import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.socket.ClientSocket;
 import it.polimi.ingsw.networking.rmi.ClientRMI;
-import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
-
 import java.util.*;
-
-import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
 
 /**
