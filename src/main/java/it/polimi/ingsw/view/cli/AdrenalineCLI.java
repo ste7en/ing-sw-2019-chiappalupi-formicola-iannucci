@@ -323,20 +323,13 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void willChooseEffects(Map<String, String> effectsToChoose) {
-        Map<String, String> effectsChosen = new HashMap<>();
         String weapon = effectsToChoose.get(Weapon.weapon_key);
         effectsToChoose.remove(Weapon.weapon_key);
         out.println(CHOOSE_EFFECT);
         String effectsSelected = decisionHandler(effectsToChoose);
-        effectsChosen.put(Weapon.weapon_key, weapon);
         String box = effectsSelected.replaceAll("\\[|\\]", "");
         List<String> effects = List.of(box.split(", "));
-        Map<String, List<String>> args = new HashMap<>();
-        List<String> weaponToUse = new ArrayList<>();
-        weaponToUse.add(weapon);
-        args.put(Weapon.weapon_key, weaponToUse);
-        args.put(Effect.effect_key, effects); //[1, 2, 3]
-        this.didChooseEffects(args);
+        this.didChooseEffects(effects, weapon);
     }
 
     @Override

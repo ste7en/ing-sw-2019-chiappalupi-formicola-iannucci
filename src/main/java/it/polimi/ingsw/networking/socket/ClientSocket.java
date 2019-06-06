@@ -17,6 +17,7 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,6 +27,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  * Main class of the client. It will set up the networking and send/receive events and requests.
  *
  * @author Stefano Formicola
+ * @author Daniele Chiappalupi
  */
 public class ClientSocket extends Client implements Loggable, ConnectionHandlerReceiverDelegate {
 
@@ -145,6 +147,23 @@ public class ClientSocket extends Client implements Loggable, ConnectionHandlerR
         args.put(Weapon.weapon_key, weapon);
         args.put(Effect.effect_key, effect);
         this.send(CommunicationMessage.from(userID, EFFECT_TO_USE, args, gameID));
+    }
+
+    @Override
+    public void useEffect(String weapon, List<String> effectsToUse) {
+        HashMap<String, String> args = new HashMap<>();
+        args.put(Weapon.weapon_key, weapon);
+        while(!effectsToUse.isEmpty()) {
+            boolean forPotentiableWeapon;
+            forPotentiableWeapon = effectsToUse.size() == 1;
+            String potentiableBoolean = Boolean.toString(forPotentiableWeapon);
+            args.put(PotentiableWeapon.forPotentiableWeapon_key, potentiableBoolean);
+            args.put(Effect.effect_key, effectsToUse.get(0));
+            effectsToUse.remove(0);
+            this.send(CommunicationMessage.from(userID, EFFECT_TO_USE, (HashMap<String, String>)args.clone(), gameID));
+            args.remove(PotentiableWeapon.forPotentiableWeapon_key);
+            args.remove(Effect.effect_key);
+        }
     }
 
 }

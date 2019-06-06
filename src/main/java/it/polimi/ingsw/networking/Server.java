@@ -36,7 +36,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  * @author Elena Iannucci
  */
 @SuppressWarnings("all")
-public class Server implements Loggable, ConnectionHandlerReceiverDelegate, WaitingRoomObserver, ServerInterface {
+public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     private ServerRMIConnectionHandler serverRMIConnectionHandler;
 
@@ -155,26 +155,6 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         var connectionHandler = users.get(user);
         if ( connectionHandler != null ) return !connectionHandler.isConnectionAvailable();
         else return true;
-    }
-
-    /**
-     * Receives a message from a delegator
-     * @param message received message
-     * @param sender a the connection handler delegated to send messages
-     */
-    @Override
-    public void receive(String message, ConnectionHandlerSenderDelegate sender) {
-        new Thread( () -> {
-            var communicationMessage = CommunicationMessage.getCommunicationMessageFrom(message);
-            var connectionID = CommunicationMessage.getConnectionIDFrom(message);
-            var args = CommunicationMessage.getMessageArgsFrom(message);
-            var gameID = CommunicationMessage.getMessageGameIDFrom(message);
-            switch (communicationMessage) {
-
-                default:
-                    break;
-            }
-        }).start();
     }
 
     /**

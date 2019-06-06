@@ -1,5 +1,8 @@
 package it.polimi.ingsw.networking.rmi;
 
+import it.polimi.ingsw.model.cards.Effect;
+import it.polimi.ingsw.model.cards.PotentiableWeapon;
+import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.view.View;
@@ -8,8 +11,12 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import static it.polimi.ingsw.networking.utility.CommunicationMessage.EFFECT_TO_USE;
 
 
 public class ClientRMI extends Client implements ClientInterface {
@@ -101,6 +108,25 @@ public class ClientRMI extends Client implements ClientInterface {
         try {
             Map<String, String> damageList = server.useEffect(userID, gameID, null, effect, weapon);
             this.viewObserver.willChooseDamage(damageList);
+        } catch (RemoteException e) {
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
+    }
+
+    @Override
+    public void useEffect(String weapon, List<String> effectsToUse) {
+        try {
+            HashMap<String, String> args = new HashMap<>();
+            args.put(Weapon.weapon_key, weapon);
+            while (!effectsToUse.isEmpty()) {
+                boolean forPotentiableWeapon;
+                forPotentiableWeapon = effectsToUse.size() == 1;
+                String potentiableBoolean = Boolean.toString(forPotentiableWeapon);
+                String effect = effectsToUse.get(0);
+                Map<String, String> damageList = server.useEffect(userID, gameID, potentiableBoolean, effect, weapon);
+                this.viewObserver.willChooseDamage(damageList);
+                effectsToUse.remove(0);
+            }
         } catch (RemoteException e) {
             System.err.println("ClientRMI exception: " + e.toString());
         }

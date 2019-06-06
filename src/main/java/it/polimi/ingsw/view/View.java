@@ -114,7 +114,7 @@ public abstract class View implements Observer{
         AdrenalineLogger.info(JOIN_WAITING_ROOM);
         var args = new HashMap<String, String>();
         args.put(User.username_key, username);
-        this.client.send(CommunicationMessage.from(0, USER_LOGIN, args));
+        //this.client.send(CommunicationMessage.from(0, USER_LOGIN, args));
     }
 
     /**
@@ -241,25 +241,12 @@ public abstract class View implements Observer{
     /**
      * Called when the effects to use have been chosen by the player.
      *
-     * @param effectsChosen it's a map containing the effects chosen and the weapon that is being used.
+     * @param effectsToUse it's a list containing the effects chosen.
+     * @param weapon it's the weapon that is being used.
      */
-    protected void didChooseEffects(Map<String, List<String>> effectsChosen) {
+    protected void didChooseEffects(List<String> effectsToUse, String weapon) {
         AdrenalineLogger.info(DID_CHOOSE_EFFECTS);
-        HashMap<String, String> args = new HashMap<>();
-        String weapon = effectsChosen.get(Weapon.weapon_key).get(0);
-        args.put(Weapon.weapon_key, weapon);
-        args.put(PlayerColor.playerColor_key, playerColor.toString());
-        List<String> effectsToUse = effectsChosen.get(Effect.effect_key);
-        while(!effectsToUse.isEmpty()) {
-            boolean forPotentiableWeapon;
-            forPotentiableWeapon = effectsToUse.size() == 1;
-            args.put(PotentiableWeapon.forPotentiableWeapon_key, Boolean.toString(forPotentiableWeapon));
-            args.put(Effect.effect_key, effectsToUse.get(0));
-            effectsToUse.remove(0);
-            this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, (HashMap<String, String>)args.clone(), gameID));
-            args.remove(PotentiableWeapon.forPotentiableWeapon_key);
-            args.remove(Effect.effect_key);
-        }
+        this.client.useEffect(weapon, effectsToUse);
     }
 
     /**
