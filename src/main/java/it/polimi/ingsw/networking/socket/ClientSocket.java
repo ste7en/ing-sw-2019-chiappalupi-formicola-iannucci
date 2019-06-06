@@ -1,6 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
+import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
@@ -116,6 +117,13 @@ public class ClientSocket extends Client implements Loggable, ConnectionHandlerR
      */
     public void send(String message) {
         senderDelegate.send(message);
+    }
+
+    @Override
+    public void useWeapon(String weaponSelected) {
+        Map<String, String> args = new HashMap<>();
+        args.put(Weapon.weapon_key, weaponSelected);
+        this.send(CommunicationMessage.from(userID, WEAPON_TO_USE, args, gameID));
     }
 
 }

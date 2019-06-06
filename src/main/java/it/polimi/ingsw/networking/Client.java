@@ -7,6 +7,7 @@ import it.polimi.ingsw.view.View;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.UUID;
 
 /**
  * Abstract class that will be reimplemented in ClientSocket and ClientRMI.
@@ -23,6 +24,8 @@ public abstract class Client implements Loggable {
     protected String serverName;
     protected Integer connectionPort;
     protected View viewObserver;
+    protected UUID gameID;
+    protected int userID;
 
     /**
      * Log strings
@@ -92,5 +95,12 @@ public abstract class Client implements Loggable {
      * logged to the server.
      */
     public abstract void login(String username);
+
+    /**
+     * Abstract method implemented by subclasses and used when a player wants to use a weapon.
+     *
+     * @param weaponSelected it's a String containing the weapon selected name.
+     */
+    public abstract void useWeapon(String weaponSelected);
 
 }

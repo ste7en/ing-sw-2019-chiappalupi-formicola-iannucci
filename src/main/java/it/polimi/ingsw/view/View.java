@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.cards.PotentiableWeapon;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
-import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.socket.ClientSocket;
 import it.polimi.ingsw.networking.rmi.ClientRMI;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
@@ -27,9 +26,10 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  */
 public abstract class View implements Observer{
 
-    protected Client client;
+    protected ClientSocket client;
     protected UUID gameID;
     protected PlayerColor playerColor;
+    protected ClientRMI clientRMI;
     protected ConnectionType connectionType;
 
     /**
@@ -76,12 +76,12 @@ public abstract class View implements Observer{
         AdrenalineLogger.info(DID_ASK_CONNECTION + type + " " + host + ":" + port);
         if (type == ConnectionType.SOCKET){
             this.client = new ClientSocket(host, port);
+            client.registerObserver(this);
         }
         if (type == ConnectionType.RMI){
-            client = new ClientRMI(host, port, 5555);
-            ((ClientRMI) client).registerOnServer();
+            clientRMI = new ClientRMI(port, host);
+            //clientRMI.registerObserver(this);
         }
-        client.registerObserver(this);
     }
 
     /**
@@ -115,7 +115,7 @@ public abstract class View implements Observer{
         AdrenalineLogger.info(JOIN_WAITING_ROOM);
         var args = new HashMap<String, String>();
         args.put(User.username_key, username);
-        //this.client.send(CommunicationMessage.from(0, USER_LOGIN, args));
+        this.client.send(CommunicationMessage.from(0, USER_LOGIN, args));
     }
 
     /**
@@ -194,10 +194,7 @@ public abstract class View implements Observer{
      */
     protected void didChooseWeapon(String weaponSelected) {
         AdrenalineLogger.info(DID_CHOOSE_WEAPON + weaponSelected);
-        Map args = new HashMap<String, String>();
-        args.put(Weapon.weapon_key, weaponSelected);
-        args.put(PlayerColor.playerColor_key, playerColor.toString());
-        //this.client.send(CommunicationMessage.from(0, WEAPON_TO_USE, args, gameID));
+        this.client.useWeapon(weaponSelected);
     }
 
     /**
@@ -215,7 +212,7 @@ public abstract class View implements Observer{
     protected void didChooseDamage(Map<String, String> damageToDo) {
         AdrenalineLogger.info(DID_CHOOSE_DAMAGE);
         damageToDo.put(PlayerColor.playerColor_key, playerColor.toString());
-        //this.client.send(CommunicationMessage.from(0, DAMAGE_TO_MAKE, damageToDo, gameID));
+        this.client.send(CommunicationMessage.from(0, DAMAGE_TO_MAKE, damageToDo, gameID));
     }
 
     /**
@@ -233,7 +230,7 @@ public abstract class View implements Observer{
     protected void didChooseMode(Map<String, String> modalityChosen) {
         AdrenalineLogger.info(DID_CHOOSE_MODALITY + modalityChosen.get(Effect.effect_key));
         modalityChosen.put(PlayerColor.playerColor_key, playerColor.toString());
-        //this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, modalityChosen, gameID));
+        this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, modalityChosen, gameID));
     }
 
     /**
@@ -259,14 +256,7 @@ public abstract class View implements Observer{
             args.put(PotentiableWeapon.forPotentiableWeapon_key, Boolean.toString(forPotentiableWeapon));
             args.put(Effect.effect_key, effectsToUse.get(0));
             effectsToUse.remove(0);
-            //this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, (HashMap<String, String>)args.clone(), gameID));
-
-
-
-
-
-
-
+            this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, (HashMap<String, String>)args.clone(), gameID));
             args.remove(PotentiableWeapon.forPotentiableWeapon_key);
             args.remove(Effect.effect_key);
         }
