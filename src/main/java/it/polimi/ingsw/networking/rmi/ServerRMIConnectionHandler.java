@@ -1,8 +1,5 @@
 package it.polimi.ingsw.networking.rmi;
 
-import it.polimi.ingsw.networking.Server;
-import it.polimi.ingsw.networking.ServerConnectionHandler;
-
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -18,11 +15,6 @@ public class ServerRMIConnectionHandler {
         this.clientsRMI.add(i, clientRMI);
     }
 
-
-    public void chooseCharacter(Character character) throws RemoteException{
-
-    }
-
     public void gameDidStart(){
         try{
             for(RMIClientInterface clientRMI : clientsRMI)
@@ -32,5 +24,8 @@ public class ServerRMIConnectionHandler {
             e.printStackTrace();
         }
     }
+
+
+
 
 }
