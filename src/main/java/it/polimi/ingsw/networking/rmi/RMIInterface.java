@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.utility.AmmoColor;
 import java.rmi.*;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.UUID;
 
 
 public interface RMIInterface extends Remote {
@@ -35,7 +36,7 @@ public interface RMIInterface extends Remote {
 
     void chooseWeapon(String weaponSelected) throws RemoteException;
 
-    Map<String, String> getAvailableDamages() throws RemoteException;
+    Map<String, String> useWeapon(int userID, UUID gameID, String weaponSelected) throws RemoteException;
 
     void chooseDamage(Map<String, String> damageToDo) throws RemoteException;
 
