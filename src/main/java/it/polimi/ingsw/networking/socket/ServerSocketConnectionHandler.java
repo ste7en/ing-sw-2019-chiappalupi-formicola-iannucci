@@ -127,6 +127,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     @Override
     public synchronized void closeConnection() {
         this.connectionState = ConnectionState.CLOSED;
+        this.server.didDisconnect(this);
         AdrenalineLogger.info(PING_TIMEOUT + socket.toString());
     }
 
@@ -167,7 +168,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     createUser(connectionID, args);
                     break;
                 }
-                case USER_LOGIN: {
+                case CREATE_USER_OK: {
                     userLogin(connectionID, args);
                     break;
                 }

@@ -44,7 +44,8 @@ public class AdrenalineCLI extends View {
     private static final String USER_NOT_AVAILABLE  = "The username you provided is not available. Try again, please";
     private static final String DID_JOIN_WAITING_R  = "Waiting Room joined successfully. A new game will start as soon as other players will login.";
     private static final String ON_START            = "Game started.";
-    private static final String CHOOSE_WEAPON       = "Which weapon do you want to use?";
+    private static final String CHOOSE_WEAPON       = "Which weapon do " +
+            "you want to use?";
     private static final String CHOOSE_DAMAGE       = "What damage do you want to make?";
     private static final String CHOOSE_MODALITY     = "Which modality do you want to use?";
     private static final String CHOOSE_EFFECT       = "What effect/s do you want to use?";

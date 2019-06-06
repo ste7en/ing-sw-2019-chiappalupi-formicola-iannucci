@@ -178,6 +178,17 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
     }
 
     /**
+     * Called when a connectionHandler notifies the server the connection has been closed
+     * @param connection connectionHandler instance
+     */
+    public void didDisconnect(ServerConnectionHandler connection) {
+        users.forEach(
+                (user, connectionHandler) -> {
+                    if (connectionHandler == connection) waitingRoom.removeUser(user);
+                });
+    }
+
+    /**
      * Method used to calculate the damages made by an effect of the weapon.
      * @param userID it's the ID of the user that is using the weapon.
      * @param gameID it's the ID of the game.

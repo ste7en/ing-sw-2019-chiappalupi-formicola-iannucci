@@ -25,5 +25,5 @@ public interface Pingable {
      * Used to distinguish between connected pingable clients
      * @return a Pingable instance identifier
      */
-    int getConnectionHashCode();
+    default int getConnectionHashCode() { return hashCode(); }
 }
