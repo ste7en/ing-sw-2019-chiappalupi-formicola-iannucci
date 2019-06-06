@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.rmi.ClientRMI;
+import it.polimi.ingsw.networking.rmi.RMIClientInterface;
 import it.polimi.ingsw.networking.rmi.RMIInterface;
 import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
 import it.polimi.ingsw.networking.socket.*;
@@ -39,7 +40,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 public class Server implements Loggable, ConnectionHandlerReceiverDelegate, WaitingRoomObserver, RMIInterface {
 
 
-    private ServerRMIConnectionHandler serverRMI;
+    private RMIClientInterface clientRMI;
 
     private Registry registry;
     /**
@@ -103,11 +104,6 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         this.waitingRoom = new WaitingRoom(3, 5, 30, this);
 
         setupConnections();
-        try {
-            launch();
-        } catch (RemoteException e){
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -355,8 +351,22 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         Logger.getGlobal().info("rmi Server running correctly...");
     }
 
-    public void registerClient(Integer clientPort) throws RemoteException{
-        serverRMI = new ServerRMIConnectionHandler(this, clientPort);
+    @Override
+    public void registerClient(){
+        try {
+            Registry remoteRegistry = LocateRegistry.getRegistry(portNumberRMI);
+            System.out.println(registry);
+            this.clientRMI = (RMIClientInterface) remoteRegistry.lookup("RMIClientInterface");
+            try {
+                clientRMI.gameStarted();
+            } catch (RemoteException e){
+                System.err.println("ClientSocket exception: " + e.toString());
+                e.printStackTrace();
+            }
+        }catch (Exception e) {
+            System.err.println("ClientSocket exception: " + e.toString());
+            e.printStackTrace();
+        }
     }
 
     @Override

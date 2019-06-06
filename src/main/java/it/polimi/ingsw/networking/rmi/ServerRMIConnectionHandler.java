@@ -3,39 +3,34 @@ package it.polimi.ingsw.networking.rmi;
 import it.polimi.ingsw.networking.Server;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
 
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 
-public class ServerRMIConnectionHandler extends ServerConnectionHandler {
+public class ServerRMIConnectionHandler {
 
-    private Registry registry;
-    private RMIClientInterface client;
-    private Integer clientPort;
+    private ArrayList<RMIClientInterface> clientsRMI;
 
-    public ServerRMIConnectionHandler(Server server, Integer clientPort){
-        this.server=server;
-        this.clientPort=clientPort;
-        setupConnection();
+    public void registerClient(RMIClientInterface clientRMI){
+        int i=0;
+        while(clientsRMI.get(i)!=null) {
+            i++;
+        }
+        this.clientsRMI.add(i, clientRMI);
     }
 
-    protected void setupConnection() {
+
+    public void chooseCharacter(Character character) throws RemoteException{
+
+    }
+
+    public void gameDidStart(){
         try{
-            registry = LocateRegistry.getRegistry(clientPort);
-            System.out.println(registry);
-            client = (RMIClientInterface) registry.lookup("rmiClientInterface");
-        } catch (Exception e) {
-            System.err.println("ServerRMI exception: " + e.toString());
+            for(RMIClientInterface clientRMI : clientsRMI)
+                clientRMI.gameStarted();
+        }catch (RemoteException e){
+            System.err.println("ClientSocket exception: " + e.toString());
             e.printStackTrace();
         }
     }
 
-    @Override
-    public boolean isConnectionAvailable(){
-        return true;
-    }
-
-
-    protected void gameDidStart(String gameID){
-
-    }
 }

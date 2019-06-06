@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface RMIInterface extends Remote {
 
-    void registerClient(Integer clientPort) throws RemoteException;
+    void registerClient() throws RemoteException;
 
     void newUser(String username) throws RemoteException;
 
