@@ -205,13 +205,14 @@ public abstract class View implements Observer{
 
     /**
      * Called when the damages to be done have been chosen by the player.
-     *
-     * @param damageToDo it's a Map<String, String> containing the damages to make and some other information needed to apply them.
+     * @param weapon it's the weapon that is being used.
+     * @param damage it's the damage that has been selected.
+     * @param indexOfEffect it's the index of the effect that is being used.
+     * @param forPotentiableWeapon it's the string containing the information about potentiable weapons.
      */
-    protected void didChooseDamage(Map<String, String> damageToDo) {
+    protected void didChooseDamage(String weapon, String damage, String indexOfEffect, String forPotentiableWeapon) {
         AdrenalineLogger.info(DID_CHOOSE_DAMAGE);
-        damageToDo.put(PlayerColor.playerColor_key, playerColor.toString());
-        this.client.send(CommunicationMessage.from(0, DAMAGE_TO_MAKE, damageToDo, gameID));
+        this.client.makeDamage(weapon, damage, indexOfEffect, forPotentiableWeapon);
     }
 
     /**

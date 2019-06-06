@@ -271,14 +271,13 @@ public class AdrenalineCLI extends View {
             throw new IllegalArgumentException(INCORRECT_CHOICE);
         }
         Map<String, String> damageToDo = new HashMap<>();
-        if(damagesToChoose.containsKey(PotentiableWeapon.forPotentiableWeapon_key)) {
-            String forPotentiableWeapon = damagesToChoose.get(PotentiableWeapon.forPotentiableWeapon_key);
-            damageToDo.put(PotentiableWeapon.forPotentiableWeapon_key, forPotentiableWeapon);
-        }
+        String forPotentiableWeapon = null;
+        if(damagesToChoose.containsKey(PotentiableWeapon.forPotentiableWeapon_key))
+            forPotentiableWeapon = damagesToChoose.get(PotentiableWeapon.forPotentiableWeapon_key);
         damageToDo.put(Damage.damage_key, possibleDamages.get(i-1));
         damageToDo.put(Weapon.weapon_key, weapon);
         damageToDo.put(Effect.effect_key, indexOfEffect);
-        this.didChooseDamage(damageToDo);
+        this.didChooseDamage(weapon, possibleDamages.get(i-1), indexOfEffect, forPotentiableWeapon);
     }
 
     @Override

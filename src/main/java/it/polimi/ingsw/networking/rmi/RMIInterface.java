@@ -38,7 +38,7 @@ public interface RMIInterface extends Remote {
 
     Map<String, String> useWeapon(int userID, UUID gameID, String weaponSelected) throws RemoteException;
 
-    void chooseDamage(Map<String, String> damageToDo) throws RemoteException;
+    void makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) throws RemoteException;
 
     Map<String, String> getAvailableModes() throws RemoteException;
 

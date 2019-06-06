@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking.rmi;
 
+import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.view.View;
@@ -91,6 +92,15 @@ public class ClientRMI extends Client implements RMIClientInterface {
                     break;
                 }
             }
+        } catch (RemoteException e){
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
+    }
+
+    @Override
+    public void makeDamage(String weapon, String damage, String indexOfEffect, String forPotentiableWeapon) {
+        try{
+            server.makeDamage(userID, forPotentiableWeapon, indexOfEffect, gameID, damage, weapon);
         } catch (RemoteException e){
             System.err.println("ClientRMI exception: " + e.toString());
         }

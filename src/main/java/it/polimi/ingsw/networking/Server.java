@@ -185,41 +185,9 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                 case DAMAGE_TO_MAKE: {
                     String damage = args.get(Damage.damage_key);
                     String weapon = args.get(Weapon.weapon_key);
-                    Weapon weaponToUse = lookForWeapon(weapon);
-                    PlayerColor playerColor = PlayerColor.valueOf(args.get(PlayerColor.playerColor_key));
-                    Player shooter = gameControllers.get(gameID).getPlayer(playerColor);
-                    int indexOfEffect = Integer.parseInt(args.get(Effect.effect_key));
-                    boolean potentiable = false;
-                    if (weaponToUse.communicationMessageGenerator() == EFFECTS_LIST) potentiable = true;
-                    ArrayList<ArrayList<Damage>> possibleDamages;
-                    boolean toApply = true;
-                    if (!potentiable)
-                        possibleDamages = gameControllers.get(gameID).useEffect(weaponToUse, weaponToUse.getEffects().get(indexOfEffect), shooter, null);
-                    else {
-                        toApply = false;
-                        Effect effect = weaponToUse.getEffects().get(indexOfEffect);
-                        ArrayList<Damage> forPotentiableWeapon = gameControllers.get(gameID).getForPotentiableWeapon();
-                        if (forPotentiableWeapon.isEmpty() || effect.getProperties().containsKey(EffectProperty.MoveMe))
-                            forPotentiableWeapon = null;
-                        if (effect.getProperties().containsKey(EffectProperty.MoveMe)) toApply = true;
-                        possibleDamages = gameControllers.get(gameID).useEffect(weaponToUse, effect, shooter, forPotentiableWeapon);
-                    }
-                    ArrayList<Damage> damageToMake = new ArrayList<>();
-                    for (ArrayList<Damage> damages : possibleDamages)
-                        if (damages.toString().equals(damage)) damageToMake = damages;
-                    if (damageToMake.isEmpty()) throw new IllegalArgumentException("This damage doesn't exist!");
-                    if (toApply) {
-                        for (Damage d : damageToMake)
-                            gameControllers.get(gameID).applyDamage(d, playerColor);
-                    } else {
-                        boolean applyPotentiableDamage = Boolean.parseBoolean(args.get(PotentiableWeapon.forPotentiableWeapon_key));
-                        if (applyPotentiableDamage) {
-                            damageToMake.addAll(gameControllers.get(gameID).getForPotentiableWeapon());
-                            for (Damage d : damageToMake)
-                                gameControllers.get(gameID).applyDamage(d, playerColor);
-                            gameControllers.get(gameID).wipePotentiableWeapon();
-                        } else gameControllers.get(gameID).appendPotentiableWeapon(damageToMake);
-                    }
+                    String potentiableBoolean = args.get(PotentiableWeapon.forPotentiableWeapon_key);
+                    String effectIndex = args.get(Effect.effect_key);
+                    makeDamage(connectionID, potentiableBoolean, effectIndex, gameID, damage, weapon);
                     break;
                 }
 
@@ -256,6 +224,53 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                     break;
             }
         }).start();
+    }
+
+    /**
+     * Method used to make damages when using a weapon.
+     * @param userID it's the ID of the user who is using the weapon.
+     * @param args it's a map containing the damages to do with the weapon.
+     * @param gameID it's the ID of the game where the damage has to be done.
+     * @param damage it's the damage to be done.
+     * @param weapon it's the name of the weapon that is being used.
+     */
+    @Override
+    public void makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) {
+        Weapon weaponToUse = lookForWeapon(weapon);
+        Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromConnectionID(userID));
+        PlayerColor playerColor = shooter.getCharacter().getColor();
+        int indexOfEffect = Integer.parseInt(effectIndex);
+        boolean potentiable = false;
+        if (weaponToUse.communicationMessageGenerator() == EFFECTS_LIST) potentiable = true;
+        ArrayList<ArrayList<Damage>> possibleDamages;
+        boolean toApply = true;
+        if (!potentiable)
+            possibleDamages = gameControllers.get(gameID).useEffect(weaponToUse, weaponToUse.getEffects().get(indexOfEffect), shooter, null);
+        else {
+            toApply = false;
+            Effect effect = weaponToUse.getEffects().get(indexOfEffect);
+            ArrayList<Damage> forPotentiableWeapon = gameControllers.get(gameID).getForPotentiableWeapon();
+            if (forPotentiableWeapon.isEmpty() || effect.getProperties().containsKey(EffectProperty.MoveMe))
+                forPotentiableWeapon = null;
+            if (effect.getProperties().containsKey(EffectProperty.MoveMe)) toApply = true;
+            possibleDamages = gameControllers.get(gameID).useEffect(weaponToUse, effect, shooter, forPotentiableWeapon);
+        }
+        ArrayList<Damage> damageToMake = new ArrayList<>();
+        for (ArrayList<Damage> damages : possibleDamages)
+            if (damages.toString().equals(damage)) damageToMake = damages;
+        if (damageToMake.isEmpty()) throw new IllegalArgumentException("This damage doesn't exist!");
+        if (toApply) {
+            for (Damage d : damageToMake)
+                gameControllers.get(gameID).applyDamage(d, playerColor);
+        } else {
+            boolean applyPotentiableDamage = Boolean.parseBoolean(potentiableBoolean);
+            if (applyPotentiableDamage) {
+                damageToMake.addAll(gameControllers.get(gameID).getForPotentiableWeapon());
+                for (Damage d : damageToMake)
+                    gameControllers.get(gameID).applyDamage(d, playerColor);
+                gameControllers.get(gameID).wipePotentiableWeapon();
+            } else gameControllers.get(gameID).appendPotentiableWeapon(damageToMake);
+        }
     }
 
     /**
@@ -438,11 +453,6 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
 
     @Override
     public void chooseWeapon(String weaponSelected) throws RemoteException{
-
-    }
-
-    @Override
-    public void chooseDamage(Map<String, String> damageToDo) throws RemoteException{
 
     }
 
