@@ -7,7 +7,7 @@ import it.polimi.ingsw.view.View;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -114,10 +114,17 @@ public abstract class Client implements Loggable {
     public abstract void makeDamage(String weapon, String damage, String indexOfEffect, String forPotentiableWeapon);
 
     /**
-     * Abstract method implemented by subclasses and used when a player has chosen what mode does he want to use with his Potentiable Weapon.
+     * Abstract method implemented by subclasses and used when a player has chosen what mode does he want to use with his Selectable Weapon.
      * @param weapon It's the weapon that is being used.
      * @param effect It's the mode that has being chosen.
      */
     public abstract void useMode(String weapon, String effect);
+
+    /**
+     * Abstract method implemented by subclasses and used when a player has chosen what effects does he want to use with his Potentiable weapon.
+     * @param weapon It's the weapon that is being used.
+     * @param effectsToUse it's a list containing all of the indexes of the effects to use.
+     */
+    public abstract void useEffect(String weapon, List<String> effectsToUse);
 
 }

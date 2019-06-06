@@ -1,8 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.networking.Client;
-import it.polimi.ingsw.networking.socket.ClientSocket;
-import it.polimi.ingsw.networking.rmi.ClientRMI;
 import it.polimi.ingsw.view.View;
 
 import java.util.ArrayList;

@@ -7,9 +7,8 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.PlayerColor;
-import it.polimi.ingsw.networking.rmi.ClientRMI;
-import it.polimi.ingsw.networking.rmi.RMIClientInterface;
-import it.polimi.ingsw.networking.rmi.RMIInterface;
+import it.polimi.ingsw.networking.rmi.ClientInterface;
+import it.polimi.ingsw.networking.rmi.ServerInterface;
 import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
 import it.polimi.ingsw.networking.socket.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -37,10 +36,11 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  * @author Elena Iannucci
  */
 @SuppressWarnings("all")
-public class Server implements Loggable, ConnectionHandlerReceiverDelegate, WaitingRoomObserver, RMIInterface {
+public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
+    private ServerRMIConnectionHandler serverRMIConnectionHandler;
 
-    private RMIClientInterface clientRMI;
+    private ClientInterface clientRMI;
 
     private Registry registry;
     /**
@@ -155,26 +155,6 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         var connectionHandler = users.get(user);
         if ( connectionHandler != null ) return !connectionHandler.isConnectionAvailable();
         else return true;
-    }
-
-    /**
-     * Receives a message from a delegator
-     * @param message received message
-     * @param sender a the connection handler delegated to send messages
-     */
-    @Override
-    public void receive(String message, ConnectionHandlerSenderDelegate sender) {
-        new Thread( () -> {
-            var communicationMessage = CommunicationMessage.getCommunicationMessageFrom(message);
-            var connectionID = CommunicationMessage.getConnectionIDFrom(message);
-            var args = CommunicationMessage.getMessageArgsFrom(message);
-            var gameID = CommunicationMessage.getMessageGameIDFrom(message);
-            switch (communicationMessage) {
-
-                default:
-                    break;
-            }
-        }).start();
     }
 
     /**
@@ -374,15 +354,9 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         try {
             Registry remoteRegistry = LocateRegistry.getRegistry(portNumberRMI);
             System.out.println(registry);
-            this.clientRMI = (RMIClientInterface) remoteRegistry.lookup("RMIClientInterface");
-            try {
-                clientRMI.gameStarted();
-            } catch (RemoteException e){
-                System.err.println("ClientSocket exception: " + e.toString());
-                e.printStackTrace();
-            }
+            this.clientRMI = (ClientInterface) remoteRegistry.lookup("ClientInterface");
         }catch (Exception e) {
-            System.err.println("ClientSocket exception: " + e.toString());
+            System.err.println("ServerRMI exception: " + e.toString());
             e.printStackTrace();
         }
     }
@@ -397,111 +371,108 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
     }
 
     @Override
-    public void joinWaitingRoom() throws RemoteException {
+    public void joinWaitingRoom() {
 
     }
 
     @Override
-    public ArrayList<Character> getAvailableCharacters() throws RemoteException{
+    public ArrayList<Character> getAvailableCharacters() {
         return null;
     }
 
     @Override
-    public void chooseCharacter(Character character) throws RemoteException{
+    public void chooseCharacter(Character character) {
 
     }
 
     @Override
-    public void chooseGameSettings() throws RemoteException{
+    public void chooseGameSettings() {
 
     }
 
     @Override
-    public ArrayList<AmmoColor> displaySpawnPoints() throws RemoteException{
+    public ArrayList<AmmoColor> displaySpawnPoints() {
         return null;
     }
 
     @Override
-    public void chooseSpawnPoint() throws RemoteException{
+    public void chooseSpawnPoint() {
 
     }
 
     @Override
-    public void chooseMove() throws RemoteException{
+    public void chooseMove() {
 
     }
 
     @Override
-    public void chooseMovement() throws RemoteException{
+    public void chooseMovement() {
 
     }
 
     @Override
-    public void chooseWhatToGrab() throws RemoteException{
+    public void chooseWhatToGrab() {
 
     }
 
     @Override
-    public ArrayList<String> getAvailableWeapons() throws RemoteException{
+    public ArrayList<String> getAvailableWeapons() {
         return null;
     }
 
     @Override
-    public void chooseWeapon(String weaponSelected) throws RemoteException{
+    public void chooseWeapon(String weaponSelected) {
 
     }
 
     @Override
-    public Map<String, String> getAvailableModes() throws RemoteException{
+    public Map<String, String> getAvailableModes() {
         return null;
     }
 
     @Override
-    public void chooseMode(Map<String, String> modalityChosen) throws RemoteException{
+    public void chooseMode(Map<String, String> modalityChosen) {
 
     }
 
     @Override
-    public void getAvailableEffect() throws RemoteException{
+    public void getAvailableEffect() {
 
     }
 
     @Override
-    public void chooseEffects() throws RemoteException{
+    public void chooseEffects() {
 
     }
 
     @Override
-    public void getAvailablePowerups() throws RemoteException{
+    public void getAvailablePowerups() {
 
     }
 
     @Override
-    public void getAvailablePowerupsEffects() throws RemoteException{
+    public void getAvailablePowerupsEffects() {
 
     }
 
     @Override
-    public void choosePowerup() throws RemoteException{
+    public void choosePowerup() {
 
     }
 
     @Override
-    public void choosePowerupEffects() throws RemoteException{
+    public void choosePowerupEffects() {
 
     }
 
     @Override
-    public ArrayList<String> canReload() throws RemoteException{
+    public ArrayList<String> canReload() {
         return null;
     }
 
     @Override
-    public void reload(String weaponSelected) throws RemoteException{
+    public void reload(String weaponSelected) {
 
     }
 
-    public Integer getPortNumberRMI() {
-        return portNumberRMI;
-    }
 }

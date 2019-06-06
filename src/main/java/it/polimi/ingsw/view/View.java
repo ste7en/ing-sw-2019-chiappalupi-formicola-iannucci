@@ -1,19 +1,12 @@
 package it.polimi.ingsw.view;
-
-import it.polimi.ingsw.model.cards.Effect;
-import it.polimi.ingsw.model.cards.PotentiableWeapon;
-import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
+import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.socket.ClientSocket;
 import it.polimi.ingsw.networking.rmi.ClientRMI;
-import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
-
 import java.util.*;
-
-import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
 
 /**
@@ -26,10 +19,9 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  */
 public abstract class View implements Observer{
 
-    protected ClientSocket client;
+    protected Client client;
     protected UUID gameID;
     protected PlayerColor playerColor;
-    protected ClientRMI clientRMI;
     protected ConnectionType connectionType;
 
     /**
@@ -78,9 +70,9 @@ public abstract class View implements Observer{
             this.client = new ClientSocket(host, port);
         }
         if (type == ConnectionType.RMI){
-            clientRMI = new ClientRMI(host, port);
+            client = new ClientRMI(host, port);
         }
-        clientRMI.registerObserver(this);
+        client.registerObserver(this);
     }
 
     /**
@@ -114,7 +106,7 @@ public abstract class View implements Observer{
         AdrenalineLogger.info(JOIN_WAITING_ROOM);
         var args = new HashMap<String, String>();
         args.put(User.username_key, username);
-        this.client.send(CommunicationMessage.from(0, USER_LOGIN, args));
+        //this.client.send(CommunicationMessage.from(0, USER_LOGIN, args));
     }
 
     /**
@@ -241,25 +233,12 @@ public abstract class View implements Observer{
     /**
      * Called when the effects to use have been chosen by the player.
      *
-     * @param effectsChosen it's a map containing the effects chosen and the weapon that is being used.
+     * @param effectsToUse it's a list containing the effects chosen.
+     * @param weapon it's the weapon that is being used.
      */
-    protected void didChooseEffects(Map<String, List<String>> effectsChosen) {
+    protected void didChooseEffects(List<String> effectsToUse, String weapon) {
         AdrenalineLogger.info(DID_CHOOSE_EFFECTS);
-        HashMap<String, String> args = new HashMap<>();
-        String weapon = effectsChosen.get(Weapon.weapon_key).get(0);
-        args.put(Weapon.weapon_key, weapon);
-        args.put(PlayerColor.playerColor_key, playerColor.toString());
-        List<String> effectsToUse = effectsChosen.get(Effect.effect_key);
-        while(!effectsToUse.isEmpty()) {
-            boolean forPotentiableWeapon;
-            forPotentiableWeapon = effectsToUse.size() == 1;
-            args.put(PotentiableWeapon.forPotentiableWeapon_key, Boolean.toString(forPotentiableWeapon));
-            args.put(Effect.effect_key, effectsToUse.get(0));
-            effectsToUse.remove(0);
-            this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, (HashMap<String, String>)args.clone(), gameID));
-            args.remove(PotentiableWeapon.forPotentiableWeapon_key);
-            args.remove(Effect.effect_key);
-        }
+        this.client.useEffect(weapon, effectsToUse);
     }
 
     /**
@@ -278,12 +257,12 @@ public abstract class View implements Observer{
     public abstract void didReload();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void willUsePowerup();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void didUsePowerup();
 
