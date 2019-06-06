@@ -52,7 +52,7 @@ public enum CommunicationMessage {
      *
      * WEAPON_TO_USE is sent by the client to the server to notify the selection of the Weapon to use in game.
      *
-     * Arguments: <Weapon.weapon_key, Weapon_name>, <PlayerColor.playerColor_key, Player_color>
+     * Arguments: <Weapon.weapon_key, Weapon_name>
      */
     WEAPON_TO_USE,
 
@@ -70,7 +70,7 @@ public enum CommunicationMessage {
      *
      * DAMAGE_TO_MAKE is sent from the client to the server to notify the selection of the damage that has to be applied to the other players.
      *
-     * Arguments: <Damage.damage_key, damage>, <Weapon.weapon_key, Weapon_name>, <Effect.effect_key, indexOf_effect>, <PlayerColor.playerColor_key, playerColor>
+     * Arguments: <Damage.damage_key, damage>, <Weapon.weapon_key, Weapon_name>, <Effect.effect_key, indexOf_effect>
      */
     DAMAGE_TO_MAKE,
 
@@ -97,10 +97,15 @@ public enum CommunicationMessage {
      *
      * EFFECT is sent by the client to the server to notify the selection of the Effect to use in game.
      *
-     * Arguments: <Effect.effect_key, Effect_name>, <PlayerColor.playerColor_key, Player_color>, <Weapon.weapon_key, Weapon_name>
+     * Arguments: <Effect.effect_key, Effect_name>, <Weapon.weapon_key, Weapon_name>
      *     if (PotentiableWeapon): <PotentiableWeapon.potentiableWeapon_key, boolean> to save if the damage made has to be carried through the attack.
      */
     EFFECT_TO_USE;
+
+    /**
+     * String constant used in messages between client-server
+     */
+    public final static String communication_message_key = "COMMUNICATION_MESSAGE";
 
     /**
      * Log strings

@@ -1,12 +1,14 @@
 package it.polimi.ingsw.networking.rmi;
 
 import it.polimi.ingsw.networking.Client;
+import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.view.View;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Map;
 
 
 public class ClientRMI extends Client implements RMIClientInterface {
@@ -66,6 +68,32 @@ public class ClientRMI extends Client implements RMIClientInterface {
 
     public void registerObserver(View viewObserver) {
         this.viewObserver = viewObserver;
+    }
+
+    @Override
+    public void useWeapon(String weaponSelected) {
+        try{
+            Map<String, String> weaponUsingProcess = server.useWeapon(userID, gameID, weaponSelected);
+            switch(CommunicationMessage.valueOf(weaponUsingProcess.get(CommunicationMessage.communication_message_key))) {
+                case DAMAGE_LIST: {
+                    weaponUsingProcess.remove(CommunicationMessage.communication_message_key);
+                    this.viewObserver.willChooseDamage(weaponUsingProcess);
+                    break;
+                }
+                case MODES_LIST: {
+                    weaponUsingProcess.remove(CommunicationMessage.communication_message_key);
+                    this.viewObserver.willChooseMode(weaponUsingProcess);
+                    break;
+                }
+                case EFFECTS_LIST: {
+                    weaponUsingProcess.remove(CommunicationMessage.communication_message_key);
+                    this.viewObserver.willChooseEffects(weaponUsingProcess);
+                    break;
+                }
+            }
+        } catch (RemoteException e){
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
     }
 }
 

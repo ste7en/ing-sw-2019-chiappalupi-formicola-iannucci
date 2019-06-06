@@ -66,6 +66,10 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
      * or to check username availability, but also users availability
      */
     private Map<User, ConnectionHandlerSenderDelegate> users;
+    /**
+     * Collection of the connected users id, useful to know which player is making an action in game.
+     */
+    private Map<Integer, User> userIDs;
 
     /**
      * Log strings
@@ -184,42 +188,10 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
 
                 case WEAPON_TO_USE: {
                     String weaponSelected = args.get(Weapon.weapon_key);
-                    PlayerColor playerColor = PlayerColor.valueOf(args.get(PlayerColor.playerColor_key));
-                    Weapon weapon = lookForWeapon(weaponSelected);
-                    CommunicationMessage weaponMessage = weapon.communicationMessageGenerator();
-                    Map<String, String> responseArgs = new HashMap<>();
-                    responseArgs.put(Weapon.weapon_key, weaponSelected);
-                    String responseMessage = new String();
-
-                    switch (weaponMessage) {
-                        case DAMAGE_LIST: {
-                            responseArgs.put(Effect.effect_key, "0");
-                            Player shooter = gamesControllers.get(gameID).getPlayer(playerColor);
-                            ArrayList<ArrayList<Damage>> possibleDamages = gamesControllers.get(gameID).useEffect(weapon, weapon.getEffects().get(0), shooter, null);
-                            stringifyDamages(possibleDamages, responseArgs);
-                            responseMessage = CommunicationMessage.from(connectionID, weaponMessage, responseArgs, gameID);
-                            sender.send(responseMessage);
-                            break;
-                        }
-                        case MODES_LIST: {
-                            int i = 0;
-                            for (Effect effect : weapon.getEffects()) {
-                                responseArgs.put(Integer.toString(i), effect.getName());
-                                i++;
-                            }
-                            responseMessage = CommunicationMessage.from(connectionID, weaponMessage, responseArgs, gameID);
-                            break;
-                        }
-                        case EFFECTS_LIST: {
-                            ArrayList<ArrayList<Integer>> effectsCombinations = weapon.effectsCombinations();
-                            for (ArrayList<Integer> combination : effectsCombinations)
-                                responseArgs.put(Integer.toString(effectsCombinations.indexOf(combination)), combination.toString());
-                            responseMessage = CommunicationMessage.from(connectionID, weaponMessage, responseArgs, gameID);
-                            break;
-                        }
-                        default:
-                            break;
-                    }
+                    Map<String, String> responseArgs = useWeapon(connectionID, gameID, weaponSelected);
+                    CommunicationMessage format = CommunicationMessage.valueOf(responseArgs.get(CommunicationMessage.communication_message_key));
+                    responseArgs.remove(communication_message_key);
+                    String responseMessage = CommunicationMessage.from(connectionID, format, responseArgs, gameID);
                     sender.send(responseMessage);
                     break;
                 }
@@ -298,6 +270,48 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
                     break;
             }
         }).start();
+    }
+
+    /**
+     * Method used to start the process of using a weapon.
+     * @param userID it's the userID of the player who is using the weapon.
+     * @param gameID it's the gameID of the game where the player is playing.
+     * @param weaponSelected it's the weapon that has to be used.
+     * @return a Map containing the information about how to continue the weapon using process.
+     */
+    @Override
+    public Map<String, String> useWeapon(int userID, UUID gameID, String weaponSelected) {
+        Weapon weapon = lookForWeapon(weaponSelected);
+        CommunicationMessage weaponMessage = weapon.communicationMessageGenerator();
+        Map<String, String> weaponProcess = new HashMap<>();
+        weaponProcess.put(Weapon.weapon_key, weaponSelected);
+        weaponProcess.put(CommunicationMessage.communication_message_key, weaponMessage.toString());
+        switch (weaponMessage) {
+            case DAMAGE_LIST: {
+                weaponProcess.put(Effect.effect_key, "0");
+                Player shooter = gamesControllers.get(gameID).lookForPlayerFromUser(userIDs.get(userID));
+                ArrayList<ArrayList<Damage>> possibleDamages = gamesControllers.get(gameID).useEffect(weapon, weapon.getEffects().get(0), shooter, null);
+                stringifyDamages(possibleDamages, weaponProcess);
+                break;
+            }
+            case MODES_LIST: {
+                int i = 0;
+                for (Effect effect : weapon.getEffects()) {
+                    weaponProcess.put(Integer.toString(i), effect.getName());
+                    i++;
+                }
+                break;
+            }
+            case EFFECTS_LIST: {
+                ArrayList<ArrayList<Integer>> effectsCombinations = weapon.effectsCombinations();
+                for (ArrayList<Integer> combination : effectsCombinations)
+                    weaponProcess.put(Integer.toString(effectsCombinations.indexOf(combination)), combination.toString());
+                break;
+            }
+            default:
+                break;
+        }
+        return weaponProcess;
     }
 
     /**
@@ -440,11 +454,6 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
     @Override
     public void chooseWeapon(String weaponSelected) throws RemoteException{
 
-    }
-
-    @Override
-    public Map<String, String> getAvailableDamages() throws RemoteException{
-        return null;
     }
 
     @Override

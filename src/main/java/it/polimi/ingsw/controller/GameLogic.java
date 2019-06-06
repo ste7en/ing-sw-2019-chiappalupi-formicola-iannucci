@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Effect;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
 
 import java.util.*;
@@ -120,6 +121,20 @@ public class GameLogic {
                 marks.add(shooter);
             target.getPlayerBoard().setMarks(marks);
         }
+    }
+
+    /**
+     * This method is used to find a player from its user.
+     * @param user it's the user that is wanted to bind with its player.
+     * @return the player that is being searched.
+     */
+    public Player lookForPlayerFromUser(User user) {
+        Player player = null;
+        for(Player p : players)
+            if(p.getUser().equals(user))
+                player = p;
+        if(player == null) throw new NullPointerException("This user doesn't exists.");
+        return player;
     }
 
 }

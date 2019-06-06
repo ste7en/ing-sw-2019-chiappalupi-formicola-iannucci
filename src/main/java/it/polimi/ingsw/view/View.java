@@ -194,10 +194,7 @@ public abstract class View implements Observer{
      */
     protected void didChooseWeapon(String weaponSelected) {
         AdrenalineLogger.info(DID_CHOOSE_WEAPON + weaponSelected);
-        Map args = new HashMap<String, String>();
-        args.put(Weapon.weapon_key, weaponSelected);
-        args.put(PlayerColor.playerColor_key, playerColor.toString());
-        //this.client.send(CommunicationMessage.from(0, WEAPON_TO_USE, args, gameID));
+        this.client.useWeapon(weaponSelected);
     }
 
     /**
