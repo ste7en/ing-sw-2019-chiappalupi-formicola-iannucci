@@ -1,6 +1,10 @@
 package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
+import it.polimi.ingsw.model.cards.Damage;
+import it.polimi.ingsw.model.cards.Effect;
+import it.polimi.ingsw.model.cards.PotentiableWeapon;
+import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.Server;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
@@ -165,6 +169,33 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 }
                 case USER_LOGIN: {
                     userLogin(connectionID, args);
+                    break;
+                }
+                case WEAPON_TO_USE: {
+                    String weaponSelected = args.get(Weapon.weapon_key);
+                    Map<String, String> responseArgs = server.useWeapon(connectionID, gameID, weaponSelected);
+                    CommunicationMessage format = CommunicationMessage.valueOf(responseArgs.get(CommunicationMessage.communication_message_key));
+                    responseArgs.remove(CommunicationMessage.communication_message_key);
+                    String responseMessage = CommunicationMessage.from(connectionID, format, responseArgs, gameID);
+                    send(responseMessage);
+                    break;
+                }
+                case DAMAGE_TO_MAKE: {
+                    String damage = args.get(Damage.damage_key);
+                    String weapon = args.get(Weapon.weapon_key);
+                    String potentiableBoolean = args.get(PotentiableWeapon.forPotentiableWeapon_key);
+                    String effectIndex = args.get(Effect.effect_key);
+                    server.makeDamage(connectionID, potentiableBoolean, effectIndex, gameID, damage, weapon);
+                    break;
+                }
+                case EFFECT_TO_USE: {
+                    String forPotentiableWeapon = null;
+                    if(args.containsKey(PotentiableWeapon.forPotentiableWeapon_key)) forPotentiableWeapon = args.get(PotentiableWeapon.forPotentiableWeapon_key);
+                    String effectSelected = args.get(Effect.effect_key);
+                    String weaponSelected = args.get(Weapon.weapon_key);
+                    Map<String, String> responseArgs = server.useEffect(connectionID, gameID, forPotentiableWeapon, effectSelected, weaponSelected);
+                    String responseMessage = CommunicationMessage.from(connectionID, DAMAGE_LIST, responseArgs, gameID);
+                    send(responseMessage);
                     break;
                 }
                 default:

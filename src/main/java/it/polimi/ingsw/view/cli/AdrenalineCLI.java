@@ -271,14 +271,13 @@ public class AdrenalineCLI extends View {
             throw new IllegalArgumentException(INCORRECT_CHOICE);
         }
         Map<String, String> damageToDo = new HashMap<>();
-        if(damagesToChoose.containsKey(PotentiableWeapon.forPotentiableWeapon_key)) {
-            String forPotentiableWeapon = damagesToChoose.get(PotentiableWeapon.forPotentiableWeapon_key);
-            damageToDo.put(PotentiableWeapon.forPotentiableWeapon_key, forPotentiableWeapon);
-        }
+        String forPotentiableWeapon = null;
+        if(damagesToChoose.containsKey(PotentiableWeapon.forPotentiableWeapon_key))
+            forPotentiableWeapon = damagesToChoose.get(PotentiableWeapon.forPotentiableWeapon_key);
         damageToDo.put(Damage.damage_key, possibleDamages.get(i-1));
         damageToDo.put(Weapon.weapon_key, weapon);
         damageToDo.put(Effect.effect_key, indexOfEffect);
-        this.didChooseDamage(damageToDo);
+        this.didChooseDamage(weapon, possibleDamages.get(i-1), indexOfEffect, forPotentiableWeapon);
     }
 
     @Override
@@ -287,10 +286,7 @@ public class AdrenalineCLI extends View {
         modalitiesToChoose.remove(Weapon.weapon_key);
         out.println(CHOOSE_MODALITY);
         String modalitySelected = decisionHandler(modalitiesToChoose);
-        Map<String, String> modalityChosen = new HashMap<>();
-        modalityChosen.put(Weapon.weapon_key, weapon);
-        modalityChosen.put(Effect.effect_key, modalitySelected);
-        this.didChooseMode(modalityChosen);
+        this.didChooseMode(weapon, modalitySelected);
     }
 
     /**

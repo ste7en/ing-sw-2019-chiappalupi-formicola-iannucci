@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking.rmi;
 
+import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.view.View;
@@ -21,6 +22,17 @@ public class ClientRMI extends Client implements RMIClientInterface {
     }
 
     @Override
+    public void gameStarted() throws RemoteException{
+        try {
+            System.out.println("The game has started!");
+        }
+        catch (Exception e){
+            System.err.println("ClientSocket exception: " + e.toString());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected void setupConnection() {
 
         try{
@@ -31,11 +43,11 @@ public class ClientRMI extends Client implements RMIClientInterface {
                 exportClient();
                 server.registerClient();
             } catch (RemoteException e) {
-                System.err.println("ClientRMI exception: " + e.toString());
+                System.err.println("ClientSocket exception: " + e.toString());
                 e.printStackTrace();
             }
         } catch (Exception e) {
-            System.err.println("ClientRMI exception: " + e.toString());
+            System.err.println("ClientSocket exception: " + e.toString());
             e.printStackTrace();
         }
     }
@@ -45,11 +57,6 @@ public class ClientRMI extends Client implements RMIClientInterface {
         registry.rebind("RMIClientInterface", stub);
     }
 
-    public void registerObserver(View viewObserver) {
-        this.viewObserver = viewObserver;
-    }
-
-
     @Override
     public void login(String username){
         try{
@@ -58,6 +65,10 @@ public class ClientRMI extends Client implements RMIClientInterface {
             System.err.println("ClientSocket exception: " + e.toString());
             e.printStackTrace();
         }
+    }
+
+    public void registerObserver(View viewObserver) {
+        this.viewObserver = viewObserver;
     }
 
     @Override
@@ -87,13 +98,21 @@ public class ClientRMI extends Client implements RMIClientInterface {
     }
 
     @Override
-    public void gameStarted() throws RemoteException{
-        try {
-            System.out.println("The game has started!");
-        }
-        catch (Exception e){
+    public void makeDamage(String weapon, String damage, String indexOfEffect, String forPotentiableWeapon) {
+        try{
+            server.makeDamage(userID, forPotentiableWeapon, indexOfEffect, gameID, damage, weapon);
+        } catch (RemoteException e){
             System.err.println("ClientRMI exception: " + e.toString());
-            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void useMode(String weapon, String effect) {
+        try {
+            Map<String, String> damageList = server.useEffect(userID, gameID, null, effect, weapon);
+            this.viewObserver.willChooseDamage(damageList);
+        } catch (RemoteException e) {
+            System.err.println("ClientRMI exception: " + e.toString());
         }
     }
 }
