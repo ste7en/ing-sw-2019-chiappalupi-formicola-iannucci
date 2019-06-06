@@ -265,12 +265,12 @@ public abstract class View implements Observer{
     public abstract void didReload();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void willUsePowerup();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void didUsePowerup();
 

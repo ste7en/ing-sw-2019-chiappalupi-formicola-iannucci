@@ -1,7 +1,5 @@
 package it.polimi.ingsw.networking.rmi;
 
-import it.polimi.ingsw.model.cards.Effect;
-import it.polimi.ingsw.model.cards.PotentiableWeapon;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
@@ -15,9 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static it.polimi.ingsw.networking.utility.CommunicationMessage.EFFECT_TO_USE;
-
 
 public class ClientRMI extends Client implements ClientInterface {
 
