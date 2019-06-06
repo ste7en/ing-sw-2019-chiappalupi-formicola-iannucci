@@ -225,12 +225,12 @@ public abstract class View implements Observer{
     /**
      * Called when the modality has been chosen by the player.
      *
-     * @param modalityChosen it's a map containing the modality chosen and the weapon that is being used.
+     * @param weapon it's the weapon that is being used.
+     * @param effect it's the effect that has been chosen.
      */
-    protected void didChooseMode(Map<String, String> modalityChosen) {
-        AdrenalineLogger.info(DID_CHOOSE_MODALITY + modalityChosen.get(Effect.effect_key));
-        modalityChosen.put(PlayerColor.playerColor_key, playerColor.toString());
-        this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, modalityChosen, gameID));
+    protected void didChooseMode(String weapon, String effect) {
+        AdrenalineLogger.info(DID_CHOOSE_MODALITY + effect);
+        this.client.useMode(weapon, effect);
     }
 
     /**
@@ -288,22 +288,22 @@ public abstract class View implements Observer{
     public abstract void didUsePowerup();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void willChoosePowerup();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void didChoosePowerup();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void willChoosePowerupEffect();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void didChoosePowerupEffect();
 }

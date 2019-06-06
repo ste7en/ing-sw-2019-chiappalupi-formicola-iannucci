@@ -286,10 +286,7 @@ public class AdrenalineCLI extends View {
         modalitiesToChoose.remove(Weapon.weapon_key);
         out.println(CHOOSE_MODALITY);
         String modalitySelected = decisionHandler(modalitiesToChoose);
-        Map<String, String> modalityChosen = new HashMap<>();
-        modalityChosen.put(Weapon.weapon_key, weapon);
-        modalityChosen.put(Effect.effect_key, modalitySelected);
-        this.didChooseMode(modalityChosen);
+        this.didChooseMode(weapon, modalitySelected);
     }
 
     /**

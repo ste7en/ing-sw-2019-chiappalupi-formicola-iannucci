@@ -105,5 +105,15 @@ public class ClientRMI extends Client implements RMIClientInterface {
             System.err.println("ClientRMI exception: " + e.toString());
         }
     }
+
+    @Override
+    public void useMode(String weapon, String effect) {
+        try {
+            Map<String, String> damageList = server.useEffect(userID, gameID, null, effect, weapon);
+            this.viewObserver.willChooseDamage(damageList);
+        } catch (RemoteException e) {
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
+    }
 }
 

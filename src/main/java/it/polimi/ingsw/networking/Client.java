@@ -113,4 +113,11 @@ public abstract class Client implements Loggable {
      */
     public abstract void makeDamage(String weapon, String damage, String indexOfEffect, String forPotentiableWeapon);
 
+    /**
+     * Abstract method implemented by subclasses and used when a player has chosen what mode does he want to use with his Potentiable Weapon.
+     * @param weapon It's the weapon that is being used.
+     * @param effect It's the mode that has being chosen.
+     */
+    public abstract void useMode(String weapon, String effect);
+
 }

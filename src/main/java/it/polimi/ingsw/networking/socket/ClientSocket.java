@@ -139,4 +139,12 @@ public class ClientSocket extends Client implements Loggable, ConnectionHandlerR
         this.send(CommunicationMessage.from(userID, DAMAGE_TO_MAKE, damageToDo, gameID));
     }
 
+    @Override
+    public void useMode(String weapon, String effect) {
+        Map<String, String> args = new HashMap<>();
+        args.put(Weapon.weapon_key, weapon);
+        args.put(Effect.effect_key, effect);
+        this.send(CommunicationMessage.from(userID, EFFECT_TO_USE, args, gameID));
+    }
+
 }
