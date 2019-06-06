@@ -10,6 +10,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
+import java.util.UUID;
 
 
 public class ClientRMI extends Client implements RMIClientInterface {
@@ -19,17 +20,6 @@ public class ClientRMI extends Client implements RMIClientInterface {
 
     public ClientRMI(String host, Integer port){
         super(host, port);
-    }
-
-    @Override
-    public void gameStarted() throws RemoteException{
-        try {
-            System.out.println("The game has started!");
-        }
-        catch (Exception e){
-            System.err.println("ClientSocket exception: " + e.toString());
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -57,18 +47,19 @@ public class ClientRMI extends Client implements RMIClientInterface {
         registry.rebind("RMIClientInterface", stub);
     }
 
+    public void registerObserver(View viewObserver) {
+        this.viewObserver = viewObserver;
+    }
+
+
     @Override
     public void login(String username){
         try{
             server.newUser(username);
         } catch (RemoteException e){
-            System.err.println("ClientSocket exception: " + e.toString());
+            System.err.println("ClientRMI exception: " + e.toString());
             e.printStackTrace();
         }
-    }
-
-    public void registerObserver(View viewObserver) {
-        this.viewObserver = viewObserver;
     }
 
     @Override
@@ -114,6 +105,12 @@ public class ClientRMI extends Client implements RMIClientInterface {
         } catch (RemoteException e) {
             System.err.println("ClientRMI exception: " + e.toString());
         }
+    }
+
+    @Override
+    public void gameStarted(String gameID){
+        this.viewObserver.onStart(UUID.fromString(gameID));
+        this.gameID = UUID.fromString(gameID);
     }
 }
 

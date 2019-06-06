@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cards.PotentiableWeapon;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
+import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.socket.ClientSocket;
 import it.polimi.ingsw.networking.rmi.ClientRMI;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
@@ -26,10 +27,9 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  */
 public abstract class View implements Observer{
 
-    protected ClientSocket client;
+    protected Client client;
     protected UUID gameID;
     protected PlayerColor playerColor;
-    protected ClientRMI clientRMI;
     protected ConnectionType connectionType;
 
     /**
@@ -78,9 +78,9 @@ public abstract class View implements Observer{
             this.client = new ClientSocket(host, port);
         }
         if (type == ConnectionType.RMI){
-            clientRMI = new ClientRMI(host, port);
+            client = new ClientRMI(host, port);
         }
-        clientRMI.registerObserver(this);
+        client.registerObserver(this);
     }
 
     /**

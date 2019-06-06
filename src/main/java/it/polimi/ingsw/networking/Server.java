@@ -39,6 +39,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 @SuppressWarnings("all")
 public class Server implements Loggable, ConnectionHandlerReceiverDelegate, WaitingRoomObserver, RMIInterface {
 
+    private ServerRMIConnectionHandler serverRMIConnectionHandler;
 
     private RMIClientInterface clientRMI;
 
@@ -364,14 +365,8 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
             Registry remoteRegistry = LocateRegistry.getRegistry(portNumberRMI);
             System.out.println(registry);
             this.clientRMI = (RMIClientInterface) remoteRegistry.lookup("RMIClientInterface");
-            try {
-                clientRMI.gameStarted();
-            } catch (RemoteException e){
-                System.err.println("ClientSocket exception: " + e.toString());
-                e.printStackTrace();
-            }
         }catch (Exception e) {
-            System.err.println("ClientSocket exception: " + e.toString());
+            System.err.println("ServerRMI exception: " + e.toString());
             e.printStackTrace();
         }
     }
@@ -386,111 +381,108 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
     }
 
     @Override
-    public void joinWaitingRoom() throws RemoteException {
+    public void joinWaitingRoom() {
 
     }
 
     @Override
-    public ArrayList<Character> getAvailableCharacters() throws RemoteException{
+    public ArrayList<Character> getAvailableCharacters() {
         return null;
     }
 
     @Override
-    public void chooseCharacter(Character character) throws RemoteException{
+    public void chooseCharacter(Character character) {
 
     }
 
     @Override
-    public void chooseGameSettings() throws RemoteException{
+    public void chooseGameSettings() {
 
     }
 
     @Override
-    public ArrayList<AmmoColor> displaySpawnPoints() throws RemoteException{
+    public ArrayList<AmmoColor> displaySpawnPoints() {
         return null;
     }
 
     @Override
-    public void chooseSpawnPoint() throws RemoteException{
+    public void chooseSpawnPoint() {
 
     }
 
     @Override
-    public void chooseMove() throws RemoteException{
+    public void chooseMove() {
 
     }
 
     @Override
-    public void chooseMovement() throws RemoteException{
+    public void chooseMovement() {
 
     }
 
     @Override
-    public void chooseWhatToGrab() throws RemoteException{
+    public void chooseWhatToGrab() {
 
     }
 
     @Override
-    public ArrayList<String> getAvailableWeapons() throws RemoteException{
+    public ArrayList<String> getAvailableWeapons() {
         return null;
     }
 
     @Override
-    public void chooseWeapon(String weaponSelected) throws RemoteException{
+    public void chooseWeapon(String weaponSelected) {
 
     }
 
     @Override
-    public Map<String, String> getAvailableModes() throws RemoteException{
+    public Map<String, String> getAvailableModes() {
         return null;
     }
 
     @Override
-    public void chooseMode(Map<String, String> modalityChosen) throws RemoteException{
+    public void chooseMode(Map<String, String> modalityChosen) {
 
     }
 
     @Override
-    public void getAvailableEffect() throws RemoteException{
+    public void getAvailableEffect() {
 
     }
 
     @Override
-    public void chooseEffects() throws RemoteException{
+    public void chooseEffects() {
 
     }
 
     @Override
-    public void getAvailablePowerups() throws RemoteException{
+    public void getAvailablePowerups() {
 
     }
 
     @Override
-    public void getAvailablePowerupsEffects() throws RemoteException{
+    public void getAvailablePowerupsEffects() {
 
     }
 
     @Override
-    public void choosePowerup() throws RemoteException{
+    public void choosePowerup() {
 
     }
 
     @Override
-    public void choosePowerupEffects() throws RemoteException{
+    public void choosePowerupEffects() {
 
     }
 
     @Override
-    public ArrayList<String> canReload() throws RemoteException{
+    public ArrayList<String> canReload() {
         return null;
     }
 
     @Override
-    public void reload(String weaponSelected) throws RemoteException{
+    public void reload(String weaponSelected) {
 
     }
 
-    public Integer getPortNumberRMI() {
-        return portNumberRMI;
-    }
 }

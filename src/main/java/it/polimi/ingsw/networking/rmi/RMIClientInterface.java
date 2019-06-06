@@ -5,6 +5,6 @@ import java.rmi.RemoteException;
 
 public interface RMIClientInterface extends Remote {
 
-    public void gameStarted() throws RemoteException;
+    public void gameStarted(String gameID) throws RemoteException;
 
 }
