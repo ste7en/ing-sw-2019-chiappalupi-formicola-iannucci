@@ -60,6 +60,7 @@ public class ClientRMI extends Client implements RMIClientInterface {
             server.newUser(username);
         } catch (RemoteException e){
             System.err.println("ClientSocket exception: " + e.toString());
+            e.printStackTrace();
         }
     }
 
