@@ -1,6 +1,5 @@
 package it.polimi.ingsw.networking;
 
-import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.utility.Loggable;
 import it.polimi.ingsw.view.View;
@@ -8,9 +7,7 @@ import it.polimi.ingsw.view.View;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.rmi.Remote;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -20,7 +17,7 @@ import java.util.UUID;
  * @author Stefano Formicola
  * @author Elena Iannucci
  */
-public abstract class Client implements Remote, Loggable {
+public abstract class Client implements Loggable {
 
     /**
      * Instance attributes that describe the connection
@@ -30,7 +27,6 @@ public abstract class Client implements Remote, Loggable {
     protected View viewObserver;
     protected UUID gameID;
     protected int userID;
-    //toDO: DELETE CONNECTION TYPE
 
     /**
      * Log strings
@@ -101,7 +97,6 @@ public abstract class Client implements Remote, Loggable {
      */
     public abstract void login(String username);
 
-
     /**
      * Abstract method implemented by subclasses and used when a player wants to use a weapon.
      *
@@ -109,6 +104,27 @@ public abstract class Client implements Remote, Loggable {
      */
     public abstract void useWeapon(String weaponSelected);
 
+    /**
+     * Abstract method implemented by subclasses and used when a player has chosen what damage does he want to do with his weapon.
+     * @param weapon It's the weapon that is being used.
+     * @param damage It's the damage that is being done.
+     * @param indexOfEffect It's the index of the effect that is being used.
+     * @param forPotentiableWeapon It's the forPotentiableWeapon boolean.
+     */
+    public abstract void makeDamage(String weapon, String damage, String indexOfEffect, String forPotentiableWeapon);
 
+    /**
+     * Abstract method implemented by subclasses and used when a player has chosen what mode does he want to use with his Selectable Weapon.
+     * @param weapon It's the weapon that is being used.
+     * @param effect It's the mode that has being chosen.
+     */
+    public abstract void useMode(String weapon, String effect);
+
+    /**
+     * Abstract method implemented by subclasses and used when a player has chosen what effects does he want to use with his Potentiable weapon.
+     * @param weapon It's the weapon that is being used.
+     * @param effectsToUse it's a list containing all of the indexes of the effects to use.
+     */
+    public abstract void useEffect(String weapon, List<String> effectsToUse);
 
 }

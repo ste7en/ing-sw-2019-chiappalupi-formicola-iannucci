@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.UUID;
 
 
-public interface RMIInterface extends Remote {
-
-    void newUser(String username) throws RemoteException;
+public interface ServerInterface extends Remote {
 
     void registerClient() throws RemoteException;
+
+    void newUser(String username) throws RemoteException;
 
     void joinWaitingRoom() throws RemoteException;
 
@@ -38,7 +38,9 @@ public interface RMIInterface extends Remote {
 
     Map<String, String> useWeapon(int userID, UUID gameID, String weaponSelected) throws RemoteException;
 
-    void chooseDamage(Map<String, String> damageToDo) throws RemoteException;
+    void makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) throws RemoteException;
+
+    Map<String, String> useEffect(int userID, UUID gameID, String forPotentiableWeapon, String effectSelected, String weaponSelected) throws RemoteException;
 
     Map<String, String> getAvailableModes() throws RemoteException;
 

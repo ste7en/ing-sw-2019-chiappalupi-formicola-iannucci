@@ -4,18 +4,13 @@ import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Effect;
 import it.polimi.ingsw.model.cards.PotentiableWeapon;
 import it.polimi.ingsw.model.cards.Weapon;
-import it.polimi.ingsw.model.player.User;
-import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.view.View;
-
 import java.io.PrintWriter;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.*;
-
-import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
 /**
  * Command Line Interface version of the game.
@@ -44,7 +39,8 @@ public class AdrenalineCLI extends View {
     private static final String USER_NOT_AVAILABLE  = "The username you provided is not available. Try again, please";
     private static final String DID_JOIN_WAITING_R  = "Waiting Room joined successfully. A new game will start as soon as other players will login.";
     private static final String ON_START            = "Game started.";
-    private static final String CHOOSE_WEAPON       = "Which weapon do you want to use?";
+    private static final String CHOOSE_WEAPON       = "Which weapon do " +
+            "you want to use?";
     private static final String CHOOSE_DAMAGE       = "What damage do you want to make?";
     private static final String CHOOSE_MODALITY     = "Which modality do you want to use?";
     private static final String CHOOSE_EFFECT       = "What effect/s do you want to use?";
@@ -271,14 +267,13 @@ public class AdrenalineCLI extends View {
             throw new IllegalArgumentException(INCORRECT_CHOICE);
         }
         Map<String, String> damageToDo = new HashMap<>();
-        if(damagesToChoose.containsKey(PotentiableWeapon.forPotentiableWeapon_key)) {
-            String forPotentiableWeapon = damagesToChoose.get(PotentiableWeapon.forPotentiableWeapon_key);
-            damageToDo.put(PotentiableWeapon.forPotentiableWeapon_key, forPotentiableWeapon);
-        }
+        String forPotentiableWeapon = null;
+        if(damagesToChoose.containsKey(PotentiableWeapon.forPotentiableWeapon_key))
+            forPotentiableWeapon = damagesToChoose.get(PotentiableWeapon.forPotentiableWeapon_key);
         damageToDo.put(Damage.damage_key, possibleDamages.get(i-1));
         damageToDo.put(Weapon.weapon_key, weapon);
         damageToDo.put(Effect.effect_key, indexOfEffect);
-        this.didChooseDamage(damageToDo);
+        this.didChooseDamage(weapon, possibleDamages.get(i-1), indexOfEffect, forPotentiableWeapon);
     }
 
     @Override
@@ -287,10 +282,7 @@ public class AdrenalineCLI extends View {
         modalitiesToChoose.remove(Weapon.weapon_key);
         out.println(CHOOSE_MODALITY);
         String modalitySelected = decisionHandler(modalitiesToChoose);
-        Map<String, String> modalityChosen = new HashMap<>();
-        modalityChosen.put(Weapon.weapon_key, weapon);
-        modalityChosen.put(Effect.effect_key, modalitySelected);
-        this.didChooseMode(modalityChosen);
+        this.didChooseMode(weapon, modalitySelected);
     }
 
     /**
@@ -327,20 +319,13 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void willChooseEffects(Map<String, String> effectsToChoose) {
-        Map<String, String> effectsChosen = new HashMap<>();
         String weapon = effectsToChoose.get(Weapon.weapon_key);
         effectsToChoose.remove(Weapon.weapon_key);
         out.println(CHOOSE_EFFECT);
         String effectsSelected = decisionHandler(effectsToChoose);
-        effectsChosen.put(Weapon.weapon_key, weapon);
         String box = effectsSelected.replaceAll("\\[|\\]", "");
         List<String> effects = List.of(box.split(", "));
-        Map<String, List<String>> args = new HashMap<>();
-        List<String> weaponToUse = new ArrayList<>();
-        weaponToUse.add(weapon);
-        args.put(Weapon.weapon_key, weaponToUse);
-        args.put(Effect.effect_key, effects); //[1, 2, 3]
-        this.didChooseEffects(args);
+        this.didChooseEffects(effects, weapon);
     }
 
     @Override
