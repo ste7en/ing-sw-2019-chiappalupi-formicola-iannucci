@@ -3,6 +3,8 @@ package it.polimi.ingsw.networking.socket;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+
+import it.polimi.ingsw.networking.Server;
 import it.polimi.ingsw.networking.utility.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.utility.Loggable;
@@ -39,13 +41,16 @@ public final class ServerSocketHandler implements Runnable, Loggable {
      */
     private Integer portNumber;
 
+    private Server server;
+
     /**
      * Class constructor
      * @param portNumber port number on which the connection has to be opened
      */
-    public ServerSocketHandler(Integer portNumber) {
+    public ServerSocketHandler(Integer portNumber, Server server) {
         if (portNumber > 65535 || portNumber < 1024) throw new IllegalPortNumber();
         this.portNumber = portNumber;
+        this.server = server;
     }
 
     /**
@@ -86,12 +91,12 @@ public final class ServerSocketHandler implements Runnable, Loggable {
             socket.setSoTimeout(SOCKET_SO_TIMEOUT);
             logOnSuccess(SOCKET_SUCCESS + socket.toString());
 
-            /*var connection = new ServerSocketConnectionHandler(socket, );
+            var connection = new ServerSocketConnectionHandler(socket, server);
 
             var connectionThread = new Thread(connection);
             connectionThread.setDaemon(true);
             connectionThread.setPriority(Thread.MIN_PRIORITY);
-            connectionThread.start();*/
+            connectionThread.start();
         } catch (IOException e) {
             logOnException(EXC_ON_CLIENT_CONNECTION, e);
             throw e;

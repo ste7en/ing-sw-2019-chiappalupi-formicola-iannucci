@@ -109,7 +109,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         ServerSocketHandler socketConnectionHandler;
         ServerRMIConnectionHandler RMIConnectionHandler;
         try {
-            socketConnectionHandler = new ServerSocketHandler(portNumberSocket);
+            socketConnectionHandler = new ServerSocketHandler(portNumberSocket, this);
 //            senderDelegate.add(socketConnectionHandler);
             var socketConnectionHandlerThread = new Thread(socketConnectionHandler);
             socketConnectionHandlerThread.setPriority(Thread.MIN_PRIORITY);
