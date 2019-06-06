@@ -68,10 +68,6 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
      * or to check username availability, but also users availability
      */
     private ConcurrentMap<User, ServerConnectionHandler> users;
-    /**
-     * Collection of the connected users id, useful to know which player is making an action in game.
-     */
-    private Map<Integer, User> userIDs; //toDo remove it?
 
     /**
      * Log strings
@@ -286,6 +282,18 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
     }
 
     /**
+     * Finds an user from the connectionID, iterating from its hashcode.
+     * @param connectionID it's the connectionID from what the user has to be found.
+     * @return the User looked for.
+     */
+    private User findUserFromConnectionID(int connectionID) {
+        for(User user : users.keySet()) {
+            if(users.get(user).hashCode() == connectionID) return user;
+        }
+        return null;
+    }
+
+    /**
      * Method used to start the process of using a weapon.
      * @param userID it's the userID of the player who is using the weapon.
      * @param gameID it's the gameID of the game where the player is playing.
@@ -302,7 +310,7 @@ public class Server implements Loggable, ConnectionHandlerReceiverDelegate, Wait
         switch (weaponMessage) {
             case DAMAGE_LIST: {
                 weaponProcess.put(Effect.effect_key, "0");
-                Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(userIDs.get(userID));
+                Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromConnectionID(userID));
                 ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).useEffect(weapon, weapon.getEffects().get(0), shooter, null);
                 stringifyDamages(possibleDamages, weaponProcess);
                 break;
