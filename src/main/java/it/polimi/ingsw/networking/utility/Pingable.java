@@ -1,7 +1,7 @@
 package it.polimi.ingsw.networking.utility;
 
 /**
- * Interface used to make a ServerSocketClientConnection
+ * Interface used to make a ServerSocketConnectionHandler
  * Ping methods compliant, in order to ping client connections.
  *
  * @author Stefano Formicola
@@ -9,7 +9,7 @@ package it.polimi.ingsw.networking.utility;
 public interface Pingable {
 
     /**
-     * The ServerSocketClientConnection calling this method will
+     * The ServerSocketConnectionHandler calling this method will
      * send a PING message to the client when asked.
      */
     void ping();
@@ -25,5 +25,5 @@ public interface Pingable {
      * Used to distinguish between connected pingable clients
      * @return a Pingable instance identifier
      */
-    int getConnectionHashCode();
+    default int getConnectionHashCode() { return hashCode(); }
 }

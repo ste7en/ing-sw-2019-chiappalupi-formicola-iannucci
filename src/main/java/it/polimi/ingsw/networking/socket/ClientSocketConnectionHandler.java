@@ -1,7 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
-import it.polimi.ingsw.networking.ClientConnectionHandler;
 import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
+import it.polimi.ingsw.networking.ConnectionHandlerSenderDelegate;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.ConnectionState;
 import it.polimi.ingsw.utility.Loggable;
@@ -22,13 +22,29 @@ import static it.polimi.ingsw.networking.utility.ConnectionState.*;
  * @author Stefano Formicola
  */
 
-public class ClientSocketConnectionHandler extends ClientConnectionHandler implements Runnable, Loggable {
+public class ClientSocketConnectionHandler implements ConnectionHandlerSenderDelegate, Runnable, Loggable {
 
     /**
      * The socket instance, the object that represents a connection
      * between client and server.
      */
     private Socket socket;
+
+    /**
+     * Server name used in the connection, basically it's the
+     * IPv4 address of the server.
+     */
+    private String serverName;
+
+    /**
+     * The port number used for the handled connection
+     */
+    private Integer portNumber;
+
+    /**
+     * A delegate class used to handle received messages
+     */
+    private ConnectionHandlerReceiverDelegate receiverDelegate;
 
     /**
      * A buffered outbox for messages
@@ -64,9 +80,9 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
      * @param receiverDelegate the ClientSocket instance, responsible to handle received messages
      */
     public ClientSocketConnectionHandler(String server, Integer port, ConnectionHandlerReceiverDelegate receiverDelegate) throws IOException {
-        super.serverName = server;
-        super.portNumber = port;
-        super.receiverDelegate = receiverDelegate;
+        this.serverName = server;
+        this.portNumber = port;
+        this.receiverDelegate = receiverDelegate;
         this.outBuf = new ConcurrentLinkedQueue<>();
         this.connectionState = ONLINE;
 
@@ -141,6 +157,7 @@ public class ClientSocketConnectionHandler extends ClientConnectionHandler imple
      * Sends a message through its connection
      * @param message the message to send
      */
+    @Override
     public void send(String message) {
         outBuf.add(message);
     }

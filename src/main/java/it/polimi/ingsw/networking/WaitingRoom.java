@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -58,6 +59,11 @@ public class WaitingRoom {
     private final ConcurrentLinkedQueue<User> userQueue;
 
     /**
+     * The executor service that will schedule a game starting timeout
+     */
+    private final ScheduledExecutorService executorService;
+
+    /**
      * A helper collection of users needed to create one game
      * at time with max maximumNumberOfPlayers players
      */
@@ -82,6 +88,7 @@ public class WaitingRoom {
         this.maximumNumberOfPlayers = maximumNumberOfPlayers;
         this.timeout                = timeout;
         this.observer               = waitingRoomObserver;
+        this.executorService        = Executors.newSingleThreadScheduledExecutor();
 
         userQueue = new ConcurrentLinkedQueue<>();
         userWaitingList = new LinkedList<>();
@@ -110,6 +117,15 @@ public class WaitingRoom {
     }
 
     /**
+     * Removes a user from the waiting room and stops the executorService
+     * @param user User instance
+     */
+    public void removeUser(User user) {
+        if (userQueue.remove(user)) didRemoveUser();
+        else userWaitingList.remove(user);
+    }
+
+    /**
      * Flushes the concurrent collection of users and
      * transfers the users in queue for a new game.
      */
@@ -132,22 +148,31 @@ public class WaitingRoom {
     }
 
     /**
+     * Called when a user is removed from the waiting room
+     */
+    private void didRemoveUser() {
+        if (userQueue.size() < minimumNumberOfPlayers && isRunning) {
+            executorService.shutdown();
+        }
+    }
+
+    /**
      * Called when a minimum number of connected users is reached,
      * this methods calls the server's method responsible for
      * creating a new game with the selected users.
      */
     private void didReachMinimumNumberOfPlayers() {
+        //TODO: - Stop the timer if the number of players becomes less than 3
         AdrenalineLogger.info(COUNTDOWN_STARTED);
         AdrenalineLogger.success(NEXT_GAME_CREATION + timeout + "ms");
         isRunning = true;
-        Executors.newSingleThreadScheduledExecutor()
-                 .schedule(
-                         () -> {
-                             observer.startNewGame(Arrays.asList(userQueue.toArray(new User[0])));
-                             flushQueue();
-                            },
-                         timeout,
-                         TimeUnit.SECONDS
-                 );
+        executorService.schedule(
+                () -> {
+                    observer.startNewGame(Arrays.asList(userQueue.toArray(new User[0])));
+                    flushQueue();
+                },
+                timeout,
+                TimeUnit.SECONDS
+        );
     }
 }

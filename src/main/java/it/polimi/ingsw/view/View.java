@@ -1,20 +1,12 @@
 package it.polimi.ingsw.view;
-
-import it.polimi.ingsw.model.cards.Effect;
-import it.polimi.ingsw.model.cards.PotentiableWeapon;
-import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.socket.ClientSocket;
 import it.polimi.ingsw.networking.rmi.ClientRMI;
-import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
-
 import java.util.*;
-
-import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
 
 /**
@@ -76,12 +68,11 @@ public abstract class View implements Observer{
         AdrenalineLogger.info(DID_ASK_CONNECTION + type + " " + host + ":" + port);
         if (type == ConnectionType.SOCKET){
             this.client = new ClientSocket(host, port);
-            client.registerObserver(this);
         }
         if (type == ConnectionType.RMI){
-            this.client = new ClientRMI(host, port);
-            client.registerObserver(this);
+            client = new ClientRMI(host, port);
         }
+        client.registerObserver(this);
     }
 
     /**
@@ -206,13 +197,14 @@ public abstract class View implements Observer{
 
     /**
      * Called when the damages to be done have been chosen by the player.
-     *
-     * @param damageToDo it's a Map<String, String> containing the damages to make and some other information needed to apply them.
+     * @param weapon it's the weapon that is being used.
+     * @param damage it's the damage that has been selected.
+     * @param indexOfEffect it's the index of the effect that is being used.
+     * @param forPotentiableWeapon it's the string containing the information about potentiable weapons.
      */
-    protected void didChooseDamage(Map<String, String> damageToDo) {
+    protected void didChooseDamage(String weapon, String damage, String indexOfEffect, String forPotentiableWeapon) {
         AdrenalineLogger.info(DID_CHOOSE_DAMAGE);
-        damageToDo.put(PlayerColor.playerColor_key, playerColor.toString());
-        //this.client.send(CommunicationMessage.from(0, DAMAGE_TO_MAKE, damageToDo, gameID));
+        this.client.makeDamage(weapon, damage, indexOfEffect, forPotentiableWeapon);
     }
 
     /**
@@ -225,12 +217,12 @@ public abstract class View implements Observer{
     /**
      * Called when the modality has been chosen by the player.
      *
-     * @param modalityChosen it's a map containing the modality chosen and the weapon that is being used.
+     * @param weapon it's the weapon that is being used.
+     * @param effect it's the effect that has been chosen.
      */
-    protected void didChooseMode(Map<String, String> modalityChosen) {
-        AdrenalineLogger.info(DID_CHOOSE_MODALITY + modalityChosen.get(Effect.effect_key));
-        modalityChosen.put(PlayerColor.playerColor_key, playerColor.toString());
-        //this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, modalityChosen, gameID));
+    protected void didChooseMode(String weapon, String effect) {
+        AdrenalineLogger.info(DID_CHOOSE_MODALITY + effect);
+        this.client.useMode(weapon, effect);
     }
 
     /**
@@ -241,25 +233,12 @@ public abstract class View implements Observer{
     /**
      * Called when the effects to use have been chosen by the player.
      *
-     * @param effectsChosen it's a map containing the effects chosen and the weapon that is being used.
+     * @param effectsToUse it's a list containing the effects chosen.
+     * @param weapon it's the weapon that is being used.
      */
-    protected void didChooseEffects(Map<String, List<String>> effectsChosen) {
+    protected void didChooseEffects(List<String> effectsToUse, String weapon) {
         AdrenalineLogger.info(DID_CHOOSE_EFFECTS);
-        HashMap<String, String> args = new HashMap<>();
-        String weapon = effectsChosen.get(Weapon.weapon_key).get(0);
-        args.put(Weapon.weapon_key, weapon);
-        args.put(PlayerColor.playerColor_key, playerColor.toString());
-        List<String> effectsToUse = effectsChosen.get(Effect.effect_key);
-        while(!effectsToUse.isEmpty()) {
-            boolean forPotentiableWeapon;
-            forPotentiableWeapon = effectsToUse.size() == 1;
-            args.put(PotentiableWeapon.forPotentiableWeapon_key, Boolean.toString(forPotentiableWeapon));
-            args.put(Effect.effect_key, effectsToUse.get(0));
-            effectsToUse.remove(0);
-            //this.client.send(CommunicationMessage.from(0, EFFECT_TO_USE, (HashMap<String, String>)args.clone(), gameID));
-            args.remove(PotentiableWeapon.forPotentiableWeapon_key);
-            args.remove(Effect.effect_key);
-        }
+        this.client.useEffect(weapon, effectsToUse);
     }
 
     /**
@@ -278,32 +257,32 @@ public abstract class View implements Observer{
     public abstract void didReload();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void willUsePowerup();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void didUsePowerup();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void willChoosePowerup();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void didChoosePowerup();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void willChoosePowerupEffect();
 
     /**
-     * Ste
+     * Dani
      */
     public abstract void didChoosePowerupEffect();
 }

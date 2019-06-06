@@ -1,9 +1,11 @@
 package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
+import it.polimi.ingsw.model.cards.Damage;
+import it.polimi.ingsw.model.cards.Effect;
+import it.polimi.ingsw.model.cards.PotentiableWeapon;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.User;
-import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
 import it.polimi.ingsw.networking.ConnectionHandlerSenderDelegate;
@@ -15,6 +17,7 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,6 +27,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  * Main class of the client. It will set up the networking and send/receive events and requests.
  *
  * @author Stefano Formicola
+ * @author Daniele Chiappalupi
  */
 public class ClientSocket extends Client implements Loggable, ConnectionHandlerReceiverDelegate {
 
@@ -125,6 +129,41 @@ public class ClientSocket extends Client implements Loggable, ConnectionHandlerR
         Map<String, String> args = new HashMap<>();
         args.put(Weapon.weapon_key, weaponSelected);
         this.send(CommunicationMessage.from(userID, WEAPON_TO_USE, args, gameID));
+    }
+
+    @Override
+    public void makeDamage(String weapon, String damage, String indexOfEffect, String forPotentiableWeapon) {
+        Map<String, String> damageToDo = new HashMap<>();
+        damageToDo.put(Damage.damage_key, damage);
+        damageToDo.put(Weapon.weapon_key, weapon);
+        damageToDo.put(Effect.effect_key, indexOfEffect);
+        if(forPotentiableWeapon != null) damageToDo.put(PotentiableWeapon.forPotentiableWeapon_key, indexOfEffect);
+        this.send(CommunicationMessage.from(userID, DAMAGE_TO_MAKE, damageToDo, gameID));
+    }
+
+    @Override
+    public void useMode(String weapon, String effect) {
+        Map<String, String> args = new HashMap<>();
+        args.put(Weapon.weapon_key, weapon);
+        args.put(Effect.effect_key, effect);
+        this.send(CommunicationMessage.from(userID, EFFECT_TO_USE, args, gameID));
+    }
+
+    @Override
+    public void useEffect(String weapon, List<String> effectsToUse) {
+        HashMap<String, String> args = new HashMap<>();
+        args.put(Weapon.weapon_key, weapon);
+        while(!effectsToUse.isEmpty()) {
+            boolean forPotentiableWeapon;
+            forPotentiableWeapon = effectsToUse.size() == 1;
+            String potentiableBoolean = Boolean.toString(forPotentiableWeapon);
+            args.put(PotentiableWeapon.forPotentiableWeapon_key, potentiableBoolean);
+            args.put(Effect.effect_key, effectsToUse.get(0));
+            effectsToUse.remove(0);
+            this.send(CommunicationMessage.from(userID, EFFECT_TO_USE, (HashMap<String, String>)args.clone(), gameID));
+            args.remove(PotentiableWeapon.forPotentiableWeapon_key);
+            args.remove(Effect.effect_key);
+        }
     }
 
 }

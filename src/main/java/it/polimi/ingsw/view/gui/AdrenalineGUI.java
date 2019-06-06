@@ -177,6 +177,5 @@ public class AdrenalineGUI extends View {
         return this.client;
     }
 
-
 }
 
