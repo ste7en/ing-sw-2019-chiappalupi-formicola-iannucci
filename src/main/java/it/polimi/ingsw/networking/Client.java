@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking;
 
+import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.utility.Loggable;
 import it.polimi.ingsw.view.View;
@@ -9,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Abstract class that will be reimplemented in ClientSocket and ClientRMI.
@@ -25,6 +28,8 @@ public abstract class Client implements Remote, Loggable {
     protected String serverName;
     protected Integer connectionPort;
     protected View viewObserver;
+    protected UUID gameID;
+    protected int userID;
     //toDO: DELETE CONNECTION TYPE
 
     /**
@@ -95,6 +100,14 @@ public abstract class Client implements Remote, Loggable {
      * logged to the server.
      */
     public abstract void login(String username);
+
+
+    /**
+     * Abstract method implemented by subclasses and used when a player wants to use a weapon.
+     *
+     * @param weaponSelected it's a String containing the weapon selected name.
+     */
+    public abstract void useWeapon(String weaponSelected);
 
 
 
