@@ -16,9 +16,7 @@ import it.polimi.ingsw.utility.*;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static it.polimi.ingsw.networking.utility.ConnectionState.*;
@@ -197,6 +195,20 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     Map<String, String> responseArgs = server.useEffect(connectionID, gameID, forPotentiableWeapon, effectSelected, weaponSelected);
                     String responseMessage = CommunicationMessage.from(connectionID, DAMAGE_LIST, responseArgs, gameID);
                     send(responseMessage);
+                    break;
+                }
+                case WEAPON_TO_RELOAD: {
+                    List<String> weaponsToReload = new ArrayList<>(args.values());
+                    boolean reloaded = server.reload(weaponsToReload, connectionID, gameID);
+                    if(reloaded) send(CommunicationMessage.from(connectionID, RELOAD_WEAPON_OK));
+                    else send(CommunicationMessage.from(connectionID, RELOAD_WEAPON_FAILED));
+                    break;
+                }
+                case ASK_WEAPONS: {
+                    List<String> weaponsInHand = server.weaponInHand(connectionID, gameID);
+                    Map<String, String> responseArgs = new HashMap<>();
+                    for(String weapon : weaponsInHand) responseArgs.put(Integer.toString(weaponsInHand.indexOf(weapon)), weapon);
+                    send(CommunicationMessage.from(connectionID, WEAPON_LIST, responseArgs));
                     break;
                 }
                 default:

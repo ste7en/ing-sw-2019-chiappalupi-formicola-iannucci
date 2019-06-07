@@ -95,12 +95,35 @@ public enum CommunicationMessage {
     /**
      * Effect selection message.
      *
-     * EFFECT is sent by the client to the server to notify the selection of the Effect to use in game.
+     * EFFECT_TO_USE is sent by the client to the server to notify the selection of the Effect to use in game.
      *
      * Arguments: <Effect.effect_key, Effect_name>, <Weapon.weapon_key, Weapon_name>
      *     if (PotentiableWeapon): <PotentiableWeapon.potentiableWeapon_key, boolean> to save if the damage made has to be carried through the attack.
      */
-    EFFECT_TO_USE;
+    EFFECT_TO_USE,
+
+    /**
+     * Weapon using message.
+     *
+     * ASK_WEAPONS is sent by the client to the server to ask the weapons that the player has in his hand. The request has no arguments.
+     * WEAPON_LIST is sent by the server to the client to provide the weapons that the player has in his hand.
+     *
+     * Arguments: <indexOf_Weapon, Weapon_name>
+     */
+    ASK_WEAPONS,
+    WEAPON_LIST,
+
+    /**
+     * Weapon reloading message.
+     *
+     * WEAPON_TO_RELOAD is sent by the client to the server to notify the weapon that the player wants to reload in game.
+     * RELOAD_WEAPON_OK or RELOAD_WEAPON_FAILED in case of success or failure.
+     *
+     * Arguments: <indexOf_Weapon, Weapon_name>
+     */
+    WEAPON_TO_RELOAD,
+    RELOAD_WEAPON_OK,
+    RELOAD_WEAPON_FAILED;
 
     /**
      * String constant used in messages between client-server
@@ -179,6 +202,26 @@ public enum CommunicationMessage {
      */
     public static String from(int id, CommunicationMessage format, Map<String, String> args, UUID gameID) {
         var message = new Message(id, format, args, gameID);
+        var mapper = new ObjectMapper();
+        var jsonMessage = "";
+
+        try {
+            jsonMessage = mapper.writeValueAsString(message);
+        } catch (JsonProcessingException e) {
+            AdrenalineLogger.errorException(EXC_MESS_JSON, e);
+        }
+        return jsonMessage;
+    }
+
+    /**
+     * Returns a json message from a connectionID, a CommunicationMessage identifier and some arguments
+     * @param id connectionID
+     * @param format message identifier
+     * @param gameID game identifier
+     * @return json message
+     */
+    public static String from(int id, CommunicationMessage format, UUID gameID) {
+        var message = new Message(id, format, new HashMap<>(), gameID);
         var mapper = new ObjectMapper();
         var jsonMessage = "";
 

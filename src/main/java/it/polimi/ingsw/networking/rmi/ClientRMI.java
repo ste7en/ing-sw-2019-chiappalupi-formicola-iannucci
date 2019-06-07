@@ -133,6 +133,26 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
+    public void askWeaponToReload() {
+        try {
+            this.viewObserver.willReload(server.weaponInHand(userID, gameID));
+        } catch (RemoteException e) {
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
+    }
+
+    @Override
+    public void reloadWeapons(List<String> weaponsToReload) {
+        try {
+            boolean didReload =  server.reload(weaponsToReload, userID, gameID);
+            if(didReload) this.viewObserver.onReloadSuccess();
+            else this.viewObserver.onReloadFailure();
+        } catch (RemoteException e) {
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
+    }
+
+    @Override
     public void gameStarted(String gameID){
         this.viewObserver.onStart(UUID.fromString(gameID));
         this.gameID = UUID.fromString(gameID);

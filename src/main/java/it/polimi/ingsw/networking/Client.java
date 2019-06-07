@@ -122,16 +122,27 @@ public abstract class Client implements Loggable {
 
     /**
      * Abstract method implemented by subclasses and used when a player has chosen what mode does he want to use with his Selectable Weapon.
-     * @param weapon It's the weapon that is being used.
-     * @param effect It's the mode that has being chosen.
+     * @param weapon it's the weapon that is being used.
+     * @param effect it's the mode that has being chosen.
      */
     public abstract void useMode(String weapon, String effect);
 
     /**
      * Abstract method implemented by subclasses and used when a player has chosen what effects does he want to use with his Potentiable weapon.
-     * @param weapon It's the weapon that is being used.
+     * @param weapon it's the weapon that is being used.
      * @param effectsToUse it's a list containing all of the indexes of the effects to use.
      */
     public abstract void useEffect(String weapon, List<String> effectsToUse);
+
+    /**
+     * Abstract method implemented by subclasses and used when a player wants to reload his weapons.
+     */
+    public abstract void askWeaponToReload();
+
+    /**
+     * Abstract method implemented by subclasses and used when a player has chosen what weapons does he want to reload.
+     * @param weaponsToReload it's the list of weapons selected by the user to be reloaded.
+     */
+    public abstract void reloadWeapons(List<String> weaponsToReload);
 
 }

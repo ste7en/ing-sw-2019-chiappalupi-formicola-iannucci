@@ -11,15 +11,11 @@ import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
 import it.polimi.ingsw.networking.ConnectionHandlerSenderDelegate;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
-import it.polimi.ingsw.utility.Loggable;
 
 import java.io.*;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
@@ -102,6 +98,15 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case EFFECT_TO_USE:
                         this.viewObserver.willChooseEffects(args);
                         break;
+                    case WEAPON_LIST:
+                        this.viewObserver.willReload(new ArrayList<>(args.values()));
+                        break;
+                    case RELOAD_WEAPON_FAILED:
+                        this.viewObserver.onReloadFailure();
+                        break;
+                    case RELOAD_WEAPON_OK:
+                        this.viewObserver.onReloadSuccess();
+                        break;
                     default:
                         break;
                 }
@@ -171,6 +176,19 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
             args.remove(PotentiableWeapon.forPotentiableWeapon_key);
             args.remove(Effect.effect_key);
         }
+    }
+
+    @Override
+    public void askWeaponToReload() {
+        this.send(CommunicationMessage.from(userID, ASK_WEAPONS, gameID));
+    }
+
+    @Override
+    public void reloadWeapons(List<String> weaponsToReload) {
+        Map<String, String> args = new HashMap<>();
+        for(String weapon : weaponsToReload)
+            args.put(Integer.toString(weaponsToReload.indexOf(weapon)), weapon);
+        this.send(CommunicationMessage.from(userID, WEAPON_TO_RELOAD, args, gameID));
     }
 
 }

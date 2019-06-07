@@ -3,10 +3,7 @@ package it.polimi.ingsw.view.gui;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.view.View;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Observable;
-import java.util.UUID;
+import java.util.*;
 
 public class AdrenalineGUI extends View {
 
@@ -129,12 +126,12 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willReload() {
+    public void askReload() {
 
     }
 
     @Override
-    public void didReload() {
+    public void willReload(List<String> weapons) {
 
     }
 

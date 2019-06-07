@@ -142,7 +142,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         Map<String, String> responseArgs = new HashMap<>();
         responseArgs.put(Weapon.weapon_key, weaponSelected);
         Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromConnectionID(userID));
-        Weapon weapon = lookForWeapon(weaponSelected);
+        Weapon weapon = gameControllers.get(gameID).lookForWeapon(weaponSelected, findUserFromConnectionID(userID));
         Effect effect = null;
         if (weapon.communicationMessageGenerator().equals(MODES_LIST)) {
             for (Effect e : weapon.getEffects())
@@ -171,7 +171,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public void makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) {
-        Weapon weaponToUse = lookForWeapon(weapon);
+        Weapon weaponToUse = gameControllers.get(gameID).lookForWeapon(weapon, findUserFromConnectionID(userID));
         Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromConnectionID(userID));
         PlayerColor playerColor = shooter.getCharacter().getColor();
         int indexOfEffect = Integer.parseInt(effectIndex);
@@ -301,7 +301,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public Map<String, String> useWeapon(int userID, UUID gameID, String weaponSelected) {
-        Weapon weapon = lookForWeapon(weaponSelected);
+        Weapon weapon = gameControllers.get(gameID).lookForWeapon(weaponSelected, findUserFromConnectionID(userID));;
         CommunicationMessage weaponMessage = weapon.communicationMessageGenerator();
         Map<String, String> weaponProcess = new HashMap<>();
         weaponProcess.put(Weapon.weapon_key, weaponSelected);
@@ -332,14 +332,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                 break;
         }
         return weaponProcess;
-    }
-
-
-    private Weapon lookForWeapon(String weapon) {
-        DecksHandler deck = new DecksHandler();
-        Weapon weaponToUse = deck.drawWeapon();
-        while(!weaponToUse.getName().equals(weapon)) weaponToUse = deck.drawWeapon();
-        return weaponToUse;
     }
 
 
@@ -472,9 +464,30 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         return null;
     }
 
+    /**
+     * Method used when a player has decided what weapons does he wants to reload.
+     * @param weaponsSelected it's the list of weapons that the player wants to reload.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     * @return TRUE if the process ended with success, FALSE otherwise.
+     */
     @Override
-    public void reload(String weaponSelected) {
+    public boolean reload(List<String> weaponsSelected, int userID, UUID gameID) {
+        List<Weapon> weapons = new ArrayList<>();
+        for(String w : weaponsSelected) weapons.add(gameControllers.get(gameID).lookForWeapon(w, findUserFromConnectionID(userID)));
+        return gameControllers.get(gameID).checkCostOfReload(weapons, findUserFromConnectionID(userID));
+    }
 
+    /**
+     * Method used to know the weapons that a player has in his hand.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     * @return the list of the names of the weapons that the player has in his hand.
+     */
+    @Override
+    public List<String> weaponInHand(int userID, UUID gameID) {
+        User user = findUserFromConnectionID(userID);
+        return gameControllers.get(gameID).lookForPlayerWeapons(user);
     }
 
 }
