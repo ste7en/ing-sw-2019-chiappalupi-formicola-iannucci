@@ -13,7 +13,7 @@ public interface ServerInterface extends Remote {
 
     void registerClient() throws RemoteException;
 
-    void newUser(String username) throws RemoteException;
+    boolean newUser(String username) throws RemoteException;
 
     void joinWaitingRoom(String username) throws RemoteException;
 
