@@ -371,11 +371,14 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     public boolean checkUsernameAvailability(String username) {
+        for(User user : users.keySet()){
+            if (user.getUsername() == username) return false;
+        }
         return true;
     }
 
     @Override
-    public void joinWaitingRoom() {
+    public void joinWaitingRoom(String username) {
 
     }
 

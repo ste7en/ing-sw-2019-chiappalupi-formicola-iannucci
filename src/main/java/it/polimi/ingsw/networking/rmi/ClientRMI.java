@@ -60,7 +60,12 @@ public class ClientRMI extends Client implements ClientInterface {
 
     @Override
     public void joinWaitingRoom(String username) {
-        //TODO: - implement this method
+        try {
+            server.joinWaitingRoom(username);
+        } catch (RemoteException e){
+            System.err.println("ClientRMI exception: " + e.toString());
+            e.printStackTrace();
+        }
     }
 
     @Override

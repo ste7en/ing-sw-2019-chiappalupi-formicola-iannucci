@@ -15,7 +15,7 @@ public interface ServerInterface extends Remote {
 
     void newUser(String username) throws RemoteException;
 
-    void joinWaitingRoom() throws RemoteException;
+    void joinWaitingRoom(String username) throws RemoteException;
 
     ArrayList<Character> getAvailableCharacters() throws RemoteException;
 
