@@ -61,7 +61,7 @@ public class WaitingRoom {
     /**
      * The executor service that will schedule a game starting timeout
      */
-    private final ScheduledExecutorService executorService;
+    private ScheduledExecutorService executorService;
 
     /**
      * A helper collection of users needed to create one game
@@ -153,6 +153,7 @@ public class WaitingRoom {
     private void didRemoveUser() {
         if (userQueue.size() < minimumNumberOfPlayers && isRunning) {
             executorService.shutdown();
+            executorService = Executors.newSingleThreadScheduledExecutor();
         }
     }
 

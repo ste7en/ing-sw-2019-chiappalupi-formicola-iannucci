@@ -21,22 +21,21 @@ public abstract class View implements Observer{
 
     protected Client client;
     protected UUID gameID;
-    protected PlayerColor playerColor;
-    protected ConnectionType connectionType;
 
     /**
      * Log strings
      */
-    protected static final String APPLICATION_STARTED   = "Adrenaline application started. View instance created.";
-    protected static final String DID_ASK_CONNECTION    = "Connection parameters chosen: ";
-    protected static final String ONLOGIN_FAILURE       = "Username creation failed.";
-    protected static final String ONLOGIN_SUCCESS       = "User login completed.";
-    protected static final String JOIN_WAITING_ROOM     = "Joining the waiting room...";
-    protected static final String DID_JOIN_WAITING_ROOM = "";
-    protected static final String DID_CHOOSE_WEAPON     = "Weapon chosen: ";
-    protected static final String DID_CHOOSE_DAMAGE     = "Damage chosen.";
-    protected static final String DID_CHOOSE_MODALITY   = "Modality chosen: ";
-    protected static final String DID_CHOOSE_EFFECTS     = "Effects chosen.";
+    protected static final String APPLICATION_STARTED           = "Adrenaline application started. View instance created.";
+    protected static final String DID_ASK_CONNECTION            = "Connection parameters chosen: ";
+    protected static final String ONLOGIN_FAILURE               = "Username creation failed.";
+    protected static final String ONLOGIN_SUCCESS               = "User createUser completed.";
+    protected static final String JOIN_WAITING_ROOM             = "Joining the waiting room...";
+    protected static final String DID_JOIN_WAITING_ROOM         = "";
+    protected static final String DID_CHOOSE_WEAPON             = "Weapon chosen: ";
+    protected static final String DID_CHOOSE_DAMAGE             = "Damage chosen.";
+    protected static final String DID_CHOOSE_MODALITY           = "Modality chosen: ";
+    protected static final String DID_CHOOSE_EFFECTS            = "Effects chosen.";
+    protected static final String DID_SELECT_WEAPONS_TO_RELOAD  = "Weapons selected to reload: ";
 
 
     public abstract void onViewUpdate();
@@ -64,12 +63,11 @@ public abstract class View implements Observer{
      * Shouldn't be reimplemented by a subclass.
      */
     public void didChooseConnection(ConnectionType type, int port, String host) {
-        connectionType = type;
         AdrenalineLogger.info(DID_ASK_CONNECTION + type + " " + host + ":" + port);
-        if (type == ConnectionType.SOCKET){
-            this.client = new ClientSocket(host, port);
+        if (type == ConnectionType.SOCKET) {
+            client = new ClientSocket(host, port);
         }
-        if (type == ConnectionType.RMI){
+        if (type == ConnectionType.RMI) {
             client = new ClientRMI(host, port);
         }
         client.registerObserver(this);
@@ -79,18 +77,18 @@ public abstract class View implements Observer{
      * Abstract method implemented by subclasses and used to create a new user
      * logged to the server.
      */
-    protected abstract void login();
+    protected abstract void createUser();
 
     /**
-     * Called to notify a login failure
+     * Called to notify a createUser failure
      */
     public void onLoginFailure() {
         AdrenalineLogger.error(ONLOGIN_FAILURE);
-        login();
+        createUser();
     }
 
     /**
-     * Called to notify a successful login
+     * Called to notify a successful createUser
      * @param username username
      */
     public void onLoginSuccess(String username) {
@@ -106,7 +104,7 @@ public abstract class View implements Observer{
         AdrenalineLogger.info(JOIN_WAITING_ROOM);
         var args = new HashMap<String, String>();
         args.put(User.username_key, username);
-        //this.client.send(CommunicationMessage.from(0, USER_LOGIN, args));
+        client.joinWaitingRoom(username);
     }
 
     /**
@@ -247,14 +245,38 @@ public abstract class View implements Observer{
     public abstract void onEndTurn();
 
     /**
-     * Dani
+     * Public method implemented by subclasses when the player has to decide whether he wants to reload his weapons or not.
      */
-    public abstract void willReload();
+    public abstract void askReload();
 
     /**
-     * Dani
+     * Public method implemented by subclasses when the player has to decide what weapon does he want to reload.
+     *
+     * @param weapons it's the list of names of the weapons that the player has in his hand and that are not loaded.
      */
-    public abstract void didReload();
+    public abstract void willReload(List<String> weapons);
+
+    /**
+     * Called when the weapons to be reloaded have been chosen by the player.
+     *
+     * @param weaponsToReload it's the list of names of the weapons that the player want to reload.
+     *
+     * @return TRUE if the weapons could be reloaded, FALSE otherwise.
+     */
+    public void didChooseWeaponsToReload(List<String> weaponsToReload) {
+        AdrenalineLogger.info(DID_SELECT_WEAPONS_TO_RELOAD);
+        this.client.reloadWeapons(weaponsToReload);
+    }
+
+    /**
+     * Public method implemented by subclasses, called when the reload process has ended with success.
+     */
+    public abstract void onReloadSuccess();
+
+    /**
+     * Public method implemented by subclasses, called when the reload process has ended with failure.
+     */
+    public abstract void onReloadFailure();
 
     /**
      * Dani

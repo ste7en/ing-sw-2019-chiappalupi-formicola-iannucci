@@ -27,31 +27,36 @@ public class AdrenalineCLI extends View {
     /**
      * Console prompt strings
      */
-    private static final String CHOOSE_CONNECTION   =
+    private static final String CHOOSE_CONNECTION           =
             "Please, choose between a \n\t" +
             "1. SOCKET connection\n\t" +
             "2. RMI connection";
-    private static final String INCORRECT_CHOICE    = "Incorrect choice. Retry.";
-    private static final String CHOOSE_SOCKET_PORT  = "On which port the SOCKET server is listening? ";
-    private static final String CHOOSE_RMI_PORT     = "On which port the RMI server is listening? ";
-    private static final String CHOOSE_SERVER_ADDR  = "Insert the server host address: ";
-    private static final String CHOOSE_USERNAME     = "Please, insert your username to log in: ";
-    private static final String USER_NOT_AVAILABLE  = "The username you provided is not available. Try again, please";
-    private static final String DID_JOIN_WAITING_R  = "Waiting Room joined successfully. A new game will start as soon as other players will login.";
-    private static final String ON_START            = "Game started.";
-    private static final String CHOOSE_WEAPON       = "Which weapon do " +
-            "you want to use?";
-    private static final String CHOOSE_DAMAGE       = "What damage do you want to make?";
-    private static final String CHOOSE_MODALITY     = "Which modality do you want to use?";
-    private static final String CHOOSE_EFFECT       = "What effect/s do you want to use?";
+    private static final String INCORRECT_CHOICE            = "Incorrect choice. Retry.";
+    private static final String CHOOSE_SOCKET_PORT          = "On which port the SOCKET server is listening? ";
+    private static final String CHOOSE_RMI_PORT             = "On which port the RMI server is listening? ";
+    private static final String CHOOSE_SERVER_ADDR          = "Insert the server host address: ";
+    private static final String CHOOSE_USERNAME             = "Please, insert your username to log in: ";
+    private static final String USER_NOT_AVAILABLE          = "The username you provided is not available. Try again, please";
+    private static final String DID_JOIN_WAITING_R          = "Waiting Room joined successfully. A new game will start as soon as other players will createUser.";
+    private static final String ON_START                    = "Game started.";
+    private static final String CHOOSE_WEAPON               = "Which weapon do you want to use?";
+    private static final String CHOOSE_DAMAGE               = "What damage do you want to make?";
+    private static final String CHOOSE_MODALITY             = "Which modality do you want to use?";
+    private static final String CHOOSE_EFFECT               = "What effect/s do you want to use?";
+    private static final String CHOOSE_WEAPONS_TO_RELOAD    = "What weapons do you want to reload? \nMultiple weapons can be provided with commas.";
+    private static final String NOT_ENOUGH_AMMOS            = "You have not enough ammos to reload. Please select only weapons you can afford.";
+    private static final String ASK_RELOAD                  = "Do you want to reload your weapons? [Y/N]";
+    private static final String WILL_RELOAD                 = "You selected that you want to reload your weapon.";
+    private static final String WON_T_RELOAD                = "Your weapons won't be reloaded.";
+    private static final String RELOAD_SUCCESS              = "Reload succeeded! Your weapons has been reloaded.";
 
     /**
      * Log strings or exceptions
      */
-    private static final String INCORRECT_HOSTNAME  = "Incorrect cli argument: hostname";
-    private static final String INCORRECT_PORT      = "Incorrect cli argument: server port";
-    private static final String INCORRECT_CONN_TYPE = "Incorrect cli argument: connection type";
-    private static final String MISSING_ARGUMENTS   = "Missing CLI arguments. Asking for user insertion.";
+    private static final String INCORRECT_HOSTNAME          = "Incorrect cli argument: hostname";
+    private static final String INCORRECT_PORT              = "Incorrect cli argument: server port";
+    private static final String INCORRECT_CONN_TYPE         = "Incorrect cli argument: connection type";
+    private static final String MISSING_ARGUMENTS           = "Missing CLI arguments. Asking for user insertion.";
 
 
     /**
@@ -59,7 +64,7 @@ public class AdrenalineCLI extends View {
      */
     private AdrenalineCLI() {
         this.willChooseConnection();
-        this.login();
+        this.createUser();
     }
 
     private AdrenalineCLI(String connectionType, String hostname, String port) {
@@ -78,7 +83,7 @@ public class AdrenalineCLI extends View {
             AdrenalineLogger.errorException(INCORRECT_HOSTNAME, e);
             this.willChooseConnection();
         }
-        this.login();
+        this.createUser();
     }
 
     public static void main(String[] args) {
@@ -126,12 +131,13 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    protected void login() {
+    protected void createUser() {
         out.flush();
         out.println();
         out.println(CHOOSE_USERNAME);
-        var username = in.next();
-        this.client.login(username);
+        var username = in.nextLine();
+
+        this.client.createUser(username);
     }
 
     @Override
@@ -297,23 +303,29 @@ public class AdrenalineCLI extends View {
             out.println(i + ") " + options.get(i-1));
         for(int i = 1; i <= options.size(); i++)
             out.println(i + ") " + options.get(i-1));
-        String optionSelected = null;
-        boolean selected = false;
         var scanInput = in.nextLine();
+        String optionSelected = selectionChecker(scanInput, options);
+        if(optionSelected == null) throw new IllegalArgumentException(INCORRECT_CHOICE);
+        return optionSelected;
+    }
+
+    /**
+     * Private method that checks if the selection from the input was legal. Added to avoid code repetitions.
+     * @param scan it's the string scanned from te input, to be checked.
+     * @param options it's the list containing all of the possible options.
+     * @return the option selected, null if the selection was illegal.
+     */
+    private String selectionChecker(String scan, List<String> options) {
+        String optionSelected = null;
         try {
-            int choice = Integer.parseInt(scanInput);
-            if(choice <= options.size()) {
+            int choice = Integer.parseInt(scan);
+            if(choice <= options.size())
                 optionSelected = options.get(choice);
-                selected = true;
-            }
         } catch (NumberFormatException exception) {
-            for(String s : args.values())
-                if(scanInput.equalsIgnoreCase(s)) {
+            for(String s : options)
+                if(scan.equalsIgnoreCase(s))
                     optionSelected = s;
-                    selected = true;
-                }
         }
-        if(!selected) throw new IllegalArgumentException(INCORRECT_CHOICE);
         return optionSelected;
     }
 
@@ -334,13 +346,41 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willReload() {
-
+    public void askReload() {
+        out.println(ASK_RELOAD);
+        String scanInput = in.nextLine();
+        if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y")) {
+            out.println(WILL_RELOAD);
+            this.client.askWeaponToReload();
+        }
+        out.println(WON_T_RELOAD);
     }
 
     @Override
-    public void didReload() {
+    public void willReload(List<String> weapons) {
+        out.println(CHOOSE_WEAPONS_TO_RELOAD);
+        String scanInput = in.nextLine();
+        scanInput.replaceAll(" ", "");
+        List<String> selections = List.of(scanInput.split(","));
+        Set<String> choices = new HashSet<>();
+        for(String selection : selections) {
+            String box = selectionChecker(selection, weapons);
+            if(box == null) throw new IllegalArgumentException(INCORRECT_CHOICE);
+            choices.add(box);
+        }
+        List<String> weaponsToReload = new ArrayList<>(choices);
+        this.didChooseWeaponsToReload(weaponsToReload);
+    }
 
+    @Override
+    public void onReloadSuccess() {
+        out.println(RELOAD_SUCCESS);
+    }
+
+    @Override
+    public void onReloadFailure() {
+        out.println(NOT_ENOUGH_AMMOS);
+        this.askReload();
     }
 
     @Override

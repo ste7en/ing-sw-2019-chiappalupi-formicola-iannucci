@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.cards.Effect;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.User;
+import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.PlayerColor;
 
 import java.util.*;
@@ -137,4 +138,56 @@ public class GameLogic {
         return player;
     }
 
+    /**
+     * This method is used to find a weapon from its name and the player who is using it.
+     * @param weapon it's the name of the weapon that is being looked for.
+     * @param user it's the user that has the weapon
+     */
+    public Weapon lookForWeapon(String weapon, User user) {
+        Player player = lookForPlayerFromUser(user);
+        ArrayList<Weapon> playerWeapons = player.getPlayerHand().getWeapons();
+        for(Weapon w : playerWeapons)
+            if(w.getName().equals(weapon)) return w;
+        throw new IllegalArgumentException("This user doesn't own this weapon!");
+    }
+
+    /**
+     * This method is used to find all of the names of the weapons in the hand of a player.
+     * @param user it's the user to return the weapons of.
+     */
+    public List<String> lookForPlayerWeapons(User user) {
+        List<String> playerWeapons = new ArrayList<>();
+        for(Weapon weapon : lookForPlayerFromUser(user).getPlayerHand().getWeapons())
+            playerWeapons.add(weapon.getName());
+        return playerWeapons;
+    }
+
+    /**
+     * This method is used to find out if a player can afford the cost of reloading the weapons he wants to reload.
+     * If the player can afford the cost, the weapons are reloaded.
+     * @param weapons it's the list of weapon that the player wants to reload.
+     * @param user it's the user that is asking to reload his weapons.
+     */
+    public boolean checkCostOfReload(List<Weapon> weapons, User user) {
+        Map<AmmoColor, Integer> cost = new HashMap<>();
+        for(AmmoColor color : AmmoColor.values())
+            cost.put(color, 0);
+        for(Weapon weapon : weapons)
+            for(AmmoColor color : weapon.getCost()) {
+                int costBox = cost.get(color);
+                costBox++;
+                cost.put(color, costBox);
+            }
+        for(AmmoColor color : AmmoColor.values()) {
+            int newAmmo = lookForPlayerFromUser(user).getPlayerHand().getAmmosAmount(color) - cost.get(color);
+            if (newAmmo < 0)
+                return false;
+            else cost.put(color, newAmmo);
+        }
+        for(AmmoColor color : AmmoColor.values())
+            lookForPlayerFromUser(user).getPlayerHand().updateAmmos(color, cost.get(color));
+        for(Weapon weapon : weapons)
+            weapon.reload();
+        return true;
+    }
 }

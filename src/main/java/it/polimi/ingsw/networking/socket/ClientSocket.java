@@ -11,15 +11,11 @@ import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
 import it.polimi.ingsw.networking.ConnectionHandlerSenderDelegate;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
-import it.polimi.ingsw.utility.Loggable;
 
 import java.io.*;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
@@ -29,7 +25,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  * @author Stefano Formicola
  * @author Daniele Chiappalupi
  */
-public class ClientSocket extends Client implements Loggable, ConnectionHandlerReceiverDelegate {
+public class ClientSocket extends Client implements ConnectionHandlerReceiverDelegate {
 
     /**
      * Delegate class responsible to send messages
@@ -60,13 +56,6 @@ public class ClientSocket extends Client implements Loggable, ConnectionHandlerR
                 logOnException(IO_EXC+CONN_RETRY, e);
                 setupConnection();
             }
-    }
-
-    @Override
-    public void login(String username) {
-        var args = new HashMap<String, String>();
-        args.put(User.username_key, username);
-        this.send(CommunicationMessage.from(0, CREATE_USER, args));
     }
 
     /**
@@ -109,6 +98,15 @@ public class ClientSocket extends Client implements Loggable, ConnectionHandlerR
                     case EFFECT_TO_USE:
                         this.viewObserver.willChooseEffects(args);
                         break;
+                    case WEAPON_LIST:
+                        this.viewObserver.willReload(new ArrayList<>(args.values()));
+                        break;
+                    case RELOAD_WEAPON_FAILED:
+                        this.viewObserver.onReloadFailure();
+                        break;
+                    case RELOAD_WEAPON_OK:
+                        this.viewObserver.onReloadSuccess();
+                        break;
                     default:
                         break;
                 }
@@ -122,6 +120,20 @@ public class ClientSocket extends Client implements Loggable, ConnectionHandlerR
      */
     public void send(String message) {
         senderDelegate.send(message);
+    }
+
+    @Override
+    public void createUser(String username) {
+        var args = new HashMap<String, String>();
+        args.put(User.username_key, username);
+        this.send(CommunicationMessage.from(0, CREATE_USER, args));
+    }
+
+    @Override
+    public void joinWaitingRoom(String username) {
+        var args = new HashMap<String, String>();
+        args.put(User.username_key, username);
+        this.send(CommunicationMessage.from(0, USER_LOGIN, args));
     }
 
     @Override
@@ -164,6 +176,19 @@ public class ClientSocket extends Client implements Loggable, ConnectionHandlerR
             args.remove(PotentiableWeapon.forPotentiableWeapon_key);
             args.remove(Effect.effect_key);
         }
+    }
+
+    @Override
+    public void askWeaponToReload() {
+        this.send(CommunicationMessage.from(userID, ASK_WEAPONS, gameID));
+    }
+
+    @Override
+    public void reloadWeapons(List<String> weaponsToReload) {
+        Map<String, String> args = new HashMap<>();
+        for(String weapon : weaponsToReload)
+            args.put(Integer.toString(weaponsToReload.indexOf(weapon)), weapon);
+        this.send(CommunicationMessage.from(userID, WEAPON_TO_RELOAD, args, gameID));
     }
 
 }

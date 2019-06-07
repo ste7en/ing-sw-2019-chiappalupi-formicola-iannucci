@@ -54,13 +54,18 @@ public class ClientRMI extends Client implements ClientInterface {
 
 
     @Override
-    public void login(String username){
+    public void createUser(String username){
         try{
             server.newUser(username);
         } catch (RemoteException e){
             System.err.println("ClientRMI exception: " + e.toString());
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void joinWaitingRoom(String username) {
+        //TODO: - implement this method
     }
 
     @Override
@@ -122,6 +127,26 @@ public class ClientRMI extends Client implements ClientInterface {
                 this.viewObserver.willChooseDamage(damageList);
                 effectsToUse.remove(0);
             }
+        } catch (RemoteException e) {
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
+    }
+
+    @Override
+    public void askWeaponToReload() {
+        try {
+            this.viewObserver.willReload(server.weaponInHand(userID, gameID));
+        } catch (RemoteException e) {
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
+    }
+
+    @Override
+    public void reloadWeapons(List<String> weaponsToReload) {
+        try {
+            boolean didReload =  server.reload(weaponsToReload, userID, gameID);
+            if(didReload) this.viewObserver.onReloadSuccess();
+            else this.viewObserver.onReloadFailure();
         } catch (RemoteException e) {
             System.err.println("ClientRMI exception: " + e.toString());
         }

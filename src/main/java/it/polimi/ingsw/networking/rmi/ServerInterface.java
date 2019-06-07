@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.utility.AmmoColor;
 
 import java.rmi.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -60,7 +61,7 @@ public interface ServerInterface extends Remote {
 
     ArrayList<String> canReload() throws RemoteException;
 
-    void reload(String weaponSelected) throws RemoteException;
+    boolean reload(List<String> weaponsSelected, int userID, UUID gameID) throws RemoteException;
 
-
+    List<String> weaponInHand(int userID, UUID gameID) throws RemoteException;
 }

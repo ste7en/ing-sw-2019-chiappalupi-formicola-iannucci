@@ -38,6 +38,8 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 @SuppressWarnings("all")
 public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
+    private ServerRMIConnectionHandler serverRMIConnectionHandler;
+
     private ClientInterface clientRMI;
 
     private Registry registry;
@@ -125,46 +127,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     }
 
-    /**
-     * Method called by a WaitingRoom instance on the implementing server
-     * to start a new game when the minimum number of logged users has
-     * reached and after a timeout expiration.
-     *
-     * @param userList a collection of the logged users ready to start a game
-     */
-    @Override
-    public void startNewGame(List<User> userList) {
-        var gameID = UUID.randomUUID();
-        // TODO: - Game Logic hasn't a constructor
-        var gameLogic = new GameLogic();
-        gameControllers.put(gameID, gameLogic);
-        userList.forEach(user -> {
-            var connection = users.get(user);
-            connection.gameDidStart(gameID.toString());
-        });
-    }
-
-    /**
-     * @param name user name
-     * @return true if the user doesn't exist or isn't connected, false otherwise
-     */
-    @SuppressWarnings("all")
-    private boolean checkUserAvailability(User user) {
-        var connectionHandler = users.get(user);
-        if ( connectionHandler != null ) return !connectionHandler.isConnectionAvailable();
-        else return true;
-    }
-
-    /**
-     * Called when a connectionHandler notifies the server the connection has been closed
-     * @param connection connectionHandler instance
-     */
-    public void didDisconnect(ServerConnectionHandler connection) {
-        users.forEach(
-                (user, connectionHandler) -> {
-                    if (connectionHandler == connection) waitingRoom.removeUser(user);
-                });
-    }
 
     /**
      * Method used to calculate the damages made by an effect of the weapon.
@@ -180,7 +142,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         Map<String, String> responseArgs = new HashMap<>();
         responseArgs.put(Weapon.weapon_key, weaponSelected);
         Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromConnectionID(userID));
-        Weapon weapon = lookForWeapon(weaponSelected);
+        Weapon weapon = gameControllers.get(gameID).lookForWeapon(weaponSelected, findUserFromConnectionID(userID));
         Effect effect = null;
         if (weapon.communicationMessageGenerator().equals(MODES_LIST)) {
             for (Effect e : weapon.getEffects())
@@ -209,7 +171,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public void makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) {
-        Weapon weaponToUse = lookForWeapon(weapon);
+        Weapon weaponToUse = gameControllers.get(gameID).lookForWeapon(weapon, findUserFromConnectionID(userID));
         Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromConnectionID(userID));
         PlayerColor playerColor = shooter.getCharacter().getColor();
         int indexOfEffect = Integer.parseInt(effectIndex);
@@ -257,6 +219,17 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     /**
+     * @param name user name
+     * @return true if the user doesn't exist or isn't connected, false otherwise
+     */
+    @SuppressWarnings("all")
+    private boolean checkUserAvailability(User user) {
+        var connectionHandler = users.get(user);
+        if ( connectionHandler != null ) return !connectionHandler.isConnectionAvailable();
+        else return true;
+    }
+
+    /**
      * When a client registers a new user
      * @param user the user to register
      * @param connectionHandler client connection handler
@@ -267,6 +240,44 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             users.put(user, connectionHandler);
             return true;
         } else return false;
+    }
+
+    /**
+     * When a client decides to join a game
+     * @param user the user who will play the game
+     */
+    public void userLogin(User user) {
+        waitingRoom.addUser(user);
+    }
+
+    /**
+     * Method called by a WaitingRoom instance on the implementing server
+     * to start a new game when the minimum number of logged users has
+     * reached and after a timeout expiration.
+     *
+     * @param userList a collection of the logged users ready to start a game
+     */
+    @Override
+    public void startNewGame(List<User> userList) {
+        var gameID = UUID.randomUUID();
+        // TODO: - Game Logic hasn't a constructor
+        var gameLogic = new GameLogic();
+        gameControllers.put(gameID, gameLogic);
+        userList.forEach(user -> {
+            var connection = users.get(user);
+            connection.gameDidStart(gameID.toString());
+        });
+    }
+
+    /**
+     * Called when a connectionHandler notifies the server the connection has been closed
+     * @param connection connectionHandler instance
+     */
+    public void didDisconnect(ServerConnectionHandler connection) {
+        users.forEach(
+                (user, connectionHandler) -> {
+                    if (connectionHandler == connection) waitingRoom.removeUser(user);
+                });
     }
 
     /**
@@ -290,7 +301,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public Map<String, String> useWeapon(int userID, UUID gameID, String weaponSelected) {
-        Weapon weapon = lookForWeapon(weaponSelected);
+        Weapon weapon = gameControllers.get(gameID).lookForWeapon(weaponSelected, findUserFromConnectionID(userID));;
         CommunicationMessage weaponMessage = weapon.communicationMessageGenerator();
         Map<String, String> weaponProcess = new HashMap<>();
         weaponProcess.put(Weapon.weapon_key, weaponSelected);
@@ -321,21 +332,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                 break;
         }
         return weaponProcess;
-    }
-
-    /**
-     * When a client decides to join a game
-     * @param user the user who will play the game
-     */
-    public void userLogin(User user) {
-        waitingRoom.addUser(user);
-    }
-
-    private Weapon lookForWeapon(String weapon) {
-        DecksHandler deck = new DecksHandler();
-        Weapon weaponToUse = deck.drawWeapon();
-        while(!weaponToUse.getName().equals(weapon)) weaponToUse = deck.drawWeapon();
-        return weaponToUse;
     }
 
 
@@ -468,9 +464,30 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         return null;
     }
 
+    /**
+     * Method used when a player has decided what weapons does he wants to reload.
+     * @param weaponsSelected it's the list of weapons that the player wants to reload.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     * @return TRUE if the process ended with success, FALSE otherwise.
+     */
     @Override
-    public void reload(String weaponSelected) {
+    public boolean reload(List<String> weaponsSelected, int userID, UUID gameID) {
+        List<Weapon> weapons = new ArrayList<>();
+        for(String w : weaponsSelected) weapons.add(gameControllers.get(gameID).lookForWeapon(w, findUserFromConnectionID(userID)));
+        return gameControllers.get(gameID).checkCostOfReload(weapons, findUserFromConnectionID(userID));
+    }
 
+    /**
+     * Method used to know the weapons that a player has in his hand.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     * @return the list of the names of the weapons that the player has in his hand.
+     */
+    @Override
+    public List<String> weaponInHand(int userID, UUID gameID) {
+        User user = findUserFromConnectionID(userID);
+        return gameControllers.get(gameID).lookForPlayerWeapons(user);
     }
 
 }
