@@ -48,11 +48,6 @@ public class ClientRMI extends Client implements ClientInterface {
         registry.rebind("ClientInterface", stub);
     }
 
-    public void registerObserver(View viewObserver) {
-        this.viewObserver = viewObserver;
-    }
-
-
     @Override
     public void createUser(String username){
         try{
