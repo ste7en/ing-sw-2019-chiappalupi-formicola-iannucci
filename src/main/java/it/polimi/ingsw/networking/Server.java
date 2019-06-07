@@ -43,26 +43,32 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private ClientInterface clientRMI;
 
     private Registry registry;
+
     /**
      * The port on which the server socket is listening
      */
     private Integer portNumberSocket;
+
     /**
      * The port on which the server rmi is listening
      */
     private Integer portNumberRMI;
+
     /**
      * The delegates to send messages via socket/rmi
      */
     private List<ConnectionHandlerSenderDelegate> senderDelegate;
+
     /**
      * The game waiting room, when new users log in
      */
     private WaitingRoom waitingRoom;
+
     /**
      * Instances of the game that are running, connected with their unique identifier.
      */
     private ConcurrentMap<UUID, GameLogic> gameControllers;
+
     /**
      * Collection of the connected users, useful to implement unicast
      * or to check username availability, but also users availability
@@ -72,7 +78,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     /**
      * Log strings
      */
-    private static final String EXC_SETUP = "Error while setting up a ServerSocketHandler :: ";
+    private static final String EXC_SETUP      = "Error while setting up the server :: ";
+    private static final String DID_DISCONNECT = "User disconnected: ";
 
     /**
      * Entry point of the server application
@@ -276,7 +283,10 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     public void didDisconnect(ServerConnectionHandler connection) {
         users.forEach(
                 (user, connectionHandler) -> {
-                    if (connectionHandler == connection) waitingRoom.removeUser(user);
+                    if (connectionHandler == connection) {
+                        waitingRoom.removeUser(user);
+                        AdrenalineLogger.info(DID_DISCONNECT + user.getUsername());
+                    }
                 });
     }
 
