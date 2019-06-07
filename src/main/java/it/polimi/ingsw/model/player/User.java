@@ -39,7 +39,7 @@ public class User {
      */
     @Override
     public int hashCode() {
-        return getUsername().hashCode();
+        return username.hashCode();
     }
 
     /**

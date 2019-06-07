@@ -37,7 +37,7 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_SERVER_ADDR  = "Insert the server host address: ";
     private static final String CHOOSE_USERNAME     = "Please, insert your username to log in: ";
     private static final String USER_NOT_AVAILABLE  = "The username you provided is not available. Try again, please";
-    private static final String DID_JOIN_WAITING_R  = "Waiting Room joined successfully. A new game will start as soon as other players will login.";
+    private static final String DID_JOIN_WAITING_R  = "Waiting Room joined successfully. A new game will start as soon as other players will createUser.";
     private static final String ON_START            = "Game started.";
     private static final String CHOOSE_WEAPON       = "Which weapon do " +
             "you want to use?";
@@ -59,7 +59,7 @@ public class AdrenalineCLI extends View {
      */
     private AdrenalineCLI() {
         this.willChooseConnection();
-        this.login();
+        this.createUser();
     }
 
     private AdrenalineCLI(String connectionType, String hostname, String port) {
@@ -78,7 +78,7 @@ public class AdrenalineCLI extends View {
             AdrenalineLogger.errorException(INCORRECT_HOSTNAME, e);
             this.willChooseConnection();
         }
-        this.login();
+        this.createUser();
     }
 
     public static void main(String[] args) {
@@ -126,12 +126,13 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    protected void login() {
+    protected void createUser() {
         out.flush();
         out.println();
         out.println(CHOOSE_USERNAME);
-        var username = in.next();
-        this.client.login(username);
+        var username = in.nextLine();
+
+        this.client.createUser(username);
     }
 
     @Override

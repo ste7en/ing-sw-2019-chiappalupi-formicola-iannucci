@@ -168,7 +168,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     createUser(connectionID, args);
                     break;
                 }
-                case CREATE_USER_OK: {
+                case USER_LOGIN: {
                     userLogin(connectionID, args);
                     break;
                 }
@@ -214,13 +214,12 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     private void createUser(int connectionID, Map<String, String> args) {
         var username = args.get(User.username_key);
         var user = new User(username);
-        var responseArgs = new HashMap<String, String>();
         String responseMessage;
 
         if (server.createUser(user, this)) {
-            responseMessage = CommunicationMessage.from(connectionID, CREATE_USER_OK, responseArgs);
+            responseMessage = CommunicationMessage.from(connectionID, CREATE_USER_OK, args);
         } else {
-            responseMessage = CommunicationMessage.from(connectionID, CREATE_USER_FAILED, responseArgs);
+            responseMessage = CommunicationMessage.from(connectionID, CREATE_USER_FAILED, args);
         }
         send(responseMessage);
     }
@@ -234,9 +233,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         var username = args.get(User.username_key);
         var user = new User(username);
         server.userLogin(user);
-        var responseArgs = new HashMap<String, String>();
-        responseArgs.put(User.username_key, username);
-        var responseMessage = CommunicationMessage.from(connectionID, USER_JOINED_WAITING_ROOM, responseArgs);
+        var responseMessage = CommunicationMessage.from(connectionID, USER_JOINED_WAITING_ROOM, args);
         send(responseMessage);
     }
 

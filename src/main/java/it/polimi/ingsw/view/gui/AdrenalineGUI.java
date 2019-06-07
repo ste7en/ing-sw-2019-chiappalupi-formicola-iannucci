@@ -22,7 +22,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    protected void login() {
+    protected void createUser() {
     }
 
     @Override
