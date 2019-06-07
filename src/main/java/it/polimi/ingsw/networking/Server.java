@@ -127,46 +127,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     }
 
-    /**
-     * Method called by a WaitingRoom instance on the implementing server
-     * to start a new game when the minimum number of logged users has
-     * reached and after a timeout expiration.
-     *
-     * @param userList a collection of the logged users ready to start a game
-     */
-    @Override
-    public void startNewGame(List<User> userList) {
-        var gameID = UUID.randomUUID();
-        // TODO: - Game Logic hasn't a constructor
-        var gameLogic = new GameLogic();
-        gameControllers.put(gameID, gameLogic);
-        userList.forEach(user -> {
-            var connection = users.get(user);
-            connection.gameDidStart(gameID.toString());
-        });
-    }
-
-    /**
-     * @param name user name
-     * @return true if the user doesn't exist or isn't connected, false otherwise
-     */
-    @SuppressWarnings("all")
-    private boolean checkUserAvailability(User user) {
-        var connectionHandler = users.get(user);
-        if ( connectionHandler != null ) return !connectionHandler.isConnectionAvailable();
-        else return true;
-    }
-
-    /**
-     * Called when a connectionHandler notifies the server the connection has been closed
-     * @param connection connectionHandler instance
-     */
-    public void didDisconnect(ServerConnectionHandler connection) {
-        users.forEach(
-                (user, connectionHandler) -> {
-                    if (connectionHandler == connection) waitingRoom.removeUser(user);
-                });
-    }
 
     /**
      * Method used to calculate the damages made by an effect of the weapon.
@@ -259,6 +219,17 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     /**
+     * @param name user name
+     * @return true if the user doesn't exist or isn't connected, false otherwise
+     */
+    @SuppressWarnings("all")
+    private boolean checkUserAvailability(User user) {
+        var connectionHandler = users.get(user);
+        if ( connectionHandler != null ) return !connectionHandler.isConnectionAvailable();
+        else return true;
+    }
+
+    /**
      * When a client registers a new user
      * @param user the user to register
      * @param connectionHandler client connection handler
@@ -269,6 +240,44 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             users.put(user, connectionHandler);
             return true;
         } else return false;
+    }
+
+    /**
+     * When a client decides to join a game
+     * @param user the user who will play the game
+     */
+    public void userLogin(User user) {
+        waitingRoom.addUser(user);
+    }
+
+    /**
+     * Method called by a WaitingRoom instance on the implementing server
+     * to start a new game when the minimum number of logged users has
+     * reached and after a timeout expiration.
+     *
+     * @param userList a collection of the logged users ready to start a game
+     */
+    @Override
+    public void startNewGame(List<User> userList) {
+        var gameID = UUID.randomUUID();
+        // TODO: - Game Logic hasn't a constructor
+        var gameLogic = new GameLogic();
+        gameControllers.put(gameID, gameLogic);
+        userList.forEach(user -> {
+            var connection = users.get(user);
+            connection.gameDidStart(gameID.toString());
+        });
+    }
+
+    /**
+     * Called when a connectionHandler notifies the server the connection has been closed
+     * @param connection connectionHandler instance
+     */
+    public void didDisconnect(ServerConnectionHandler connection) {
+        users.forEach(
+                (user, connectionHandler) -> {
+                    if (connectionHandler == connection) waitingRoom.removeUser(user);
+                });
     }
 
     /**
@@ -325,13 +334,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         return weaponProcess;
     }
 
-    /**
-     * When a client decides to join a game
-     * @param user the user who will play the game
-     */
-    public void userLogin(User user) {
-        waitingRoom.addUser(user);
-    }
 
     private Weapon lookForWeapon(String weapon) {
         DecksHandler deck = new DecksHandler();

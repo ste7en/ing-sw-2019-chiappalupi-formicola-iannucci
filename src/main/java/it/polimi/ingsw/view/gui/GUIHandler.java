@@ -175,7 +175,7 @@ public class GUIHandler extends Application  {
 
     public void handleLoginOptions(TextField usernameTextfield){
         String username = usernameTextfield.getText();
-        adrenalineGUI.getClient().login(username);
+        adrenalineGUI.getClient().createUser(username);
     }
 
     public void characterChoice() throws FileNotFoundException{

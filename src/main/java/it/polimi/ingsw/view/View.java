@@ -22,7 +22,6 @@ public abstract class View implements Observer{
     protected Client client;
     protected UUID gameID;
     protected PlayerColor playerColor;
-    protected ConnectionType connectionType;
 
     /**
      * Log strings
@@ -30,7 +29,7 @@ public abstract class View implements Observer{
     protected static final String APPLICATION_STARTED   = "Adrenaline application started. View instance created.";
     protected static final String DID_ASK_CONNECTION    = "Connection parameters chosen: ";
     protected static final String ONLOGIN_FAILURE       = "Username creation failed.";
-    protected static final String ONLOGIN_SUCCESS       = "User login completed.";
+    protected static final String ONLOGIN_SUCCESS       = "User createUser completed.";
     protected static final String JOIN_WAITING_ROOM     = "Joining the waiting room...";
     protected static final String DID_JOIN_WAITING_ROOM = "";
     protected static final String DID_CHOOSE_WEAPON     = "Weapon chosen: ";
@@ -64,12 +63,11 @@ public abstract class View implements Observer{
      * Shouldn't be reimplemented by a subclass.
      */
     public void didChooseConnection(ConnectionType type, int port, String host) {
-        connectionType = type;
         AdrenalineLogger.info(DID_ASK_CONNECTION + type + " " + host + ":" + port);
-        if (type == ConnectionType.SOCKET){
-            this.client = new ClientSocket(host, port);
+        if (type == ConnectionType.SOCKET) {
+            client = new ClientSocket(host, port);
         }
-        if (type == ConnectionType.RMI){
+        if (type == ConnectionType.RMI) {
             client = new ClientRMI(host, port);
         }
         client.registerObserver(this);
@@ -79,18 +77,18 @@ public abstract class View implements Observer{
      * Abstract method implemented by subclasses and used to create a new user
      * logged to the server.
      */
-    protected abstract void login();
+    protected abstract void createUser();
 
     /**
-     * Called to notify a login failure
+     * Called to notify a createUser failure
      */
     public void onLoginFailure() {
         AdrenalineLogger.error(ONLOGIN_FAILURE);
-        login();
+        createUser();
     }
 
     /**
-     * Called to notify a successful login
+     * Called to notify a successful createUser
      * @param username username
      */
     public void onLoginSuccess(String username) {
@@ -106,7 +104,7 @@ public abstract class View implements Observer{
         AdrenalineLogger.info(JOIN_WAITING_ROOM);
         var args = new HashMap<String, String>();
         args.put(User.username_key, username);
-        //this.client.send(CommunicationMessage.from(0, USER_LOGIN, args));
+        client.joinWaitingRoom(username);
     }
 
     /**

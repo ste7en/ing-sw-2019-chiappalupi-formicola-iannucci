@@ -32,26 +32,26 @@ public abstract class Client implements Loggable {
      * Log strings
      */
     @SuppressWarnings("squid:S3008")
-    protected static final String UNKNOWN_HOST = "Can't find the hostname. Asking for user input...";
-    protected static final String IO_EXC = "An IOException has been thrown. ";
-    protected static final String CONN_RETRY = "Connection retrying...";
-    protected static final String ON_SUCCESS = "ClientSocket successfully connected to the server.";
+    protected static final String UNKNOWN_HOST       = "Can't find the hostname. Asking for user input...";
+    protected static final String IO_EXC             = "An IOException has been thrown. ";
+    protected static final String CONN_RETRY         = "Connection retrying...";
+    protected static final String ON_SUCCESS         = "ClientSocket successfully connected to the server.";
     protected static final String ASK_SERVER_DETAILS = "Asking for server hostname and connection port.";
-    protected static final String INFO = "Setting up connection...";
+    protected static final String INFO               = "Setting up connection...";
     protected static final String CONNECTION_REFUSED = "Connection refused. Asking for user input...";
-    protected static final String OBS_REGISTERED = "Observer successfully registered.";
+    protected static final String OBS_REGISTERED     = "Observer successfully registered.";
 
     /**
      * Helper strings for the following method
      */
-    protected static final String ASK_HOST_NAME = "Please, insert server's address or hostname: ";
-    protected static final String ASK_PORT_NUMBER = "Please, insert server's port number: ";
+    protected static final String ASK_HOST_NAME      = "Please, insert server's address or hostname: ";
+    protected static final String ASK_PORT_NUMBER    = "Please, insert server's port number: ";
 
     /**
      * Class constructor
      *
-     * @param host           hostname (IP address)
-     * @param port           port number of the listening server
+     * @param host hostname (IP address)
+     * @param port port number of the listening server
      */
     public Client(String host, Integer port) {
         this.serverName = host;
@@ -95,7 +95,14 @@ public abstract class Client implements Loggable {
      * Abstract method implemented by subclasses and used to create a new user
      * logged to the server.
      */
-    public abstract void login(String username);
+    public abstract void createUser(String username);
+
+    /**
+     * Abstract method implemented by subclasses to make the user joining
+     * the server's waiting room
+     * @param username username
+     */
+    public abstract void joinWaitingRoom(String username);
 
     /**
      * Abstract method implemented by subclasses and used when a player wants to use a weapon.
