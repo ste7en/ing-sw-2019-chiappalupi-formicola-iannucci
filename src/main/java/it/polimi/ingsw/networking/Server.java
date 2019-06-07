@@ -38,8 +38,6 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 @SuppressWarnings("all")
 public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
-    private ServerRMIConnectionHandler serverRMIConnectionHandler;
-
     private ClientInterface clientRMI;
 
     private Registry registry;
