@@ -29,7 +29,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  * @author Stefano Formicola
  * @author Daniele Chiappalupi
  */
-public class ClientSocket extends Client implements Loggable, ConnectionHandlerReceiverDelegate {
+public class ClientSocket extends Client implements ConnectionHandlerReceiverDelegate {
 
     /**
      * Delegate class responsible to send messages
@@ -60,13 +60,6 @@ public class ClientSocket extends Client implements Loggable, ConnectionHandlerR
                 logOnException(IO_EXC+CONN_RETRY, e);
                 setupConnection();
             }
-    }
-
-    @Override
-    public void login(String username) {
-        var args = new HashMap<String, String>();
-        args.put(User.username_key, username);
-        this.send(CommunicationMessage.from(0, CREATE_USER, args));
     }
 
     /**
@@ -122,6 +115,20 @@ public class ClientSocket extends Client implements Loggable, ConnectionHandlerR
      */
     public void send(String message) {
         senderDelegate.send(message);
+    }
+
+    @Override
+    public void createUser(String username) {
+        var args = new HashMap<String, String>();
+        args.put(User.username_key, username);
+        this.send(CommunicationMessage.from(0, CREATE_USER, args));
+    }
+
+    @Override
+    public void joinWaitingRoom(String username) {
+        var args = new HashMap<String, String>();
+        args.put(User.username_key, username);
+        this.send(CommunicationMessage.from(0, USER_LOGIN, args));
     }
 
     @Override

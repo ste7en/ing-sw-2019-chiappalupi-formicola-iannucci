@@ -26,7 +26,7 @@ public enum CommunicationMessage {
     PONG,
 
     /**
-     * User login messages.
+     * User createUser messages.
      * CREATE_USER is sent by the client to the server to create a new User, the server will process the request and send a
      * CREATE_USER_OK or CREATE_USER_FAILED in case of success or failure.
      *
