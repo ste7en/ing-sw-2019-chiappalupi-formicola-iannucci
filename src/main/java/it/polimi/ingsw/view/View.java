@@ -290,11 +290,6 @@ public abstract class View implements Observer{
     }
 
     /**
-     * Dani
-     */
-    public abstract void didUsePowerup();
-
-    /**
      * Public method implemented by subclasses, called when the player has to decide which powerup does he wants to use.
      *
      * @param availablePowerups it's the list of powerups owned by the player.
@@ -307,17 +302,23 @@ public abstract class View implements Observer{
      * @param powerup it's the powerup that has been chosen.
      */
     public void didChoosePowerup(String powerup) {
-
+        this.client.askPowerupDamages(powerup);
     }
 
     /**
-     * Dani
-     * @param possibleDamages
+     * Public method implemented by subclasses, called when the player has to decide what damage does he want to do with the powerup he is using.
+     *
+     * @param possibleDamages it's a map containing both the possible damages and the powerup used to do them.
      */
-    public abstract void willChoosePowerupDamage(List<String> possibleDamages);
+    public abstract void willChoosePowerupDamage(Map<String, String> possibleDamages);
 
     /**
-     * Dani
+     * Called when the damage to be done with the powerup has been chosen from the player.
+     *
+     * @param choice it's the damage chosen by the player.
+     * @param powerup it's the Powerup::toString of the powerup that has been chosen.
      */
-    public abstract void didChoosePowerupEffect();
+    public void didChoosePowerupDamage(String choice, String powerup) {
+        this.client.usePowerup(powerup, choice);
+    }
 }

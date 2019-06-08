@@ -1,9 +1,6 @@
 package it.polimi.ingsw.view.cli;
 
-import it.polimi.ingsw.model.cards.Damage;
-import it.polimi.ingsw.model.cards.Effect;
-import it.polimi.ingsw.model.cards.PotentiableWeapon;
-import it.polimi.ingsw.model.cards.Weapon;
+import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.view.View;
@@ -50,6 +47,8 @@ public class AdrenalineCLI extends View {
     private static final String WON_T_RELOAD                = "Your weapons won't be reloaded.";
     private static final String RELOAD_SUCCESS              = "Reload succeeded! Your weapons has been reloaded.";
     private static final String CHOOSE_POWERUP              = "Which powerup do you want to use?";
+    private static final String CHOOSE_POWERUP_DAMAGE       = "What do you want to do with your powerup?";
+    private static final String POWERUP_USED                = "The powerup has been used with success.";
 
     /**
      * Log strings or exceptions
@@ -386,11 +385,6 @@ public class AdrenalineCLI extends View {
         this.askReload();
     }
 
-    @Override
-    public void didUsePowerup() {
-
-    }
-
     //toDo: do you want to use another powerup?
     @Override
     public void willChoosePowerup(List<String> availablePowerups) {
@@ -409,13 +403,13 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChoosePowerupDamage(List<String> possibleDamages) {
-
-    }
-
-    @Override
-    public void didChoosePowerupEffect() {
-
+    public void willChoosePowerupDamage(Map<String, String> possibleDamages) {
+        out.println(CHOOSE_POWERUP_DAMAGE);
+        String powerup = possibleDamages.get(Powerup.powerup_key);
+        possibleDamages.remove(Powerup.powerup_key);
+        String choice = decisionHandlerFromMap(possibleDamages);
+        this.didChoosePowerupDamage(choice, powerup);
+        out.println(POWERUP_USED);
     }
 
     @Override

@@ -522,4 +522,19 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         return returnValues;
     }
 
+    /**
+     * Method used to apply the powerup effect selected by the user.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     * @param powerup it's the Powerup::toString of the powerup that is being used.
+     * @param damage it's the Damage::toString of the damage that has been selected.
+     */
+    @Override
+    public void applyPowerupDamage(int userID, UUID gameID, String powerup, String damage) {
+        List<Damage> possibleDamages = gameControllers.get(gameID).getPowerupDamages(powerup, findUserFromID(userID));
+        for(Damage d : possibleDamages)
+            if(d.toString().equals(damage))
+                gameControllers.get(gameID).applyDamage(d, gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)).getCharacter().getColor());
+    }
+
 }

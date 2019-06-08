@@ -108,7 +108,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.willChoosePowerup(new ArrayList<>(args.values()));
                         break;
                     case POWERUP_DAMAGES_LIST:
-                        this.viewObserver.willChoosePowerupDamage(new ArrayList<>(args.values()));
+                        this.viewObserver.willChoosePowerupDamage(args);
                         break;
                     default:
                         break;
@@ -214,6 +214,14 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         Map<String, String> args = new HashMap<>();
         args.put(Powerup.powerup_key, powerup);
         this.send(CommunicationMessage.from(userID, ASK_POWERUP_DAMAGES, args, gameID));
+    }
+
+    @Override
+    public void usePowerup(String powerup, String damage) {
+        Map<String, String> args = new HashMap<>();
+        args.put(Powerup.powerup_key, powerup);
+        args.put(Damage.damage_key, damage);
+        this.send(CommunicationMessage.from(userID, POWERUP_DAMAGE_TO_MAKE, args, gameID));
     }
 
 }

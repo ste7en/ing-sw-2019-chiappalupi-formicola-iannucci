@@ -218,8 +218,13 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case ASK_POWERUP_DAMAGES: {
                     List<String> possibleDamages = server.getPowerupDamages(connectionID, gameID, args.get(Powerup.powerup_key));
                     Map<String, String> responseArgs = new HashMap<>();
+                    responseArgs.put(Powerup.powerup_key, args.get(Powerup.powerup_key));
                     for(String damage : possibleDamages) responseArgs.put(Integer.toString(possibleDamages.indexOf(damage)), damage);
                     send(CommunicationMessage.from(connectionID, POWERUP_DAMAGES_LIST, responseArgs));
+                    break;
+                }
+                case POWERUP_DAMAGE_TO_MAKE: {
+                    server.applyPowerupDamage(connectionID, gameID, args.get(Powerup.powerup_key), args.get(Damage.damage_key));
                     break;
                 }
                 default:

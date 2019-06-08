@@ -164,8 +164,15 @@ public abstract class Client implements Loggable {
 
     /**
      * Abstract method implemented by subclasses and used when a player has selected the powerup he wants to use.
-     * @param powerup it's the powerup that the player has selected-
+     * @param powerup it's the powerup that the player has selected.
      */
     public abstract void askPowerupDamages(String powerup);
+
+    /**
+     * Abstract method implemented by subclasses and used when a player has decided how does he wants to use his powerup.
+     * @param powerup it's the powerup that the player has selected.
+     * @param damage it's the way the player has decided to use the powerup-
+     */
+    public abstract void usePowerup(String powerup, String damage);
 
 }

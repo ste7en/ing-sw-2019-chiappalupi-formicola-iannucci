@@ -152,7 +152,16 @@ public enum CommunicationMessage {
      *
      * Arguments: <Powerup.powerup_key, Powerup::toString>, <indexOf_Damage, Damage::toString>
      */
-    POWERUP_DAMAGES_LIST;
+    POWERUP_DAMAGES_LIST,
+
+    /**
+     * Powerup using messages.
+     *
+     * POWERUP_DAMAGE_TO_MAKE is sent by the client to the server to notify the selection of damage to make from the player.
+     *
+     * Arguments: <Powerup.powerup_key, Powerup::toString>, <Damage.damage_key, Damage::toString>
+     */
+    POWERUP_DAMAGE_TO_MAKE;
 
     /**
      * String constant used in messages between client-server

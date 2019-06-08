@@ -152,22 +152,12 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void didUsePowerup() {
-
-    }
-
-    @Override
     public void willChoosePowerup(List<String> availablePowerups) {
 
     }
 
     @Override
-    public void willChoosePowerupDamage(List<String> possibleDamages) {
-
-    }
-
-    @Override
-    public void didChoosePowerupEffect() {
+    public void willChoosePowerupDamage(Map<String, String> possibleDamages) {
 
     }
 

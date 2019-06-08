@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking.rmi;
 
+import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
@@ -194,7 +195,19 @@ public class ClientRMI extends Client implements ClientInterface {
     public void askPowerupDamages(String powerup) {
         try {
             List<String> possibleDamages = this.server.getPowerupDamages(userID, gameID, powerup);
-            this.viewObserver.willChoosePowerupDamage(possibleDamages);
+            Map<String, String> damagesMap = new HashMap<>();
+            for(String damage : possibleDamages) damagesMap.put(Integer.toString(possibleDamages.indexOf(damage)), damage);
+            damagesMap.put(Powerup.powerup_key, powerup);
+            this.viewObserver.willChoosePowerupDamage(damagesMap);
+        } catch (RemoteException e) {
+            System.err.print(CLIENT_RMI_EXCEPTION + e.toString());
+        }
+    }
+
+    @Override
+    public void usePowerup(String powerup, String damage) {
+        try {
+            server.applyPowerupDamage(userID, gameID, powerup, damage);
         } catch (RemoteException e) {
             System.err.print(CLIENT_RMI_EXCEPTION + e.toString());
         }
