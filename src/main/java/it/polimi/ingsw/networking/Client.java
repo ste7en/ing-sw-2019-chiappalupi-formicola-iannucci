@@ -145,4 +145,15 @@ public abstract class Client implements Loggable {
      */
     public abstract void reloadWeapons(List<String> weaponsToReload);
 
+    /**
+     * Abstract method implemented by subclasses and used when a player wants to use a powerup.
+     */
+    public abstract void askForPowerup();
+
+    /**
+     * Abstract method implemented by subclasses and used when a player has selected the powerup he wants to use.
+     * @param powerup it's the powerup that the player has selected-
+     */
+    public abstract void askPowerupDamages(String powerup);
+
 }

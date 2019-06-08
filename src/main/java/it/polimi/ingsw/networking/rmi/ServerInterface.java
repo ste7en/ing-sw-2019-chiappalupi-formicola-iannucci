@@ -62,4 +62,8 @@ public interface ServerInterface extends Remote {
     boolean reload(List<String> weaponsSelected, int userID, UUID gameID) throws RemoteException;
 
     List<String> weaponInHand(int userID, UUID gameID) throws RemoteException;
+
+    List<String> usablePowerups(int userID, UUID gameID) throws RemoteException;
+
+    List<String> powerupDamages(int userID, UUID gameID, String powerup) throws RemoteException;
 }

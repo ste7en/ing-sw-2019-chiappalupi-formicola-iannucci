@@ -280,9 +280,11 @@ public abstract class View implements Observer{
     public abstract void onReloadFailure();
 
     /**
-     * Public method implemented by subclasses, called when the player wants to use a powerup.
+     * Starts the process of using a powerup.
      */
-    public abstract void willUsePowerup();
+    public void willUsePowerup() {
+        this.client.askForPowerup();
+    }
 
     /**
      * Dani
@@ -302,7 +304,7 @@ public abstract class View implements Observer{
      * @param powerup it's the powerup that has been chosen.
      */
     public void didChoosePowerup(String powerup) {
-        //toDo
+
     }
 
     /**

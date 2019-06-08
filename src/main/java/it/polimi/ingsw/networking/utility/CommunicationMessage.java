@@ -114,7 +114,7 @@ public enum CommunicationMessage {
     WEAPON_LIST,
 
     /**
-     * Weapon reloading message.
+     * Weapon reloading messages.
      *
      * WEAPON_TO_RELOAD is sent by the client to the server to notify the weapon that the player wants to reload in game.
      * RELOAD_WEAPON_OK or RELOAD_WEAPON_FAILED in case of success or failure.
@@ -123,7 +123,18 @@ public enum CommunicationMessage {
      */
     WEAPON_TO_RELOAD,
     RELOAD_WEAPON_OK,
-    RELOAD_WEAPON_FAILED;
+    RELOAD_WEAPON_FAILED,
+
+    /**
+     * Powerup using messages.
+     *
+     * ASK_POWERUPS is sent by the client to the server to ask the powerups that the player has in his hand and can use during its turn. The request has no arguments.
+     * POWERUPS_LIST is sent by the server to the client to provide the powerups that the player has in his hand and can use during its turn.
+     *
+     * Arguments: <indexOd_Powerup, Powerup.toString()>
+     */
+    ASK_POWERUPS,
+    POWERUP_LIST;
 
     /**
      * String constant used in messages between client-server

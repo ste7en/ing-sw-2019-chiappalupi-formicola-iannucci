@@ -159,21 +159,7 @@ public abstract class Weapon {
             if(effect.getProperties().get(EffectProperty.CanMoveAfter) > 0) recursiveMovementsEverywhere(possibleMovements, effect.getProperties().get(EffectProperty.CanMoveAfter), target, box);
             else {
                 int distance = effect.getProperties().get(EffectProperty.CanMoveAfter) * (-1);
-                for(Direction direction : Direction.values()) {
-                    GameMap clone = (GameMap)map.clone();
-                    ArrayList<Cell> movementsInDirection = new ArrayList<>();
-                    int distanceBox = distance;
-                    while(distanceBox > 0) {
-                        if(clone.isAOneStepValidMove(target, clone.getCellFromDirection(clone.getCellFromPlayer(target), direction))) {
-                            Cell cell = clone.getCellFromDirection(clone.getCellFromPlayer(target), direction);
-                            movementsInDirection.add(cell);
-                            clone.setPlayerPosition(target, cell);
-                            distanceBox--;
-                        } else distanceBox = -1;
-                    }
-                    possibleMovements.addAll(movementsInDirection);
-                    possibleMovements.add(box.getCellFromPlayer(target));
-                }
+                getMovementsFromDirections(target, box, possibleMovements, distance);
             }
         }
         Set<Cell> set = new HashSet<>(possibleMovements);
@@ -181,6 +167,32 @@ public abstract class Weapon {
         possibleMovements.addAll(set);
         possibleMovements.sort(Cell::compareTo);
         return possibleMovements;
+    }
+
+    /**
+     * Helper method to compute the possible movements of a target when the effect can move it through a direction.
+     * Static because it is used also in the Newton powerup using process.
+     * @param target it's the target that can be moved.
+     * @param box it's a clone of the original map.
+     * @param possibleMovements it's the arrayList where the possibleMovements are stored.
+     * @param distance it's the maximum distance at where the movement can be done.
+     */
+    public static void getMovementsFromDirections(Player target, GameMap box, List<Cell> possibleMovements, int distance) {
+        for(Direction direction : Direction.values()) {
+            GameMap clone = (GameMap)box.clone();
+            ArrayList<Cell> movementsInDirection = new ArrayList<>();
+            int distanceBox = distance;
+            while(distanceBox > 0) {
+                if(clone.isAOneStepValidMove(target, clone.getCellFromDirection(clone.getCellFromPlayer(target), direction))) {
+                    Cell cell = clone.getCellFromDirection(clone.getCellFromPlayer(target), direction);
+                    movementsInDirection.add(cell);
+                    clone.setPlayerPosition(target, cell);
+                    distanceBox--;
+                } else distanceBox = -1;
+            }
+            possibleMovements.addAll(movementsInDirection);
+            possibleMovements.add(box.getCellFromPlayer(target));
+        }
     }
 
     /**

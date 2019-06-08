@@ -392,10 +392,6 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willUsePowerup() {
-    }
-
-    @Override
     public void didUsePowerup() {
 
     }
@@ -403,6 +399,10 @@ public class AdrenalineCLI extends View {
     //toDo: do you want to use another powerup?
     @Override
     public void willChoosePowerup(List<String> availablePowerups) {
+        if(availablePowerups.isEmpty()) {
+            out.println("You haven't any powerup that you can use right now.");
+            return;
+        }
         out.println(CHOOSE_POWERUP);
         String choice = decisionHandlerFromList(availablePowerups);
         while(choice == null) {

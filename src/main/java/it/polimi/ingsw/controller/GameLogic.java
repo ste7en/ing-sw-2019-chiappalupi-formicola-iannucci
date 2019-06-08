@@ -198,7 +198,7 @@ public class GameLogic {
      * @param user it's the user whose turn is.
      * @return the list of the names of the powerups that the player can use and its color [i.e. Teleporter - Blue].
      */
-    public List<String> getUsablePowerup(User user) {
+    public List<String> getUsablePowerups(User user) {
         Player player = lookForPlayerFromUser(user);
         List<Powerup> powerupList = player.getPlayerHand().getPowerups();
         List<String> powerupNames = new ArrayList<>();
@@ -207,4 +207,15 @@ public class GameLogic {
                 powerupNames.add(powerup.toString());
         return powerupNames;
     }
+
+    /**
+     * This method is used to get the possible damages that a powerup can do.
+     * @param powerup it's the powerup::toString of the powerup.
+     * @param user it's the user who is using the powerup.
+     * @return the list of possible damages that the powerup can make.
+     */
+    public List<Damage> getPowerupDamages(String powerup, User user) {
+        return null;
+    }
+
 }

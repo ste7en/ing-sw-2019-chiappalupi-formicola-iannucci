@@ -1,6 +1,5 @@
 package it.polimi.ingsw.networking;
 
-import it.polimi.ingsw.controller.DecksHandler;
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Player;
@@ -8,7 +7,6 @@ import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.rmi.ClientInterface;
-import it.polimi.ingsw.networking.rmi.ClientRMI;
 import it.polimi.ingsw.networking.rmi.ServerInterface;
 import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
 import it.polimi.ingsw.networking.socket.*;
@@ -183,7 +181,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * @param connectionID it's the connectionID from what the user has to be found.
      * @return the User looked for.
      */
-    private User findUserFromConnectionID(int connectionID) {
+    private User findUserFromID(int connectionID) {
         for(User user : users.keySet()) {
             if(users.get(user).hashCode() == connectionID) return user;
         }
@@ -303,7 +301,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public Map<String, String> useWeapon(int userID, UUID gameID, String weaponSelected) {
-        Weapon weapon = gameControllers.get(gameID).lookForWeapon(weaponSelected, findUserFromConnectionID(userID));;
+        Weapon weapon = gameControllers.get(gameID).lookForWeapon(weaponSelected, findUserFromID(userID));;
         CommunicationMessage weaponMessage = weapon.communicationMessageGenerator();
         Map<String, String> weaponProcess = new HashMap<>();
         weaponProcess.put(Weapon.weapon_key, weaponSelected);
@@ -311,7 +309,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         switch (weaponMessage) {
             case DAMAGE_LIST: {
                 weaponProcess.put(Effect.effect_key, "0");
-                Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromConnectionID(userID));
+                Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
                 ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).useEffect(weapon, weapon.getEffects().get(0), shooter, null);
                 stringifyDamages(possibleDamages, weaponProcess);
                 break;
@@ -346,8 +344,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public void makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) {
-        Weapon weaponToUse = gameControllers.get(gameID).lookForWeapon(weapon, findUserFromConnectionID(userID));
-        Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromConnectionID(userID));
+        Weapon weaponToUse = gameControllers.get(gameID).lookForWeapon(weapon, findUserFromID(userID));
+        Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
         PlayerColor playerColor = shooter.getCharacter().getColor();
         int indexOfEffect = Integer.parseInt(effectIndex);
         boolean potentiable = false;
@@ -396,8 +394,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     public Map<String, String> useEffect(int userID, UUID gameID, String forPotentiableWeapon, String effectSelected, String weaponSelected) {
         Map<String, String> responseArgs = new HashMap<>();
         responseArgs.put(Weapon.weapon_key, weaponSelected);
-        Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromConnectionID(userID));
-        Weapon weapon = gameControllers.get(gameID).lookForWeapon(weaponSelected, findUserFromConnectionID(userID));
+        Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
+        Weapon weapon = gameControllers.get(gameID).lookForWeapon(weaponSelected, findUserFromID(userID));
         Effect effect = null;
         if (weapon.communicationMessageGenerator().equals(MODES_LIST)) {
             for (Effect e : weapon.getEffects())
@@ -481,8 +479,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public boolean reload(List<String> weaponsSelected, int userID, UUID gameID) {
         List<Weapon> weapons = new ArrayList<>();
-        for(String w : weaponsSelected) weapons.add(gameControllers.get(gameID).lookForWeapon(w, findUserFromConnectionID(userID)));
-        return gameControllers.get(gameID).checkCostOfReload(weapons, findUserFromConnectionID(userID));
+        for(String w : weaponsSelected) weapons.add(gameControllers.get(gameID).lookForWeapon(w, findUserFromID(userID)));
+        return gameControllers.get(gameID).checkCostOfReload(weapons, findUserFromID(userID));
     }
 
     /**
@@ -493,8 +491,32 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public List<String> weaponInHand(int userID, UUID gameID) {
-        User user = findUserFromConnectionID(userID);
+        User user = findUserFromID(userID);
         return gameControllers.get(gameID).lookForPlayerWeapons(user);
+    }
+
+    /**
+     * Method used to know the usable powerups that a player has in his hand.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     * @return the list of powerups that a player can use through its turn.
+     */
+    @Override
+    public List<String> usablePowerups(int userID, UUID gameID) {
+        return gameControllers.get(gameID).getUsablePowerups(findUserFromID(userID));
+    }
+
+    /**
+     * Method used to know the possible damages that a player can do when using a powerup.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     * @param powerup it's the Powerup::toString that is being used.
+     * @see Powerup#toString()
+     */
+    @Override
+    public List<String> powerupDamages(int userID, UUID gameID, String powerup) {
+        List<Damage> possibleDamages = gameControllers.get(gameID).getPowerupDamages(powerup, findUserFromID(userID));
+        return null;
     }
 
 }

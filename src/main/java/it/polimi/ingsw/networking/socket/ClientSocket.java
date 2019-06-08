@@ -107,6 +107,8 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case RELOAD_WEAPON_OK:
                         this.viewObserver.onReloadSuccess();
                         break;
+                    case POWERUP_LIST:
+                        this.viewObserver.willChoosePowerup(new ArrayList<>(args.values()));
                     default:
                         break;
                 }
@@ -189,6 +191,16 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         for(String weapon : weaponsToReload)
             args.put(Integer.toString(weaponsToReload.indexOf(weapon)), weapon);
         this.send(CommunicationMessage.from(userID, WEAPON_TO_RELOAD, args, gameID));
+    }
+
+    @Override
+    public void askForPowerup() {
+        this.send(CommunicationMessage.from(userID, ASK_POWERUPS, gameID));
+    }
+
+    @Override
+    public void askPowerupDamages(String powerup) {
+
     }
 
 }

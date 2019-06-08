@@ -146,11 +146,6 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willUsePowerup() {
-
-    }
-
-    @Override
     public void didUsePowerup() {
 
     }

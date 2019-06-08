@@ -211,6 +211,13 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     send(CommunicationMessage.from(connectionID, WEAPON_LIST, responseArgs));
                     break;
                 }
+                case ASK_POWERUPS: {
+                    List<String> usablePowerups = server.usablePowerups(connectionID, gameID);
+                    Map<String, String> responseArgs = new HashMap<>();
+                    for(String powerup: usablePowerups) responseArgs.put(Integer.toString(usablePowerups.indexOf(powerup)), powerup);
+                    send(CommunicationMessage.from(connectionID, POWERUP_LIST, responseArgs));
+                    break;
+                }
                 default:
                     break;
             }
