@@ -73,17 +73,24 @@ public abstract class View implements Observer{
     }
 
     /**
+     * Abstract method implemented by subclasses and used to ask for usernames to clients
+     */
+    protected abstract void willCreateUser();
+
+    /**
      * Abstract method implemented by subclasses and used to create a new user
      * logged to the server.
      */
-    protected abstract void createUser();
+    public void createUser(String username){
+        client.createUser(username);
+    }
 
     /**
      * Called to notify a createUser failure
      */
     public void onLoginFailure() {
         AdrenalineLogger.error(ONLOGIN_FAILURE);
-        createUser();
+        willCreateUser();
     }
 
     /**
@@ -123,18 +130,20 @@ public abstract class View implements Observer{
      * Ele
      */
     public void didChooseCharacter(String character){
-        client.chooseCharacter(character);
+        client.choseCharacter(character);
     }
 
     /**
      * Ele
      */
-    public abstract void willChooseGameSettings();
+    public abstract void willChooseGameMap();
 
     /**
      * Ele
      */
-    public abstract void didChooseGameSettings();
+    public void didChooseGameMap(String configuration){
+        client.choseGameMap(configuration);
+    }
 
     /**
      * Ele

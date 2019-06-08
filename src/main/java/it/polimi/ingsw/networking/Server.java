@@ -248,12 +248,12 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public void chooseCharacter(String character) {
+    public void choseCharacter(String character) {
 
     }
 
     @Override
-    public void chooseGameSettings() {
+    public void choseGameMap(String configuration) {
 
     }
 

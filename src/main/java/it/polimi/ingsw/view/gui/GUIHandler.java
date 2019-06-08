@@ -1,9 +1,7 @@
 package it.polimi.ingsw.view.gui;
-import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -16,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -36,25 +35,42 @@ public class GUIHandler extends Application  {
     public void start(Stage primaryStage) throws Exception {
 
         this.adrenalineGUI = new AdrenalineGUI(this);
+
         primaryStage.setTitle("Button test");
+
+        button = new Button("Continue");
+        button.setOnAction(e -> adrenalineGUI.willChooseConnection());
+        boxButton = new HBox(button);
+        boxButton.setAlignment(Pos.CENTER);
+        boxButton.setMargin(button, new Insets(0, 0, 50, 0));
+
+        root = new BorderPane();
+        BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/adrenaline.jpg")),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        root.setBackground(new Background(myBI));
+        root.setBottom(boxButton);
+
+        primaryStage.setScene(new Scene(root, 600, 400));
+        primaryStage.show();
+    }
+
+    public void chooseConnection(){
+
+        root.getChildren().clear();
+        root.setStyle("-fx-background-color: white");
+
         CheckBox checkBoxRMI = new CheckBox("RMI");
         CheckBox checkBoxTCP = new CheckBox("TCP");
-        button = new Button("Continue");
         Label label = new Label("Select a connection");
         button.setOnAction(e -> handleConnectionOptions(checkBoxRMI, checkBoxTCP));
         checkBoxRMI.setOnAction(e -> handleOptionsRMI(checkBoxRMI, checkBoxTCP));
         checkBoxTCP.setOnAction(e -> handleOptionsTCP(checkBoxRMI, checkBoxTCP));
-        root = new BorderPane();
 
         HBox boxRMI = new HBox(checkBoxRMI);
         boxRMI.setAlignment(Pos.CENTER);
 
         HBox boxTCP = new HBox(checkBoxTCP);
         boxTCP.setAlignment(Pos.CENTER);
-
-        boxButton = new HBox(button);
-        boxButton.setAlignment(Pos.CENTER);
-        boxButton.setMargin(button, new Insets(0, 0, 50, 0));
 
         HBox boxLabel = new HBox(label);
         boxLabel.setAlignment(Pos.CENTER);
@@ -66,9 +82,6 @@ public class GUIHandler extends Application  {
         root.setCenter(center);
         root.setBottom(boxButton);
         root.setTop(boxLabel);
-
-        primaryStage.setScene(new Scene(root, 600, 400));
-        primaryStage.show();
     }
 
     public void handleConnectionOptions(CheckBox rmi, CheckBox tcp){
@@ -98,7 +111,7 @@ public class GUIHandler extends Application  {
             HBox boxAddress = new HBox(addressText, addressField);
             boxAddress.setAlignment(Pos.CENTER_LEFT);
 
-            button.setOnAction(e -> handlePortOptions(portField, addressField));
+            button.setOnAction(e -> handlePortAddressOptions(portField, addressField));
 
             generalBox.getChildren().add(boxPort);
             generalBox.getChildren().add(boxAddress);
@@ -133,12 +146,17 @@ public class GUIHandler extends Application  {
         }
     }
 
-    public void handlePortOptions(TextField portTextfield, TextField addressTextfield){
+    public void handlePortAddressOptions(TextField portTextfield, TextField addressTextfield){
         String port = portTextfield.getText();
         Integer portNumber = Integer.parseInt(port);
         String address = addressTextfield.getText();
         this.adrenalineGUI.didChooseConnection(connectionType, portNumber, address);
-        login();
+        //login();
+        try {
+            chooseGameMap();
+        } catch (FileNotFoundException e){
+
+        }
     }
 
     public void login(){
@@ -164,7 +182,7 @@ public class GUIHandler extends Application  {
 
     public void handleLoginOptions(TextField usernameTextfield) {
         String username = usernameTextfield.getText();
-        adrenalineGUI.getClient().createUser(username);
+        adrenalineGUI.createUser(username);
     }
 
     public void handleLoginFailure() {
@@ -279,10 +297,61 @@ public class GUIHandler extends Application  {
         });
     }
 
-    public void handleCharactersOptions(String selecterCharacter){
-        adrenalineGUI.getClient().chooseCharacter(selecterCharacter);
+    public void handleCharactersOptions(String selectedCharacter){
+        adrenalineGUI.didChooseCharacter(selectedCharacter);
     }
 
+    public void chooseGameMap() throws FileNotFoundException{
+        root.getChildren().clear();
+
+        Text tFirst = new Text("First configuration, good for 3 or 4 players:");
+        Image firstLeft = new Image(new FileInputStream("src/main/resources/images/characters/board1.png"));
+        ImageView ivFirstLeft = new ImageView();
+        ivFirstLeft.setImage(firstLeft);
+        Image firstRight = new Image(new FileInputStream("src/main/resources/images/characters/board4.png"));
+        ImageView ivFirstRight = new ImageView();
+        ivFirstRight.setImage(firstRight);
+        HBox boxFirst = new HBox(ivFirstLeft, ivFirstRight);
+        VBox vBoxFirst = new VBox(tFirst, boxFirst);
+
+        Text tSecond = new Text("Second configuration, good for any number of players:");
+        Image secondLeft = new Image(new FileInputStream("src/main/resources/images/characters/board1.png"));
+        ImageView ivSecondLeft = new ImageView();
+        ivSecondLeft.setImage(secondLeft);
+        Image secondRight = new Image(new FileInputStream("src/main/resources/images/characters/board2.png"));
+        ImageView ivSecondRight = new ImageView();
+        ivSecondRight.setImage(secondRight);
+        HBox boxSecond = new HBox(ivSecondLeft, ivSecondRight);
+        VBox vBoxSecond = new VBox(tSecond, boxSecond);
+
+        Text tThird = new Text("Third configuration, good for any number of players:");
+        Image thirdLeft = new Image(new FileInputStream("src/main/resources/images/characters/board3.png"));
+        ImageView ivThirdLeft = new ImageView();
+        ivThirdLeft.setImage(thirdLeft);
+        Image thirdRight = new Image(new FileInputStream("src/main/resources/images/characters/bard2.png"));
+        ImageView ivThirdRight = new ImageView();
+        ivThirdRight.setImage(thirdRight);
+        HBox boxThird = new HBox(ivThirdLeft, ivThirdRight);
+        VBox vBoxThird = new VBox(tThird, boxThird);
+
+        Text tFourth = new Text("Fourth configuration, good for 4 or 5 players:");
+        Image fourthLeft = new Image(new FileInputStream("src/main/resources/images/characters/board3.png"));
+        ImageView ivFourthLeft = new ImageView();
+        ivThirdLeft.setImage(fourthLeft);
+        Image fourthRight = new Image(new FileInputStream("src/main/resources/images/characters/bard4.png"));
+        ImageView ivFourthRight = new ImageView();
+        ivFourthRight.setImage(fourthRight);
+        HBox boxFourth = new HBox(ivFourthLeft, ivFourthRight);
+        VBox vBoxFourth = new VBox(tFourth, boxFourth);
+
+        HBox generalBox = new HBox(vBoxFirst, vBoxSecond, vBoxThird, vBoxFourth);
+        generalBox.setMargin(vBoxFirst, new Insets(10,10,10,10));
+        generalBox.setMargin(vBoxSecond, new Insets(10,10,10,10));
+        generalBox.setMargin(vBoxThird, new Insets(10,10,10,10));
+        generalBox.setMargin(vBoxFourth, new Insets(10,10,10,10));
+
+        root.getChildren().add(generalBox);
+    }
 
 
 

@@ -145,7 +145,12 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
-    public void chooseCharacter(String character){
+    public void choseCharacter(String character){
+
+    }
+
+    @Override
+    public void choseGameMap(String configuration){
 
     }
 

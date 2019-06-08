@@ -114,7 +114,13 @@ public abstract class Client implements Loggable {
      * Abstract method implemented by subclasses when a player has chosen his character between the ones available
      * @param character the chosen character
      */
-    public abstract void chooseCharacter(String character);
+    public abstract void choseCharacter(String character);
+
+    /**
+     * Abstract method implemented by subclasses when the first player has chosen the configuration of the map
+     * @param configuration the chosen configuration
+     */
+    public abstract void choseGameMap(String configuration);
 
     /**
      * Abstract method implemented by subclasses and used when a player wants to use a weapon.

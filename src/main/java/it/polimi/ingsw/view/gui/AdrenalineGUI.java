@@ -17,11 +17,11 @@ public class AdrenalineGUI extends View {
 
     @Override
     protected void willChooseConnection() {
-
+        handlerGUI.chooseConnection();
     }
 
     @Override
-    protected void createUser() {
+    protected void willCreateUser() {
     }
 
     @Override
@@ -63,13 +63,12 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChooseGameSettings() {
-
-    }
-
-    @Override
-    public void didChooseGameSettings() {
-
+    public void willChooseGameMap() {
+        try {
+            handlerGUI.chooseGameMap();
+        } catch (FileNotFoundException e){
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
     }
 
     @Override
@@ -166,9 +165,6 @@ public class AdrenalineGUI extends View {
 
     }
 
-    Client getClient(){
-        return this.client;
-    }
 
 }
 

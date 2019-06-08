@@ -17,9 +17,9 @@ public interface ServerInterface extends Remote {
 
     ArrayList<String> getAvailableCharacters(UUID gameID) throws RemoteException;
 
-    void chooseCharacter(String character) throws RemoteException;
+    void choseCharacter(String character) throws RemoteException;
 
-    void chooseGameSettings() throws RemoteException;
+    void choseGameMap(String configuration) throws RemoteException;
 
     ArrayList<AmmoColor> displaySpawnPoints() throws RemoteException;
 

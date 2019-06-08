@@ -64,7 +64,7 @@ public class AdrenalineCLI extends View {
      */
     private AdrenalineCLI() {
         this.willChooseConnection();
-        this.createUser();
+        this.willCreateUser();
     }
 
     private AdrenalineCLI(String connectionType, String hostname, String port) {
@@ -83,7 +83,7 @@ public class AdrenalineCLI extends View {
             AdrenalineLogger.errorException(INCORRECT_HOSTNAME, e);
             this.willChooseConnection();
         }
-        this.createUser();
+        this.willCreateUser();
     }
 
     public static void main(String[] args) {
@@ -131,13 +131,12 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    protected void createUser() {
+    protected void willCreateUser() {
         out.flush();
         out.println();
         out.println(CHOOSE_USERNAME);
         var username = in.nextLine();
-
-        this.client.createUser(username);
+        createUser(username);
     }
 
     @Override
@@ -173,12 +172,7 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChooseGameSettings() {
-
-    }
-
-    @Override
-    public void didChooseGameSettings() {
+    public void willChooseGameMap() {
 
     }
 
