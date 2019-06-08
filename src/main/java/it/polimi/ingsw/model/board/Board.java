@@ -1,8 +1,7 @@
 package it.polimi.ingsw.model.board;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
+
 import it.polimi.ingsw.controller.*;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.utility.AmmoColor;
@@ -23,25 +22,25 @@ public class Board {
     /**
      * Three collections of three Weapons placed on the board near the spawpoints divided by colors
      */
-    private HashMap<AmmoColor, ArrayList<Weapon>> weapons;
+    private Map<AmmoColor, List<Weapon>> weapons;
 
     /**
      * Killshot track on the board that takes into account the deaths occured during the game
      */
-    private LinkedHashMap<Integer, ArrayList<PlayerColor>> skullsTrack;
+    private Map<Integer, List<PlayerColor>> skullsTrack;
 
     /**
      * Constructor: creates a new board based on its map, its killshot track and weapons positioned near its spawnpoint
      * @param map the map of the board
      * @param weapons a collection of three boards placed next to the spawpoints defined by a color and that contain three weapons each
-     * @param skullsTrack the killshot track that will be placed on the board to keep track of the deaths occured
+     * @param skulls it's the number of skulls that the game will have.
      * */
-    public Board(GameMap map, HashMap<AmmoColor, ArrayList<Weapon>> weapons, LinkedHashMap<Integer, ArrayList<PlayerColor>> skullsTrack){
-        this.weapons = new HashMap<>();
+    public Board(GameMap map, Map<AmmoColor, List<Weapon>> weapons, int skulls){
+        this.weapons = new EnumMap<>(AmmoColor.class);
         this.skullsTrack = new LinkedHashMap<>();
-        this.map=map;
+        this.map = map;
         this.weapons.putAll(weapons);
-        this.skullsTrack.putAll(skullsTrack);
+        for(int i = 0; i < skulls; i++) skullsTrack.put(i, null);
     }
 
     /**

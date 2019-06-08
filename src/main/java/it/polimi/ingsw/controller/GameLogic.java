@@ -1,42 +1,80 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.board.Board;
-import it.polimi.ingsw.model.cards.Damage;
-import it.polimi.ingsw.model.cards.Effect;
-import it.polimi.ingsw.model.cards.Powerup;
-import it.polimi.ingsw.model.cards.Weapon;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.player.User;
-import it.polimi.ingsw.model.utility.AmmoColor;
-import it.polimi.ingsw.model.utility.PlayerColor;
+import it.polimi.ingsw.model.board.*;
+import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.player.*;
+import it.polimi.ingsw.model.utility.*;
 
 import java.util.*;
 
+/**
+ * Main controller. It will handle everything in regards to the communication between view and model.
+ * It will manipulate the model in the way that the players ask.
+ *
+ * @author Daniele Chiappalupi
+ */
 public class GameLogic {
+
+    /**
+     * Number of weapons that are placed in every spawn point of the board.
+     */
+    private static int NUM_OF_WEAPONS_IN_SPAWNS = 3;
 
     private ArrayList<Player> players;
     private Board board;
     private boolean finalFrenzy;
     private UUID gameID;
     private ArrayList<Damage> forPotentiableWeapon;
+    private DecksHandler decks;
 
     /**
      * String constants used in messages between client-server
      */
     public static final String gameID_key = "GAME_ID";
 
-    //TODO: - Game Logic constructor and method implementation
+    //TODO: - Method implementation
 
+    /**
+     * Game Logic constructor.
+     * @param map it's the map of the game.
+     * @param skulls it's the number of skulls that will be in the game.
+     * @param gameID it's the gameID.
+     */
+    public GameLogic(GameMap map, int skulls, UUID gameID) {
+        this.decks = new DecksHandler();
+        this.finalFrenzy = false;
+        Map<AmmoColor, List<Weapon>> weapons = new EnumMap<>(AmmoColor.class);
+        List<AmmoColor> spawnColorList = new ArrayList<>();
+        spawnColorList.add(AmmoColor.blue);
+        spawnColorList.add(AmmoColor.red);
+        spawnColorList.add(AmmoColor.yellow);
+        for(AmmoColor color : spawnColorList) {
+            List<Weapon> weaponTrio = new ArrayList<>();
+            for(int i = 0; i < NUM_OF_WEAPONS_IN_SPAWNS; i++)
+                weaponTrio.add(decks.drawWeapon());
+            weapons.put(color, weaponTrio);
+        }
+        this.board = new Board(map, weapons, skulls);
+        this.gameID = gameID;
+        this.forPotentiableWeapon = null;
+    }
+
+    /**
+     * It's the game UUID getter.
+     *
+     * @return the {@link UUID} of the game.
+     */
     public UUID getGameID() {
         return gameID;
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
-    }
-
-    public void setPlayers(ArrayList<Player> players) {
-        this.players = players;
+    /**
+     * Adds a player to the list of players in game.
+     *
+     * @param player it's the player to be added.
+     */
+    public void addPlayer(Player player) {
+        this.players.add(player);
     }
 
     public void move(Player player) { }
@@ -55,14 +93,21 @@ public class GameLogic {
 
     public void gameOver() { }
 
-    public void addPlayer(Player player) { }
+    /**
+     * DecksHandler getter.
+     *
+     * @return the DecksHandler of the game.
+     */
+    public DecksHandler getDecks() {
+        return decks;
+    }
 
     /**
      * Getter of the list of damage that has already been done with the weapon that is being used.
      *
      * @return an array list containing the damage.
      */
-    public ArrayList<Damage> getForPotentiableWeapon() {
+    public List<Damage> getForPotentiableWeapon() {
         return forPotentiableWeapon;
     }
 
@@ -71,7 +116,7 @@ public class GameLogic {
      *
      * @param damage it's the damage that is being done.
      */
-    public void appendPotentiableWeapon(ArrayList<Damage> damage) {
+    public void appendPotentiableWeapon(List<Damage> damage) {
         if(forPotentiableWeapon == null)
             forPotentiableWeapon = new ArrayList<>(damage);
         else forPotentiableWeapon.addAll(damage);
@@ -81,7 +126,11 @@ public class GameLogic {
      * Clears the damage that has been done with a potentiable weapon after that it has been used.
      */
     public void wipePotentiableWeapon() {
-        if(forPotentiableWeapon != null || forPotentiableWeapon.size() != 0) forPotentiableWeapon.clear();
+        if(forPotentiableWeapon == null) {
+            forPotentiableWeapon = new ArrayList<>();
+            return;
+        }
+        if(!forPotentiableWeapon.isEmpty()) forPotentiableWeapon.clear();
     }
 
     /**
@@ -238,6 +287,46 @@ public class GameLogic {
                 selectedPowerup = p;
         if(selectedPowerup == null) throw new NullPointerException("This powerup is not in the hand of this player!");
         return selectedPowerup.use(player, board.getMap(), players);
+    }
+
+    /**
+     * This method is used to add a powerup to the used deck.
+     * @param powerup it'a the powerup::toString of the powerup.
+     * @param user it's the user who is wasting the powerup.
+     */
+    public void wastePowerup(String powerup, User user) {
+        Player player = lookForPlayerFromUser(user);
+        List<Powerup> powerups = player.getPlayerHand().getPowerups();
+        Powerup toWaste = null;
+        for(Powerup p : powerups)
+            if(p.toString().equals(powerup))
+                toWaste = p;
+        player.getPlayerHand().wastePowerup(toWaste);
+        this.decks.wastePowerup(toWaste);
+    }
+
+    /**
+     * This method is used to check if a player can afford the cost of a mode, an effect or a combination of effects of a weapon.
+     * @param weapon it's the weapon that is being used.
+     * @param effects  it's the list of effects indexes to be tested +1.
+     * @param user it's the user who is using the card.
+     */
+    public boolean canAffordCost(Weapon weapon, List<Integer> effects, User user) {
+        EnumMap<AmmoColor, Integer> totalCost = new EnumMap<>(AmmoColor.class);
+        for(AmmoColor color : AmmoColor.values()) totalCost.put(color, 0);
+        for(Integer index : effects) {
+            int trueIndex = index-1;
+            Map<AmmoColor, Integer> effectCost = weapon.getEffects().get(trueIndex).getCost();
+            for(AmmoColor color : effectCost.keySet()) {
+                int box = totalCost.get(color);
+                box += effectCost.get(color);
+                totalCost.put(color, box);
+            }
+        }
+        for(AmmoColor color : AmmoColor.values())
+            if(totalCost.get(color) > lookForPlayerFromUser(user).getPlayerHand().getAmmosAmount(color))
+                return false;
+        return true;
     }
 
 }

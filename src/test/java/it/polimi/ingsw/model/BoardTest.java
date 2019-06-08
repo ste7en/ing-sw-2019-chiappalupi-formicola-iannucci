@@ -73,10 +73,6 @@ public class BoardTest {
             deck3.add(decksHandler.drawWeapon());
         }
         weaponsDecks.put(AmmoColor.yellow, deck3);
-
-        for (int i=0; i<8; i++){
-            skullsTrack.put(i, null);
-        }
     }
 
     /**
@@ -84,7 +80,7 @@ public class BoardTest {
      */
     @Before
     public void setUp() {
-        boardTest = new Board(gameMap, weaponsDecks, skullsTrack);
+        boardTest = new Board(gameMap, weaponsDecks, 8);
     }
 
     /**

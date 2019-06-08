@@ -40,6 +40,7 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_DAMAGE               = "What damage do you want to make?";
     private static final String CHOOSE_MODALITY             = "Which modality do you want to use?";
     private static final String CHOOSE_EFFECT               = "What effect/s do you want to use?";
+    private static final String WEAPON_USED                = "The powerup has been used with success.";
     private static final String CHOOSE_WEAPONS_TO_RELOAD    = "What weapons do you want to reload? \nMultiple weapons can be provided with commas.";
     private static final String NOT_ENOUGH_AMMOS            = "You have not enough ammos to reload. Please select only weapons you can afford.";
     private static final String ASK_RELOAD                  = "Do you want to reload your weapons? [Y/N]";
@@ -49,6 +50,9 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_POWERUP              = "Which powerup do you want to use?";
     private static final String CHOOSE_POWERUP_DAMAGE       = "What do you want to do with your powerup?";
     private static final String POWERUP_USED                = "The powerup has been used with success.";
+    private static final String USE_ANOTHER_POWERUP         = "Do you want to use another powerup? [Y/N]";
+    private static final String WILL_USE_ANOTHER_POWERUP    = "You selected that you want to use another powerup.";
+    private static final String WON_T_USE_ANOTHER_POWERUP   = "Powerup using phase finished.";
 
     /**
      * Log strings or exceptions
@@ -261,14 +265,11 @@ public class AdrenalineCLI extends View {
         } catch(NumberFormatException exception) {
             throw new IllegalArgumentException(INCORRECT_CHOICE);
         }
-        Map<String, String> damageToDo = new HashMap<>();
         String forPotentiableWeapon = null;
         if(damagesToChoose.containsKey(PotentiableWeapon.forPotentiableWeapon_key))
             forPotentiableWeapon = damagesToChoose.get(PotentiableWeapon.forPotentiableWeapon_key);
-        damageToDo.put(Damage.damage_key, possibleDamages.get(i-1));
-        damageToDo.put(Weapon.weapon_key, weapon);
-        damageToDo.put(Effect.effect_key, indexOfEffect);
         this.didChooseDamage(weapon, possibleDamages.get(i-1), indexOfEffect, forPotentiableWeapon);
+        out.println(WEAPON_USED);
     }
 
     @Override
@@ -331,7 +332,7 @@ public class AdrenalineCLI extends View {
         effectsToChoose.remove(Weapon.weapon_key);
         out.println(CHOOSE_EFFECT);
         String effectsSelected = decisionHandlerFromMap(effectsToChoose);
-        String box = effectsSelected.replaceAll("\\[|\\]", "");
+        String box = effectsSelected.replaceAll("[\\[\\]]", "");
         List<String> effects = List.of(box.split(", "));
         this.didChooseEffects(effects, weapon);
     }
@@ -356,7 +357,7 @@ public class AdrenalineCLI extends View {
     public void willReload(List<String> weapons) {
         out.println(CHOOSE_WEAPONS_TO_RELOAD);
         String scanInput = in.nextLine();
-        scanInput.replaceAll(" ", "");
+        scanInput = scanInput.replaceAll(" ", "");
         List<String> selections = List.of(scanInput.split(","));
         Set<String> choices = new HashSet<>();
         for(String selection : selections) {
@@ -379,21 +380,35 @@ public class AdrenalineCLI extends View {
         this.askReload();
     }
 
-    //toDo: do you want to use another powerup?
     @Override
     public void willChoosePowerup(List<String> availablePowerups) {
         if(availablePowerups.isEmpty()) {
             out.println("You haven't any powerup that you can use right now.");
             return;
         }
-        out.println(CHOOSE_POWERUP);
-        String choice = decisionHandlerFromList(availablePowerups);
-        while(choice == null) {
-            out.println(INCORRECT_CHOICE);
+        boolean powerupUsing = true;
+        while(powerupUsing) {
             out.println(CHOOSE_POWERUP);
-            choice = decisionHandlerFromList(availablePowerups);
+            String choice = decisionHandlerFromList(availablePowerups);
+            while(choice == null) {
+                out.println(INCORRECT_CHOICE);
+                out.println(CHOOSE_POWERUP);
+                choice = decisionHandlerFromList(availablePowerups);
+            }
+            this.didChoosePowerup(choice);
+            availablePowerups.remove(choice);
+            if(availablePowerups.isEmpty()) powerupUsing = false;
+            else {
+                out.println(USE_ANOTHER_POWERUP);
+                String scanInput = in.nextLine();
+                if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y"))
+                    out.println(WILL_USE_ANOTHER_POWERUP);
+                else {
+                    out.println(WON_T_USE_ANOTHER_POWERUP);
+                    powerupUsing = false;
+                }
+            }
         }
-        this.didChoosePowerup(choice);
     }
 
     @Override

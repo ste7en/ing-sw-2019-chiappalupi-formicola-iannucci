@@ -41,24 +41,6 @@ public interface ServerInterface extends Remote {
 
     Map<String, String> useEffect(int userID, UUID gameID, String forPotentiableWeapon, String effectSelected, String weaponSelected) throws RemoteException;
 
-    Map<String, String> getAvailableModes() throws RemoteException;
-
-    void chooseMode(Map<String, String> modalityChosen) throws RemoteException;
-
-    void getAvailableEffect() throws RemoteException;
-
-    void chooseEffects() throws RemoteException;
-
-    void getAvailablePowerups() throws RemoteException;
-
-    void getAvailablePowerupsEffects() throws RemoteException;
-
-    void choosePowerup() throws RemoteException;
-
-    void choosePowerupEffects() throws RemoteException;
-
-    ArrayList<String> canReload() throws RemoteException;
-
     boolean reload(List<String> weaponsSelected, int userID, UUID gameID) throws RemoteException;
 
     List<String> getWeaponInHand(int userID, UUID gameID) throws RemoteException;

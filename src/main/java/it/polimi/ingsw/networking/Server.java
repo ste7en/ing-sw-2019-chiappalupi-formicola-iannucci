@@ -317,7 +317,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             case MODES_LIST: {
                 int i = 0;
                 for (Effect effect : weapon.getEffects()) {
-                    weaponProcess.put(Integer.toString(i), effect.getName());
+                    List<Integer> boxList = new ArrayList<>();
+                    boxList.add(weapon.getEffects().indexOf(effect)+1);
+                    if(gameControllers.get(gameID).canAffordCost(weapon, boxList, findUserFromID(userID))) weaponProcess.put(Integer.toString(i), effect.getName());
                     i++;
                 }
                 break;
@@ -325,7 +327,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             case EFFECTS_LIST: {
                 ArrayList<ArrayList<Integer>> effectsCombinations = weapon.effectsCombinations();
                 for (ArrayList<Integer> combination : effectsCombinations)
-                    weaponProcess.put(Integer.toString(effectsCombinations.indexOf(combination)), combination.toString());
+                    if(gameControllers.get(gameID).canAffordCost(weapon, combination, findUserFromID(userID)))
+                        weaponProcess.put(Integer.toString(effectsCombinations.indexOf(combination)), combination.toString());
                 break;
             }
             default:
@@ -379,6 +382,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                 gameControllers.get(gameID).wipePotentiableWeapon();
             } else gameControllers.get(gameID).appendPotentiableWeapon(damageToMake);
         }
+        weaponToUse.unload();
     }
 
     /**
@@ -422,51 +426,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private void stringifyDamages(ArrayList<ArrayList<Damage>> possibleDamages, Map<String, String> responseArgs) {
         for (ArrayList<Damage> damages : possibleDamages)
             responseArgs.put(Integer.toString(possibleDamages.indexOf(damages)), damages.toString());
-    }
-
-    @Override
-    public Map<String, String> getAvailableModes() {
-        return null;
-    }
-
-    @Override
-    public void chooseMode(Map<String, String> modalityChosen) {
-
-    }
-
-    @Override
-    public void getAvailableEffect() {
-
-    }
-
-    @Override
-    public void chooseEffects() {
-
-    }
-
-    @Override
-    public void getAvailablePowerups() {
-
-    }
-
-    @Override
-    public void getAvailablePowerupsEffects() {
-
-    }
-
-    @Override
-    public void choosePowerup() {
-
-    }
-
-    @Override
-    public void choosePowerupEffects() {
-
-    }
-
-    @Override
-    public ArrayList<String> canReload() {
-        return null;
     }
 
     /**

@@ -186,7 +186,7 @@ public abstract class View implements Observer{
      *
      * @param weapons it's an ArrayList containing all of the weapons that the player can use.
      */
-    //toDo: unload weapons
+    //toDo: check weapons cost
     public abstract void willChooseWeapon(ArrayList<String> weapons);
 
     /**
@@ -273,10 +273,8 @@ public abstract class View implements Observer{
      * Called when the weapons to be reloaded have been chosen by the player.
      *
      * @param weaponsToReload it's the list of names of the weapons that the player want to reload.
-     *
-     * @return TRUE if the weapons could be reloaded, FALSE otherwise.
      */
-    public void didChooseWeaponsToReload(List<String> weaponsToReload) {
+    protected void didChooseWeaponsToReload(List<String> weaponsToReload) {
         AdrenalineLogger.info(DID_SELECT_WEAPONS_TO_RELOAD);
         this.client.reloadWeapons(weaponsToReload);
     }
@@ -310,7 +308,7 @@ public abstract class View implements Observer{
      *
      * @param powerup it's the powerup that has been chosen.
      */
-    public void didChoosePowerup(String powerup) {
+    protected void didChoosePowerup(String powerup) {
         this.client.askPowerupDamages(powerup);
     }
 
@@ -327,7 +325,7 @@ public abstract class View implements Observer{
      * @param choice it's the damage chosen by the player.
      * @param powerup it's the Powerup::toString of the powerup that has been chosen.
      */
-    public void didChoosePowerupDamage(String choice, String powerup) {
+    protected void didChoosePowerupDamage(String choice, String powerup) {
         this.client.usePowerup(powerup, choice);
     }
 }

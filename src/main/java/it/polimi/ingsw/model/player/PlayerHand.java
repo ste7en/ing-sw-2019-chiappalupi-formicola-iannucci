@@ -116,4 +116,12 @@ public class PlayerHand {
         else ammos.put(ammoColor, getAmmosAmount(ammoColor) + amount);
     }
 
+    /**
+     * This method deletes a powerup from the hand of the player. It is called after that it has been used or wasted.
+     * @param powerup it's the powerup to remove.
+     */
+    public void wastePowerup(Powerup powerup) {
+        this.powerups.remove(powerup);
+    }
+
 }
