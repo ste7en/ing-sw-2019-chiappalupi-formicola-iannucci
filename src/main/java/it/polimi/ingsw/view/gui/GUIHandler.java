@@ -1,4 +1,5 @@
 package it.polimi.ingsw.view.gui;
+import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -69,61 +70,54 @@ public class GUIHandler extends Application  {
     }
 
     public void handleConnectionOptions(CheckBox rmi, CheckBox tcp){
-        root.getChildren().clear();
 
-        Text portText = new Text("port number:  ");
-        TextField portField = new TextField();
-        HBox boxPort = new HBox(portText, portField);
-        boxPort.setAlignment(Pos.CENTER_LEFT);
-        boxPort.setMargin(portText,  new Insets(10, 0, 10, 50));
-        boxPort.setMargin(portField,  new Insets(10, 50, 10, 0));
-
-        if(rmi.isSelected()){
-            connectionType = ConnectionType.RMI;
-            Text text = new Text("Please provide a port number");
-            HBox boxTextRMI = new HBox(text);
-            boxTextRMI.setAlignment(Pos.CENTER);
-            boxTextRMI.setMargin(text, new Insets(50, 0, 0, 0));
-
-            button.setOnAction(e -> handlePortOptionsRMI(portField));
-
-            root.setCenter(boxPort);
-            root.setTop(boxTextRMI);
-            root.setBottom(boxButton);
+        if (!tcp.isSelected() && !rmi.isSelected()){
+            System.out.println("Seleziona qualcosa!");
         }
-        if(tcp.isSelected()){
-            connectionType = ConnectionType.SOCKET;
+
+        else {
+            root.getChildren().clear();
+
             VBox generalBox = new VBox();
 
             Text text = new Text("Please provide a port number and an address");
-            HBox boxTextTCP = new HBox(text);
-            boxTextTCP.setAlignment(Pos.CENTER);
+            HBox boxText = new HBox(text);
+            boxText.setAlignment(Pos.CENTER);
+
+            Text portText = new Text("port number:  ");
+            TextField portField = new TextField();
+            HBox boxPort = new HBox(portText, portField);
+            boxPort.setAlignment(Pos.CENTER_LEFT);
+            boxPort.setMargin(portText, new Insets(10, 0, 10, 50));
+            boxPort.setMargin(portField, new Insets(10, 50, 10, 0));
 
             Text addressText = new Text("address:         ");
             TextField addressField = new TextField();
             HBox boxAddress = new HBox(addressText, addressField);
             boxAddress.setAlignment(Pos.CENTER_LEFT);
 
-            button.setOnAction(e -> handlePortOptionsTCP(portField, addressField));
+            button.setOnAction(e -> handlePortOptions(portField, addressField));
 
             generalBox.getChildren().add(boxPort);
             generalBox.getChildren().add(boxAddress);
             generalBox.setFillWidth(true);
             generalBox.setAlignment(Pos.CENTER);
 
-            boxTextTCP.setMargin(text, new Insets(50, 0, 0, 0));
+            boxText.setMargin(text, new Insets(50, 0, 0, 0));
             boxAddress.setMargin(addressText, new Insets(10, 0, 10, 50));
             boxAddress.setMargin(addressField, new Insets(10, 50, 10, 0));
             root.setCenter(generalBox);
-            root.setTop(boxTextTCP);
+            root.setTop(boxText);
             root.setBottom(boxButton);
-        }
-        if(!tcp.isSelected() && !rmi.isSelected()){
-            System.out.println("Seleziona qualcosa!");
+
+            if (rmi.isSelected()) {
+                connectionType = ConnectionType.RMI;
+            }
+            if (tcp.isSelected()) {
+                connectionType = ConnectionType.SOCKET;
+            }
         }
     }
-
-
 
     public void handleOptionsRMI(CheckBox rmi, CheckBox tcp){
         if(rmi.isSelected()) {
@@ -137,18 +131,11 @@ public class GUIHandler extends Application  {
         }
     }
 
-    public void handlePortOptionsTCP(TextField portTextfield, TextField addressTextfield){
+    public void handlePortOptions(TextField portTextfield, TextField addressTextfield){
         String port = portTextfield.getText();
         Integer portNumber = Integer.parseInt(port);
         String address = addressTextfield.getText();
-        this.adrenalineGUI.didChooseConnection(ConnectionType.SOCKET, portNumber, address);
-        login();
-    }
-
-    public void handlePortOptionsRMI(TextField portTextfield){
-        String port = portTextfield.getText();
-        Integer portNumber = Integer.parseInt(port);
-        adrenalineGUI.didChooseConnection(ConnectionType.RMI, portNumber, null);
+        this.adrenalineGUI.didChooseConnection(connectionType, portNumber, address);
         login();
     }
 
@@ -176,15 +163,91 @@ public class GUIHandler extends Application  {
     public void handleLoginOptions(TextField usernameTextfield) {
         String username = usernameTextfield.getText();
         adrenalineGUI.getClient().createUser(username);
+        try {
+            characterChoice();
+        } catch (FileNotFoundException e){
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
     }
 
     public void characterChoice() throws FileNotFoundException{
         root.getChildren().clear();
-        Image image = new Image(new FileInputStream("src/main/resources/images/board/board1.png"));
-        ImageView iv1 = new ImageView();
-        iv1.setImage(image);
-        root.getChildren().add(iv1);
+
+        Text text = new Text();
+        HBox boxText = new HBox(text);
+        boxText.setAlignment(Pos.CENTER);
+
+
+        /*
+        HBox generalBox = new HBox();
+        for (PlayerColor playerColor : PlayerColor.values()){
+            Image image = new Image(new FileInputStream("src/main/resources/images/characters/" + playerColor+ "_character.png"));
+            ImageView iv = new ImageView();
+            iv.setImage(image);
+            generalBox.getChildren().add(iv);
+        }
+        */
+        Text tBlue = new Text("BANSHEE:");
+        Image imageBlue = new Image(new FileInputStream("src/main/resources/images/characters/blue_character.png"));
+        ImageView ivBlue = new ImageView();
+        ivBlue.setImage(imageBlue);
+        VBox boxBlue = new VBox(tBlue, ivBlue);
+        boxBlue.setAlignment(Pos.CENTER);
+
+        Text tGreen = new Text("SPROG:");
+        Image imageGreen = new Image(new FileInputStream("src/main/resources/images/characters/green_character_taken.png"));
+        ImageView ivGreen = new ImageView();
+        ivGreen.setImage(imageGreen);
+        VBox boxGreen = new VBox(tGreen, ivGreen);
+        boxGreen.setAlignment(Pos.CENTER);
+
+        Text tGrey = new Text("DOZER:");
+        Image imageGrey = new Image(new FileInputStream("src/main/resources/images/characters/grey_character.png"));
+        ImageView ivGrey = new ImageView();
+        ivGrey.setImage(imageGrey);
+        VBox boxGrey = new VBox(tGrey, ivGrey);
+        boxGrey.setAlignment(Pos.CENTER);
+
+        Text tPurple = new Text("VIOLET:");
+        Image imagePurple = new Image(new FileInputStream("src/main/resources/images/characters/purple_character.png"));
+        ImageView ivPurple = new ImageView();
+        ivPurple.setImage(imagePurple);
+        VBox boxPurple = new VBox(tPurple, ivPurple);
+        boxPurple.setAlignment(Pos.CENTER);
+
+        Text tYellow = new Text("D-STRUCT-OR:");
+        Image imageYellow = new Image(new FileInputStream("src/main/resources/images/characters/yellow_character_taken.png"));
+        ImageView ivYellow = new ImageView();
+        ivYellow.setImage(imageYellow);
+        VBox boxYellow = new VBox(tYellow, ivYellow);
+        boxYellow.setAlignment(Pos.CENTER);
+
+        HBox imagesBox = new HBox(boxBlue, boxGreen, boxGrey, boxPurple, boxYellow);
+        VBox generalBox = new VBox(imagesBox, boxText);
+        root.getChildren().add(generalBox);
+
+        ivBlue.setOnMouseClicked(e -> {
+            text.setText("You selected BANSHEE!");
+        });
+
+        ivGreen.setOnMouseClicked(e -> {
+            text.setText("You selected SPROG!");
+        });
+
+        ivGrey.setOnMouseClicked(e -> {
+            text.setText("You selected DOZER!");
+        });
+
+        ivPurple.setOnMouseClicked(e -> {
+            text.setText("You selected VIOLET!");
+        });
+
+        ivYellow.setOnMouseClicked(e -> {
+            text.setText("You selected D-STRUCT-OR!");
+        });
     }
+
+
 
 
 
