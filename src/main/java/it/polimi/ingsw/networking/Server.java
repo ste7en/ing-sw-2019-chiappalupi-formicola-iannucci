@@ -230,6 +230,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * @return true if the user doesn't exist or isn't connected, false otherwise
      */
     @SuppressWarnings("all")
+    //TODO:
     private boolean checkUserAvailability(User user) {
         var connectionHandler = users.get(user);
         if ( connectionHandler != null ) return !connectionHandler.isConnectionAvailable();
@@ -367,7 +368,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     @Override
     public boolean newUser(String username) throws RemoteException {
-        if (checkUsernameAvailability(username)==true) System.out.print(username + ", you are logged in");
+        return checkUsernameAvailability(username);
     }
 
     public boolean checkUsernameAvailability(String username) {
