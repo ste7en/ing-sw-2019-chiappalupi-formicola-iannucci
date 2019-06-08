@@ -166,6 +166,8 @@ public class GUIHandler extends Application  {
 
     public void characterChoice() throws FileNotFoundException{
         root.getChildren().clear();
+        HBox generalBox = new HBox();
+
         Image image = new Image(new FileInputStream("src/main/resources/images/board/board1.png"));
         ImageView iv1 = new ImageView();
         iv1.setImage(image);
