@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.cards;
 
-import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.Cell;
 import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.player.Player;
@@ -20,16 +19,16 @@ public class Newton extends Powerup {
     }
 
     @Override
-    public List<Damage> use(Player shooter, Board board, List<Player> players) {
+    public List<Damage> use(Player shooter, GameMap map, List<Player> players) {
         List<Cell> possibleMovements = new ArrayList<>();
         List<Damage> possibleDamages = new ArrayList<>();
         for(Player target : players)
             if(target != shooter) {
-                Weapon.getMovementsFromDirections(target, (GameMap)board.getMap().clone(), possibleMovements, distance);
+                Weapon.getMovementsFromDirections(target, (GameMap) map.clone(), possibleMovements, distance);
                 Set<Cell> set = new HashSet<>(possibleMovements);
                 possibleMovements.clear();
                 possibleMovements.addAll(set);
-                possibleMovements.remove(board.getMap().getCellFromPlayer(target));
+                possibleMovements.remove(map.getCellFromPlayer(target));
                 for(Cell movement : possibleMovements) {
                     Damage damage = new Damage();
                     damage.setTarget(target);
@@ -38,6 +37,7 @@ public class Newton extends Powerup {
                 }
                 possibleMovements.clear();
             }
+        possibleDamages.sort(Damage::compareTo);
         return possibleDamages;
     }
 
