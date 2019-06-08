@@ -49,6 +49,7 @@ public class AdrenalineCLI extends View {
     private static final String WILL_RELOAD                 = "You selected that you want to reload your weapon.";
     private static final String WON_T_RELOAD                = "Your weapons won't be reloaded.";
     private static final String RELOAD_SUCCESS              = "Reload succeeded! Your weapons has been reloaded.";
+    private static final String CHOOSE_POWERUP              = "Which powerup do you want to use?";
 
     /**
      * Log strings or exceptions
@@ -384,8 +385,8 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willUsePowerup() {
-
+    public void willUsePowerup(List<String> availablePowerups) {
+        out.println(CHOOSE_POWERUP);
     }
 
     @Override

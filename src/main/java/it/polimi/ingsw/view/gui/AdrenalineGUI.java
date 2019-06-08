@@ -136,7 +136,17 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willUsePowerup() {
+    public void onReloadSuccess() {
+
+    }
+
+    @Override
+    public void onReloadFailure() {
+
+    }
+
+    @Override
+    public void willUsePowerup(List<String> availablePowerups) {
 
     }
 
