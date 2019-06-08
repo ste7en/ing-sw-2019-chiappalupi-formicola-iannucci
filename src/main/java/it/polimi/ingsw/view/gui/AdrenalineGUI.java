@@ -146,7 +146,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willUsePowerup(List<String> availablePowerups) {
+    public void willUsePowerup() {
 
     }
 
@@ -156,12 +156,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChoosePowerup() {
-
-    }
-
-    @Override
-    public void didChoosePowerup() {
+    public void willChoosePowerup(List<String> availablePowerups) {
 
     }
 

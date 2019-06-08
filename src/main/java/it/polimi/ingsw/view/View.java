@@ -1,4 +1,5 @@
 package it.polimi.ingsw.view;
+import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.socket.ClientSocket;
@@ -173,6 +174,7 @@ public abstract class View implements Observer{
      *
      * @param weapons it's an ArrayList containing all of the weapons that the player can use.
      */
+    //toDo: unload weapons
     public abstract void willChooseWeapon(ArrayList<String> weapons);
 
     /**
@@ -279,9 +281,8 @@ public abstract class View implements Observer{
 
     /**
      * Public method implemented by subclasses, called when the player wants to use a powerup.
-     * @param availablePowerups it's the list of powerups that the player has in his hands.
      */
-    public abstract void willUsePowerup(List<String> availablePowerups);
+    public abstract void willUsePowerup();
 
     /**
      * Dani
@@ -289,14 +290,20 @@ public abstract class View implements Observer{
     public abstract void didUsePowerup();
 
     /**
-     * Dani
+     * Public method implemented by subclasses, called when the player has to decide which powerup does he wants to use.
+     *
+     * @param availablePowerups it's the list of powerups owned by the player.
      */
-    public abstract void willChoosePowerup();
+    public abstract void willChoosePowerup(List<String> availablePowerups);
 
     /**
-     * Dani
+     * Called when the powerup to be used has been chosen by the player.
+     *
+     * @param powerup it's the powerup that has been chosen.
      */
-    public abstract void didChoosePowerup();
+    public void didChoosePowerup(String powerup) {
+        //toDo
+    }
 
     /**
      * Dani

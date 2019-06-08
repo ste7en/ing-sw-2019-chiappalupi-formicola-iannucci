@@ -11,12 +11,12 @@ public abstract class Powerup {
     /**
      * Description of the powerup
      */
-    private String description;
+    protected String description;
 
     /**
      * Color of the powerup
      */
-    private AmmoColor color;
+    protected AmmoColor color;
 
     /**
      * Powerup's description getter
@@ -33,5 +33,7 @@ public abstract class Powerup {
     public AmmoColor getColor() {
         return color;
     }
+
+    public abstract boolean isUsableDuringTurn();
 
 }

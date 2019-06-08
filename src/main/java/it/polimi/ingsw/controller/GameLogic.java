@@ -202,7 +202,9 @@ public class GameLogic {
         Player player = lookForPlayerFromUser(user);
         List<Powerup> powerupList = player.getPlayerHand().getPowerups();
         List<String> powerupNames = new ArrayList<>();
-        //for(Powerup powerup : powerupList)
+        for(Powerup powerup : powerupList)
+            if(powerup.isUsableDuringTurn())
+                powerupNames.add(powerup.toString());
         return powerupNames;
     }
 }

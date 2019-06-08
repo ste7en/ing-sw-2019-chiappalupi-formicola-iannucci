@@ -288,26 +288,33 @@ public class AdrenalineCLI extends View {
         String weapon = modalitiesToChoose.get(Weapon.weapon_key);
         modalitiesToChoose.remove(Weapon.weapon_key);
         out.println(CHOOSE_MODALITY);
-        String modalitySelected = decisionHandler(modalitiesToChoose);
+        String modalitySelected = decisionHandlerFromMap(modalitiesToChoose);
         this.didChooseMode(weapon, modalitySelected);
     }
 
     /**
-     * Private method that handles the decision process, added to avoid code repetitions.
+     * Private method that handles the decision process when the input parameter is a Map of choices, added to avoid code repetitions.
      * @param args it's the map containing the choices.
      * @return the choice.
      * @throws IllegalArgumentException if an incorrect choice is made.
      */
-    private String decisionHandler(Map<String, String> args) {
+    private String decisionHandlerFromMap(Map<String, String> args) {
         ArrayList<String> options = new ArrayList<>(args.values());
-        for(int i = 1; i <= options.size(); i++)
-            out.println(i + ") " + options.get(i-1));
+        String optionSelected = decisionHandlerFromList(options);
+        if(optionSelected == null) throw new IllegalArgumentException(INCORRECT_CHOICE);
+        return optionSelected;
+    }
+
+    /**
+     * Private method that handles the decision process when the input parameter is a List of choices, added to avoid code repetitions.
+     * @param options it's the list containing the choices.
+     * @return the choice, null if the selection was illegal.
+     */
+    private String decisionHandlerFromList(List<String> options) {
         for(int i = 1; i <= options.size(); i++)
             out.println(i + ") " + options.get(i-1));
         var scanInput = in.nextLine();
-        String optionSelected = selectionChecker(scanInput, options);
-        if(optionSelected == null) throw new IllegalArgumentException(INCORRECT_CHOICE);
-        return optionSelected;
+        return selectionChecker(scanInput, options);
     }
 
     /**
@@ -335,7 +342,7 @@ public class AdrenalineCLI extends View {
         String weapon = effectsToChoose.get(Weapon.weapon_key);
         effectsToChoose.remove(Weapon.weapon_key);
         out.println(CHOOSE_EFFECT);
-        String effectsSelected = decisionHandler(effectsToChoose);
+        String effectsSelected = decisionHandlerFromMap(effectsToChoose);
         String box = effectsSelected.replaceAll("\\[|\\]", "");
         List<String> effects = List.of(box.split(", "));
         this.didChooseEffects(effects, weapon);
@@ -385,8 +392,7 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willUsePowerup(List<String> availablePowerups) {
-        out.println(CHOOSE_POWERUP);
+    public void willUsePowerup() {
     }
 
     @Override
@@ -394,14 +400,17 @@ public class AdrenalineCLI extends View {
 
     }
 
+    //toDo: do you want to use another powerup?
     @Override
-    public void willChoosePowerup() {
-
-    }
-
-    @Override
-    public void didChoosePowerup() {
-
+    public void willChoosePowerup(List<String> availablePowerups) {
+        out.println(CHOOSE_POWERUP);
+        String choice = decisionHandlerFromList(availablePowerups);
+        while(choice == null) {
+            out.println(INCORRECT_CHOICE);
+            out.println(CHOOSE_POWERUP);
+            choice = decisionHandlerFromList(availablePowerups);
+        }
+        this.didChoosePowerup(choice);
     }
 
     @Override
