@@ -11,9 +11,7 @@ import java.util.UUID;
 
 public interface ServerInterface extends Remote {
 
-    void registerClient() throws RemoteException;
-
-    boolean newUser(String username) throws RemoteException;
+    boolean createUserRMIHelper(String username) throws RemoteException;
 
     void joinWaitingRoom(String username) throws RemoteException;
 

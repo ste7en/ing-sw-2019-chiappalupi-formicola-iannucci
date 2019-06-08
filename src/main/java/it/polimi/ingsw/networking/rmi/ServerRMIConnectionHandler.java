@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking.rmi;
 
+import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.Server;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
 
@@ -11,7 +12,8 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
     private Server server;
 
-    public void registerClient(ClientInterface clientRMI){
+    public ServerRMIConnectionHandler(Server server, ClientInterface clientRMI){
+        this.server = server;
         this.clientRMI = clientRMI;
     }
 

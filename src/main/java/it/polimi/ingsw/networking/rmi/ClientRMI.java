@@ -30,13 +30,6 @@ public class ClientRMI extends Client implements ClientInterface {
             registry = LocateRegistry.getRegistry(connectionPort);
             System.out.println(registry);
             server = (ServerInterface) registry.lookup("rmiInterface");
-            try {
-                exportClient();
-                server.registerClient();
-            } catch (RemoteException e) {
-                System.err.println("ClientSocket exception: " + e.toString());
-                e.printStackTrace();
-            }
         } catch (Exception e) {
             System.err.println("ClientSocket exception: " + e.toString());
             e.printStackTrace();
@@ -51,7 +44,8 @@ public class ClientRMI extends Client implements ClientInterface {
     @Override
     public void createUser(String username){
         try{
-            server.newUser(username);
+            exportClient();
+            server.createUserRMIHelper(username);
         } catch (RemoteException e){
             System.err.println("ClientRMI exception: " + e.toString());
             e.printStackTrace();
