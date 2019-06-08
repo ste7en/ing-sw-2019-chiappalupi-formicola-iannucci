@@ -6,11 +6,7 @@ import it.polimi.ingsw.model.utility.Direction;
 import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.model.player.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -87,6 +83,22 @@ public class GameMap {
         GameMap clone = new GameMap(this.mapType, (LinkedHashMap<Player, Cell>)this.playersPosition.clone());
         clone.map = this.map.clone();
         return clone;
+    }
+
+    /**
+     * Rows getter: needed to know the size of the map in some powerup effects: {@link it.polimi.ingsw.model.cards.Teleporter#use(Player, GameMap, List)}
+     * @return the number of rows of the GameMap matrix.
+     */
+    public int getRows() {
+        return rows;
+    }
+
+    /**
+     * Columns getter: needed to know the size of the map in some powerup effects: {@link it.polimi.ingsw.model.cards.Teleporter#use(Player, GameMap, List)}
+     * @return the number of columns of the GameMap matrix.
+     */
+    public int getColumns() {
+        return columns;
     }
 
     /**
