@@ -510,13 +510,16 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * Method used to know the possible damages that a player can do when using a powerup.
      * @param userID it's the ID of the user.
      * @param gameID it's the ID of the game.
-     * @param powerup it's the Powerup::toString that is being used.
-     * @see Powerup#toString()
+     * @param powerup it's the Powerup::toString that is being used {@link Powerup#toString()}
+     * @return the list of possible damages that can be done with this powerup.
      */
     @Override
-    public List<String> powerupDamages(int userID, UUID gameID, String powerup) {
+    public List<String> getPowerupDamages(int userID, UUID gameID, String powerup) {
         List<Damage> possibleDamages = gameControllers.get(gameID).getPowerupDamages(powerup, findUserFromID(userID));
-        return null;
+        List<String> returnValues = new ArrayList<>();
+        for(Damage damage : possibleDamages)
+            returnValues.add(damage.toString());
+        return returnValues;
     }
 
 }

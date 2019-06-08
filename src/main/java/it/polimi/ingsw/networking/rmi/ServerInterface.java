@@ -65,5 +65,5 @@ public interface ServerInterface extends Remote {
 
     List<String> usablePowerups(int userID, UUID gameID) throws RemoteException;
 
-    List<String> powerupDamages(int userID, UUID gameID, String powerup) throws RemoteException;
+    List<String> getPowerupDamages(int userID, UUID gameID, String powerup) throws RemoteException;
 }

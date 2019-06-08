@@ -1,10 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
-import it.polimi.ingsw.model.cards.Damage;
-import it.polimi.ingsw.model.cards.Effect;
-import it.polimi.ingsw.model.cards.PotentiableWeapon;
-import it.polimi.ingsw.model.cards.Weapon;
+import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.Server;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
@@ -216,6 +213,13 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     Map<String, String> responseArgs = new HashMap<>();
                     for(String powerup: usablePowerups) responseArgs.put(Integer.toString(usablePowerups.indexOf(powerup)), powerup);
                     send(CommunicationMessage.from(connectionID, POWERUP_LIST, responseArgs));
+                    break;
+                }
+                case ASK_POWERUP_DAMAGES: {
+                    List<String> possibleDamages = server.getPowerupDamages(connectionID, gameID, args.get(Powerup.powerup_key));
+                    Map<String, String> responseArgs = new HashMap<>();
+                    for(String damage : possibleDamages) responseArgs.put(Integer.toString(possibleDamages.indexOf(damage)), damage);
+                    send(CommunicationMessage.from(connectionID, POWERUP_DAMAGES_LIST, responseArgs));
                     break;
                 }
                 default:

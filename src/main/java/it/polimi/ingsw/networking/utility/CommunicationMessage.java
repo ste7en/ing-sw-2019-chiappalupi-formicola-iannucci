@@ -126,15 +126,33 @@ public enum CommunicationMessage {
     RELOAD_WEAPON_FAILED,
 
     /**
-     * Powerup using messages.
+     * Powerup selection messages.
      *
      * ASK_POWERUPS is sent by the client to the server to ask the powerups that the player has in his hand and can use during its turn. The request has no arguments.
      * POWERUPS_LIST is sent by the server to the client to provide the powerups that the player has in his hand and can use during its turn.
      *
-     * Arguments: <indexOd_Powerup, Powerup.toString()>
+     * Arguments: <indexOf_Powerup, Powerup::toString>
      */
     ASK_POWERUPS,
-    POWERUP_LIST;
+    POWERUP_LIST,
+
+    /**
+     * Powerup using messages.
+     *
+     * ASK_POWERUP_DAMAGES is sent by the client to the server to ask which damage can be done using the powerup in the arguments.
+     *
+     * Arguments: <Powerup.powerup_key, Powerup::toString>
+     */
+    ASK_POWERUP_DAMAGES,
+
+    /**
+     * Powerup using messages.
+     *
+     * POWERUP_DAMAGES_LIST is sent by the server to the client to provide the list of damages that can be done with the powerup.
+     *
+     * Arguments: <Powerup.powerup_key, Powerup::toString>, <indexOf_Damage, Damage::toString>
+     */
+    POWERUP_DAMAGES_LIST;
 
     /**
      * String constant used in messages between client-server

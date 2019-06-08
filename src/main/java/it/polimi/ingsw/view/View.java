@@ -1,5 +1,4 @@
 package it.polimi.ingsw.view;
-import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.socket.ClientSocket;
@@ -309,8 +308,9 @@ public abstract class View implements Observer{
 
     /**
      * Dani
+     * @param possibleDamages
      */
-    public abstract void willChoosePowerupEffect();
+    public abstract void willChoosePowerupDamage(List<String> possibleDamages);
 
     /**
      * Dani

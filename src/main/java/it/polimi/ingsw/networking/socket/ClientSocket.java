@@ -1,10 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
-import it.polimi.ingsw.model.cards.Damage;
-import it.polimi.ingsw.model.cards.Effect;
-import it.polimi.ingsw.model.cards.PotentiableWeapon;
-import it.polimi.ingsw.model.cards.Weapon;
+import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
@@ -109,6 +106,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         break;
                     case POWERUP_LIST:
                         this.viewObserver.willChoosePowerup(new ArrayList<>(args.values()));
+                        break;
+                    case POWERUP_DAMAGES_LIST:
+                        this.viewObserver.willChoosePowerupDamage(new ArrayList<>(args.values()));
+                        break;
                     default:
                         break;
                 }
@@ -200,7 +201,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
     @Override
     public void askPowerupDamages(String powerup) {
-
+        Map<String, String> args = new HashMap<>();
+        args.put(Powerup.powerup_key, powerup);
+        this.send(CommunicationMessage.from(userID, ASK_POWERUP_DAMAGES, args, gameID));
     }
 
 }

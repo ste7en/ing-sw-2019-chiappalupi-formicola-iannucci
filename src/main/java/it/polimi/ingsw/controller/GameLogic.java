@@ -215,7 +215,14 @@ public class GameLogic {
      * @return the list of possible damages that the powerup can make.
      */
     public List<Damage> getPowerupDamages(String powerup, User user) {
-        return null;
+        Player player = lookForPlayerFromUser(user);
+        List<Powerup> powerups = player.getPlayerHand().getPowerups();
+        Powerup selectedPowerup = null;
+        for(Powerup p : powerups)
+            if(p.toString().equalsIgnoreCase(powerup))
+                selectedPowerup = p;
+        if(selectedPowerup == null) throw new NullPointerException("This powerup is not in the hand of this player!");
+        return selectedPowerup.use(player, board.getMap(), players);
     }
 
 }

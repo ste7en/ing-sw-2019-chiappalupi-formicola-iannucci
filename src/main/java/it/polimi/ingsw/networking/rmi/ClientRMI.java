@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -162,7 +163,12 @@ public class ClientRMI extends Client implements ClientInterface {
 
     @Override
     public void askPowerupDamages(String powerup) {
-
+        try {
+            List<String> possibleDamages = this.server.getPowerupDamages(userID, gameID, powerup);
+            this.viewObserver.willChoosePowerupDamage(possibleDamages);
+        } catch (RemoteException e) {
+            System.err.print(CLIENT_RMI_EXCEPTION + e.toString());
+        }
     }
 
     @Override

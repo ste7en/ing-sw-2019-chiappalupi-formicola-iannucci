@@ -156,7 +156,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChoosePowerupEffect() {
+    public void willChoosePowerupDamage(List<String> possibleDamages) {
 
     }
 
