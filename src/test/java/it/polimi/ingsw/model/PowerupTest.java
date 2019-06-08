@@ -41,23 +41,6 @@ public class PowerupTest {
     }
 
     /**
-     * Tests the getType() method, both with a positive and a negative test
-     * @see Powerup#getType()
-     */
-    @Test
-    public void testGetType() {
-        assertNotNull(powTester.getType());
-        ArrayList<PowerupType> powerupTypes = new ArrayList<>(Arrays.asList(PowerupType.values()));
-        int i = 0;
-        while(i < 24) {
-            powTester = dh.drawPowerup();
-            assertTrue(powerupTypes.contains(powTester.getType()));
-            dh.wastePowerup(powTester);
-            i++;
-        }
-    }
-
-    /**
      * Tests the getDescription() method, both with a positive and a negative test
      * @see Powerup#getDescription()
      */
@@ -82,28 +65,5 @@ public class PowerupTest {
             dh.wastePowerup(powTester);
             i++;
         }
-    }
-
-    /**
-     * Tests a NullPointerException
-     */
-    @Test (expected = NullPointerException.class)
-    public void testUseNullPointerException() {
-        powTester.use(null, null, null);
-    }
-
-    /**
-     * Tests a RuntimeException
-     */
-    @Test (expected = RuntimeException.class)
-    public void testUseRuntimeException() {
-        Player playerTest;
-        User userTest;
-        Character characterTest;
-        String username = "Mimmo";
-        userTest = new User(username);
-        characterTest = new Character("CharacterTestName", PlayerColor.yellow, "Character user for tests.");
-        playerTest = new Player(userTest, characterTest);
-        powTester.use(playerTest, playerTest, null);
     }
 }

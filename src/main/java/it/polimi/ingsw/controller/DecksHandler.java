@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -23,17 +24,17 @@ public class DecksHandler {
     /**
      * Integer to initialize the weaponsDeck
      */
-    private static final Integer NUM_OF_SIMPLEWEAPONS = 2;
+    private static final Integer NUM_OF_SIMPLE_WEAPONS = 2;
 
     /**
      * Integer to initialize the weaponsDeck
      */
-    private static final Integer NUM_OF_POTENTIABLEWEAPONS = 8;
+    private static final Integer NUM_OF_POTENTIABLE_WEAPONS = 8;
 
     /**
      * Integer to initialize the weaponsDeck
      */
-    private static final Integer NUM_OF_SELECTABLEWEAPONS = 11;
+    private static final Integer NUM_OF_SELECTABLE_WEAPONS = 11;
 
     /**
      * Integer to initialize the ammoTilesDeck
@@ -43,7 +44,7 @@ public class DecksHandler {
     /**
      * Integer to initialize the powerupsDeck
      */
-    private static final Integer NUM_OF_POWERUPS = 24;
+    private static final Integer NUM_OF_POWERUPS = 6;
 
     /**
      * Deck of weapons
@@ -85,11 +86,11 @@ public class DecksHandler {
      * Method that initializes the weapons deck using a json file
      * @return an ArrayList containing the deck of weapons for testing purposes
      */
-    public ArrayList<Weapon> initializeWeapons() {
+    public List<Weapon> initializeWeapons() {
         ObjectMapper objectMapper = new ObjectMapper();
-        SimpleWeapon[] boxSimple = new SimpleWeapon[NUM_OF_SIMPLEWEAPONS];
-        PotentiableWeapon[] boxPotentiable = new PotentiableWeapon[NUM_OF_POTENTIABLEWEAPONS];
-        SelectableWeapon[] boxSelectable = new SelectableWeapon[NUM_OF_SELECTABLEWEAPONS];
+        SimpleWeapon[] boxSimple = new SimpleWeapon[NUM_OF_SIMPLE_WEAPONS];
+        PotentiableWeapon[] boxPotentiable = new PotentiableWeapon[NUM_OF_POTENTIABLE_WEAPONS];
+        SelectableWeapon[] boxSelectable = new SelectableWeapon[NUM_OF_SELECTABLE_WEAPONS];
         try {
             File json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "simpleWeapons.json");
             boxSimple = objectMapper.readValue(json, SimpleWeapon[].class);
@@ -109,41 +110,59 @@ public class DecksHandler {
         weapons.addAll(potentiableWeapons);
         for(Weapon w : weapons) w.reload();
         Collections.shuffle(weapons);
-        return (ArrayList<Weapon>) weapons.clone();
+        return (List<Weapon>) weapons.clone();
     }
 
     /**
      * Method that initializes the weapons deck using a json file
      * @return an ArrayList containing the deck of weapons for testing purposes
      */
-    public ArrayList<AmmoTile> initializeAmmoTiles() {
+    public List<AmmoTile> initializeAmmoTiles() {
         ObjectMapper objectMapper = new ObjectMapper();
         AmmoTile[] box = new AmmoTile[NUM_OF_AMMOTILES];
         try {
             File json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "ammoTiles.json");
             box = objectMapper.readValue(json, AmmoTile[].class);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
         ammoTiles = new ArrayList<>(Arrays.asList(box));
-        return (ArrayList<AmmoTile>) ammoTiles.clone();
+        return (List<AmmoTile>) ammoTiles.clone();
     }
 
     /**
-     * Method that initializes the weapons deck using a json file
-     * @return an ArrayList containing the deck of weapons for testing purposes
+     * Method that initializes the powerups deck using a json file
+     * @return an ArrayList containing the deck of powerups for testing purposes
      */
-    public ArrayList<Powerup> initializePowerups() {
+    public List<Powerup> initializePowerups() {
         ObjectMapper objectMapper = new ObjectMapper();
-        Powerup[] box = new Powerup[NUM_OF_POWERUPS];
+        Newton[] boxNewton = new Newton[NUM_OF_POWERUPS];
+        TargetingScope[] boxTargetingScope = new TargetingScope[NUM_OF_POWERUPS];
+        TagbackGrenade[] boxTagbackGrenade = new TagbackGrenade[NUM_OF_POWERUPS];
+        Teleporter[] boxTeleporter = new Teleporter[NUM_OF_POWERUPS];
         try {
-            File json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "powerups.json");
-            box = objectMapper.readValue(json, Powerup[].class);
+            File json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "newtonPowerups.json");
+            boxNewton = objectMapper.readValue(json, Newton[].class);
+            json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "tagbackGrenadePowerups.json");
+            boxTagbackGrenade = objectMapper.readValue(json, TagbackGrenade[].class);
+            json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "targetingScopePowerups.json");
+            boxTargetingScope = objectMapper.readValue(json, TargetingScope[].class);
+            json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "teleporterPowerups.json");
+            boxTeleporter = objectMapper.readValue(json, Teleporter[].class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        powerups = new ArrayList<>(Arrays.asList(box));
-        return (ArrayList<Powerup>) powerups.clone();
+        ArrayList<Newton> newtons = new ArrayList<>(Arrays.asList(boxNewton));
+        ArrayList<TagbackGrenade> tagbackGrenades = new ArrayList<>(Arrays.asList(boxTagbackGrenade));
+        ArrayList<TargetingScope> targetingScopes = new ArrayList<>(Arrays.asList(boxTargetingScope));
+        ArrayList<Teleporter> teleporters = new ArrayList<>(Arrays.asList(boxTeleporter));
+        powerups = new ArrayList<>();
+        powerups.addAll(newtons);
+        powerups.addAll(tagbackGrenades);
+        powerups.addAll(targetingScopes);
+        powerups.addAll(teleporters);
+        return (List<Powerup>) powerups.clone();
     }
 
     /**

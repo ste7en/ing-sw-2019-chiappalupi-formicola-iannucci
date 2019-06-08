@@ -368,6 +368,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public boolean newUser(String username) throws RemoteException {
         if (checkUsernameAvailability(username)==true) System.out.print(username + ", you are logged in");
+        return true;
     }
 
     public boolean checkUsernameAvailability(String username) {

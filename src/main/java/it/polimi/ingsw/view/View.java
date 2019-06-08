@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view;
 import it.polimi.ingsw.model.player.User;
-import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.socket.ClientSocket;
 import it.polimi.ingsw.networking.rmi.ClientRMI;
@@ -279,9 +278,10 @@ public abstract class View implements Observer{
     public abstract void onReloadFailure();
 
     /**
-     * Dani
+     * Public method implemented by subclasses, called when the player wants to use a powerup.
+     * @param availablePowerups it's the list of powerups that the player has in his hands.
      */
-    public abstract void willUsePowerup();
+    public abstract void willUsePowerup(List<String> availablePowerups);
 
     /**
      * Dani

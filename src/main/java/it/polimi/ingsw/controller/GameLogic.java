@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Effect;
+import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.User;
@@ -167,6 +168,7 @@ public class GameLogic {
      * If the player can afford the cost, the weapons are reloaded.
      * @param weapons it's the list of weapon that the player wants to reload.
      * @param user it's the user that is asking to reload his weapons.
+     * @return TRUE if the reload has been successful, FALSE otherwise.
      */
     public boolean checkCostOfReload(List<Weapon> weapons, User user) {
         Map<AmmoColor, Integer> cost = new HashMap<>();
@@ -189,5 +191,18 @@ public class GameLogic {
         for(Weapon weapon : weapons)
             weapon.reload();
         return true;
+    }
+
+    /**
+     * This method is used to return the powerups that the player has in his hand and can use anytime during his turn.
+     * @param user it's the user whose turn is.
+     * @return the list of the names of the powerups that the player can use and its color [i.e. Teleporter - Blue].
+     */
+    public List<String> getUsablePowerup(User user) {
+        Player player = lookForPlayerFromUser(user);
+        List<Powerup> powerupList = player.getPlayerHand().getPowerups();
+        List<String> powerupNames = new ArrayList<>();
+        //for(Powerup powerup : powerupList)
+        return powerupNames;
     }
 }
