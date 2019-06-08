@@ -100,32 +100,37 @@ public abstract class Client implements Loggable {
 
     /**
      * Abstract method implemented by subclasses to make the user joining
-     * the server's waiting room
+     * the server's waiting room.
      * @param username username
      */
     public abstract void joinWaitingRoom(String username);
 
     /**
-     * Abstract method implemented by subclasses to get the available characters
+     * Abstract method implemented by subclasses to get the available characters.
      */
     public abstract void askForCharacters();
 
     /**
-     * Abstract method implemented by subclasses when a player has chosen his character between the ones available
+     * Abstract method implemented by subclasses when a player has chosen his character between the ones available.
      * @param character the chosen character
      */
     public abstract void choseCharacter(String character);
 
     /**
-     * Abstract method implemented by subclasses when the first player has chosen the configuration of the map
+     * Abstract method implemented by subclasses when the first player has chosen the configuration of the map.
      * @param configuration the chosen configuration
      */
     public abstract void choseGameMap(String configuration);
 
     /**
-     * Abstract method implemented by subclasses to get two Power Up cards between which the player will have to choose a spawnpoint
+     * Abstract method implemented by subclasses to get two Power Up cards between which the player will have to choose a spawnpoint.
      */
     public abstract void askForPowerups();
+
+    /**
+     * Abstract method implemented by subclasses when a player has chosen his spawnpoint.
+     */
+    public abstract void choseSpawnPoint(String powerup);
 
     /**
      * Abstract method implemented by subclasses and used when a player wants to use a weapon.

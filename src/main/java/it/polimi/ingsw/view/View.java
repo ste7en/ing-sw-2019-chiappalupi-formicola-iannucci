@@ -148,7 +148,9 @@ public abstract class View implements Observer{
     /**
      * Ele
      */
-    public abstract void willChooseSpawnPoint();
+    public void willChooseSpawnPoint() {
+        client.askForPowerups();
+    }
 
     /**
      * Ele
@@ -158,7 +160,9 @@ public abstract class View implements Observer{
     /**
      * Ele
      */
-    public abstract void didChooseSpawnPoint();
+    public void didChooseSpawnPoint(String powerup){
+        client.choseSpawnPoint(powerup);
+    }
 
     /**
      * Ele

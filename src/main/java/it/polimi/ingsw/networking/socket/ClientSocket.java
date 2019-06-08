@@ -156,6 +156,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
     @Override
     public void askForPowerups(){
+    }
+
+    @Override
+    public void choseSpawnPoint(String powerup){
 
     }
 

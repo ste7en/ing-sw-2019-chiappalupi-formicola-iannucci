@@ -23,7 +23,7 @@ public interface ServerInterface extends Remote {
 
     ArrayList<String> getPowerups(int userID, UUID gameID) throws RemoteException;
 
-    void chooseSpawnPoint() throws RemoteException;
+    void choseSpawnPoint(int userID, UUID gameID, String powerup) throws RemoteException;
 
     void chooseMove() throws RemoteException;
 

@@ -17,7 +17,11 @@ public class AdrenalineGUI extends View {
 
     @Override
     protected void willChooseConnection() {
-        handlerGUI.chooseConnection();
+        try {
+            handlerGUI.chooseConnection();
+        } catch (FileNotFoundException e){
+
+        }
     }
 
     @Override
@@ -72,18 +76,12 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChooseSpawnPoint() {
-
-    }
-
-    @Override
     public void onChooseSpawnPoint(ArrayList<String> powerups) {
-        handlerGUI.chooseSpawnPoint(powerups);
-    }
-
-    @Override
-    public void didChooseSpawnPoint() {
-
+        try {
+            handlerGUI.chooseSpawnPoint(powerups);
+        } catch (FileNotFoundException e ){
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
     }
 
     @Override

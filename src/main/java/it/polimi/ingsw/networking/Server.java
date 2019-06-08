@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking;
 
+import it.polimi.ingsw.controller.DecksHandler;
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Player;
@@ -253,19 +254,23 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     @Override
     public void choseGameMap(UUID gameID, String configuration) {
+        System.out.println("OK");
     }
 
     @Override
     public ArrayList<String> getPowerups(int userID, UUID gameID) {
         ArrayList<String> powerups = new ArrayList<>();
-        powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
-        powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
+        DecksHandler decks = new DecksHandler();
+        //powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
+        //powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
+        powerups.add(decks.drawPowerup().toString());
+        powerups.add(decks.drawPowerup().toString());
         return powerups;
     }
 
     @Override
-    public void chooseSpawnPoint() {
-
+    public void choseSpawnPoint(int userID, UUID gameID, String powerup) {
+        System.out.println("OK");
     }
 
     @Override

@@ -105,6 +105,7 @@ public class ClientRMI extends Client implements ClientInterface {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
             e.printStackTrace();
         }
+        viewObserver.willChooseSpawnPoint();
     }
 
     @Override
@@ -112,6 +113,17 @@ public class ClientRMI extends Client implements ClientInterface {
         ArrayList<String> powerups = new ArrayList<>();
         try {
             powerups = server.getPowerups(userID, gameID);
+        } catch (RemoteException e) {
+            System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
+            e.printStackTrace();
+        }
+        viewObserver.onChooseSpawnPoint(powerups);
+    }
+
+    @Override
+    public void choseSpawnPoint(String powerup){
+        try {
+            server.choseSpawnPoint(userID, gameID, powerup);
         } catch (RemoteException e) {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
             e.printStackTrace();

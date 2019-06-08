@@ -53,10 +53,14 @@ public class GUIHandler extends Application  {
         primaryStage.show();
     }
 
-    public void chooseConnection(){
+    public void chooseConnection() throws FileNotFoundException{
 
         root.getChildren().clear();
-        root.setStyle("-fx-background-color: white");
+        //root.setStyle("-fx-background-color: white");
+        BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/adrenaline_background.jpg")),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        root.setBackground(new Background(myBI));
+        root.setBottom(boxButton);
 
         CheckBox checkBoxRMI = new CheckBox("RMI");
         CheckBox checkBoxTCP = new CheckBox("TCP");
@@ -150,12 +154,7 @@ public class GUIHandler extends Application  {
         Integer portNumber = Integer.parseInt(port);
         String address = addressTextfield.getText();
         this.adrenalineGUI.didChooseConnection(connectionType, portNumber, address);
-        //login();
-        try {
-            chooseGameMap();
-        } catch (FileNotFoundException e){
-
-        }
+        login();
     }
 
     public void login(){
@@ -397,9 +396,44 @@ public class GUIHandler extends Application  {
         adrenalineGUI.didChooseGameMap(configuration);
     }
 
-    public void chooseSpawnPoint(ArrayList<String> powerups){
+    public void chooseSpawnPoint(ArrayList<String> powerups) throws FileNotFoundException{
+        root.getChildren().clear();
+        Text text = new Text("Choose a spawn point by selecting one card that you will not keep");
+        HBox textBox = new HBox(text);
+        textBox.setMargin(text, new Insets(10,10,10,10));
+        textBox.setAlignment(Pos.CENTER);
 
+        Image firstCard = new Image(new FileInputStream("src/main/resources/images/powerups/" + powerups.get(0) +".png"));
+        ImageView ivFirst = new ImageView();
+        ivFirst.setImage(firstCard);
+
+        Image secondCard = new Image(new FileInputStream("src/main/resources/images/powerups/" + powerups.get(1) +".png"));
+        ImageView ivSecond = new ImageView();
+        ivSecond.setImage(secondCard);
+
+        HBox cards = new HBox(ivFirst, ivSecond);
+        cards.setAlignment(Pos.CENTER);
+        cards.setMargin(ivFirst, new Insets(10,10,10,10));
+        cards.setMargin(ivSecond, new Insets(10,10,10,10));
+        root.setTop(textBox);
+        root.setCenter(cards);
+        Text textBelow = new Text();
+        VBox vBox = new VBox(textBelow, boxButton);
+        vBox.setMargin(textBelow, new Insets(10,10,10,10));
+        root.setBottom(vBox);
+
+        ivFirst.setOnMouseClicked(e -> {
+            textBelow.setText("You selected the first card as a spawpoint!");
+            button.setOnAction(ev -> handleSpawnPointsOptions(powerups.get(0)));
+        });
+
+        ivSecond.setOnMouseClicked(e -> {
+            textBelow.setText("You selected the second card as a spawpoint!");
+            button.setOnAction(ev -> handleSpawnPointsOptions(powerups.get(1)));
+        });
     }
 
-
+    public void handleSpawnPointsOptions(String powerup){
+        adrenalineGUI.didChooseSpawnPoint(powerup);
+    }
 }
