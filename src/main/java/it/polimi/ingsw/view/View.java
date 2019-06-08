@@ -153,6 +153,11 @@ public abstract class View implements Observer{
     /**
      * Ele
      */
+    public abstract void onChooseSpawnPoint(ArrayList<String> powerups);
+
+    /**
+     * Ele
+     */
     public abstract void didChooseSpawnPoint();
 
     /**

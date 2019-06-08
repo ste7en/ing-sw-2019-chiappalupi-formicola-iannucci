@@ -14,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class GUIHandler extends Application  {
 
         this.adrenalineGUI = new AdrenalineGUI(this);
 
-        primaryStage.setTitle("Button test");
+        primaryStage.setTitle("Adrenaline");
 
         button = new Button("Continue");
         button.setOnAction(e -> adrenalineGUI.willChooseConnection());
@@ -50,7 +49,7 @@ public class GUIHandler extends Application  {
         root.setBackground(new Background(myBI));
         root.setBottom(boxButton);
 
-        primaryStage.setScene(new Scene(root, 600, 400));
+        primaryStage.setScene(new Scene(root, 1200, 800));
         primaryStage.show();
     }
 
@@ -192,7 +191,7 @@ public class GUIHandler extends Application  {
         root.setBottom(box);
     }
 
-    public void characterChoice(ArrayList<String> availableCharacters) throws FileNotFoundException{
+    public void chooseCharacter(ArrayList<String> availableCharacters) throws FileNotFoundException{
         root.getChildren().clear();
 
         Text text = new Text();
@@ -305,55 +304,102 @@ public class GUIHandler extends Application  {
         root.getChildren().clear();
 
         Text tFirst = new Text("First configuration, good for 3 or 4 players:");
-        Image firstLeft = new Image(new FileInputStream("src/main/resources/images/characters/board1.png"));
+        Image firstLeft = new Image(new FileInputStream("src/main/resources/images/board/board1.png"));
         ImageView ivFirstLeft = new ImageView();
         ivFirstLeft.setImage(firstLeft);
-        Image firstRight = new Image(new FileInputStream("src/main/resources/images/characters/board4.png"));
+        ivFirstLeft.setFitHeight(321);
+        ivFirstLeft.setFitWidth(200);
+        Image firstRight = new Image(new FileInputStream("src/main/resources/images/board/board4.png"));
         ImageView ivFirstRight = new ImageView();
         ivFirstRight.setImage(firstRight);
+        ivFirstRight.setFitHeight(321);
+        ivFirstRight.setFitWidth(200);
         HBox boxFirst = new HBox(ivFirstLeft, ivFirstRight);
         VBox vBoxFirst = new VBox(tFirst, boxFirst);
 
         Text tSecond = new Text("Second configuration, good for any number of players:");
-        Image secondLeft = new Image(new FileInputStream("src/main/resources/images/characters/board1.png"));
+        Image secondLeft = new Image(new FileInputStream("src/main/resources/images/board/board1.png"));
         ImageView ivSecondLeft = new ImageView();
         ivSecondLeft.setImage(secondLeft);
-        Image secondRight = new Image(new FileInputStream("src/main/resources/images/characters/board2.png"));
+        ivSecondLeft.setFitHeight(321);
+        ivSecondLeft.setFitWidth(200);
+        Image secondRight = new Image(new FileInputStream("src/main/resources/images/board/board2.png"));
         ImageView ivSecondRight = new ImageView();
         ivSecondRight.setImage(secondRight);
+        ivSecondRight.setFitHeight(321);
+        ivSecondRight.setFitWidth(200);
         HBox boxSecond = new HBox(ivSecondLeft, ivSecondRight);
         VBox vBoxSecond = new VBox(tSecond, boxSecond);
 
         Text tThird = new Text("Third configuration, good for any number of players:");
-        Image thirdLeft = new Image(new FileInputStream("src/main/resources/images/characters/board3.png"));
+        Image thirdLeft = new Image(new FileInputStream("src/main/resources/images/board/board3.png"));
         ImageView ivThirdLeft = new ImageView();
         ivThirdLeft.setImage(thirdLeft);
-        Image thirdRight = new Image(new FileInputStream("src/main/resources/images/characters/bard2.png"));
+        ivThirdLeft.setFitHeight(321);
+        ivThirdLeft.setFitWidth(200);
+        Image thirdRight = new Image(new FileInputStream("src/main/resources/images/board/board2.png"));
         ImageView ivThirdRight = new ImageView();
         ivThirdRight.setImage(thirdRight);
+        ivThirdRight.setFitHeight(321);
+        ivThirdRight.setFitWidth(200);
         HBox boxThird = new HBox(ivThirdLeft, ivThirdRight);
         VBox vBoxThird = new VBox(tThird, boxThird);
 
         Text tFourth = new Text("Fourth configuration, good for 4 or 5 players:");
-        Image fourthLeft = new Image(new FileInputStream("src/main/resources/images/characters/board3.png"));
+        Image fourthLeft = new Image(new FileInputStream("src/main/resources/images/board/board3.png"));
         ImageView ivFourthLeft = new ImageView();
-        ivThirdLeft.setImage(fourthLeft);
-        Image fourthRight = new Image(new FileInputStream("src/main/resources/images/characters/bard4.png"));
+        ivFourthLeft.setImage(fourthLeft);
+        ivFourthLeft.setFitHeight(321);
+        ivFourthLeft.setFitWidth(200);
+        Image fourthRight = new Image(new FileInputStream("src/main/resources/images/board/board4.png"));
         ImageView ivFourthRight = new ImageView();
         ivFourthRight.setImage(fourthRight);
+        ivFourthRight.setFitHeight(321);
+        ivFourthRight.setFitWidth(200);
         HBox boxFourth = new HBox(ivFourthLeft, ivFourthRight);
         VBox vBoxFourth = new VBox(tFourth, boxFourth);
 
-        HBox generalBox = new HBox(vBoxFirst, vBoxSecond, vBoxThird, vBoxFourth);
-        generalBox.setMargin(vBoxFirst, new Insets(10,10,10,10));
-        generalBox.setMargin(vBoxSecond, new Insets(10,10,10,10));
-        generalBox.setMargin(vBoxThird, new Insets(10,10,10,10));
-        generalBox.setMargin(vBoxFourth, new Insets(10,10,10,10));
+        HBox upperBox = new HBox(vBoxFirst, vBoxSecond);
+        HBox lowerBox = new HBox(vBoxThird, vBoxFourth);
+        upperBox.setMargin(vBoxFirst, new Insets(10,10,10,10));
+        upperBox.setMargin(vBoxSecond, new Insets(10,10,10,10));
+        lowerBox.setMargin(vBoxThird, new Insets(10,10,10,10));
+        lowerBox.setMargin(vBoxFourth, new Insets(10,10,10,10));
 
-        root.getChildren().add(generalBox);
+        Text text = new Text();
+        VBox generalBox = new VBox(upperBox, lowerBox, text);
+        generalBox.setAlignment(Pos.CENTER);
+        root.setTop(generalBox);
+        root.setBottom(boxButton);
+
+        boxFirst.setOnMouseClicked(e -> {
+            text.setText("You selected the first configuration!");
+            button.setOnAction(ev -> handleGameMapOptions("first"));
+        });
+
+        boxSecond.setOnMouseClicked(e -> {
+            text.setText("You selected the second configuration!");
+            button.setOnAction(ev -> handleGameMapOptions("second"));
+        });
+
+        boxThird.setOnMouseClicked(e -> {
+            text.setText("You selected the third configuration!");
+            button.setOnAction(ev -> handleGameMapOptions("third"));
+        });
+
+        boxFourth.setOnMouseClicked(e -> {
+            text.setText("You selected the fourth configuration!");
+            button.setOnAction(ev -> handleGameMapOptions("fourth"));
+        });
     }
 
+    public void handleGameMapOptions(String configuration){
+        adrenalineGUI.didChooseGameMap(configuration);
+    }
 
+    public void chooseSpawnPoint(ArrayList<String> powerups){
+
+    }
 
 
 }

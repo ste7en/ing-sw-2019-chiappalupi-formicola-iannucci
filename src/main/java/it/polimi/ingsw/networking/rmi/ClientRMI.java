@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -90,7 +89,18 @@ public class ClientRMI extends Client implements ClientInterface {
     @Override
     public void choseCharacter(String character){
         try {
-            server.choseCharacter(character);
+            server.choseCharacter(userID, gameID, character);
+        } catch (RemoteException e) {
+            System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
+            e.printStackTrace();
+        }
+        viewObserver.willChooseGameMap();
+    }
+
+    @Override
+    public void choseGameMap(String configuration){
+        try {
+            server.choseGameMap(gameID, configuration);
         } catch (RemoteException e) {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
             e.printStackTrace();
@@ -98,9 +108,10 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
-    public void choseGameMap(String configuration){
+    public void askForPowerups(){
+        ArrayList<String> powerups = new ArrayList<>();
         try {
-            server.choseGameMap(configuration);
+            powerups = server.getPowerups(userID, gameID);
         } catch (RemoteException e) {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
             e.printStackTrace();

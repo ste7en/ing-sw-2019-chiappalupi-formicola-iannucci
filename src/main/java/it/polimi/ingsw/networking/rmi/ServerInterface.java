@@ -17,11 +17,11 @@ public interface ServerInterface extends Remote {
 
     ArrayList<String> getAvailableCharacters(UUID gameID) throws RemoteException;
 
-    void choseCharacter(String character) throws RemoteException;
+    void choseCharacter(int userID, UUID gameID, String character) throws RemoteException;
 
-    void choseGameMap(String configuration) throws RemoteException;
+    void choseGameMap(UUID gameID, String configuration) throws RemoteException;
 
-    ArrayList<AmmoColor> displaySpawnPoints() throws RemoteException;
+    ArrayList<String> getPowerups(int userID, UUID gameID) throws RemoteException;
 
     void chooseSpawnPoint() throws RemoteException;
 

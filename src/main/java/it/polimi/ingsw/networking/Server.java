@@ -248,18 +248,20 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public void choseCharacter(String character) {
+    public void choseCharacter(int userID, UUID gameID, String character) {
 
     }
 
     @Override
-    public void choseGameMap(String configuration) {
-
+    public void choseGameMap(UUID gameID, String configuration) {
     }
 
     @Override
-    public ArrayList<AmmoColor> displaySpawnPoints() {
-        return null;
+    public ArrayList<String> getPowerups(int userID, UUID gameID) {
+        ArrayList<String> powerups = new ArrayList<>();
+        powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
+        powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
+        return powerups;
     }
 
     @Override

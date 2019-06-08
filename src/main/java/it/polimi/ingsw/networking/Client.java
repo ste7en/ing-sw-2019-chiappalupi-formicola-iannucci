@@ -123,6 +123,11 @@ public abstract class Client implements Loggable {
     public abstract void choseGameMap(String configuration);
 
     /**
+     * Abstract method implemented by subclasses to get two Power Up cards between which the player will have to choose a spawnpoint
+     */
+    public abstract void askForPowerups();
+
+    /**
      * Abstract method implemented by subclasses and used when a player wants to use a weapon.
      *
      * @param weaponSelected it's a String containing the weapon selected name.
