@@ -3,6 +3,7 @@ import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -17,6 +18,7 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class GUIHandler extends Application  {
 
@@ -163,60 +165,82 @@ public class GUIHandler extends Application  {
     public void handleLoginOptions(TextField usernameTextfield) {
         String username = usernameTextfield.getText();
         adrenalineGUI.getClient().createUser(username);
-        try {
-            characterChoice();
-        } catch (FileNotFoundException e){
-            System.err.println("ClientRMI exception: " + e.toString());
-        }
     }
 
-    public void characterChoice() throws FileNotFoundException{
+    public void handleLoginFailure() {
+        Text text = new Text("Username already in use");
+        VBox box = new VBox(text, boxButton);
+        box.setAlignment(Pos.CENTER);
+        root.setBottom(box);
+    }
+
+    public void characterChoice(ArrayList<String> availableCharacters) throws FileNotFoundException{
         root.getChildren().clear();
 
         Text text = new Text();
         HBox boxText = new HBox(text);
         boxText.setAlignment(Pos.CENTER);
 
-
-        /*
-        HBox generalBox = new HBox();
-        for (PlayerColor playerColor : PlayerColor.values()){
-            Image image = new Image(new FileInputStream("src/main/resources/images/characters/" + playerColor+ "_character.png"));
-            ImageView iv = new ImageView();
-            iv.setImage(image);
-            generalBox.getChildren().add(iv);
-        }
-        */
         Text tBlue = new Text("BANSHEE:");
-        Image imageBlue = new Image(new FileInputStream("src/main/resources/images/characters/blue_character.png"));
+        Image imageBlue;
+        if(availableCharacters.contains("blue")) {
+            imageBlue = new Image(new FileInputStream("src/main/resources/images/characters/blue_character_taken.png"));
+        }
+        else {
+            imageBlue = new Image(new FileInputStream("src/main/resources/images/characters/blue_character.png"));
+        }
         ImageView ivBlue = new ImageView();
         ivBlue.setImage(imageBlue);
         VBox boxBlue = new VBox(tBlue, ivBlue);
         boxBlue.setAlignment(Pos.CENTER);
 
         Text tGreen = new Text("SPROG:");
-        Image imageGreen = new Image(new FileInputStream("src/main/resources/images/characters/green_character_taken.png"));
+        Image imageGreen;
+        if(availableCharacters.contains("green")) {
+            imageGreen = new Image(new FileInputStream("src/main/resources/images/characters/green_character_taken.png"));
+        }
+        else {
+            imageGreen = new Image(new FileInputStream("src/main/resources/images/characters/green_character.png"));
+        }
         ImageView ivGreen = new ImageView();
         ivGreen.setImage(imageGreen);
         VBox boxGreen = new VBox(tGreen, ivGreen);
         boxGreen.setAlignment(Pos.CENTER);
 
         Text tGrey = new Text("DOZER:");
-        Image imageGrey = new Image(new FileInputStream("src/main/resources/images/characters/grey_character.png"));
+        Image imageGrey;
+        if(availableCharacters.contains("grey")) {
+            imageGrey = new Image(new FileInputStream("src/main/resources/images/characters/grey_character_taken.png"));
+        }
+        else {
+            imageGrey = new Image(new FileInputStream("src/main/resources/images/characters/grey_character.png"));
+        }
         ImageView ivGrey = new ImageView();
         ivGrey.setImage(imageGrey);
         VBox boxGrey = new VBox(tGrey, ivGrey);
         boxGrey.setAlignment(Pos.CENTER);
 
         Text tPurple = new Text("VIOLET:");
-        Image imagePurple = new Image(new FileInputStream("src/main/resources/images/characters/purple_character.png"));
+        Image imagePurple;
+        if(availableCharacters.contains("purple")) {
+            imagePurple = new Image(new FileInputStream("src/main/resources/images/characters/purple_character_taken.png"));
+        }
+        else {
+            imagePurple = new Image(new FileInputStream("src/main/resources/images/characters/purple_character.png"));
+        }
         ImageView ivPurple = new ImageView();
         ivPurple.setImage(imagePurple);
         VBox boxPurple = new VBox(tPurple, ivPurple);
         boxPurple.setAlignment(Pos.CENTER);
 
         Text tYellow = new Text("D-STRUCT-OR:");
-        Image imageYellow = new Image(new FileInputStream("src/main/resources/images/characters/yellow_character_taken.png"));
+        Image imageYellow;
+        if(availableCharacters.contains("yellow")) {
+            imageYellow = new Image(new FileInputStream("src/main/resources/images/characters/yellow_character_taken.png"));
+        }
+        else {
+            imageYellow = new Image(new FileInputStream("src/main/resources/images/characters/yellow_character.png"));
+        }
         ImageView ivYellow = new ImageView();
         ivYellow.setImage(imageYellow);
         VBox boxYellow = new VBox(tYellow, ivYellow);
@@ -225,29 +249,39 @@ public class GUIHandler extends Application  {
         HBox imagesBox = new HBox(boxBlue, boxGreen, boxGrey, boxPurple, boxYellow);
         VBox generalBox = new VBox(imagesBox, boxText);
         root.getChildren().add(generalBox);
+        root.setBottom(boxButton);
+
+
 
         ivBlue.setOnMouseClicked(e -> {
             text.setText("You selected BANSHEE!");
+            button.setOnAction(ev -> handleCharactersOptions("blue"));
         });
 
         ivGreen.setOnMouseClicked(e -> {
             text.setText("You selected SPROG!");
+            button.setOnAction(ev -> handleCharactersOptions("green"));
         });
 
         ivGrey.setOnMouseClicked(e -> {
             text.setText("You selected DOZER!");
+            button.setOnAction(ev -> handleCharactersOptions("grey"));
         });
 
         ivPurple.setOnMouseClicked(e -> {
             text.setText("You selected VIOLET!");
+            button.setOnAction(ev -> handleCharactersOptions("purple"));
         });
 
         ivYellow.setOnMouseClicked(e -> {
             text.setText("You selected D-STRUCT-OR!");
+            button.setOnAction(ev -> handleCharactersOptions("yellow"));
         });
     }
 
-
+    public void handleCharactersOptions(String selecterCharacter){
+        adrenalineGUI.getClient().chooseCharacter(selecterCharacter);
+    }
 
 
 

@@ -9,18 +9,17 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ClientRMI extends Client implements ClientInterface {
 
     private Registry registry;
     private ServerInterface server;
+    private boolean flag;
 
     public ClientRMI(String host, Integer port){
         super(host, port);
+        flag = false;
     }
 
     private static String CLIENT_RMI_EXCEPTION = "ClientRMI exception: ";
@@ -32,6 +31,12 @@ public class ClientRMI extends Client implements ClientInterface {
             registry = LocateRegistry.getRegistry(connectionPort);
             System.out.println(registry);
             server = (ServerInterface) registry.lookup("rmiInterface");
+            try {
+                exportClient();
+            } catch (RemoteException e) {
+                System.err.println("ClientRMI exception: " + e.toString());
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
             e.printStackTrace();
@@ -39,18 +44,20 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     public void exportClient() throws RemoteException{
-        ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
-        registry.rebind("ClientInterface", stub);
+        if (flag == false) {
+            ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
+            registry.rebind("ClientInterface", stub);
+            flag = true;
+        }
     }
 
     @Override
     public void createUser(String username){
         try{
-            exportClient();
             if(!server.createUserRMIHelper(username)) {
-                System.out.println("Error, username already in use");
-                //TODO: GUI exception
+                viewObserver.onLoginFailure();
             }
+            else viewObserver.onLoginSuccess(username);
         } catch (RemoteException e){
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
             e.printStackTrace();
@@ -62,6 +69,28 @@ public class ClientRMI extends Client implements ClientInterface {
         try {
             server.joinWaitingRoom(username);
         } catch (RemoteException e){
+            System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void askForCharacters(){
+        ArrayList<String> availableCharacters = new ArrayList<>();
+        try {
+            availableCharacters = server.getAvailableCharacters(gameID);
+        } catch (RemoteException e) {
+            System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
+            e.printStackTrace();
+        }
+        viewObserver.willChooseCharacter(availableCharacters);
+    }
+
+    @Override
+    public void chooseCharacter(String character){
+        try {
+            server.chooseCharacter(character);
+        } catch (RemoteException e) {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
             e.printStackTrace();
         }
@@ -134,7 +163,7 @@ public class ClientRMI extends Client implements ClientInterface {
     @Override
     public void askWeaponToReload() {
         try {
-            this.viewObserver.willReload(this.server.weaponInHand(userID, gameID));
+            this.viewObserver.willReload(this.server.getWeaponInHand(userID, gameID));
         } catch (RemoteException e) {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
         }
@@ -154,7 +183,7 @@ public class ClientRMI extends Client implements ClientInterface {
     @Override
     public void askForPowerup() {
         try {
-            List<String> powerups = this.server.usablePowerups(userID, gameID);
+            List<String> powerups = this.server.getUsablePowerups(userID, gameID);
             this.viewObserver.willChoosePowerup(powerups);
         } catch (RemoteException e) {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());

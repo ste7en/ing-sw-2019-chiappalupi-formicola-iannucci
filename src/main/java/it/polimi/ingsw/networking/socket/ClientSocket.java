@@ -140,6 +140,16 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
+    public void askForCharacters(){
+
+    }
+
+    @Override
+    public void chooseCharacter(String character){
+
+    }
+
+    @Override
     public void useWeapon(String weaponSelected) {
         Map<String, String> args = new HashMap<>();
         args.put(Weapon.weapon_key, weaponSelected);

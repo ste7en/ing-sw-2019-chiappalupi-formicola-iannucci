@@ -243,12 +243,12 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public ArrayList<Character> getAvailableCharacters() {
-        return null;
+    public ArrayList<String> getAvailableCharacters(UUID gameID) {
+        return gameControllers.get(gameID).getAvailableCharacters();
     }
 
     @Override
-    public void chooseCharacter(Character character) {
+    public void chooseCharacter(String character) {
 
     }
 
@@ -490,7 +490,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * @return the list of the names of the weapons that the player has in his hand.
      */
     @Override
-    public List<String> weaponInHand(int userID, UUID gameID) {
+    public List<String> getWeaponInHand(int userID, UUID gameID) {
         User user = findUserFromID(userID);
         return gameControllers.get(gameID).lookForPlayerWeapons(user);
     }
@@ -502,7 +502,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * @return the list of powerups that a player can use through its turn.
      */
     @Override
-    public List<String> usablePowerups(int userID, UUID gameID) {
+    public List<String> getUsablePowerups(int userID, UUID gameID) {
         return gameControllers.get(gameID).getUsablePowerups(findUserFromID(userID));
     }
 

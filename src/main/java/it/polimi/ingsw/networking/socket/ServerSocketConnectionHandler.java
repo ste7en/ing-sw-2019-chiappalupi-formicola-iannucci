@@ -202,14 +202,14 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     break;
                 }
                 case ASK_WEAPONS: {
-                    List<String> weaponsInHand = server.weaponInHand(connectionID, gameID);
+                    List<String> weaponsInHand = server.getWeaponInHand(connectionID, gameID);
                     Map<String, String> responseArgs = new HashMap<>();
                     for(String weapon : weaponsInHand) responseArgs.put(Integer.toString(weaponsInHand.indexOf(weapon)), weapon);
                     send(CommunicationMessage.from(connectionID, WEAPON_LIST, responseArgs));
                     break;
                 }
                 case ASK_POWERUPS: {
-                    List<String> usablePowerups = server.usablePowerups(connectionID, gameID);
+                    List<String> usablePowerups = server.getUsablePowerups(connectionID, gameID);
                     Map<String, String> responseArgs = new HashMap<>();
                     for(String powerup: usablePowerups) responseArgs.put(Integer.toString(usablePowerups.indexOf(powerup)), powerup);
                     send(CommunicationMessage.from(connectionID, POWERUP_LIST, responseArgs));

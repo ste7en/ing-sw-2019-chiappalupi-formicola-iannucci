@@ -7,6 +7,7 @@ import it.polimi.ingsw.view.View;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -103,6 +104,17 @@ public abstract class Client implements Loggable {
      * @param username username
      */
     public abstract void joinWaitingRoom(String username);
+
+    /**
+     * Abstract method implemented by subclasses to get the available characters
+     */
+    public abstract void askForCharacters();
+
+    /**
+     * Abstract method implemented by subclasses when a player has chosen his character between the ones available
+     * @param character the chosen character
+     */
+    public abstract void chooseCharacter(String character);
 
     /**
      * Abstract method implemented by subclasses and used when a player wants to use a weapon.

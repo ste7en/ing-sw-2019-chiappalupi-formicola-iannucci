@@ -140,6 +140,21 @@ public class GameLogic {
     }
 
     /**
+     * This method is used to get the available characters.
+     * @return an arraylist of available player colors.
+     */
+    public ArrayList<String> getAvailableCharacters(){
+        ArrayList<String> availableCharacters = new ArrayList<>();
+        for (PlayerColor playerColor : PlayerColor.values()){
+            availableCharacters.add(playerColor.toString());
+        }
+        for (Player player : players) {
+            availableCharacters.remove(player.getCharacter().getColor());
+        }
+        return availableCharacters;
+    }
+
+    /**
      * This method is used to find a weapon from its name and the player who is using it.
      * @param weapon it's the name of the weapon that is being looked for.
      * @param user it's the user that has the weapon

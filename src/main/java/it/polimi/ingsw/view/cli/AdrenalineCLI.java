@@ -169,12 +169,7 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChooseCharacter() {
-
-    }
-
-    @Override
-    public void didChooseCharacter() {
+    public void willChooseCharacter(ArrayList <String> availableCharacters) {
 
     }
 

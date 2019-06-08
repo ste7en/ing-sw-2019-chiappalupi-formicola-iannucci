@@ -15,9 +15,9 @@ public interface ServerInterface extends Remote {
 
     void joinWaitingRoom(String username) throws RemoteException;
 
-    ArrayList<Character> getAvailableCharacters() throws RemoteException;
+    ArrayList<String> getAvailableCharacters(UUID gameID) throws RemoteException;
 
-    void chooseCharacter(Character character) throws RemoteException;
+    void chooseCharacter(String character) throws RemoteException;
 
     void chooseGameSettings() throws RemoteException;
 
@@ -61,9 +61,9 @@ public interface ServerInterface extends Remote {
 
     boolean reload(List<String> weaponsSelected, int userID, UUID gameID) throws RemoteException;
 
-    List<String> weaponInHand(int userID, UUID gameID) throws RemoteException;
+    List<String> getWeaponInHand(int userID, UUID gameID) throws RemoteException;
 
-    List<String> usablePowerups(int userID, UUID gameID) throws RemoteException;
+    List<String> getUsablePowerups(int userID, UUID gameID) throws RemoteException;
 
     List<String> getPowerupDamages(int userID, UUID gameID, String powerup) throws RemoteException;
 }

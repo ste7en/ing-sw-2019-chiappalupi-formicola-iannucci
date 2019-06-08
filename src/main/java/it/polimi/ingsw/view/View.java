@@ -110,17 +110,21 @@ public abstract class View implements Observer{
      * Confirmation message sent by the server when the user
      * is added to the game waiting room
      */
-    public abstract void didJoinWaitingRoom();
+    public void didJoinWaitingRoom(){
+        client.askForCharacters();
+    }
 
     /**
      * Ele
      */
-    public abstract void willChooseCharacter();
+    public abstract void willChooseCharacter(ArrayList<String> availableCharacters);
 
     /**
      * Ele
      */
-    public abstract void didChooseCharacter();
+    public void didChooseCharacter(String character){
+        client.chooseCharacter(character);
+    }
 
     /**
      * Ele

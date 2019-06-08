@@ -1,16 +1,18 @@
 package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.networking.Client;
+import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.view.View;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 public class AdrenalineGUI extends View {
 
-    private GUIHandler GUIHandler;
+    private GUIHandler handlerGUI;
 
-    public AdrenalineGUI(GUIHandler GUIHandler){
-        this.GUIHandler = GUIHandler;
+    public AdrenalineGUI(GUIHandler handlerGUI){
+        this.handlerGUI = handlerGUI;
     }
 
     @Override
@@ -23,8 +25,17 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onLoginFailure() {
+    public void onLoginFailure(){
+        AdrenalineLogger.error(ONLOGIN_FAILURE);
+        handlerGUI.handleLoginFailure();
     }
+
+    @Override
+    public void onLoginSuccess(String username) {
+        didJoinWaitingRoom();
+    }
+
+
 
     @Override
     public void onViewUpdate() {
@@ -42,17 +53,12 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void didJoinWaitingRoom() {
-
-    }
-
-    @Override
-    public void willChooseCharacter() {
-
-    }
-
-    @Override
-    public void didChooseCharacter() {
+    public void willChooseCharacter(ArrayList<String> availableCharacters) {
+        try {
+            handlerGUI.characterChoice(availableCharacters);
+        } catch (FileNotFoundException e){
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
 
     }
 
