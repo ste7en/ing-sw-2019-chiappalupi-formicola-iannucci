@@ -69,61 +69,54 @@ public class GUIHandler extends Application  {
     }
 
     public void handleConnectionOptions(CheckBox rmi, CheckBox tcp){
-        root.getChildren().clear();
 
-        Text portText = new Text("port number:  ");
-        TextField portField = new TextField();
-        HBox boxPort = new HBox(portText, portField);
-        boxPort.setAlignment(Pos.CENTER_LEFT);
-        boxPort.setMargin(portText,  new Insets(10, 0, 10, 50));
-        boxPort.setMargin(portField,  new Insets(10, 50, 10, 0));
-
-        if(rmi.isSelected()){
-            connectionType = ConnectionType.RMI;
-            Text text = new Text("Please provide a port number");
-            HBox boxTextRMI = new HBox(text);
-            boxTextRMI.setAlignment(Pos.CENTER);
-            boxTextRMI.setMargin(text, new Insets(50, 0, 0, 0));
-
-            button.setOnAction(e -> handlePortOptionsRMI(portField));
-
-            root.setCenter(boxPort);
-            root.setTop(boxTextRMI);
-            root.setBottom(boxButton);
+        if (!tcp.isSelected() && !rmi.isSelected()){
+            System.out.println("Seleziona qualcosa!");
         }
-        if(tcp.isSelected()){
-            connectionType = ConnectionType.SOCKET;
+
+        else {
+            root.getChildren().clear();
+
             VBox generalBox = new VBox();
 
             Text text = new Text("Please provide a port number and an address");
-            HBox boxTextTCP = new HBox(text);
-            boxTextTCP.setAlignment(Pos.CENTER);
+            HBox boxText = new HBox(text);
+            boxText.setAlignment(Pos.CENTER);
+
+            Text portText = new Text("port number:  ");
+            TextField portField = new TextField();
+            HBox boxPort = new HBox(portText, portField);
+            boxPort.setAlignment(Pos.CENTER_LEFT);
+            boxPort.setMargin(portText, new Insets(10, 0, 10, 50));
+            boxPort.setMargin(portField, new Insets(10, 50, 10, 0));
 
             Text addressText = new Text("address:         ");
             TextField addressField = new TextField();
             HBox boxAddress = new HBox(addressText, addressField);
             boxAddress.setAlignment(Pos.CENTER_LEFT);
 
-            button.setOnAction(e -> handlePortOptionsTCP(portField, addressField));
+            button.setOnAction(e -> handlePortOptions(portField, addressField));
 
             generalBox.getChildren().add(boxPort);
             generalBox.getChildren().add(boxAddress);
             generalBox.setFillWidth(true);
             generalBox.setAlignment(Pos.CENTER);
 
-            boxTextTCP.setMargin(text, new Insets(50, 0, 0, 0));
+            boxText.setMargin(text, new Insets(50, 0, 0, 0));
             boxAddress.setMargin(addressText, new Insets(10, 0, 10, 50));
             boxAddress.setMargin(addressField, new Insets(10, 50, 10, 0));
             root.setCenter(generalBox);
-            root.setTop(boxTextTCP);
+            root.setTop(boxText);
             root.setBottom(boxButton);
-        }
-        if(!tcp.isSelected() && !rmi.isSelected()){
-            System.out.println("Seleziona qualcosa!");
+
+            if (rmi.isSelected()) {
+                connectionType = ConnectionType.RMI;
+            }
+            if (tcp.isSelected()) {
+                connectionType = ConnectionType.SOCKET;
+            }
         }
     }
-
-
 
     public void handleOptionsRMI(CheckBox rmi, CheckBox tcp){
         if(rmi.isSelected()) {
@@ -137,18 +130,11 @@ public class GUIHandler extends Application  {
         }
     }
 
-    public void handlePortOptionsTCP(TextField portTextfield, TextField addressTextfield){
+    public void handlePortOptions(TextField portTextfield, TextField addressTextfield){
         String port = portTextfield.getText();
         Integer portNumber = Integer.parseInt(port);
         String address = addressTextfield.getText();
-        this.adrenalineGUI.didChooseConnection(ConnectionType.SOCKET, portNumber, address);
-        login();
-    }
-
-    public void handlePortOptionsRMI(TextField portTextfield){
-        String port = portTextfield.getText();
-        Integer portNumber = Integer.parseInt(port);
-        adrenalineGUI.didChooseConnection(ConnectionType.RMI, portNumber, null);
+        this.adrenalineGUI.didChooseConnection(connectionType, portNumber, address);
         login();
     }
 
