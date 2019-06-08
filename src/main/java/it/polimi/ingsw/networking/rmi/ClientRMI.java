@@ -45,7 +45,10 @@ public class ClientRMI extends Client implements ClientInterface {
     public void createUser(String username){
         try{
             exportClient();
-            server.createUserRMIHelper(username);
+            if(!server.createUserRMIHelper(username)) {
+                System.out.println("Error, username already in use");
+                //TODO: GUI exception
+            }
         } catch (RemoteException e){
             System.err.println("ClientRMI exception: " + e.toString());
             e.printStackTrace();

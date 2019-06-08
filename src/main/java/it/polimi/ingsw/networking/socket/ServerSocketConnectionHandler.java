@@ -225,10 +225,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      */
     private void createUser(int connectionID, Map<String, String> args) {
         var username = args.get(User.username_key);
-        var user = new User(username);
         String responseMessage;
 
-        if (server.createUser(user, this)) {
+        if (server.createUser(username, this)) {
             responseMessage = CommunicationMessage.from(connectionID, CREATE_USER_OK, args);
         } else {
             responseMessage = CommunicationMessage.from(connectionID, CREATE_USER_FAILED, args);

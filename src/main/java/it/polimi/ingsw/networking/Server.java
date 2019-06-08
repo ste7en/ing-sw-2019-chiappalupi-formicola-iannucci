@@ -82,6 +82,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private static final String EXC_SETUP      = "Error while setting up the server :: ";
     private static final String DID_DISCONNECT = "User disconnected: ";
 
+
+
     /**
      * Entry point of the server application
      * @param args arguments
@@ -90,7 +92,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         AdrenalineLogger.setLogName("Server");
         AdrenalineLogger.LOG_TYPE = "SERVER";
         new Server(3334, 4444);
-
     }
 
     /**
@@ -132,7 +133,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             logOnException(EXC_SETUP, e);
             return;
         }
-
     }
 
     /**
@@ -143,24 +143,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         registry.rebind("rmiInterface", this);
         UnicastRemoteObject.exportObject(this, 0);
         Logger.getGlobal().info("rmi Server running correctly...");
-    }
-
-    /**
-     * Helper method to avoid code repetition.
-     * @param possibleDamages it's an arrayList containing all of the possible damages.
-     * @param responseArgs it's the HashMap where all the damages has to be stored.
-     */
-    private void stringifyDamages(ArrayList<ArrayList<Damage>> possibleDamages, Map<String, String> responseArgs) {
-        for (ArrayList<Damage> damages : possibleDamages)
-            responseArgs.put(Integer.toString(possibleDamages.indexOf(damages)), damages.toString());
-    }
-
-    /**
-     * When a client decides to join a game
-     * @param user the user who will play the game
-     */
-    public void userLogin(User user) {
-        waitingRoom.addUser(user);
     }
 
     /**
@@ -208,6 +190,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         return null;
     }
 
+
+
     /**
      * When a client registers a new user
      * @param user the user to register
@@ -245,6 +229,14 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         }
         ServerConnectionHandler connectionHandler = new ServerRMIConnectionHandler(this, clientRMI);
         return createUser(username, connectionHandler);
+    }
+
+    /**
+     * When a client decides to join a game
+     * @param user the user who will play the game
+     */
+    public void userLogin(User user) {
+        waitingRoom.addUser(user);
     }
 
     @Override
@@ -422,6 +414,16 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).useEffect(weapon, effect, shooter, forPotentiableWeaponDamages);
         stringifyDamages(possibleDamages, responseArgs);
         return responseArgs;
+    }
+
+    /**
+     * Helper method to avoid code repetition.
+     * @param possibleDamages it's an arrayList containing all of the possible damages.
+     * @param responseArgs it's the HashMap where all the damages has to be stored.
+     */
+    private void stringifyDamages(ArrayList<ArrayList<Damage>> possibleDamages, Map<String, String> responseArgs) {
+        for (ArrayList<Damage> damages : possibleDamages)
+            responseArgs.put(Integer.toString(possibleDamages.indexOf(damages)), damages.toString());
     }
 
     @Override
