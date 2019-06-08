@@ -26,7 +26,7 @@ public class BoardTest {
     private Board boardTest;
     private static GameMap gameMap;
     private static LinkedHashMap<Player, Cell> playersPosition = new LinkedHashMap<>();
-    private static HashMap<AmmoColor, ArrayList<Weapon>> weaponsDecks = new HashMap<>();
+    private static Map<AmmoColor, List<Weapon>> weaponsDecks = new HashMap<>();
     private static ArrayList<Weapon> deck1 = new ArrayList<>();
     private static ArrayList<Weapon> deck2 = new ArrayList<>();
     private static ArrayList<Weapon> deck3 = new ArrayList<>();

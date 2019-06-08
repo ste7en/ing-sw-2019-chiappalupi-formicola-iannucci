@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -22,7 +23,7 @@ public class SimpleWeapon extends Weapon {
      * @return an ArrayList containing all of the possible solutions of damages
      */
     @Override
-    public ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, ArrayList<Damage> forPotentiableWeapons, GameMap map, ArrayList<Player> players) {
+    public ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, List<Damage> forPotentiableWeapons, GameMap map, List<Player> players) {
         return computeDamages(effect, shooter, null, map, players);
     }
 

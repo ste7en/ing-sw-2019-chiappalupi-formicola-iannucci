@@ -153,8 +153,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public void startNewGame(List<User> userList) {
         var gameID = UUID.randomUUID();
-        // TODO: - Game Logic hasn't a constructor
-        var gameLogic = new GameLogic();
+        var gameLogic = new GameLogic(gameID);
         gameControllers.put(gameID, gameLogic);
         userList.forEach(user -> {
             var connection = users.get(user);
@@ -303,7 +302,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public Map<String, String> useWeapon(int userID, UUID gameID, String weaponSelected) {
-        Weapon weapon = gameControllers.get(gameID).lookForWeapon(weaponSelected, findUserFromID(userID));;
+        Player player = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
+        Weapon weapon = gameControllers.get(gameID).getWeaponController().lookForWeapon(weaponSelected, player);;
         CommunicationMessage weaponMessage = weapon.communicationMessageGenerator();
         Map<String, String> weaponProcess = new HashMap<>();
         weaponProcess.put(Weapon.weapon_key, weaponSelected);
@@ -312,7 +312,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             case DAMAGE_LIST: {
                 weaponProcess.put(Effect.effect_key, "0");
                 Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
-                ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).useEffect(weapon, weapon.getEffects().get(0), shooter, null);
+                ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).getWeaponController().useEffect(weapon, weapon.getEffects().get(0), shooter, null, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getPlayers());
                 stringifyDamages(possibleDamages, weaponProcess);
                 break;
             }
@@ -321,7 +321,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                 for (Effect effect : weapon.getEffects()) {
                     List<Integer> boxList = new ArrayList<>();
                     boxList.add(weapon.getEffects().indexOf(effect)+1);
-                    if(gameControllers.get(gameID).canAffordCost(weapon, boxList, findUserFromID(userID))) weaponProcess.put(Integer.toString(i), effect.getName());
+                    if(gameControllers.get(gameID).getWeaponController().canAffordCost(weapon, boxList, player)) weaponProcess.put(Integer.toString(i), effect.getName());
                     i++;
                 }
                 break;
@@ -329,7 +329,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             case EFFECTS_LIST: {
                 ArrayList<ArrayList<Integer>> effectsCombinations = weapon.effectsCombinations();
                 for (ArrayList<Integer> combination : effectsCombinations)
-                    if(gameControllers.get(gameID).canAffordCost(weapon, combination, findUserFromID(userID)))
+                    if(gameControllers.get(gameID).getWeaponController().canAffordCost(weapon, combination, player))
                         weaponProcess.put(Integer.toString(effectsCombinations.indexOf(combination)), combination.toString());
                 break;
             }
@@ -349,7 +349,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public void makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) {
-        Weapon weaponToUse = gameControllers.get(gameID).lookForWeapon(weapon, findUserFromID(userID));
+        Player player = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
+        Weapon weaponToUse = gameControllers.get(gameID).getWeaponController().lookForWeapon(weapon, player);
         Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
         PlayerColor playerColor = shooter.getCharacter().getColor();
         int indexOfEffect = Integer.parseInt(effectIndex);
@@ -358,15 +359,15 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         ArrayList<ArrayList<Damage>> possibleDamages;
         boolean toApply = true;
         if (!potentiable)
-            possibleDamages = gameControllers.get(gameID).useEffect(weaponToUse, weaponToUse.getEffects().get(indexOfEffect), shooter, null);
+            possibleDamages = gameControllers.get(gameID).getWeaponController().useEffect(weaponToUse, weaponToUse.getEffects().get(indexOfEffect), shooter, null, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getPlayers());
         else {
             toApply = false;
             Effect effect = weaponToUse.getEffects().get(indexOfEffect);
-            ArrayList<Damage> forPotentiableWeapon = gameControllers.get(gameID).getForPotentiableWeapon();
+            List<Damage> forPotentiableWeapon = gameControllers.get(gameID).getWeaponController().getForPotentiableWeapon();
             if (forPotentiableWeapon.isEmpty() || effect.getProperties().containsKey(EffectProperty.MoveMe))
                 forPotentiableWeapon = null;
             if (effect.getProperties().containsKey(EffectProperty.MoveMe)) toApply = true;
-            possibleDamages = gameControllers.get(gameID).useEffect(weaponToUse, effect, shooter, forPotentiableWeapon);
+            possibleDamages = gameControllers.get(gameID).getWeaponController().useEffect(weaponToUse, effect, shooter, forPotentiableWeapon, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getPlayers());
         }
         ArrayList<Damage> damageToMake = new ArrayList<>();
         for (ArrayList<Damage> damages : possibleDamages)
@@ -374,15 +375,15 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         if (damageToMake.isEmpty()) throw new IllegalArgumentException("This damage doesn't exist!");
         if (toApply) {
             for (Damage d : damageToMake)
-                gameControllers.get(gameID).applyDamage(d, playerColor);
+                gameControllers.get(gameID).getWeaponController().applyDamage(d, playerColor, gameControllers.get(gameID).getBoard());
         } else {
             boolean applyPotentiableDamage = Boolean.parseBoolean(potentiableBoolean);
             if (applyPotentiableDamage) {
-                damageToMake.addAll(gameControllers.get(gameID).getForPotentiableWeapon());
+                damageToMake.addAll(gameControllers.get(gameID).getWeaponController().getForPotentiableWeapon());
                 for (Damage d : damageToMake)
-                    gameControllers.get(gameID).applyDamage(d, playerColor);
-                gameControllers.get(gameID).wipePotentiableWeapon();
-            } else gameControllers.get(gameID).appendPotentiableWeapon(damageToMake);
+                    gameControllers.get(gameID).getWeaponController().applyDamage(d, playerColor, gameControllers.get(gameID).getBoard());
+                gameControllers.get(gameID).getWeaponController().wipePotentiableWeapon();
+            } else gameControllers.get(gameID).getWeaponController().appendPotentiableWeapon(damageToMake);
         }
         weaponToUse.unload();
     }
@@ -401,7 +402,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         Map<String, String> responseArgs = new HashMap<>();
         responseArgs.put(Weapon.weapon_key, weaponSelected);
         Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
-        Weapon weapon = gameControllers.get(gameID).lookForWeapon(weaponSelected, findUserFromID(userID));
+        Weapon weapon = gameControllers.get(gameID).getWeaponController().lookForWeapon(weaponSelected, shooter);
         Effect effect = null;
         if (weapon.communicationMessageGenerator().equals(MODES_LIST)) {
             for (Effect e : weapon.getEffects())
@@ -413,9 +414,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         }
         int indexOfEffect = weapon.getEffects().indexOf(effect);
         responseArgs.put(Effect.effect_key, Integer.toString(indexOfEffect));
-        ArrayList<Damage> forPotentiableWeaponDamages = gameControllers.get(gameID).getForPotentiableWeapon();
+        List<Damage> forPotentiableWeaponDamages = gameControllers.get(gameID).getWeaponController().getForPotentiableWeapon();
         if (forPotentiableWeapon.isEmpty()) forPotentiableWeapon = null;
-        ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).useEffect(weapon, effect, shooter, forPotentiableWeaponDamages);
+        ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).getWeaponController().useEffect(weapon, effect, shooter, forPotentiableWeaponDamages, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getPlayers());
         stringifyDamages(possibleDamages, responseArgs);
         return responseArgs;
     }
@@ -440,8 +441,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public boolean reload(List<String> weaponsSelected, int userID, UUID gameID) {
         List<Weapon> weapons = new ArrayList<>();
-        for(String w : weaponsSelected) weapons.add(gameControllers.get(gameID).lookForWeapon(w, findUserFromID(userID)));
-        return gameControllers.get(gameID).checkCostOfReload(weapons, findUserFromID(userID));
+        Player player = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
+        for(String w : weaponsSelected) weapons.add(gameControllers.get(gameID).getWeaponController().lookForWeapon(w, player));
+        return gameControllers.get(gameID).getWeaponController().checkCostOfReload(weapons, player);
     }
 
     /**
@@ -452,8 +454,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public List<String> getWeaponInHand(int userID, UUID gameID) {
-        User user = findUserFromID(userID);
-        return gameControllers.get(gameID).lookForPlayerWeapons(user);
+        Player player = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
+        return gameControllers.get(gameID).getWeaponController().lookForPlayerWeapons(player);
     }
 
     /**
@@ -495,7 +497,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         List<Damage> possibleDamages = gameControllers.get(gameID).getPowerupDamages(powerup, findUserFromID(userID));
         for(Damage d : possibleDamages)
             if(d.toString().equals(damage))
-                gameControllers.get(gameID).applyDamage(d, gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)).getCharacter().getColor());
+                gameControllers.get(gameID).getWeaponController().applyDamage(d, gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)).getCharacter().getColor(), gameControllers.get(gameID).getBoard());
     }
 
 }

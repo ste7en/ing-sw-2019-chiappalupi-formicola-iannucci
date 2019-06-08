@@ -5,10 +5,7 @@ import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -31,7 +28,7 @@ public class PotentiableWeapon extends Weapon {
      * @return an ArrayList containing all of the possible solutions of damages
      */
     @Override
-    public ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, ArrayList<Damage> forPotentiableWeapons, GameMap map, ArrayList<Player> players) {
+    public ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, List<Damage> forPotentiableWeapons, GameMap map, List<Player> players) {
         ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
         if(getEffects().get(0) == effect) {
             boolean canMoveBefore = effect.getProperties().containsKey(EffectProperty.CanMoveBefore);
@@ -124,7 +121,7 @@ public class PotentiableWeapon extends Weapon {
      * @param map it's the GameMap
      * @return an ArrayList containing all of the different solutions
      */
-    private ArrayList<ArrayList<Damage>> withTurretTripod(Player shooter, ArrayList<Damage> earlyDamages, ArrayList<Player> players, GameMap map) {
+    private ArrayList<ArrayList<Damage>> withTurretTripod(Player shooter, List<Damage> earlyDamages, List<Player> players, GameMap map) {
         ArrayList<ArrayList<Damage>> solutions;
         Player alreadyShot = null;
         ArrayList<Player> toShoot = new ArrayList<>();
@@ -167,7 +164,7 @@ public class PotentiableWeapon extends Weapon {
 
     @Override
     public ArrayList<ArrayList<Integer>> effectsCombinations() {
-        HashMap<Integer, ArrayList<Integer>> combinationsBox = combinationsWithLowerValues(effects.size(), effects.size());
+        Map<Integer, ArrayList<Integer>> combinationsBox = combinationsWithLowerValues(effects.size(), effects.size());
         ArrayList<ArrayList<Integer>> combinations = new ArrayList<>();
         for(Integer i : combinationsBox.keySet())
             if (combinationsBox.get(i).contains(1))
