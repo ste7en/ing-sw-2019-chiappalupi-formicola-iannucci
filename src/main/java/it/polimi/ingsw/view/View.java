@@ -29,7 +29,7 @@ public abstract class View implements Observer{
     protected static final String ONLOGIN_FAILURE               = "Username creation failed.";
     private   static final String ONLOGIN_SUCCESS               = "User createUser completed.";
     private   static final String JOIN_WAITING_ROOM             = "Joining the waiting room...";
-    protected static final String DID_JOIN_WAITING_ROOM         = "";
+    protected static final String DID_JOIN_WAITING_ROOM         = "You joined a waiting room. Waiting for other players, the game will start soon...";
     private   static final String DID_CHOOSE_WEAPON             = "Weapon chosen: ";
     private   static final String DID_CHOOSE_DAMAGE             = "Damage chosen.";
     private   static final String DID_CHOOSE_MODALITY           = "Modality chosen: ";
@@ -50,6 +50,7 @@ public abstract class View implements Observer{
      */
     public void onStart(UUID gameID) {
         this.gameID = gameID;
+        client.askForCharacters();
     }
 
     /**
@@ -74,7 +75,7 @@ public abstract class View implements Observer{
     }
 
     /**
-     * Abstract method implemented by subclasses and used to ask for usernames to clients
+     * Abstract method implemented by subclasses and used to ask for username to clients
      */
     protected abstract void willCreateUser();
 
@@ -107,7 +108,7 @@ public abstract class View implements Observer{
      * Called to join the server's waiting room for a new game
      * @param username username
      */
-    private void joinWaitingRoom(String username) {
+    protected void joinWaitingRoom(String username) {
         AdrenalineLogger.info(JOIN_WAITING_ROOM);
         var args = new HashMap<String, String>();
         args.put(User.username_key, username);
@@ -118,9 +119,7 @@ public abstract class View implements Observer{
      * Confirmation message sent by the server when the user
      * is added to the game waiting room
      */
-    public void didJoinWaitingRoom(){
-        client.askForCharacters();
-    }
+    public abstract void didJoinWaitingRoom();
 
     /**
      * Ele
