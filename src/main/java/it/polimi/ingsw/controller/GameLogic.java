@@ -159,13 +159,13 @@ public class GameLogic {
      * This method is used to get the available characters.
      * @return an arraylist of available player colors.
      */
-    public ArrayList<String> getAvailableCharacters(){
+    public List<String> getAvailableCharacters() {
         ArrayList<String> availableCharacters = new ArrayList<>();
         for (PlayerColor playerColor : PlayerColor.values()){
             availableCharacters.add(playerColor.toString());
         }
         for (Player player : players) {
-            availableCharacters.remove(player.getCharacter().getColor());
+            availableCharacters.remove(player.getCharacter().getColor().toString());
         }
         return availableCharacters;
     }
