@@ -110,7 +110,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChooseWeapon(ArrayList<String> weapons) {
+    public void willChooseWeapon(List<String> weapons) {
     }
 
     @Override

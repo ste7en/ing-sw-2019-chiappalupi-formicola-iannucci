@@ -280,14 +280,15 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     }
 
+    /**
+     * Method used to start the process of shooting people.
+     * @param userID it's the userID of the player who is using the weapon.
+     * @param gameID it's the gameID of the game where the player is playing.
+     * @return the list of weapons that a player has in his hand.
+     */
     @Override
-    public ArrayList<String> getAvailableWeapons() {
-        return null;
-    }
-
-    @Override
-    public void chooseWeapon(String weaponSelected) {
-
+    public List<String> askWeapons(int userID, UUID gameID) {
+        return this.gameControllers.get(gameID).getWeaponController().lookForPlayerWeapons(gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)));
     }
 
     /**

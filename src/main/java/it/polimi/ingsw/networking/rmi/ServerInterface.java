@@ -37,9 +37,7 @@ public interface ServerInterface extends Remote {
 
     void chooseWhatToGrab() throws RemoteException;
 
-    ArrayList<String> getAvailableWeapons() throws RemoteException;
-
-    void chooseWeapon(String weaponSelected) throws RemoteException;
+    List<String> askWeapons(int userID, UUID gameID) throws RemoteException;
 
     Map<String, String> useWeapon(int userID, UUID gameID, String weaponSelected) throws RemoteException;
 

@@ -199,13 +199,20 @@ public abstract class View implements Observer{
     public abstract void didChooseWhatToGrab();
 
     /**
+     * Public method used to start the process of using weapons.
+     */
+    public void askWeapons() {
+        this.client.askWeapon();
+    }
+
+    /**
      * Public method implemented by subclasses when choosing a weapon.
      * The user will be prompted to choose which weapon he wants to use.
      *
      * @param weapons it's an ArrayList containing all of the weapons that the player can use.
      */
     //toDo: check weapons cost
-    public abstract void willChooseWeapon(ArrayList<String> weapons);
+    public abstract void willChooseWeapon(List<String> weapons);
 
     /**
      * Called when the Weapon to be used is chosen.

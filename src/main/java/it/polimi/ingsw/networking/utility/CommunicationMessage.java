@@ -48,6 +48,15 @@ public enum CommunicationMessage {
     USER_JOINED_GAME,
 
     /**
+     * Weapon using message.
+     *
+     * SHOOT_PEOPLE is sent both by the client to the server and vice versa to start the process of weapon using.
+     *
+     * Arguments: <indexOf_Weapon, Weapon_name>
+     */
+    SHOOT_PEOPLE,
+
+    /**
      * Weapon selection message.
      *
      * WEAPON_TO_USE is sent by the client to the server to notify the selection of the Weapon to use in game.

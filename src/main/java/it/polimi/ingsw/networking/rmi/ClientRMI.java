@@ -138,6 +138,16 @@ public class ClientRMI extends Client implements ClientInterface {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void askWeapon() {
+        try {
+            this.viewObserver.willChooseWeapon(this.server.askWeapons(userID, gameID));
+        } catch(RemoteException e) {
+            System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
+        }
+    }
+
     @Override
     public void useWeapon(String weaponSelected) {
         try{

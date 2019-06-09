@@ -139,6 +139,11 @@ public abstract class Client implements Loggable {
     public abstract void choseAction(String action);
 
     /**
+     * Abstract method implemented by subclasses when a player wants to shoot people.
+     */
+    public abstract void askWeapon();
+
+    /**
      * Abstract method implemented by subclasses and used when a player wants to use a weapon.
      *
      * @param weaponSelected it's a String containing the weapon selected name.

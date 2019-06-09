@@ -86,8 +86,13 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         var gameUUID = UUID.fromString(args.get(GameLogic.gameID_key));
                         this.viewObserver.onStart(gameUUID);
                         break;
+                    case SHOOT_PEOPLE:
+                        List<String> weapons = new ArrayList<>(args.values());
+                        this.viewObserver.willChooseWeapon(weapons);
+                        break;
                     case POWERUP_SELLING_LIST:
                         this.viewObserver.willChoosePowerupSelling(args);
+                        break;
                     case DAMAGE_LIST:
                         this.viewObserver.willChooseDamage(args);
                         break;
@@ -172,6 +177,11 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     @Override
     public void choseAction(String action){
 
+    }
+
+    @Override
+    public void askWeapon() {
+        this.send(CommunicationMessage.from(userID, SHOOT_PEOPLE, gameID));
     }
 
     @Override

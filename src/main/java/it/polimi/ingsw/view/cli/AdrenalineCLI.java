@@ -213,7 +213,7 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChooseWeapon(ArrayList<String> weaponsAvailable) {
+    public void willChooseWeapon(List<String> weaponsAvailable) {
         out.println(CHOOSE_WEAPON);
         boolean selected = false;
         String weaponSelected = "-1";
