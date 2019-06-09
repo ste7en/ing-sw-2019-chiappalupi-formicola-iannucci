@@ -176,14 +176,32 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     send(responseMessage);
                     break;
                 }
+                case POWERUP_SELLING_DECIDED: {
+                    String weapon = args.get(Weapon.weapon_key);
+                    args.remove(Weapon.weapon_key);
+                    List<String> powerups = new ArrayList<>(args.values());
+                    Map<String, String> responseArgs = server.useWeaponAfterPowerupSelling(connectionID, gameID, weapon, powerups);
+                    CommunicationMessage format = CommunicationMessage.valueOf(responseArgs.get(communication_message_key));
+                    responseArgs.remove(communication_message_key);
+                    send(CommunicationMessage.from(connectionID, format, responseArgs, gameID));
+                }
+                case LAST_DAMAGE:
                 case DAMAGE_TO_MAKE: {
                     String damage = args.get(Damage.damage_key);
                     String weapon = args.get(Weapon.weapon_key);
                     String potentiableBoolean = args.get(PotentiableWeapon.forPotentiableWeapon_key);
                     String effectIndex = args.get(Effect.effect_key);
                     server.makeDamage(connectionID, potentiableBoolean, effectIndex, gameID, damage, weapon);
+                    if(communicationMessage == LAST_DAMAGE) {
+                        Map<String, String> responseArgs = new HashMap<>();
+                        responseArgs.put(Weapon.weapon_key, weapon);
+                        send(CommunicationMessage.from(connectionID, LAST_DAMAGE_DONE, responseArgs));
+                    }
                     break;
                 }
+                case WEAPON_USING_OVER:
+                    this.server.didUseWeapon(args.get(Weapon.weapon_key), connectionID, gameID);
+                    break;
                 case EFFECT_TO_USE: {
                     String forPotentiableWeapon = null;
                     if(args.containsKey(PotentiableWeapon.forPotentiableWeapon_key)) forPotentiableWeapon = args.get(PotentiableWeapon.forPotentiableWeapon_key);
@@ -202,7 +220,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     break;
                 }
                 case ASK_WEAPONS: {
-                    List<String> weaponsInHand = server.getWeaponInHand(connectionID, gameID);
+                    List<String> weaponsInHand = server.getUnloadedWeaponInHand(connectionID, gameID);
                     Map<String, String> responseArgs = new HashMap<>();
                     for(String weapon : weaponsInHand) responseArgs.put(Integer.toString(weaponsInHand.indexOf(weapon)), weapon);
                     send(CommunicationMessage.from(connectionID, WEAPON_LIST, responseArgs));
@@ -223,10 +241,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     send(CommunicationMessage.from(connectionID, POWERUP_DAMAGES_LIST, responseArgs));
                     break;
                 }
-                case POWERUP_DAMAGE_TO_MAKE: {
+                case POWERUP_DAMAGE_TO_MAKE:
                     server.applyPowerupDamage(connectionID, gameID, args.get(Powerup.powerup_key), args.get(Damage.damage_key));
                     break;
-                }
                 default:
                     break;
             }

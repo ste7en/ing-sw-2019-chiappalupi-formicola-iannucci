@@ -86,6 +86,8 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         var gameUUID = UUID.fromString(args.get(GameLogic.gameID_key));
                         this.viewObserver.onStart(gameUUID);
                         break;
+                    case POWERUP_SELLING_LIST:
+                        this.viewObserver.willChoosePowerupSelling(args);
                     case DAMAGE_LIST:
                         this.viewObserver.willChooseDamage(args);
                         break;
@@ -94,6 +96,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         break;
                     case EFFECT_TO_USE:
                         this.viewObserver.willChooseEffects(args);
+                        break;
+                    case LAST_DAMAGE_DONE:
+                        this.viewObserver.didUseWeapon(args.get(Weapon.weapon_key));
                         break;
                     case WEAPON_LIST:
                         this.viewObserver.willReload(new ArrayList<>(args.values()));
@@ -156,6 +161,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
     @Override
     public void askForPowerups(){
+        //toDO
     }
 
     @Override
@@ -168,6 +174,14 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         Map<String, String> args = new HashMap<>();
         args.put(Weapon.weapon_key, weaponSelected);
         this.send(CommunicationMessage.from(userID, WEAPON_TO_USE, args, gameID));
+    }
+
+    @Override
+    public void useWeaponAfterPowerupAsking(String weaponSelected, List<String> powerups) {
+        Map<String, String> args = new HashMap<>();
+        args.put(Weapon.weapon_key, weaponSelected);
+        for(String powerup : powerups) args.put(Integer.toString(powerups.indexOf(powerup)), powerup);
+        this.send(CommunicationMessage.from(userID, POWERUP_SELLING_DECIDED, args, gameID));
     }
 
     @Override
@@ -190,7 +204,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
     @Override
     public void useEffect(String weapon, List<String> effectsToUse) {
-        HashMap<String, String> args = new HashMap<>();
+        Map<String, String> args = new HashMap<>();
         args.put(Weapon.weapon_key, weapon);
         while(!effectsToUse.isEmpty()) {
             boolean forPotentiableWeapon;
@@ -199,10 +213,18 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
             args.put(PotentiableWeapon.forPotentiableWeapon_key, potentiableBoolean);
             args.put(Effect.effect_key, effectsToUse.get(0));
             effectsToUse.remove(0);
-            this.send(CommunicationMessage.from(userID, EFFECT_TO_USE, (HashMap<String, String>)args.clone(), gameID));
+            Map<String, String> argsBox = new HashMap<>(args);
+            this.send(CommunicationMessage.from(userID, EFFECT_TO_USE, argsBox, gameID));
             args.remove(PotentiableWeapon.forPotentiableWeapon_key);
             args.remove(Effect.effect_key);
         }
+    }
+
+    @Override
+    public void weaponUsed(String weapon) {
+        Map<String, String> args = new HashMap<>();
+        args.put(Weapon.weapon_key, weapon);
+        this.send(CommunicationMessage.from(userID, WEAPON_USING_OVER, args));
     }
 
     @Override

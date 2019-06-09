@@ -119,6 +119,11 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
+    public void willChoosePowerupSelling(Map<String, String> powerups) {
+
+    }
+
+    @Override
     public void willChooseMode(Map<String, String> modalitiesToChoose) {
 
     }

@@ -69,10 +69,25 @@ public enum CommunicationMessage {
      * Damage apply message.
      *
      * DAMAGE_TO_MAKE is sent from the client to the server to notify the selection of the damage that has to be applied to the other players.
+     * LAST_DAMAGE acts just like DAMAGE_TO_MAKE, but signals that it will be the last damage of the weapon to be done.
+     * LAST_DAMAGE_DONE is sent from the server to the client to notify that the process of using the weapon is over. It has got only the weapon as argument.
      *
      * Arguments: <Damage.damage_key, damage>, <Weapon.weapon_key, Weapon_name>, <Effect.effect_key, indexOf_effect>
      */
     DAMAGE_TO_MAKE,
+    LAST_DAMAGE,
+    LAST_DAMAGE_DONE,
+
+    /**
+     * Weapon using messages.
+     *
+     * POWERUP_SELLING_LIST is sent from the server to the client to ask if the player wants to use any powerup to pay the effect cost.
+     * POWERUP_SELLING_DECIDED is sent from the client to the server to notify that the player has decided if and how sell his powerups.
+     *
+     * Arguments: <Integer index, powerup><Weapon.weapon_key, Weapon_name>
+     */
+    POWERUP_SELLING_LIST,
+    POWERUP_SELLING_DECIDED,
 
     /**
      * Modalities selection message.
@@ -107,11 +122,13 @@ public enum CommunicationMessage {
      *
      * ASK_WEAPONS is sent by the client to the server to ask the weapons that the player has in his hand. The request has no arguments.
      * WEAPON_LIST is sent by the server to the client to provide the weapons that the player has in his hand.
+     * WEAPON_USING_OVER is sent by the client to the server when the process of using a weapon is over.
      *
      * Arguments: <indexOf_Weapon, Weapon_name>
      */
     ASK_WEAPONS,
     WEAPON_LIST,
+    WEAPON_USING_OVER,
 
     /**
      * Weapon reloading messages.

@@ -140,6 +140,14 @@ public abstract class Client implements Loggable {
     public abstract void useWeapon(String weaponSelected);
 
     /**
+     * Abstract method implemented by subclasses and used when a player has decided if he wants to pay with his powerups the ammo costs.
+     *
+     * @param weaponSelected it's a String containing the weapon selected name.
+     * @param powerups it's a list containing the powerups selected by the player.
+     */
+    public abstract void useWeaponAfterPowerupAsking(String weaponSelected, List<String> powerups);
+
+    /**
      * Abstract method implemented by subclasses and used when a player has chosen what damage does he want to do with his weapon.
      * @param weapon It's the weapon that is being used.
      * @param damage It's the damage that is being done.
@@ -161,6 +169,12 @@ public abstract class Client implements Loggable {
      * @param effectsToUse it's a list containing all of the indexes of the effects to use.
      */
     public abstract void useEffect(String weapon, List<String> effectsToUse);
+
+    /**
+     * Abstract method implemented by subclasses and used when the process of using a weapon from a player is over: it unloads the weapon and subs the cost of its usage from the players' ammos.
+     * @param weapon it's the weapon that has been used.
+     */
+    public abstract void weaponUsed(String weapon);
 
     /**
      * Abstract method implemented by subclasses and used when a player wants to reload his weapons.

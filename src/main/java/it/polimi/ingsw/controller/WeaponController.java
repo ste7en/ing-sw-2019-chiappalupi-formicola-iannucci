@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Effect;
+import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utility.AmmoColor;
@@ -18,12 +19,23 @@ import java.util.*;
 public class WeaponController {
 
     private List<Damage> forPotentiableWeapon;
+    private List<Powerup> powerupUsedToPayCost;
+    private Map<AmmoColor, Integer> effectsCost;
 
     /**
      * Class constructor.
      */
-    public WeaponController() {
-        forPotentiableWeapon = new ArrayList<>();
+    WeaponController() {
+        this.forPotentiableWeapon = new ArrayList<>();
+        this.effectsCost = new EnumMap<> (AmmoColor.class);
+    }
+
+    /**
+     * Effects cost setter.
+     * @param costs it's a map containing the costs to add.
+     */
+    public void addEffectsCost(Map<AmmoColor, Integer> costs) {
+        effectsCost.putAll(costs);
     }
 
     /**
@@ -33,8 +45,18 @@ public class WeaponController {
      * @param player it's the player who is using the card.
      */
     public boolean canAffordCost(Weapon weapon, List<Integer> effects, Player player) {
-        EnumMap<AmmoColor, Integer> totalCost = new EnumMap<>(AmmoColor.class);
-        for(AmmoColor color : AmmoColor.values()) totalCost.put(color, 0);
+        Map<AmmoColor, Integer> totalCost = new EnumMap<>(AmmoColor.class);
+        Map<AmmoColor, Integer> playerAmmos = new EnumMap<>(AmmoColor.class);
+        Map<AmmoColor, Integer> powerupAmmos = new EnumMap<>(AmmoColor.class);
+        for(AmmoColor color : AmmoColor.values()) {
+            totalCost.put(color, 0);
+            powerupAmmos.put(color, 0);
+            playerAmmos.put(color, player.getPlayerHand().getAmmosAmount(color));
+        }
+        for(Powerup powerup : this.powerupUsedToPayCost) {
+            AmmoColor color = powerup.getColor();
+            powerupAmmos.put(color, powerupAmmos.get(color) + 1);
+        }
         for(Integer index : effects) {
             int trueIndex = index-1;
             Map<AmmoColor, Integer> effectCost = weapon.getEffects().get(trueIndex).getCost();
@@ -44,8 +66,14 @@ public class WeaponController {
                 totalCost.put(color, box);
             }
         }
+        for(AmmoColor color : AmmoColor.values()) {
+            while(powerupAmmos.get(color) > 0 && totalCost.get(color) > 0) {
+                powerupAmmos.put(color, powerupAmmos.get(color) - 1);
+                totalCost.put(color, totalCost.get(color) - 1);
+            }
+        }
         for(AmmoColor color : AmmoColor.values())
-            if(totalCost.get(color) > player.getPlayerHand().getAmmosAmount(color))
+            if(totalCost.get(color) > player.getPlayerHand().getAmmosAmount(color) || powerupAmmos.get(color) > 0)
                 return false;
         return true;
     }
@@ -58,7 +86,7 @@ public class WeaponController {
      * @return TRUE if the reload has been successful, FALSE otherwise.
      */
     public boolean checkCostOfReload(List<Weapon> weapons, Player player) {
-        Map<AmmoColor, Integer> cost = new HashMap<>();
+        Map<AmmoColor, Integer> cost = new EnumMap<>(AmmoColor.class);
         for(AmmoColor color : AmmoColor.values())
             cost.put(color, 0);
         for(Weapon weapon : weapons)
@@ -78,6 +106,18 @@ public class WeaponController {
         for(Weapon weapon : weapons)
             weapon.reload();
         return true;
+    }
+
+    /**
+     * This method is used to find all of the names of the unloaded weapons in the hand of a player.
+     * @param player it's the player to return the weapons of.
+     */
+    public List<String> lookForUnloadedPlayerWeapons(Player player) {
+        List<String> playerWeapons = new ArrayList<>();
+        for(Weapon weapon : player.getPlayerHand().getWeapons())
+            if(!weapon.isLoaded())
+                playerWeapons.add(weapon.getName());
+        return playerWeapons;
     }
 
     /**
@@ -164,6 +204,36 @@ public class WeaponController {
      */
     public List<Damage> getForPotentiableWeapon() {
         return forPotentiableWeapon;
+    }
+
+    /**
+     * Subs the cost of the weapon to the player's ammos.
+     *
+     * @param player it's the player who has used the weapon.
+     * @param decks it's the deck of the game, needed to waste the powerup.
+     */
+    public void applyCost(Player player, DecksHandler decks) {
+        for(AmmoColor color : effectsCost.keySet()) {
+            int newAmount = player.getPlayerHand().getAmmosAmount(color) - effectsCost.get(color);
+            player.getPlayerHand().updateAmmos(color, newAmount);
+        }
+        effectsCost.clear();
+        for(Powerup powerup : powerupUsedToPayCost) {
+            player.getPlayerHand().wastePowerup(powerup);
+            decks.wastePowerup(powerup);
+        }
+    }
+
+    /**
+     * Adds the cost of the powerups sold by a player to his memory
+     * @param powerups it's the list of powerups sold by the player.
+     * @param player it's the player that is selling his powerups.
+     */
+    public void addPowerupSold(List<String> powerups, Player player) {
+        for(Powerup powerup : player.getPlayerHand().getPowerups())
+            for(String pow : powerups)
+                if(powerup.toString().equalsIgnoreCase(pow))
+                    this.powerupUsedToPayCost.add(powerup);
     }
 
 }

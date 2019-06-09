@@ -218,4 +218,17 @@ public class GameLogic {
         this.decks.wastePowerup(toWaste);
     }
 
+    /**
+     * This method returns a map containing all of the powerups in the hand of a player-
+     *
+     * @return a map <indexOf_Powerup, Powerup::toString>
+     */
+    public Map<String, String> getPowerupInHand(Player player) {
+        Map<String, String> returnValues = new HashMap<>();
+        List<Powerup> powerups = player.getPlayerHand().getPowerups();
+        for(Powerup powerup : powerups)
+            returnValues.put(Integer.toString(powerups.indexOf(powerup)), powerup.toString());
+        return returnValues;
+    }
+
 }

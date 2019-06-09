@@ -321,6 +321,25 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                 stringifyDamages(possibleDamages, weaponProcess);
                 break;
             }
+            default: {
+                weaponProcess.put(communication_message_key, POWERUP_SELLING_LIST.toString());
+                weaponProcess.putAll(gameControllers.get(gameID).getPowerupInHand(player));
+                break;
+            }
+        }
+        return weaponProcess;
+    }
+
+    @Override
+    public Map<String, String> useWeaponAfterPowerupSelling(int userID, UUID gameID, String weaponSelected, List<String> powerups) {
+        Player player = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
+        Weapon weapon = gameControllers.get(gameID).getWeaponController().lookForWeapon(weaponSelected, player);;
+        if(!powerups.isEmpty()) gameControllers.get(gameID).getWeaponController().addPowerupSold(powerups, player);
+        CommunicationMessage weaponMessage = weapon.communicationMessageGenerator();
+        Map<String, String> weaponProcess = new HashMap<>();
+        weaponProcess.put(Weapon.weapon_key, weaponSelected);
+        weaponProcess.put(CommunicationMessage.communication_message_key, weaponMessage.toString());
+        switch(weaponMessage) {
             case MODES_LIST: {
                 int i = 0;
                 for (Effect effect : weapon.getEffects()) {
@@ -390,7 +409,20 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                 gameControllers.get(gameID).getWeaponController().wipePotentiableWeapon();
             } else gameControllers.get(gameID).getWeaponController().appendPotentiableWeapon(damageToMake);
         }
-        weaponToUse.unload();
+    }
+
+    /**
+     * Method called after the successfull usage of a weapon: it unloads the weapon and subs the cost of its usage from the player who has used it.
+     * @param weapon it's the weapon used.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     */
+    @Override
+    public void didUseWeapon(String weapon, int userID, UUID gameID) {
+        Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
+        Weapon weaponUsed = gameControllers.get(gameID).getWeaponController().lookForWeapon(weapon, shooter);
+        weaponUsed.unload();
+        gameControllers.get(gameID).getWeaponController().applyCost(shooter, gameControllers.get(gameID).getDecks());
     }
 
     /**
@@ -423,6 +455,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         if (forPotentiableWeapon.isEmpty()) forPotentiableWeapon = null;
         ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).getWeaponController().useEffect(weapon, effect, shooter, forPotentiableWeaponDamages, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getPlayers());
         stringifyDamages(possibleDamages, responseArgs);
+        Map<AmmoColor, Integer> effectCost = effect.getCost();
+        gameControllers.get(gameID).getWeaponController().addEffectsCost(effectCost);
         return responseArgs;
     }
 
@@ -458,9 +492,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * @return the list of the names of the weapons that the player has in his hand.
      */
     @Override
-    public List<String> getWeaponInHand(int userID, UUID gameID) {
+    public List<String> getUnloadedWeaponInHand(int userID, UUID gameID) {
         Player player = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
-        return gameControllers.get(gameID).getWeaponController().lookForPlayerWeapons(player);
+        return gameControllers.get(gameID).getWeaponController().lookForUnloadedPlayerWeapons(player);
     }
 
     /**
@@ -503,6 +537,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         for(Damage d : possibleDamages)
             if(d.toString().equals(damage))
                 gameControllers.get(gameID).getWeaponController().applyDamage(d, gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)).getCharacter().getColor(), gameControllers.get(gameID).getBoard());
+        gameControllers.get(gameID).wastePowerup(powerup, findUserFromID(userID));
     }
 
 }

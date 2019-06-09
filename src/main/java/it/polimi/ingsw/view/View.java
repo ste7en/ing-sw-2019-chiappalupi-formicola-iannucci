@@ -25,16 +25,17 @@ public abstract class View implements Observer{
      * Log strings
      */
     protected static final String APPLICATION_STARTED           = "Adrenaline application started. View instance created.";
-    protected static final String DID_ASK_CONNECTION            = "Connection parameters chosen: ";
+    private   static final String DID_ASK_CONNECTION            = "Connection parameters chosen: ";
     protected static final String ONLOGIN_FAILURE               = "Username creation failed.";
-    protected static final String ONLOGIN_SUCCESS               = "User createUser completed.";
-    protected static final String JOIN_WAITING_ROOM             = "Joining the waiting room...";
+    private   static final String ONLOGIN_SUCCESS               = "User createUser completed.";
+    private   static final String JOIN_WAITING_ROOM             = "Joining the waiting room...";
     protected static final String DID_JOIN_WAITING_ROOM         = "";
-    protected static final String DID_CHOOSE_WEAPON             = "Weapon chosen: ";
-    protected static final String DID_CHOOSE_DAMAGE             = "Damage chosen.";
-    protected static final String DID_CHOOSE_MODALITY           = "Modality chosen: ";
-    protected static final String DID_CHOOSE_EFFECTS            = "Effects chosen.";
-    protected static final String DID_SELECT_WEAPONS_TO_RELOAD  = "Weapons selected to reload: ";
+    private   static final String DID_CHOOSE_WEAPON             = "Weapon chosen: ";
+    private   static final String DID_CHOOSE_DAMAGE             = "Damage chosen.";
+    private   static final String DID_CHOOSE_MODALITY           = "Modality chosen: ";
+    private   static final String DID_CHOOSE_EFFECTS            = "Effects chosen.";
+    private   static final String DID_SELECT_WEAPONS_TO_RELOAD  = "Weapons selected to reload: ";
+    private   static final String DID_USE_WEAPON                = "Weapon used with success.";
 
 
     public abstract void onViewUpdate();
@@ -216,6 +217,23 @@ public abstract class View implements Observer{
     public abstract void willChooseDamage(Map<String, String> damagesToChoose);
 
     /**
+     * Public method implemented by subclasses when choosing if using a powerup or not.
+     *
+     * @param powerups it's a map containing the powerups that the player has in his hand and the next thing to do after the powerups choosing.
+     */
+    public abstract void willChoosePowerupSelling(Map<String, String> powerups);
+
+    /**
+     * Called when the player has decided if he wants to use any powerup to afford the cost of the weapon.
+     *
+     * @param weapon it's the weapon that is being used.
+     * @param powerup it's a list containing the powerups chosen by the player, empty if none has been chosen.
+     */
+    protected void didChoosePowerupSelling(String weapon, List<String> powerup) {
+        this.client.useWeaponAfterPowerupAsking(weapon, powerup);
+    }
+
+    /**
      * Called when the damages to be done have been chosen by the player.
      * @param weapon it's the weapon that is being used.
      * @param damage it's the damage that has been selected.
@@ -259,6 +277,15 @@ public abstract class View implements Observer{
     protected void didChooseEffects(List<String> effectsToUse, String weapon) {
         AdrenalineLogger.info(DID_CHOOSE_EFFECTS);
         this.client.useEffect(weapon, effectsToUse);
+    }
+
+    /**
+     * Called when the process of using a weapon has ended.
+     * @param weapon it's the weapon that has been used.
+     */
+    public void didUseWeapon(String weapon) {
+        AdrenalineLogger.info(DID_USE_WEAPON);
+        this.client.weaponUsed(weapon);
     }
 
     /**

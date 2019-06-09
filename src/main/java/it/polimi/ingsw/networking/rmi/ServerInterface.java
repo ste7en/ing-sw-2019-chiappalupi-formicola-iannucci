@@ -1,7 +1,9 @@
 package it.polimi.ingsw.networking.rmi;
 
+import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.utility.AmmoColor;
 
+import java.lang.module.ResolvedModule;
 import java.rmi.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +39,17 @@ public interface ServerInterface extends Remote {
 
     Map<String, String> useWeapon(int userID, UUID gameID, String weaponSelected) throws RemoteException;
 
+    Map<String, String> useWeaponAfterPowerupSelling(int userID, UUID gameID, String weaponSelected, List<String> powerups) throws RemoteException;
+
     void makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) throws RemoteException;
+
+    void didUseWeapon(String weapon, int userID, UUID gameID) throws RemoteException;
 
     Map<String, String> useEffect(int userID, UUID gameID, String forPotentiableWeapon, String effectSelected, String weaponSelected) throws RemoteException;
 
     boolean reload(List<String> weaponsSelected, int userID, UUID gameID) throws RemoteException;
 
-    List<String> getWeaponInHand(int userID, UUID gameID) throws RemoteException;
+    List<String> getUnloadedWeaponInHand(int userID, UUID gameID) throws RemoteException;
 
     List<String> getUsablePowerups(int userID, UUID gameID) throws RemoteException;
 

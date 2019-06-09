@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.cli;
 
 import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.view.View;
@@ -53,6 +54,8 @@ public class AdrenalineCLI extends View {
     private static final String USE_ANOTHER_POWERUP         = "Do you want to use another powerup? [Y/N]";
     private static final String WILL_USE_ANOTHER_POWERUP    = "You selected that you want to use another powerup.";
     private static final String WON_T_USE_ANOTHER_POWERUP   = "Powerup using phase finished.";
+    private static final String POWERUP_SELLING             = "Do you want use any powerup to afford the cost of the shoot?";
+    private static final String MORE_POWERUP_SELLING        = "Do you want use another powerup to afford the cost of the shoot?";
 
     /**
      * Log strings or exceptions
@@ -268,6 +271,41 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
+    public void willChoosePowerupSelling(Map<String, String> powerups) {
+        out.println(POWERUP_SELLING);
+        String weapon = powerups.get(Weapon.weapon_key);
+        String commMessage = powerups.get(CommunicationMessage.communication_message_key);
+        powerups.remove(weapon);
+        powerups.remove(commMessage);
+        String scanInput = in.nextLine();
+        List<String> choices = new ArrayList<>();
+        List<String> availablePowerups = new ArrayList<>(powerups.values());
+        boolean cycleCounter = false;
+        if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y"))
+            cycleCounter = true;
+        while(cycleCounter) {
+            out.println(CHOOSE_POWERUP);
+            String choice = decisionHandlerFromList(availablePowerups);
+            while(choice == null) {
+                out.println(INCORRECT_CHOICE);
+                choice = decisionHandlerFromList(availablePowerups);
+            }
+            choices.add(choice);
+            String toRemove = null;
+            for(String powerup : availablePowerups)
+                if(choice.equals(powerup))
+                    toRemove = powerup;
+            availablePowerups.remove(toRemove);
+            if(availablePowerups.isEmpty()) cycleCounter = false;
+            else {
+                out.println(MORE_POWERUP_SELLING);
+                cycleCounter = scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y");
+            }
+        }
+        this.didChoosePowerupSelling(weapon, choices);
+    }
+
+    @Override
     public void willChooseMode(Map<String, String> modalitiesToChoose) {
         String weapon = modalitiesToChoose.get(Weapon.weapon_key);
         modalitiesToChoose.remove(Weapon.weapon_key);
@@ -418,6 +456,7 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void update(Observable o, Object arg) {
-
+        //toDO: decrease weapon cost after having used them => add a didUseWeapon method
+        //toDO: check for empty lists
     }
 }
