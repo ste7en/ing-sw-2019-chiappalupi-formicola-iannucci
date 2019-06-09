@@ -108,8 +108,6 @@ public class PlayerHand {
      * @throws RuntimeException if there's already the maximum number of cubes (ammos) allowed
      */
     public void updateAmmos(AmmoColor ammoColor, Integer amount) {
-        if (ammoColor == AmmoColor.none) { throw new IllegalArgumentException(NO_COLOR_EXCEPTION); }
-
         if (getAmmosAmount(ammoColor) == 3) throw new RuntimeException(MAX_CUBES_ALLOWED);
         else if (getAmmosAmount(ammoColor) + amount < 0 || getAmmosAmount(ammoColor) + amount > 3)
             throw new IllegalArgumentException(INVALID_AMOUNT_EXC);

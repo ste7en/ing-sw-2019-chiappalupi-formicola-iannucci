@@ -151,12 +151,4 @@ public class PlayerHandTest {
     public void testInvalidAmountOfCubesToDecrement() {
         playerHand.updateAmmos(testColor, -2);
     }
-
-    /**
-     * Tests the correctness of arguments when adding cubes of a certain color
-     */
-    @Test (expected = IllegalArgumentException.class)
-    public void testInvalidColorException() {
-        playerHand.updateAmmos(AmmoColor.none, 2);
-    }
 }
