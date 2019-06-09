@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking.rmi;
 
+import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
@@ -108,7 +109,7 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
-    public void askForPowerups(){
+    public void askForPossibleSpawnPoints(){
         ArrayList<String> powerups = new ArrayList<>();
         try {
             powerups = server.getPowerups(userID, gameID);
@@ -131,24 +132,37 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
-    public void useWeapon(String weaponSelected) {
-        try{
-            Map<String, String> weaponUsingProcess = this.server.useWeapon(userID, gameID, weaponSelected);
-            CommunicationMessage weaponProcess = CommunicationMessage.valueOf(weaponUsingProcess.get(CommunicationMessage.communication_message_key));
-            weaponUsingProcess.remove(CommunicationMessage.communication_message_key);
-            if(weaponProcess == CommunicationMessage.DAMAGE_LIST)
-                    this.viewObserver.willChooseDamage(weaponUsingProcess);
-            else this.viewObserver.willChoosePowerupSelling(weaponUsingProcess);
-        } catch (RemoteException e){
+    public void askWeapons() {
+        try {
+            List<String> weapons = this.server.askWeapons(userID, gameID);
+            if(weapons.isEmpty()) this.viewObserver.onShootPeopleFailure();
+            else this.viewObserver.willChooseWeapon(this.server.askWeapons(userID, gameID));
+        } catch(RemoteException e) {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
         }
     }
 
     @Override
-    public void askWeapon() {
-        try {
-            this.viewObserver.willChooseWeapon(this.server.askWeapons(userID, gameID));
-        } catch(RemoteException e) {
+    public void useWeapon(String weaponSelected) {
+        try{
+            Map<String, String> weaponUsingProcess = this.server.useWeapon(userID, gameID, weaponSelected);
+            CommunicationMessage weaponProcess = CommunicationMessage.valueOf(weaponUsingProcess.get(CommunicationMessage.communication_message_key));
+            weaponUsingProcess.remove(CommunicationMessage.communication_message_key);
+            switch (weaponProcess) {
+                case DAMAGE_FAILURE:
+                    this.viewObserver.onDamageFailure();
+                    break;
+                case DAMAGE_LIST:
+                    this.viewObserver.willChooseDamage(weaponUsingProcess);
+                    break;
+                case POWERUP_IN_HAND_FAILURE:
+                    this.viewObserver.onPowerupInHandFailure();
+                    break;
+                default:
+                    this.viewObserver.willChoosePowerupSelling(weaponUsingProcess);
+                    break;
+            }
+        } catch (RemoteException e){
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
         }
     }
@@ -180,7 +194,8 @@ public class ClientRMI extends Client implements ClientInterface {
     public void useMode(String weapon, String effect) {
         try {
             Map<String, String> damageList = this.server.useEffect(userID, gameID, null, effect, weapon);
-            this.viewObserver.willChooseDamage(damageList);
+            if(damageList.containsValue(Damage.no_damage)) this.viewObserver.onDamageFailure();
+            else this.viewObserver.willChooseDamage(damageList);
         } catch (RemoteException e) {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
         }
@@ -195,7 +210,8 @@ public class ClientRMI extends Client implements ClientInterface {
                 String potentiableBoolean = Boolean.toString(forPotentiableWeapon);
                 String effect = effectsToUse.get(0);
                 Map<String, String> damageList = this.server.useEffect(userID, gameID, potentiableBoolean, effect, weapon);
-                this.viewObserver.willChooseDamage(damageList);
+                if(damageList.containsValue(Damage.no_damage)) this.viewObserver.onDamageFailure();
+                else this.viewObserver.willChooseDamage(damageList);
                 effectsToUse.remove(0);
             }
         } catch (RemoteException e) {
@@ -215,7 +231,9 @@ public class ClientRMI extends Client implements ClientInterface {
     @Override
     public void askWeaponToReload() {
         try {
-            this.viewObserver.willReload(this.server.getUnloadedWeaponInHand(userID, gameID));
+            List<String> weaponInHand = this.server.getUnloadedWeaponInHand(userID, gameID);
+            if(weaponInHand.isEmpty()) this.viewObserver.onWeaponUnloadedFailure();
+            else this.viewObserver.willReload(this.server.getUnloadedWeaponInHand(userID, gameID));
         } catch (RemoteException e) {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
         }
@@ -236,7 +254,8 @@ public class ClientRMI extends Client implements ClientInterface {
     public void askForPowerup() {
         try {
             List<String> powerups = this.server.getUsablePowerups(userID, gameID);
-            this.viewObserver.willChoosePowerup(powerups);
+            if(powerups.isEmpty()) this.viewObserver.onTurnPowerupFailure();
+            else this.viewObserver.willChoosePowerup(powerups);
         } catch (RemoteException e) {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
         }

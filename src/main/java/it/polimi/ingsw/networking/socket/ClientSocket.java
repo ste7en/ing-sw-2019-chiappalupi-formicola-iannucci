@@ -90,11 +90,21 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         List<String> weapons = new ArrayList<>(args.values());
                         this.viewObserver.willChooseWeapon(weapons);
                         break;
+                    case SHOOT_PEOPLE_FAILURE:
+                        this.viewObserver.onShootPeopleFailure();
+                        break;
+                    case DAMAGE_FAILURE:
+                        this.viewObserver.onDamageFailure();
+                        break;
+                    case POWERUP_IN_HAND_FAILURE:
+                        this.viewObserver.onPowerupInHandFailure();
+                        break;
                     case POWERUP_SELLING_LIST:
                         this.viewObserver.willChoosePowerupSelling(args);
                         break;
                     case DAMAGE_LIST:
-                        this.viewObserver.willChooseDamage(args);
+                        if(args.containsValue(Damage.no_damage)) this.viewObserver.onDamageFailure();
+                        else this.viewObserver.willChooseDamage(args);
                         break;
                     case MODES_LIST:
                         this.viewObserver.willChooseMode(args);
@@ -105,6 +115,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case LAST_DAMAGE_DONE:
                         this.viewObserver.didUseWeapon(args.get(Weapon.weapon_key));
                         break;
+                    case NO_WEAPON_UNLOADED_IN_HAND:
+                        this.viewObserver.onWeaponUnloadedFailure();
+                        break;
                     case WEAPON_LIST:
                         this.viewObserver.willReload(new ArrayList<>(args.values()));
                         break;
@@ -113,6 +126,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         break;
                     case RELOAD_WEAPON_OK:
                         this.viewObserver.onReloadSuccess();
+                        break;
+                    case NO_TURN_POWERUP:
+                        this.viewObserver.onTurnPowerupFailure();
                         break;
                     case POWERUP_LIST:
                         this.viewObserver.willChoosePowerup(new ArrayList<>(args.values()));
@@ -165,8 +181,8 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
-    public void askForPowerups(){
-        //toDO
+    public void askForPossibleSpawnPoints(){
+
     }
 
     @Override
@@ -175,7 +191,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
-    public void askWeapon() {
+    public void askWeapons() {
         this.send(CommunicationMessage.from(userID, SHOOT_PEOPLE, gameID));
     }
 

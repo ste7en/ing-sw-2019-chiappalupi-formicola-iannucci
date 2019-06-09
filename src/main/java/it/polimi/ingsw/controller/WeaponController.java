@@ -213,15 +213,16 @@ public class WeaponController {
      * @param decks it's the deck of the game, needed to waste the powerup.
      */
     public void applyCost(Player player, DecksHandler decks) {
+        for(Powerup powerup : powerupUsedToPayCost) {
+            effectsCost.put(powerup.getColor(), effectsCost.get(powerup.getColor()) - 1);
+            player.getPlayerHand().wastePowerup(powerup);
+            decks.wastePowerup(powerup);
+        }
         for(AmmoColor color : effectsCost.keySet()) {
             int newAmount = player.getPlayerHand().getAmmosAmount(color) - effectsCost.get(color);
             player.getPlayerHand().updateAmmos(color, newAmount);
         }
         effectsCost.clear();
-        for(Powerup powerup : powerupUsedToPayCost) {
-            player.getPlayerHand().wastePowerup(powerup);
-            decks.wastePowerup(powerup);
-        }
     }
 
     /**

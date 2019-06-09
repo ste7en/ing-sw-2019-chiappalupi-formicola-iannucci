@@ -125,7 +125,7 @@ public abstract class Client implements Loggable {
     /**
      * Abstract method implemented by subclasses to get two Power Up cards between which the player will have to choose a spawnpoint.
      */
-    public abstract void askForPowerups();
+    public abstract void askForPossibleSpawnPoints();
 
     /**
      * Abstract method implemented by subclasses when a player has chosen his spawnpoint.
@@ -135,7 +135,7 @@ public abstract class Client implements Loggable {
     /**
      * Abstract method implemented by subclasses when a player wants to shoot people.
      */
-    public abstract void askWeapon();
+    public abstract void askWeapons();
 
     /**
      * Abstract method implemented by subclasses and used when a player wants to use a weapon.

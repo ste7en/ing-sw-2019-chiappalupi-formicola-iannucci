@@ -159,24 +159,21 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case PONG:
                     Ping.getInstance().didPong(connectionID);
                     break;
-                case CREATE_USER: {
+                case CREATE_USER:
                     createUser(connectionID, args);
                     break;
-                }
-                case USER_JOIN_WAITING_ROOM: {
+                case USER_JOIN_WAITING_ROOM:
                     joinWaitingRoom(connectionID, args);
                     break;
-                }
                 case SHOOT_PEOPLE:
                     shootPeople(connectionID, gameID);
                     break;
                 case WEAPON_TO_USE:
                     weaponToUse(connectionID, args, gameID);
                     break;
-                case POWERUP_SELLING_DECIDED: {
+                case POWERUP_SELLING_DECIDED:
                     powerupSellingDecided(connectionID, args, gameID);
                     break;
-                }
                 case LAST_DAMAGE:
                 case DAMAGE_TO_MAKE:
                     damageToDo(communicationMessage, connectionID, args, gameID);
@@ -219,6 +216,10 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
 
     private void askPowerups(int connectionID, UUID gameID) {
         List<String> usablePowerups = server.getUsablePowerups(connectionID, gameID);
+        if(usablePowerups.isEmpty()) {
+            send(CommunicationMessage.from(connectionID, NO_TURN_POWERUP));
+            return;
+        }
         Map<String, String> responseArgs = new HashMap<>();
         for(String powerup: usablePowerups) responseArgs.put(Integer.toString(usablePowerups.indexOf(powerup)), powerup);
         send(CommunicationMessage.from(connectionID, POWERUP_LIST, responseArgs));
@@ -226,6 +227,10 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
 
     private void askUnloadedWeapons(int connectionID, UUID gameID) {
         List<String> weaponsInHand = server.getUnloadedWeaponInHand(connectionID, gameID);
+        if(weaponsInHand.isEmpty()) {
+            send(CommunicationMessage.from(connectionID, NO_WEAPON_UNLOADED_IN_HAND));
+            return;
+        }
         Map<String, String> responseArgs = new HashMap<>();
         for(String weapon : weaponsInHand) responseArgs.put(Integer.toString(weaponsInHand.indexOf(weapon)), weapon);
         send(CommunicationMessage.from(connectionID, WEAPON_LIST, responseArgs));
@@ -283,6 +288,10 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     private void shootPeople(int connectionID, UUID gameID) {
         List<String> weapons = this.server.askWeapons(connectionID, gameID);
         Map<String, String> responseArgs = new HashMap<>();
+        if(weapons.isEmpty()) {
+            send(CommunicationMessage.from(connectionID, SHOOT_PEOPLE_FAILURE));
+            return;
+        }
         for(String weapon : weapons)
             responseArgs.put(Integer.toString(weapons.indexOf(weapon)), weapon);
         send(CommunicationMessage.from(connectionID, SHOOT_PEOPLE, responseArgs, gameID));

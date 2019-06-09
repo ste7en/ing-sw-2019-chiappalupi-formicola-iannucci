@@ -11,9 +11,10 @@ public class Damage implements Comparable<Damage> {
     private int marks;
 
     /**
-     * String constant used in messages between client-server
+     * String constants used in messages between client-server
      */
     public final static String damage_key = "DAMAGE";
+    public final static String no_damage = "NO_DAMAGE";
 
     public Damage() {
         target = null;

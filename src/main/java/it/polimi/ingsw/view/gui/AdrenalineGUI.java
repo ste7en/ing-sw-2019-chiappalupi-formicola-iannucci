@@ -114,11 +114,26 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
+    public void onShootPeopleFailure() {
+
+    }
+
+    @Override
     public void willChooseWeapon(List<String> weapons) {
     }
 
     @Override
+    public void onDamageFailure() {
+
+    }
+
+    @Override
     public void willChooseDamage(Map<String, String> damagesToChoose) {
+
+    }
+
+    @Override
+    public void onPowerupInHandFailure() {
 
     }
 
@@ -148,6 +163,11 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
+    public void onWeaponUnloadedFailure() {
+
+    }
+
+    @Override
     public void willReload(List<String> weapons) {
 
     }
@@ -159,6 +179,11 @@ public class AdrenalineGUI extends View {
 
     @Override
     public void onReloadFailure() {
+
+    }
+
+    @Override
+    public void onTurnPowerupFailure() {
 
     }
 
