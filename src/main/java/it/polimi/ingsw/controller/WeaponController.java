@@ -87,14 +87,28 @@ public class WeaponController {
      */
     public boolean checkCostOfReload(List<Weapon> weapons, Player player) {
         Map<AmmoColor, Integer> cost = new EnumMap<>(AmmoColor.class);
-        for(AmmoColor color : AmmoColor.values())
+        Map<AmmoColor, Integer> powerupAmmos = new EnumMap<>(AmmoColor.class);
+        for(AmmoColor color : AmmoColor.values()) {
             cost.put(color, 0);
+            powerupAmmos.put(color, 0);
+        }
+        for(Powerup powerup : powerupUsedToPayCost) powerupAmmos.put(powerup.getColor(), powerupAmmos.get(powerup.getColor()) + 1);
         for(Weapon weapon : weapons)
             for(AmmoColor color : weapon.getCost()) {
                 int costBox = cost.get(color);
                 costBox++;
                 cost.put(color, costBox);
             }
+        for(AmmoColor color : AmmoColor.values()) {
+            while(powerupAmmos.get(color) > 0 && cost.get(color) > 0) {
+                powerupAmmos.put(color, powerupAmmos.get(color) - 1);
+                cost.put(color, cost.get(color) - 1);
+            }
+            if(powerupAmmos.get(color) > 0) {
+                powerupUsedToPayCost.clear();
+                return false;
+            }
+        }
         for(AmmoColor color : AmmoColor.values()) {
             int newAmmo = player.getPlayerHand().getAmmosAmount(color) - cost.get(color);
             if (newAmmo < 0)
@@ -218,6 +232,7 @@ public class WeaponController {
             player.getPlayerHand().wastePowerup(powerup);
             decks.wastePowerup(powerup);
         }
+        powerupUsedToPayCost.clear();
         for(AmmoColor color : effectsCost.keySet()) {
             int newAmount = player.getPlayerHand().getAmmosAmount(color) - effectsCost.get(color);
             player.getPlayerHand().updateAmmos(color, newAmount);

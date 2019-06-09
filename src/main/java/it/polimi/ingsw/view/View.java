@@ -238,7 +238,7 @@ public abstract class View implements Observer{
     public abstract void onPowerupInHandFailure();
 
     /**
-     * Public method implemented by subclasses when choosing if using a powerup or not.
+     * Public method implemented by subclasses when choosing if using a powerup to get its ammo or not.
      *
      * @param powerups it's a map containing the powerups that the player has in his hand and the next thing to do after the powerups choosing.
      */
@@ -320,6 +320,12 @@ public abstract class View implements Observer{
     public abstract void askReload();
 
     /**
+     * Public method called when the player has decided which powerup does he want to sell to reload his weapons.
+     * @param powerups it's the list of powerups that has been chosen by the player.
+     */
+    public abstract void willSellPowerupToReload(List<String> powerups); //toDO
+
+    /**
      * Public method implemented by subclasses and called when the player has no weapons unloaded in his hand but has chosen to reload them.
      */
     public abstract void onWeaponUnloadedFailure();
@@ -355,7 +361,7 @@ public abstract class View implements Observer{
      * Starts the process of using a powerup.
      */
     public void willUsePowerup() {
-        this.client.askForPowerup();
+        this.client.askForUsablePowerups();
     }
 
     /**

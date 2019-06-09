@@ -184,6 +184,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case EFFECT_TO_USE:
                     effectToUse(connectionID, args, gameID);
                     break;
+                case ASK_POWERUP_TO_RELOAD:
+                    askPowerupToReload(connectionID, gameID);
+                    break;
                 case WEAPON_TO_RELOAD:
                     weaponToReload(connectionID, args, gameID);
                     break;
@@ -199,11 +202,21 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case POWERUP_DAMAGE_TO_MAKE:
                     server.applyPowerupDamage(connectionID, gameID, args.get(Powerup.powerup_key), args.get(Damage.damage_key));
                     break;
+                case SELL_POWERUP:
+                    server.sellPowerupToReload(new ArrayList<>(args.values()), connectionID, gameID);
+                    break;
                 default:
                     break;
             }
 
         }).start();
+    }
+
+    private void askPowerupToReload(int connectionID, UUID gameID) {
+        List<String> powerups = server.getPowerupsInHand(connectionID, gameID);
+        Map<String, String> responseArgs = new HashMap<>();
+        for(String powerup : powerups) responseArgs.put(Integer.toString(powerups.indexOf(powerup)), powerup);
+        send(CommunicationMessage.from(connectionID, POWERUP_TO_RELOAD, responseArgs));
     }
 
     private void askPowerupDamages(int connectionID, Map<String, String> args, UUID gameID) {

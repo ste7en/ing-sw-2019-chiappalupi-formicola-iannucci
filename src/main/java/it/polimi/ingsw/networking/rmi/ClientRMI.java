@@ -155,9 +155,6 @@ public class ClientRMI extends Client implements ClientInterface {
                 case DAMAGE_LIST:
                     this.viewObserver.willChooseDamage(weaponUsingProcess);
                     break;
-                case POWERUP_IN_HAND_FAILURE:
-                    this.viewObserver.onPowerupInHandFailure();
-                    break;
                 default:
                     this.viewObserver.willChoosePowerupSelling(weaponUsingProcess);
                     break;
@@ -251,7 +248,28 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
-    public void askForPowerup() {
+    public void askForPowerupsToReload() {
+        try {
+            List<String> powerups = server.getPowerupsInHand(userID, gameID);
+            if(powerups.isEmpty()) this.viewObserver.onPowerupInHandFailure();
+            else this.viewObserver.willSellPowerupToReload(powerups);
+        } catch (RemoteException e) {
+            System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
+        }
+    }
+
+    @Override
+    public void sellPowerupToReload(List<String> powerups) {
+        try {
+            this.server.sellPowerupToReload(powerups, userID, gameID);
+            this.askWeaponToReload();
+        } catch (RemoteException e) {
+            System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
+        }
+    }
+
+    @Override
+    public void askForUsablePowerups() {
         try {
             List<String> powerups = this.server.getUsablePowerups(userID, gameID);
             if(powerups.isEmpty()) this.viewObserver.onTurnPowerupFailure();

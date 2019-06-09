@@ -38,6 +38,7 @@ public class AdrenalineCLI extends View {
     private static final String ON_START                    = "Game started.";
     private static final String SHOOT_PEOPLE_FAILURE        = "You have no weapon in your hand, so you can't shoot anyone.";
     private static final String DAMAGE_FAILURE              = "No damage can be made with the weapon and the effects selected.";
+    private static final String CHOOSE_POWERUP_TO_SELL      = "What powerup do you want to sell?";
     private static final String POWERUP_FAILURE             = "You haven't got any powerup!";
     private static final String CHOOSE_WEAPON               = "Which weapon do you want to use?";
     private static final String CHOOSE_DAMAGE               = "What damage do you want to make?";
@@ -51,16 +52,19 @@ public class AdrenalineCLI extends View {
     private static final String WILL_RELOAD                 = "You selected that you want to reload your weapon.";
     private static final String WON_T_RELOAD                = "Your weapons won't be reloaded.";
     private static final String RELOAD_SUCCESS              = "Reload succeeded! Your weapons has been reloaded.";
-    private static final String TURN_POWERUP_FAILURE             = "You haven't got any powerup that you can use right now!";
+    private static final String TURN_POWERUP_FAILURE        = "You haven't got any powerup that you can use right now!";
     private static final String CHOOSE_POWERUP              = "Which powerup do you want to use?";
     private static final String CHOOSE_POWERUP_DAMAGE       = "What do you want to do with your powerup?";
     private static final String POWERUP_USED                = "The powerup has been used with success.";
     private static final String USE_ANOTHER_POWERUP         = "Do you want to use another powerup? [Y/N]";
     private static final String WILL_USE_ANOTHER_POWERUP    = "You selected that you want to use another powerup.";
     private static final String WON_T_USE_ANOTHER_POWERUP   = "Powerup using phase finished.";
-    private static final String POWERUP_SELLING             = "Do you want use any powerup to afford the cost of the shoot? [Y/N]\n" +
+    private static final String ASK_POWERUP_TO_USE_EFFECTS  = "Do you want use any powerup to afford the cost of the shoot? [Y/N]\n" +
                                                               "Please note that if you select [Y], you will only have the possibility " +
-                                                              "to use effects or modes of the weapon where the color/s of the powerup/s that you select is/are involved.";
+                                                              "to use a list of effects or modes of the weapon where the color/s of the powerup/s that you select is/are involved.";
+    private static final String ASK_POWERUP_TO_RELOAD       = "Do you want use any powerup to afford the cost of the the reload? [Y/N]\n" +
+                                                              "Please note that if you select [Y], you will only have the possibility " +
+                                                              "to reload a list of weapon where the color/s of the powerup/s that you select is/are involved.";
     private static final String MORE_POWERUP_SELLING        = "Do you want use another powerup to afford the cost of the shoot?";
 
     /**
@@ -296,19 +300,34 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void willChoosePowerupSelling(Map<String, String> powerups) {
-        out.println(POWERUP_SELLING);
+        out.println(ASK_POWERUP_TO_USE_EFFECTS);
         String weapon = powerups.get(Weapon.weapon_key);
         String commMessage = powerups.get(CommunicationMessage.communication_message_key);
         powerups.remove(weapon);
         powerups.remove(commMessage);
-        String scanInput = in.nextLine();
-        List<String> choices = new ArrayList<>();
         List<String> availablePowerups = new ArrayList<>(powerups.values());
-        boolean cycleCounter = false;
+        List<String> choices = new ArrayList<>();
+        String scanInput = in.nextLine();
         if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y"))
-            cycleCounter = true;
+            choices = powerupSellingHelper(availablePowerups);
+        this.didChoosePowerupSelling(weapon, choices);
+    }
+
+    /**
+     * Helper method to ask the player if and how does he want to use powerups to afford the cost of something.
+     * @param availablePowerups it's the list of available powerups.
+     * @return the list of choices made by the player.
+     */
+    @SuppressWarnings({"squid:S3776", "squid:S1168"})
+    private List<String> powerupSellingHelper(List<String> availablePowerups) {
+        boolean cycleCounter = true;
+        List<String> choices = new ArrayList<>();
         while(cycleCounter) {
-            out.println(CHOOSE_POWERUP);
+            if(availablePowerups.isEmpty()) {
+                this.onPowerupInHandFailure();
+                return null;
+            }
+            out.println(CHOOSE_POWERUP_TO_SELL);
             String choice = decisionHandlerFromList(availablePowerups);
             while(choice == null) {
                 out.println(INCORRECT_CHOICE);
@@ -323,10 +342,11 @@ public class AdrenalineCLI extends View {
             if(availablePowerups.isEmpty()) cycleCounter = false;
             else {
                 out.println(MORE_POWERUP_SELLING);
+                String scanInput = in.nextLine();
                 cycleCounter = scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y");
             }
         }
-        this.didChoosePowerupSelling(weapon, choices);
+        return choices;
     }
 
     @Override
@@ -405,15 +425,32 @@ public class AdrenalineCLI extends View {
         String scanInput = in.nextLine();
         if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y")) {
             out.println(WILL_RELOAD);
-            this.client.askWeaponToReload();
+            this.askWastePowerupToReload();
         }
         out.println(WON_T_RELOAD);
     }
 
     @Override
+    public void willSellPowerupToReload(List<String> powerups) {
+        List<String> choices = powerupSellingHelper(powerups);
+        this.client.sellPowerupToReload(choices);
+    }
+
+    /**
+     * Private method called when the player has to decide whether he wants to use any powerup bonus ammo to reload his weapons or not.
+     */
+    private void askWastePowerupToReload() {
+        out.println(ASK_POWERUP_TO_RELOAD);
+        String scanInput = in.nextLine();
+        if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y"))
+            this.client.askForPowerupsToReload();
+        else this.client.askWeaponToReload();
+    }
+
+    @Override
     public void onWeaponUnloadedFailure() {
         out.println(NO_WEAPON_UNLOADED);
-        //toDO is onEndTurn right?
+        //toDo is onEndTurn right?
         this.onEndTurn();
     }
 

@@ -96,9 +96,6 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case DAMAGE_FAILURE:
                         this.viewObserver.onDamageFailure();
                         break;
-                    case POWERUP_IN_HAND_FAILURE:
-                        this.viewObserver.onPowerupInHandFailure();
-                        break;
                     case POWERUP_SELLING_LIST:
                         this.viewObserver.willChoosePowerupSelling(args);
                         break;
@@ -117,6 +114,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         break;
                     case NO_WEAPON_UNLOADED_IN_HAND:
                         this.viewObserver.onWeaponUnloadedFailure();
+                        break;
+                    case POWERUP_TO_RELOAD:
+                        if (args.values().isEmpty()) this.viewObserver.onPowerupInHandFailure();
+                        else this.viewObserver.willSellPowerupToReload(new ArrayList<>(args.values()));
                         break;
                     case WEAPON_LIST:
                         this.viewObserver.willReload(new ArrayList<>(args.values()));
@@ -267,7 +268,21 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
-    public void askForPowerup() {
+    public void askForPowerupsToReload() {
+        this.send(CommunicationMessage.from(userID, ASK_POWERUP_TO_RELOAD, gameID));
+    }
+
+    @Override
+    public void sellPowerupToReload(List<String> powerups) {
+        Map<String, String> args = new HashMap<>();
+        for(String powerup : powerups)
+            args.put(Integer.toString(powerups.indexOf(powerup)), powerup);
+        this.send(CommunicationMessage.from(userID, SELL_POWERUP, args, gameID));
+        this.askWeaponToReload();
+    }
+
+    @Override
+    public void askForUsablePowerups() {
         this.send(CommunicationMessage.from(userID, ASK_POWERUPS, gameID));
     }
 

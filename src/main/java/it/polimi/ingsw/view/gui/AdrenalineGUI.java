@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.view.View;
 
@@ -159,6 +158,11 @@ public class AdrenalineGUI extends View {
 
     @Override
     public void askReload() {
+
+    }
+
+    @Override
+    public void willSellPowerupToReload(List<String> powerups) {
 
     }
 

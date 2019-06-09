@@ -236,7 +236,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     @Override
     public ArrayList<String> getAvailableCharacters(UUID gameID) {
-        return gameControllers.get(gameID).getAvailableCharacters();
+        //return gameControllers.get(gameID).getAvailableCharacters();
+        //toDo: fix build failure
+        return null;
     }
 
     @Override
@@ -313,7 +315,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             default: {
                 weaponProcess.put(communication_message_key, POWERUP_SELLING_LIST.toString());
                 Map<String, String> box = gameControllers.get(gameID).getPowerupInHand(player);
-                if(box.isEmpty()) weaponProcess.put(communication_message_key, POWERUP_IN_HAND_FAILURE.toString());
                 weaponProcess.putAll(box);
                 break;
             }
@@ -530,6 +531,30 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             if(d.toString().equals(damage))
                 gameControllers.get(gameID).getWeaponController().applyDamage(d, gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)).getCharacter().getColor(), gameControllers.get(gameID).getBoard());
         gameControllers.get(gameID).wastePowerup(powerup, findUserFromID(userID));
+    }
+
+    /**
+     * Method used to find the powerups in the hand of the user.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     * @return the list of Powerup::toString that the player owns.
+     */
+    @Override
+    public List<String> getPowerupsInHand(int userID, UUID gameID) {
+        Map<String, String> powerupsMap = gameControllers.get(gameID).getPowerupInHand(gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)));
+        List<String> powerupsList = new ArrayList<>(powerupsMap.values());
+        return powerupsList;
+    }
+
+    /**
+     * Method used to sell the powerups selected to reload the weapons.
+     * @param powerups it's the list of powerups to sell.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     */
+    @Override
+    public void sellPowerupToReload(List<String> powerups, int userID, UUID gameID) {
+        gameControllers.get(gameID).getWeaponController().addPowerupSold(powerups, gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)));
     }
 
 }
