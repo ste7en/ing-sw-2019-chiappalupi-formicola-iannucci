@@ -31,8 +31,6 @@ public interface ServerInterface extends Remote {
 
     void choseSpawnPoint(int userID, UUID gameID, String powerup) throws RemoteException;
 
-    void choseAction(int userID, UUID gameID, String action) throws RemoteException;
-
     void chooseMovement() throws RemoteException;
 
     void chooseWhatToGrab() throws RemoteException;

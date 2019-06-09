@@ -150,7 +150,7 @@ public abstract class View implements Observer{
      * Ele
      */
     public void willChooseSpawnPoint() {
-        client.askForPowerups();
+        client.askForPossibleSpawnPoints();
     }
 
     /**
@@ -168,15 +168,7 @@ public abstract class View implements Observer{
     /**
      * Ele
      */
-    public abstract void willChooseAction();
-
-
-    /**
-     * Ele
-     */
-    public void didChooseAction(String action){
-        client.choseAction(action);
-    }
+    public abstract void onChooseAction();
 
     /**
      * Ele
@@ -201,9 +193,14 @@ public abstract class View implements Observer{
     /**
      * Public method used to start the process of using weapons.
      */
-    public void askWeapons() {
-        this.client.askWeapon();
+    public void shootPeople() {
+        this.client.askWeapons();
     }
+
+    /**
+     * Public method implemented by subclasses when the player doesn't have any weapon in his hand but has started the process of using them.
+     */
+    public abstract void onShootPeopleFailure();
 
     /**
      * Public method implemented by subclasses when choosing a weapon.
@@ -211,7 +208,6 @@ public abstract class View implements Observer{
      *
      * @param weapons it's an ArrayList containing all of the weapons that the player can use.
      */
-    //toDo: check weapons cost
     public abstract void willChooseWeapon(List<String> weapons);
 
     /**
@@ -225,11 +221,21 @@ public abstract class View implements Observer{
     }
 
     /**
+     * Public method implemented by subclasses and called when no possible damage can be done with the weapon and the effect selected.
+     */
+    public abstract void onDamageFailure();
+
+    /**
      * Public method implemented by subclasses when choosing the damages to make.
      *
      * @param damagesToChoose it's a map containing all of the possible damages that can be made and the weapon used to make them.
      */
     public abstract void willChooseDamage(Map<String, String> damagesToChoose);
+
+    /**
+     * Public method implemented by subclasses and called when a player has selected to use powerups but hasn't got any of them.
+     */
+    public abstract void onPowerupInHandFailure();
 
     /**
      * Public method implemented by subclasses when choosing if using a powerup or not.
@@ -314,6 +320,11 @@ public abstract class View implements Observer{
     public abstract void askReload();
 
     /**
+     * Public method implemented by subclasses and called when the player has no weapons unloaded in his hand but has chosen to reload them.
+     */
+    public abstract void onWeaponUnloadedFailure();
+
+    /**
      * Public method implemented by subclasses when the player has to decide what weapon does he want to reload.
      *
      * @param weapons it's the list of names of the weapons that the player has in his hand and that are not loaded.
@@ -346,6 +357,11 @@ public abstract class View implements Observer{
     public void willUsePowerup() {
         this.client.askForPowerup();
     }
+
+    /**
+     * Public method implemented by subclasses, called when a player has no powerup that can be used during his turn in his hand but has selected that he wants to use them.
+     */
+    public abstract void onTurnPowerupFailure();
 
     /**
      * Public method implemented by subclasses, called when the player has to decide which powerup does he wants to use.

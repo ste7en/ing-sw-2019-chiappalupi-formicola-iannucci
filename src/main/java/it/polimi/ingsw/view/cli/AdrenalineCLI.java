@@ -36,6 +36,9 @@ public class AdrenalineCLI extends View {
     private static final String USER_NOT_AVAILABLE          = "The username you provided is not available. Try again, please";
     private static final String DID_JOIN_WAITING_R          = "Waiting Room joined successfully. A new game will start as soon as other players will createUser.";
     private static final String ON_START                    = "Game started.";
+    private static final String SHOOT_PEOPLE_FAILURE        = "You have no weapon in your hand, so you can't shoot anyone.";
+    private static final String DAMAGE_FAILURE              = "No damage can be made with the weapon and the effects selected.";
+    private static final String POWERUP_FAILURE             = "You haven't got any powerup!";
     private static final String CHOOSE_WEAPON               = "Which weapon do you want to use?";
     private static final String CHOOSE_DAMAGE               = "What damage do you want to make?";
     private static final String CHOOSE_MODALITY             = "Which modality do you want to use?";
@@ -44,16 +47,20 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_WEAPONS_TO_RELOAD    = "What weapons do you want to reload? \nMultiple weapons can be provided with commas.";
     private static final String NOT_ENOUGH_AMMOS            = "You have not enough ammos to reload. Please select only weapons you can afford.";
     private static final String ASK_RELOAD                  = "Do you want to reload your weapons? [Y/N]";
+    private static final String NO_WEAPON_UNLOADED          = "You have no weapon unloaded in your hand, so you can't reload anything.";
     private static final String WILL_RELOAD                 = "You selected that you want to reload your weapon.";
     private static final String WON_T_RELOAD                = "Your weapons won't be reloaded.";
     private static final String RELOAD_SUCCESS              = "Reload succeeded! Your weapons has been reloaded.";
+    private static final String TURN_POWERUP_FAILURE             = "You haven't got any powerup that you can use right now!";
     private static final String CHOOSE_POWERUP              = "Which powerup do you want to use?";
     private static final String CHOOSE_POWERUP_DAMAGE       = "What do you want to do with your powerup?";
     private static final String POWERUP_USED                = "The powerup has been used with success.";
     private static final String USE_ANOTHER_POWERUP         = "Do you want to use another powerup? [Y/N]";
     private static final String WILL_USE_ANOTHER_POWERUP    = "You selected that you want to use another powerup.";
     private static final String WON_T_USE_ANOTHER_POWERUP   = "Powerup using phase finished.";
-    private static final String POWERUP_SELLING             = "Do you want use any powerup to afford the cost of the shoot?";
+    private static final String POWERUP_SELLING             = "Do you want use any powerup to afford the cost of the shoot? [Y/N]\n" +
+                                                              "Please note that if you select [Y], you will only have the possibility " +
+                                                              "to use effects or modes of the weapon where the color/s of the powerup/s that you select is/are involved.";
     private static final String MORE_POWERUP_SELLING        = "Do you want use another powerup to afford the cost of the shoot?";
 
     /**
@@ -188,7 +195,7 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChooseAction() {
+    public void onChooseAction() {
 
     }
 
@@ -210,6 +217,12 @@ public class AdrenalineCLI extends View {
     @Override
     public void didChooseWhatToGrab() {
 
+    }
+
+    @Override
+    public void onShootPeopleFailure() {
+        out.println(SHOOT_PEOPLE_FAILURE);
+        this.onChooseAction();
     }
 
     @Override
@@ -241,6 +254,12 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
+    public void onDamageFailure() {
+        out.println(DAMAGE_FAILURE);
+        this.onChooseAction();
+    }
+
+    @Override
     public void willChooseDamage(Map<String, String> damagesToChoose) {
         String weapon = damagesToChoose.get(Weapon.weapon_key);
         damagesToChoose.remove(Weapon.weapon_key);
@@ -267,6 +286,12 @@ public class AdrenalineCLI extends View {
             forPotentiableWeapon = damagesToChoose.get(PotentiableWeapon.forPotentiableWeapon_key);
         this.didChooseDamage(weapon, possibleDamages.get(i-1), indexOfEffect, forPotentiableWeapon);
         out.println(WEAPON_USED);
+    }
+
+    @Override
+    public void onPowerupInHandFailure() {
+        out.println(POWERUP_FAILURE);
+        this.onChooseAction();
     }
 
     @Override
@@ -386,6 +411,13 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
+    public void onWeaponUnloadedFailure() {
+        out.println(NO_WEAPON_UNLOADED);
+        //toDO is onEndTurn right?
+        this.onEndTurn();
+    }
+
+    @Override
     public void willReload(List<String> weapons) {
         out.println(CHOOSE_WEAPONS_TO_RELOAD);
         String scanInput = in.nextLine();
@@ -410,6 +442,11 @@ public class AdrenalineCLI extends View {
     public void onReloadFailure() {
         out.println(NOT_ENOUGH_AMMOS);
         this.askReload();
+    }
+
+    @Override
+    public void onTurnPowerupFailure() {
+        out.println(TURN_POWERUP_FAILURE);
     }
 
     @Override
@@ -455,7 +492,6 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void update(Observable o, Object arg) {
-        //toDO: decrease weapon cost after having used them => add a didUseWeapon method
-        //toDO: check for empty lists
+
     }
 }

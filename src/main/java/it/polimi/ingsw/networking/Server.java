@@ -266,11 +266,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public void choseAction(int userID, UUID gameID, String action) {
-
-    }
-
-    @Override
     public void chooseMovement() {
 
     }
@@ -311,12 +306,15 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                 weaponProcess.put(Effect.effect_key, "0");
                 Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
                 ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).getWeaponController().useEffect(weapon, weapon.getEffects().get(0), shooter, null, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getPlayers());
-                stringifyDamages(possibleDamages, weaponProcess);
+                if(possibleDamages.isEmpty()) weaponProcess.put(communication_message_key, DAMAGE_FAILURE.toString());
+                else stringifyDamages(possibleDamages, weaponProcess);
                 break;
             }
             default: {
                 weaponProcess.put(communication_message_key, POWERUP_SELLING_LIST.toString());
-                weaponProcess.putAll(gameControllers.get(gameID).getPowerupInHand(player));
+                Map<String, String> box = gameControllers.get(gameID).getPowerupInHand(player);
+                if(box.isEmpty()) weaponProcess.put(communication_message_key, POWERUP_IN_HAND_FAILURE.toString());
+                weaponProcess.putAll(box);
                 break;
             }
         }
@@ -447,7 +445,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         List<Damage> forPotentiableWeaponDamages = gameControllers.get(gameID).getWeaponController().getForPotentiableWeapon();
         if (forPotentiableWeapon.isEmpty()) forPotentiableWeapon = null;
         ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).getWeaponController().useEffect(weapon, effect, shooter, forPotentiableWeaponDamages, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getPlayers());
-        stringifyDamages(possibleDamages, responseArgs);
+        if(possibleDamages.isEmpty()) responseArgs.put(Damage.damage_key, Damage.no_damage);
+        else stringifyDamages(possibleDamages, responseArgs);
         Map<AmmoColor, Integer> effectCost = effect.getCost();
         gameControllers.get(gameID).getWeaponController().addEffectsCost(effectCost);
         return responseArgs;

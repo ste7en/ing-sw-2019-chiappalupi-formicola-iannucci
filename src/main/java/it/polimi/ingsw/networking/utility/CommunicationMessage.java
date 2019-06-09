@@ -57,6 +57,19 @@ public enum CommunicationMessage {
     SHOOT_PEOPLE,
 
     /**
+     * Weapon failure messages.
+     *
+     * SHOOT_PEOPLE_FAILURE is sent by the server to the client if the player who wants to shoot doesn't have any weapon.
+     * DAMAGE_FAILURE is sent by the server to the client if no damage can be done with the combination of effect and weapon selected.
+     * POWERUP_IN_HAND_FAILURE is sent by the server to the client if the player has selected to use powerup to afford the cost of any weapon but has no powerup in his hand.
+     *
+     * Arguments: none.
+     */
+    SHOOT_PEOPLE_FAILURE,
+    DAMAGE_FAILURE,
+    POWERUP_IN_HAND_FAILURE,
+
+    /**
      * Weapon selection message.
      *
      * WEAPON_TO_USE is sent by the client to the server to notify the selection of the Weapon to use in game.
@@ -131,12 +144,14 @@ public enum CommunicationMessage {
      *
      * ASK_WEAPONS is sent by the client to the server to ask the weapons that the player has in his hand. The request has no arguments.
      * WEAPON_LIST is sent by the server to the client to provide the weapons that the player has in his hand.
+     * NO_WEAPON_UNLOADED_IN_HAND is sent by the server to the client when there are no weapons unloaded in the hand of the player, but he wanted to reload.
      * WEAPON_USING_OVER is sent by the client to the server when the process of using a weapon is over.
      *
      * Arguments: <indexOf_Weapon, Weapon_name>
      */
     ASK_WEAPONS,
     WEAPON_LIST,
+    NO_WEAPON_UNLOADED_IN_HAND,
     WEAPON_USING_OVER,
 
     /**
@@ -155,11 +170,13 @@ public enum CommunicationMessage {
      * Powerup selection messages.
      *
      * ASK_POWERUPS is sent by the client to the server to ask the powerups that the player has in his hand and can use during its turn. The request has no arguments.
+     * NO_TURN_POWERUP is sent by the server to the client to notify that the latter hasn't got any powerup usable during the turn in his hand.
      * POWERUPS_LIST is sent by the server to the client to provide the powerups that the player has in his hand and can use during its turn.
      *
      * Arguments: <indexOf_Powerup, Powerup::toString>
      */
     ASK_POWERUPS,
+    NO_TURN_POWERUP,
     POWERUP_LIST,
 
     /**
