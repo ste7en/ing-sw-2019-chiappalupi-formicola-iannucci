@@ -175,11 +175,6 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
-    public void choseAction(String action){
-
-    }
-
-    @Override
     public void askWeapon() {
         this.send(CommunicationMessage.from(userID, SHOOT_PEOPLE, gameID));
     }

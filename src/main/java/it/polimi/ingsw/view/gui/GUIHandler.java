@@ -156,7 +156,7 @@ public class GUIHandler extends Application  {
         this.adrenalineGUI.didChooseConnection(connectionType, portNumber, address);
         //login();
         try {
-            board();
+            chooseGameMap();
         }catch (FileNotFoundException e){
             System.err.println("File exception:" + e.toString());
         }
@@ -403,6 +403,28 @@ public class GUIHandler extends Application  {
 
     public void chooseSpawnPoint(ArrayList<String> powerups) throws FileNotFoundException{
         root.getChildren().clear();
+        Text text = new Text("Draw two power-up cards from this power-ups deck!");
+        Image back = new Image(new FileInputStream("src/main/resources/images/powerups/Back.png"));
+        ImageView ivBack = new ImageView();
+        ivBack.setImage(back);
+        HBox cardBox = new HBox(ivBack);
+        cardBox.setAlignment(Pos.CENTER);
+        Button b = new Button("Draw two cards");
+        HBox boxB = new HBox(b);
+        boxB.setAlignment(Pos.CENTER);
+        boxB.setMargin(b, new Insets(0, 0, 50, 0));
+        root.setCenter(cardBox);
+        root.setBottom(boxB);
+        b.setOnAction(e -> {try {
+            chooseSpawnPointHelper(powerups);
+        }catch (FileNotFoundException e1){
+            System.err.println(e.toString());
+        }
+        });
+    }
+
+    public void chooseSpawnPointHelper(ArrayList<String> powerups) throws FileNotFoundException{
+        root.getChildren().clear();
         Text text = new Text("Choose a spawn point by selecting one card that you will not keep");
         HBox textBox = new HBox(text);
         textBox.setMargin(text, new Insets(10,10,10,10));
@@ -430,16 +452,104 @@ public class GUIHandler extends Application  {
         ivFirst.setOnMouseClicked(e -> {
             textBelow.setText("You selected the first card as a spawpoint!");
             button.setOnAction(ev -> handleSpawnPointsOptions(powerups.get(0)));
+            try {
+                Image firstCard_click = new Image(new FileInputStream("src/main/resources/images/powerups/" + powerups.get(0) + "_click.png"));
+                ivFirst.setImage(firstCard_click);
+                ivSecond.setImage(secondCard);
+            } catch (FileNotFoundException e1){
+                System.err.println(e.toString());
+            }
         });
 
         ivSecond.setOnMouseClicked(e -> {
             textBelow.setText("You selected the second card as a spawpoint!");
             button.setOnAction(ev -> handleSpawnPointsOptions(powerups.get(1)));
+            try {
+                Image secondCard_click = new Image(new FileInputStream("src/main/resources/images/powerups/" + powerups.get(1) + "_click.png"));
+                ivSecond.setImage(secondCard_click);
+                ivFirst.setImage(firstCard);
+            } catch (FileNotFoundException e1){
+                System.err.println(e.toString());
+            }
         });
     }
 
     public void handleSpawnPointsOptions(String powerup){
         adrenalineGUI.didChooseSpawnPoint(powerup);
+    }
+
+    public void chooseAction() throws FileNotFoundException{
+
+        Text text = new Text("Choose your next move!");
+        HBox textBox = new HBox(text);
+        textBox.setMargin(text, new Insets(10,10,10,10));
+        textBox.setAlignment(Pos.CENTER);
+
+
+        Image shoot = new Image(new FileInputStream("src/main/resources/images/actions/shoot.png"));
+        ImageView ivShoot = new ImageView();
+        ivShoot.setImage(shoot);
+        Image grab = new Image(new FileInputStream("src/main/resources/images/actions/grab.png"));
+        ImageView ivGrab = new ImageView();
+        ivGrab.setImage(grab);
+        Image move = new Image(new FileInputStream("src/main/resources/images/actions/move.png"));
+        ImageView ivMove = new ImageView();
+        ivMove.setImage(move);
+
+        VBox actions = new VBox(ivShoot, ivGrab, ivMove);
+        actions.setAlignment(Pos.CENTER);
+        actions.setMargin(ivShoot, new Insets(10,10,10,10));
+        actions.setMargin(ivGrab, new Insets(10,10,10,10));
+        actions.setMargin(ivMove, new Insets(10,10,10,10));
+        root.setTop(textBox);
+        root.setCenter(actions);
+        Text textBelow = new Text();
+        VBox vBox = new VBox(textBelow, boxButton);
+        vBox.setMargin(textBelow, new Insets(10,10,10,10));
+        root.setBottom(vBox);
+
+        ivShoot.setOnMouseClicked(e -> {
+            textBelow.setText("You chose to shoot!");
+            button.setOnAction(ev -> handleActionOptions("shoot"));
+            try {
+                Image shoot_click = new Image(new FileInputStream("src/main/resources/images/actions/shoot_click.png"));
+                ivShoot.setImage(shoot_click);
+                ivGrab.setImage(grab);
+                ivMove.setImage(move);
+            } catch (FileNotFoundException e1){
+                System.err.println(e.toString());
+            }
+
+        });
+
+        ivGrab.setOnMouseClicked(e -> {
+            textBelow.setText("You chose to grab something!");
+            button.setOnAction(ev -> handleActionOptions("grab"));
+            try{
+                Image grab_click = new Image(new FileInputStream("src/main/resources/images/actions/grab_click.png"));
+                ivGrab.setImage(grab_click);
+                ivShoot.setImage(shoot);
+                ivMove.setImage(move);
+            } catch (FileNotFoundException e1){
+                System.err.println(e.toString());
+            }
+        });
+
+        ivMove.setOnMouseClicked(e -> {
+            textBelow.setText("You chose to move!");
+            button.setOnAction(ev -> handleActionOptions("move"));
+            try {
+                Image move_click = new Image(new FileInputStream("src/main/resources/images/actions/move_click.png"));
+                ivMove.setImage(move_click);
+                ivShoot.setImage(shoot);
+                ivGrab.setImage(grab);
+            } catch (FileNotFoundException e1){
+                System.err.println(e.toString());
+            }
+        });
+    }
+
+    public void handleActionOptions(String action){
     }
 
     public void board() throws FileNotFoundException{
@@ -539,6 +649,7 @@ public class GUIHandler extends Application  {
         ivLastRow.setImage(lastRow);
 
         HBox generalBox = new HBox(ivRow0, firstRow, secondRow, third_fourth_row, ivLastRow);
+        generalBox.autosize();
 
         root.getChildren().add(generalBox);
     }

@@ -188,7 +188,7 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChooseAction() {
+    public void onChooseAction() {
 
     }
 

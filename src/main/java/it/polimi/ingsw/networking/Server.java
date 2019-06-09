@@ -266,11 +266,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public void choseAction(int userID, UUID gameID, String action) {
-
-    }
-
-    @Override
     public void chooseMovement() {
 
     }

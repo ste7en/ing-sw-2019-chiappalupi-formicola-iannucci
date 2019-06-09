@@ -127,25 +127,7 @@ public class ClientRMI extends Client implements ClientInterface {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void choseAction(String action){
-        try {
-            server.choseAction(userID, gameID, action);
-        } catch (RemoteException e) {
-            System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void askWeapon() {
-        try {
-            this.viewObserver.willChooseWeapon(this.server.askWeapons(userID, gameID));
-        } catch(RemoteException e) {
-            System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
-        }
+        viewObserver.onChooseAction();
     }
 
     @Override
@@ -158,6 +140,15 @@ public class ClientRMI extends Client implements ClientInterface {
                     this.viewObserver.willChooseDamage(weaponUsingProcess);
             else this.viewObserver.willChoosePowerupSelling(weaponUsingProcess);
         } catch (RemoteException e){
+            System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
+        }
+    }
+
+    @Override
+    public void askWeapon() {
+        try {
+            this.viewObserver.willChooseWeapon(this.server.askWeapons(userID, gameID));
+        } catch(RemoteException e) {
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
         }
     }

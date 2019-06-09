@@ -85,8 +85,12 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChooseAction() {
-
+    public void onChooseAction() {
+        try {
+            handlerGUI.chooseAction();
+        } catch (FileNotFoundException e){
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
     }
 
     @Override
