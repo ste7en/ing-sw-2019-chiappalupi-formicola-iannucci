@@ -168,7 +168,15 @@ public abstract class View implements Observer{
     /**
      * Ele
      */
-    public abstract void onMove();
+    public abstract void willChooseAction();
+
+
+    /**
+     * Ele
+     */
+    public void didChooseAction(String action){
+        client.choseAction(action);
+    }
 
     /**
      * Ele

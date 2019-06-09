@@ -189,7 +189,7 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void onMove() {
+    public void willChooseAction() {
 
     }
 

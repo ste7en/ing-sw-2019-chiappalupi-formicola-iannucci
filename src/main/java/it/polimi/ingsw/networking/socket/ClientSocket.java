@@ -170,6 +170,11 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
+    public void choseAction(String action){
+
+    }
+
+    @Override
     public void useWeapon(String weaponSelected) {
         Map<String, String> args = new HashMap<>();
         args.put(Weapon.weapon_key, weaponSelected);

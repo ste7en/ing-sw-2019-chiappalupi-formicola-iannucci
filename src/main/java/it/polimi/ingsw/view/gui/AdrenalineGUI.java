@@ -85,7 +85,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onMove() {
+    public void willChooseAction() {
 
     }
 

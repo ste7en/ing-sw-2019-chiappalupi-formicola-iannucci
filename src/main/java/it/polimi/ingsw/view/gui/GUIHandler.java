@@ -154,7 +154,12 @@ public class GUIHandler extends Application  {
         Integer portNumber = Integer.parseInt(port);
         String address = addressTextfield.getText();
         this.adrenalineGUI.didChooseConnection(connectionType, portNumber, address);
-        login();
+        //login();
+        try {
+            board();
+        }catch (FileNotFoundException e){
+            System.err.println("File exception:" + e.toString());
+        }
     }
 
     public void login(){
@@ -435,5 +440,106 @@ public class GUIHandler extends Application  {
 
     public void handleSpawnPointsOptions(String powerup){
         adrenalineGUI.didChooseSpawnPoint(powerup);
+    }
+
+    public void board() throws FileNotFoundException{
+        root.getChildren().clear();
+
+        Image row0 = new Image(new FileInputStream("src/main/resources/images/firstboard/first_row.png"));
+        ImageView ivRow0 = new ImageView();
+        ivRow0.setImage(row0);
+        Image above1 = new Image(new FileInputStream("src/main/resources/images/firstboard/1-1.png"));
+        ImageView ivAbove1 = new ImageView();
+        ivAbove1.setImage(above1);
+        Image r0c0 = new Image(new FileInputStream("src/main/resources/images/firstboard/2-1.png"));
+        ImageView iv00 = new ImageView();
+        iv00.setImage(r0c0);
+        Image r1c0 = new Image(new FileInputStream("src/main/resources/images/firstboard/3-1.png"));
+        ImageView iv10 = new ImageView();
+        iv10.setImage(r1c0);
+        Image r2c0 = new Image(new FileInputStream("src/main/resources/images/firstboard/4-1.png"));
+        ImageView iv20 = new ImageView();
+        iv20.setImage(r2c0);
+        Image below1 = new Image(new FileInputStream("src/main/resources/images/firstboard/5-1.png"));
+        ImageView ivBelow1 = new ImageView();
+        ivBelow1.setImage(below1);
+
+        VBox firstRow = new VBox(ivAbove1, iv00, iv10, iv20, ivBelow1);
+
+
+        Image above2 = new Image(new FileInputStream("src/main/resources/images/firstboard/1-2.png"));
+        ImageView ivAbove2 = new ImageView();
+        ivAbove2.setImage(above2);
+        Image r0c1 = new Image(new FileInputStream("src/main/resources/images/firstboard/2-2.png"));
+        ImageView iv01 = new ImageView();
+        iv01.setImage(r0c1);
+        Image r1c1 = new Image(new FileInputStream("src/main/resources/images/firstboard/3-2.png"));
+        ImageView iv11 = new ImageView();
+        iv11.setImage(r1c1);
+        Image r2c1 = new Image(new FileInputStream("src/main/resources/images/firstboard/4-2.png"));
+        ImageView iv21 = new ImageView();
+        iv21.setImage(r2c1);
+        Image below2 = new Image(new FileInputStream("src/main/resources/images/firstboard/5-2.png"));
+        ImageView ivBelow2 = new ImageView();
+        ivBelow2.setImage(below2);
+
+        VBox secondRow = new VBox(ivAbove2, iv01, iv11, iv21, ivBelow2);
+
+
+        Image middle0 = new Image(new FileInputStream("src/main/resources/images/secondboard/1-0.png"));
+        ImageView ivMiddle0 = new ImageView();
+        ivMiddle0.setImage(middle0);
+        Image middle1 = new Image(new FileInputStream("src/main/resources/images/secondboard/2-0.png"));
+        ImageView ivMiddle1 = new ImageView();
+        ivMiddle1.setImage(middle1);
+        Image middle2 = new Image(new FileInputStream("src/main/resources/images/secondboard/3-0.png"));
+        ImageView ivMiddle2 = new ImageView();
+        ivMiddle2.setImage(middle2);
+
+        VBox middle = new VBox(ivMiddle0, ivMiddle1, ivMiddle2);
+
+
+        Image r0c2 = new Image(new FileInputStream("src/main/resources/images/secondboard/1-1.png"));
+        ImageView iv02 = new ImageView();
+        iv02.setImage(r0c2);
+        Image r1c2 = new Image(new FileInputStream("src/main/resources/images/secondboard/2-1.png"));
+        ImageView iv12 = new ImageView();
+        iv12.setImage(r1c2);
+        Image r2c2 = new Image(new FileInputStream("src/main/resources/images/secondboard/3-1.png"));
+        ImageView iv22 = new ImageView();
+        iv22.setImage(r2c2);
+
+        VBox thirdRow = new VBox( iv02, iv12, iv22);
+
+
+        Image r0c3 = new Image(new FileInputStream("src/main/resources/images/secondboard/1-2.png"));
+        ImageView iv03 = new ImageView();
+        iv03.setImage(r0c3);
+        Image r1c3 = new Image(new FileInputStream("src/main/resources/images/secondboard/2-2.png"));
+        ImageView iv13 = new ImageView();
+        iv13.setImage(r1c3);
+        Image r2c3 = new Image(new FileInputStream("src/main/resources/images/secondboard/3-2.png"));
+        ImageView iv23 = new ImageView();
+        iv23.setImage(r2c3);
+
+        VBox fourthRow = new VBox( iv03, iv13, iv23);
+
+
+        HBox hBox = new HBox(middle, thirdRow, fourthRow);
+        Image above34 = new Image(new FileInputStream("src/main/resources/images/secondboard/above.png"));
+        ImageView ivAbove34 = new ImageView();
+        ivAbove34.setImage(above34);
+        Image below34 = new Image(new FileInputStream("src/main/resources/images/secondboard/below.png"));
+        ImageView ivBelow34 = new ImageView();
+        ivBelow34.setImage(below34);
+        VBox third_fourth_row = new VBox(ivAbove34, hBox, ivBelow34);
+
+        Image lastRow = new Image(new FileInputStream("src/main/resources/images/secondboard/last_row.png"));
+        ImageView ivLastRow = new ImageView();
+        ivLastRow.setImage(lastRow);
+
+        HBox generalBox = new HBox(ivRow0, firstRow, secondRow, third_fourth_row, ivLastRow);
+
+        root.getChildren().add(generalBox);
     }
 }

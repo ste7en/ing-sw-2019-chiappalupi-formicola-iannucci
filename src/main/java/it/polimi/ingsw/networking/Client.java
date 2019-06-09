@@ -133,6 +133,12 @@ public abstract class Client implements Loggable {
     public abstract void choseSpawnPoint(String powerup);
 
     /**
+     * Abstract method implemented by subclasses when a player has chosen what to do during his turn.
+     * @param action the chosen action that the player will perform
+     */
+    public abstract void choseAction(String action);
+
+    /**
      * Abstract method implemented by subclasses and used when a player wants to use a weapon.
      *
      * @param weaponSelected it's a String containing the weapon selected name.

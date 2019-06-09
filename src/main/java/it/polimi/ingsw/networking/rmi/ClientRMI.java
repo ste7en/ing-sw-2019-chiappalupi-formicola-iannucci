@@ -130,6 +130,15 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
+    public void choseAction(String action){
+        try {
+            server.choseAction(userID, gameID, action);
+        } catch (RemoteException e) {
+            System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
+            e.printStackTrace();
+        }
+    }
+    @Override
     public void useWeapon(String weaponSelected) {
         try{
             Map<String, String> weaponUsingProcess = this.server.useWeapon(userID, gameID, weaponSelected);
