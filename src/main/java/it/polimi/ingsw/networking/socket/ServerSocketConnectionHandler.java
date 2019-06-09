@@ -163,8 +163,8 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     createUser(connectionID, args);
                     break;
                 }
-                case USER_LOGIN: {
-                    userLogin(connectionID, args);
+                case USER_JOIN_WAITING_ROOM: {
+                    joinWaitingRoom(connectionID, args);
                     break;
                 }
                 case WEAPON_TO_USE: {
@@ -273,10 +273,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * @param connectionID message connection ID
      * @param args message arguments
      */
-    private void userLogin(int connectionID, Map<String, String> args) {
+    private void joinWaitingRoom(int connectionID, Map<String, String> args) {
         var username = args.get(User.username_key);
-        var user = new User(username);
-        server.userLogin(user);
+        server.joinWaitingRoom(username);
         var responseMessage = CommunicationMessage.from(connectionID, USER_JOINED_WAITING_ROOM, args);
         send(responseMessage);
     }

@@ -229,17 +229,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         return createUser(username, connectionHandler);
     }
 
-    /**
-     * When a client decides to join a game
-     * @param user the user who will play the game
-     */
-    public void userLogin(User user) {
-        waitingRoom.addUser(user);
-    }
-
     @Override
     public void joinWaitingRoom(String username) {
-
+        users.forEach( (user, conn) -> { if (user.getUsername().equals(username)) waitingRoom.addUser(user); } );
     }
 
     @Override

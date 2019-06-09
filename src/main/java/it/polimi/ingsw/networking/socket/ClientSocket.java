@@ -141,7 +141,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     public void joinWaitingRoom(String username) {
         var args = new HashMap<String, String>();
         args.put(User.username_key, username);
-        this.send(CommunicationMessage.from(0, USER_LOGIN, args));
+        this.send(CommunicationMessage.from(0, USER_JOIN_WAITING_ROOM, args));
     }
 
     @Override

@@ -30,7 +30,7 @@ public enum CommunicationMessage {
      * CREATE_USER is sent by the client to the server to create a new User, the server will process the request and send a
      * CREATE_USER_OK or CREATE_USER_FAILED in case of success or failure.
      *
-     * USER_LOGIN is sent by the client when a CREATE_USER_OK is received, in order to join a waiting room or a game and a
+     * USER_JOIN_WAITING_ROOM is sent by the client when a CREATE_USER_OK is received, in order to join a waiting room or a game and a
      * USER_JOINED_WAITING_ROOM confirmation message will be sent.
      *
      * Arguments: <User.username_key, value>
@@ -38,7 +38,7 @@ public enum CommunicationMessage {
     CREATE_USER,
     CREATE_USER_OK,
     CREATE_USER_FAILED,
-    USER_LOGIN,
+    USER_JOIN_WAITING_ROOM,
     USER_JOINED_WAITING_ROOM,
 
     /**

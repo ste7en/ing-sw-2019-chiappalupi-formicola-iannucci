@@ -15,6 +15,10 @@ public interface ServerInterface extends Remote {
 
     boolean createUserRMIHelper(String username) throws RemoteException;
 
+    /**
+     * When a client decides to join a game
+     * @param username username of the user who will play the game
+     */
     void joinWaitingRoom(String username) throws RemoteException;
 
     ArrayList<String> getAvailableCharacters(UUID gameID) throws RemoteException;

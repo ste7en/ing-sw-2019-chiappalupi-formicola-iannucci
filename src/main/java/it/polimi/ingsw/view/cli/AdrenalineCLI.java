@@ -25,10 +25,9 @@ public class AdrenalineCLI extends View {
     /**
      * Console prompt strings
      */
-    private static final String CHOOSE_CONNECTION           =
-            "Please, choose between a \n\t" +
-            "1. SOCKET connection\n\t" +
-            "2. RMI connection";
+    private static final String CHOOSE_CONNECTION           = "Please, choose between a \n\t" +
+                                                              "1. SOCKET connection\n\t" +
+                                                              "2. RMI connection";
     private static final String INCORRECT_CHOICE            = "Incorrect choice. Retry.";
     private static final String CHOOSE_SOCKET_PORT          = "On which port the SOCKET server is listening? ";
     private static final String CHOOSE_RMI_PORT             = "On which port the RMI server is listening? ";
@@ -41,7 +40,7 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_DAMAGE               = "What damage do you want to make?";
     private static final String CHOOSE_MODALITY             = "Which modality do you want to use?";
     private static final String CHOOSE_EFFECT               = "What effect/s do you want to use?";
-    private static final String WEAPON_USED                = "The powerup has been used with success.";
+    private static final String WEAPON_USED                 = "The powerup has been used with success.";
     private static final String CHOOSE_WEAPONS_TO_RELOAD    = "What weapons do you want to reload? \nMultiple weapons can be provided with commas.";
     private static final String NOT_ENOUGH_AMMOS            = "You have not enough ammos to reload. Please select only weapons you can afford.";
     private static final String ASK_RELOAD                  = "Do you want to reload your weapons? [Y/N]";
