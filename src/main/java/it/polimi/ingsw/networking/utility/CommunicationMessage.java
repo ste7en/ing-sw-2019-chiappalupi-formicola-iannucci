@@ -143,14 +143,12 @@ public enum CommunicationMessage {
      * ASK_WEAPONS is sent by the client to the server to ask the weapons that the player has in his hand. The request has no arguments.
      * WEAPON_LIST is sent by the server to the client to provide the weapons that the player has in his hand.
      * NO_WEAPON_UNLOADED_IN_HAND is sent by the server to the client when there are no weapons unloaded in the hand of the player, but he wanted to reload.
-     * WEAPON_USING_OVER is sent by the client to the server when the process of using a weapon is over.
      *
      * Arguments: <indexOf_Weapon, Weapon_name>
      */
     ASK_WEAPONS,
     WEAPON_LIST,
     NO_WEAPON_UNLOADED_IN_HAND,
-    WEAPON_USING_OVER,
 
     /**
      * Weapon reloading messages.

@@ -110,7 +110,8 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.willChooseEffects(args);
                         break;
                     case LAST_DAMAGE_DONE:
-                        this.viewObserver.didUseWeapon(args.get(Weapon.weapon_key));
+                        this.viewObserver.didUseWeapon();
+                        this.viewObserver.askPowerupAfterShot(new ArrayList<>(args.values()));
                         break;
                     case NO_WEAPON_UNLOADED_IN_HAND:
                         this.viewObserver.onWeaponUnloadedFailure();
@@ -247,13 +248,6 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
             args.remove(PotentiableWeapon.forPotentiableWeapon_key);
             args.remove(Effect.effect_key);
         }
-    }
-
-    @Override
-    public void weaponUsed(String weapon) {
-        Map<String, String> args = new HashMap<>();
-        args.put(Weapon.weapon_key, weapon);
-        this.send(CommunicationMessage.from(userID, WEAPON_USING_OVER, args));
     }
 
     @Override

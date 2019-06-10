@@ -44,7 +44,10 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_DAMAGE               = "What damage do you want to make?";
     private static final String CHOOSE_MODALITY             = "Which modality do you want to use?";
     private static final String CHOOSE_EFFECT               = "What effect/s do you want to use?";
-    private static final String WEAPON_USED                 = "The powerup has been used with success.";
+    private static final String WEAPON_USED                 = "The weapon has been used with success.";
+    private static final String ASK_POWERUP_AFTER_SHOT      = "Do you want to use any powerup to make additional damage after this shot?";
+    private static final String WILL_POWERUP_AFTER_SHOT     = "You selected that you want to use any powerup to make additional damage after this shot\n" + "What powerup would you like to use?";
+    private static final String WON_T_POWERUP_AFTER_SHOT    = "No powerups will be used after this shot.";
     private static final String CHOOSE_WEAPONS_TO_RELOAD    = "What weapons do you want to reload? \nMultiple weapons can be provided with commas.";
     private static final String NOT_ENOUGH_AMMOS            = "You have not enough ammos to reload. Please select only weapons you can afford.";
     private static final String ASK_RELOAD                  = "Do you want to reload your weapons? [Y/N]";
@@ -415,6 +418,17 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
+    public void askPowerupAfterShot(List<String> powerups) {
+        out.println(ASK_POWERUP_AFTER_SHOT);
+        String scanInput = in.nextLine();
+        if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y")) {
+            out.println(WILL_POWERUP_AFTER_SHOT);
+            this.willChoosePowerup(powerups);
+        }
+        else out.println(WON_T_POWERUP_AFTER_SHOT);
+    }
+
+    @Override
     public void onEndTurn() {
 
     }
@@ -427,7 +441,7 @@ public class AdrenalineCLI extends View {
             out.println(WILL_RELOAD);
             this.askWastePowerupToReload();
         }
-        out.println(WON_T_RELOAD);
+        else out.println(WON_T_RELOAD);
     }
 
     @Override
@@ -529,6 +543,5 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void update(Observable o, Object arg) {
-        //toDo: powerup in attacco
     }
 }

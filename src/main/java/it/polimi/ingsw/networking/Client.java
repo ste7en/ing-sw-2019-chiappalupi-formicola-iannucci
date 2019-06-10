@@ -176,12 +176,6 @@ public abstract class Client implements Loggable {
     public abstract void useEffect(String weapon, List<String> effectsToUse);
 
     /**
-     * Abstract method implemented by subclasses and used when the process of using a weapon from a player is over: it unloads the weapon and subs the cost of its usage from the players' ammos.
-     * @param weapon it's the weapon that has been used.
-     */
-    public abstract void weaponUsed(String weapon);
-
-    /**
      * Abstract method implemented by subclasses and used when a player wants to reload his weapons.
      */
     public abstract void askWeaponToReload();

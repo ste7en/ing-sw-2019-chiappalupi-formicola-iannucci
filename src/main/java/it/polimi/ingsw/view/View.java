@@ -301,12 +301,16 @@ public abstract class View implements Observer{
     }
 
     /**
-     * Called when the process of using a weapon has ended.
-     * @param weapon it's the weapon that has been used.
+     * Called when the player has to decide if use a powerup to make additional damage after the shoot.
+     * @param powerups it's a list containing the powerup that can be used.
      */
-    public void didUseWeapon(String weapon) {
+    public abstract void askPowerupAfterShot(List<String> powerups);//vedi clientRMI
+
+    /**
+     * Called when the process of using a weapon has ended.
+     */
+    public void didUseWeapon() {
         AdrenalineLogger.info(DID_USE_WEAPON);
-        this.client.weaponUsed(weapon);
     }
 
     /**

@@ -43,8 +43,6 @@ public interface ServerInterface extends Remote {
 
     List<String> makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) throws RemoteException;
 
-    void didUseWeapon(String weapon, int userID, UUID gameID) throws RemoteException;
-
     Map<String, String> useEffect(int userID, UUID gameID, String forPotentiableWeapon, String effectSelected, String weaponSelected) throws RemoteException;
 
     boolean reload(List<String> weaponsSelected, int userID, UUID gameID) throws RemoteException;

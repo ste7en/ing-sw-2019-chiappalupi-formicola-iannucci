@@ -409,6 +409,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             }
         }
         if(applied) {
+            this.didUseWeapon(weapon, userID, gameID);
             powerups = gameControllers.get(gameID).getPowerupController().getAfterShotPowerups(shooter);
             if(!powerups.isEmpty())
                 for(Damage d : damageToMake)
@@ -419,17 +420,17 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     /**
-     * Method called after the successfull usage of a weapon: it unloads the weapon and subs the cost of its usage from the player who has used it.
+     * Private method called after the successfull usage of a weapon: it unloads the weapon and subs the cost of its usage from the player who has used it.
      * @param weapon it's the weapon used.
      * @param userID it's the ID of the user.
      * @param gameID it's the ID of the game.
      */
-    @Override
-    public void didUseWeapon(String weapon, int userID, UUID gameID) {
+    private void didUseWeapon(String weapon, int userID, UUID gameID) {
         Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
         Weapon weaponUsed = gameControllers.get(gameID).getWeaponController().lookForWeapon(weapon, shooter);
         weaponUsed.unload();
         gameControllers.get(gameID).getWeaponController().applyCost(shooter, gameControllers.get(gameID).getDecks());
+        gameControllers.get(gameID).getPowerupController().clearPowerupTargets();
     }
 
     /**

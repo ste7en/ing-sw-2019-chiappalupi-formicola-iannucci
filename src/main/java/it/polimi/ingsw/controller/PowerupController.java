@@ -83,6 +83,7 @@ public class PowerupController {
             if(p.toString().equalsIgnoreCase(powerup))
                 selectedPowerup = p;
         if(selectedPowerup == null) throw new NullPointerException("This powerup is not in the hand of this player!");
+        if(selectedPowerup.isUsableAfterShot()) return selectedPowerup.use(player, map, new ArrayList<>(targets));
         return selectedPowerup.use(player, map, players);
     }
 
@@ -106,5 +107,12 @@ public class PowerupController {
      */
     public void addPowerupTarget(Player target) {
         this.targets.add(target);
+    }
+
+    /**
+     * Clears the targets powerup set to make it ready for the next usage.
+     */
+    public void clearPowerupTargets() {
+        this.targets.clear();
     }
 }
