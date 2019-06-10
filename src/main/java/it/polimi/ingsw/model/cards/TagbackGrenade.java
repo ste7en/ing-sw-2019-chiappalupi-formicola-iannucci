@@ -12,6 +12,11 @@ public class TagbackGrenade extends Powerup {
     }
 
     @Override
+    public boolean isUsableAfterShot() {
+        return false;
+    }
+
+    @Override
     public List<Damage> use(Player player, GameMap map, List<Player> players) {
             return null;
     }

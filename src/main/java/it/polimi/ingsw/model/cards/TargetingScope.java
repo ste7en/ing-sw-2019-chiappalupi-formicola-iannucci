@@ -6,9 +6,15 @@ import it.polimi.ingsw.model.player.Player;
 import java.util.List;
 
 public class TargetingScope extends Powerup {
+
     @Override
     public boolean isUsableDuringTurn() {
         return false;
+    }
+
+    @Override
+    public boolean isUsableAfterShot() {
+        return true;
     }
 
     @Override

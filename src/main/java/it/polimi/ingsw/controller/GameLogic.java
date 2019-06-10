@@ -27,6 +27,7 @@ public class GameLogic {
     private ArrayList<Damage> forPotentiableWeapon;
     private DecksHandler decks;
     private WeaponController weaponController;
+    private PowerupController powerupController;
 
     /**
      * String constants used in messages between client-server
@@ -46,6 +47,7 @@ public class GameLogic {
         this.gameID = gameID;
         this.forPotentiableWeapon = null;
         this.weaponController = new WeaponController();
+        this.powerupController = new PowerupController();
     }
 
     /**
@@ -55,6 +57,15 @@ public class GameLogic {
      */
     public UUID getGameID() {
         return gameID;
+    }
+
+    /**
+     * It's the weapon controller getter.
+     *
+     * @return the {@link PowerupController} of the game.
+     */
+    public PowerupController getPowerupController() {
+        return powerupController;
     }
 
     /**
@@ -168,67 +179,6 @@ public class GameLogic {
             availableCharacters.remove(player.getCharacter().getColor().toString());
         }
         return availableCharacters;
-    }
-
-    /**
-     * This method is used to return the powerups that the player has in his hand and can use anytime during his turn.
-     * @param user it's the user whose turn is.
-     * @return the list of the names of the powerups that the player can use and its color [i.e. Teleporter - Blue].
-     */
-    public List<String> getUsablePowerups(User user) {
-        Player player = lookForPlayerFromUser(user);
-        List<Powerup> powerupList = player.getPlayerHand().getPowerups();
-        List<String> powerupNames = new ArrayList<>();
-        for(Powerup powerup : powerupList)
-            if(powerup.isUsableDuringTurn())
-                powerupNames.add(powerup.toString());
-        return powerupNames;
-    }
-
-    /**
-     * This method is used to get the possible damages that a powerup can do.
-     * @param powerup it's the powerup::toString of the powerup.
-     * @param user it's the user who is using the powerup.
-     * @return the list of possible damages that the powerup can make.
-     */
-    public List<Damage> getPowerupDamages(String powerup, User user) {
-        Player player = lookForPlayerFromUser(user);
-        List<Powerup> powerups = player.getPlayerHand().getPowerups();
-        Powerup selectedPowerup = null;
-        for(Powerup p : powerups)
-            if(p.toString().equalsIgnoreCase(powerup))
-                selectedPowerup = p;
-        if(selectedPowerup == null) throw new NullPointerException("This powerup is not in the hand of this player!");
-        return selectedPowerup.use(player, board.getMap(), players);
-    }
-
-    /**
-     * This method is used to add a powerup to the used deck.
-     * @param powerup it'a the powerup::toString of the powerup.
-     * @param user it's the user who is wasting the powerup.
-     */
-    public void wastePowerup(String powerup, User user) {
-        Player player = lookForPlayerFromUser(user);
-        List<Powerup> powerups = player.getPlayerHand().getPowerups();
-        Powerup toWaste = null;
-        for(Powerup p : powerups)
-            if(p.toString().equals(powerup))
-                toWaste = p;
-        player.getPlayerHand().wastePowerup(toWaste);
-        this.decks.wastePowerup(toWaste);
-    }
-
-    /**
-     * This method returns a map containing all of the powerups in the hand of a player-
-     *
-     * @return a map <indexOf_Powerup, Powerup::toString>
-     */
-    public Map<String, String> getPowerupInHand(Player player) {
-        Map<String, String> returnValues = new HashMap<>();
-        List<Powerup> powerups = player.getPlayerHand().getPowerups();
-        for(Powerup powerup : powerups)
-            returnValues.put(Integer.toString(powerups.indexOf(powerup)), powerup.toString());
-        return returnValues;
     }
 
 }

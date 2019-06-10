@@ -323,7 +323,7 @@ public abstract class View implements Observer{
      * Public method called when the player has decided which powerup does he want to sell to reload his weapons.
      * @param powerups it's the list of powerups that has been chosen by the player.
      */
-    public abstract void willSellPowerupToReload(List<String> powerups); //toDO
+    public abstract void willSellPowerupToReload(List<String> powerups);
 
     /**
      * Public method implemented by subclasses and called when the player has no weapons unloaded in his hand but has chosen to reload them.

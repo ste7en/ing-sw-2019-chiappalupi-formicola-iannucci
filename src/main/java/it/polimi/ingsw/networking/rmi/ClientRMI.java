@@ -181,7 +181,10 @@ public class ClientRMI extends Client implements ClientInterface {
     @Override
     public void makeDamage(String weapon, String damage, String indexOfEffect, String forPotentiableWeapon) {
         try{
+            boolean lastDamage = true;
+            if(forPotentiableWeapon != null) lastDamage = Boolean.parseBoolean(forPotentiableWeapon);
             this.server.makeDamage(userID, forPotentiableWeapon, indexOfEffect, gameID, damage, weapon);
+            if(lastDamage) this.viewObserver.didUseWeapon(weapon);
         } catch (RemoteException e){
             System.err.println(CLIENT_RMI_EXCEPTION + e.toString());
         }
@@ -206,9 +209,9 @@ public class ClientRMI extends Client implements ClientInterface {
                 forPotentiableWeapon = effectsToUse.size() == 1;
                 String potentiableBoolean = Boolean.toString(forPotentiableWeapon);
                 String effect = effectsToUse.get(0);
-                Map<String, String> damageList = this.server.useEffect(userID, gameID, potentiableBoolean, effect, weapon);
-                if(damageList.containsValue(Damage.no_damage)) this.viewObserver.onDamageFailure();
-                else this.viewObserver.willChooseDamage(damageList);
+                Map<String, String> damageMap = this.server.useEffect(userID, gameID, potentiableBoolean, effect, weapon);
+                if(damageMap.containsValue(Damage.no_damage)) this.viewObserver.onDamageFailure();
+                else this.viewObserver.willChooseDamage(damageMap);
                 effectsToUse.remove(0);
             }
         } catch (RemoteException e) {

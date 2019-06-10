@@ -14,6 +14,11 @@ public class Teleporter extends Powerup {
     }
 
     @Override
+    public boolean isUsableAfterShot() {
+        return false;
+    }
+
+    @Override
     public List<Damage> use(Player player, GameMap map, List<Player> players) {
         List<Damage> possibleDamages = new ArrayList<>();
         int rows = map.getRows();

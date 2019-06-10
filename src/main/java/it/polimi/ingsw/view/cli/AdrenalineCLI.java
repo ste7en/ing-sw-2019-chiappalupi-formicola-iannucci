@@ -529,6 +529,6 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void update(Observable o, Object arg) {
-
+        //toDo: powerup in attacco
     }
 }

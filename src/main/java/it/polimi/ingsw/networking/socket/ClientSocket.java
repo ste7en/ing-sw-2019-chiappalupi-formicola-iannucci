@@ -217,8 +217,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         damageToDo.put(Damage.damage_key, damage);
         damageToDo.put(Weapon.weapon_key, weapon);
         damageToDo.put(Effect.effect_key, indexOfEffect);
-        if(forPotentiableWeapon != null) damageToDo.put(PotentiableWeapon.forPotentiableWeapon_key, indexOfEffect);
-        this.send(CommunicationMessage.from(userID, DAMAGE_TO_MAKE, damageToDo, gameID));
+        if(forPotentiableWeapon != null) damageToDo.put(PotentiableWeapon.forPotentiableWeapon_key, forPotentiableWeapon);
+        boolean lastDamage = Boolean.parseBoolean(forPotentiableWeapon);
+        if(lastDamage) this.send(CommunicationMessage.from(userID, LAST_DAMAGE, damageToDo, gameID));
+        else this.send(CommunicationMessage.from(userID, DAMAGE_TO_MAKE, damageToDo, gameID));
     }
 
     @Override
