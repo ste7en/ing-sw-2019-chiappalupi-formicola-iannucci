@@ -96,9 +96,6 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case DAMAGE_FAILURE:
                         this.viewObserver.onDamageFailure();
                         break;
-                    case POWERUP_IN_HAND_FAILURE:
-                        this.viewObserver.onPowerupInHandFailure();
-                        break;
                     case POWERUP_SELLING_LIST:
                         this.viewObserver.willChoosePowerupSelling(args);
                         break;
@@ -113,10 +110,15 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.willChooseEffects(args);
                         break;
                     case LAST_DAMAGE_DONE:
-                        this.viewObserver.didUseWeapon(args.get(Weapon.weapon_key));
+                        this.viewObserver.didUseWeapon();
+                        this.viewObserver.askPowerupAfterShot(new ArrayList<>(args.values()));
                         break;
                     case NO_WEAPON_UNLOADED_IN_HAND:
                         this.viewObserver.onWeaponUnloadedFailure();
+                        break;
+                    case POWERUP_TO_RELOAD:
+                        if (args.values().isEmpty()) this.viewObserver.onPowerupInHandFailure();
+                        else this.viewObserver.willSellPowerupToReload(new ArrayList<>(args.values()));
                         break;
                     case WEAPON_LIST:
                         this.viewObserver.willReload(new ArrayList<>(args.values()));
@@ -216,8 +218,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         damageToDo.put(Damage.damage_key, damage);
         damageToDo.put(Weapon.weapon_key, weapon);
         damageToDo.put(Effect.effect_key, indexOfEffect);
-        if(forPotentiableWeapon != null) damageToDo.put(PotentiableWeapon.forPotentiableWeapon_key, indexOfEffect);
-        this.send(CommunicationMessage.from(userID, DAMAGE_TO_MAKE, damageToDo, gameID));
+        if(forPotentiableWeapon != null) damageToDo.put(PotentiableWeapon.forPotentiableWeapon_key, forPotentiableWeapon);
+        boolean lastDamage = Boolean.parseBoolean(forPotentiableWeapon);
+        if(lastDamage) this.send(CommunicationMessage.from(userID, LAST_DAMAGE, damageToDo, gameID));
+        else this.send(CommunicationMessage.from(userID, DAMAGE_TO_MAKE, damageToDo, gameID));
     }
 
     @Override
@@ -247,13 +251,6 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
-    public void weaponUsed(String weapon) {
-        Map<String, String> args = new HashMap<>();
-        args.put(Weapon.weapon_key, weapon);
-        this.send(CommunicationMessage.from(userID, WEAPON_USING_OVER, args));
-    }
-
-    @Override
     public void askWeaponToReload() {
         this.send(CommunicationMessage.from(userID, ASK_WEAPONS, gameID));
     }
@@ -267,7 +264,21 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
-    public void askForPowerup() {
+    public void askForPowerupsToReload() {
+        this.send(CommunicationMessage.from(userID, ASK_POWERUP_TO_RELOAD, gameID));
+    }
+
+    @Override
+    public void sellPowerupToReload(List<String> powerups) {
+        Map<String, String> args = new HashMap<>();
+        for(String powerup : powerups)
+            args.put(Integer.toString(powerups.indexOf(powerup)), powerup);
+        this.send(CommunicationMessage.from(userID, SELL_POWERUP, args, gameID));
+        this.askWeaponToReload();
+    }
+
+    @Override
+    public void askForUsablePowerups() {
         this.send(CommunicationMessage.from(userID, ASK_POWERUPS, gameID));
     }
 

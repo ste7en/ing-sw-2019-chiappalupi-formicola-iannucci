@@ -19,6 +19,11 @@ public class Newton extends Powerup {
     }
 
     @Override
+    public boolean isUsableAfterShot() {
+        return false;
+    }
+
+    @Override
     public List<Damage> use(Player shooter, GameMap map, List<Player> players) {
         List<Cell> possibleMovements = new ArrayList<>();
         List<Damage> possibleDamages = new ArrayList<>();

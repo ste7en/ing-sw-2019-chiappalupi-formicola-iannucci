@@ -41,9 +41,7 @@ public interface ServerInterface extends Remote {
 
     Map<String, String> useWeaponAfterPowerupSelling(int userID, UUID gameID, String weaponSelected, List<String> powerups) throws RemoteException;
 
-    void makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) throws RemoteException;
-
-    void didUseWeapon(String weapon, int userID, UUID gameID) throws RemoteException;
+    List<String> makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) throws RemoteException;
 
     Map<String, String> useEffect(int userID, UUID gameID, String forPotentiableWeapon, String effectSelected, String weaponSelected) throws RemoteException;
 
@@ -56,4 +54,8 @@ public interface ServerInterface extends Remote {
     List<String> getPowerupDamages(int userID, UUID gameID, String powerup) throws RemoteException;
 
     void applyPowerupDamage(int userID, UUID gameID, String powerup, String damage) throws RemoteException;
+
+    List<String> getPowerupsInHand(int userID, UUID gameID) throws RemoteException;
+
+    void sellPowerupToReload(List<String> powerups, int userID, UUID gameID) throws RemoteException;
 }

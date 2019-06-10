@@ -44,10 +44,16 @@ public abstract class Powerup {
     }
 
     /**
-     * Public method implemented by subclasses to know when a powerup can be used..
+     * Public method implemented by subclasses to know when a powerup can be used.
      * @return TRUE if the powerup can be used during the turn, FALSE if it must be used after other actions.
      */
     public abstract boolean isUsableDuringTurn();
+
+    /**
+     * Public method implemented by subclasses to know when a powerup can be used.
+     * @return TRUE if the powerup can be used after the shot, FALSE otherwise.
+     */
+    public abstract boolean isUsableAfterShot();
 
     /**
      * Public method implemented by subclasses, used when a powerup is being used.

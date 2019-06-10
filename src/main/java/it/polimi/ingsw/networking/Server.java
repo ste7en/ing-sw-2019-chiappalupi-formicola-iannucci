@@ -236,7 +236,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     @Override
     public ArrayList<String> getAvailableCharacters(UUID gameID) {
-        return gameControllers.get(gameID).getAvailableCharacters();
+        //return gameControllers.get(gameID).getAvailableCharacters();
+        //toDo: fix build failure
+        return null;
     }
 
     @Override
@@ -283,7 +285,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public List<String> askWeapons(int userID, UUID gameID) {
-        return this.gameControllers.get(gameID).getWeaponController().lookForPlayerWeapons(gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)));
+        return this.gameControllers.get(gameID).getWeaponController().lookForPlayerWeapons(gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)), gameControllers.get(gameID).getBoard().getMap());
     }
 
     /**
@@ -312,8 +314,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             }
             default: {
                 weaponProcess.put(communication_message_key, POWERUP_SELLING_LIST.toString());
-                Map<String, String> box = gameControllers.get(gameID).getPowerupInHand(player);
-                if(box.isEmpty()) weaponProcess.put(communication_message_key, POWERUP_IN_HAND_FAILURE.toString());
+                Map<String, String> box = gameControllers.get(gameID).getPowerupController().getPowerupInHand(player);
                 weaponProcess.putAll(box);
                 break;
             }
@@ -363,10 +364,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * @param weapon it's the name of the weapon that is being used.
      */
     @Override
-    public void makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) {
-        Player player = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
-        Weapon weaponToUse = gameControllers.get(gameID).getWeaponController().lookForWeapon(weapon, player);
+    public List<String> makeDamage(int userID, String potentiableBoolean, String effectIndex, UUID gameID, String damage, String weapon) {
+        List<String> powerups = new ArrayList<>();
+        boolean applied = true;
         Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
+        Weapon weaponToUse = gameControllers.get(gameID).getWeaponController().lookForWeapon(weapon, shooter);
         PlayerColor playerColor = shooter.getCharacter().getColor();
         int indexOfEffect = Integer.parseInt(effectIndex);
         boolean potentiable = false;
@@ -381,7 +383,10 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             List<Damage> forPotentiableWeapon = gameControllers.get(gameID).getWeaponController().getForPotentiableWeapon();
             if (forPotentiableWeapon.isEmpty() || effect.getProperties().containsKey(EffectProperty.MoveMe))
                 forPotentiableWeapon = null;
-            if (effect.getProperties().containsKey(EffectProperty.MoveMe)) toApply = true;
+            if (effect.getProperties().containsKey(EffectProperty.MoveMe)) {
+                toApply = true;
+                applied = false;
+            }
             possibleDamages = gameControllers.get(gameID).getWeaponController().useEffect(weaponToUse, effect, shooter, forPotentiableWeapon, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getPlayers());
         }
         ArrayList<Damage> damageToMake = new ArrayList<>();
@@ -398,22 +403,34 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                 for (Damage d : damageToMake)
                     gameControllers.get(gameID).getWeaponController().applyDamage(d, playerColor, gameControllers.get(gameID).getBoard());
                 gameControllers.get(gameID).getWeaponController().wipePotentiableWeapon();
-            } else gameControllers.get(gameID).getWeaponController().appendPotentiableWeapon(damageToMake);
+            } else {
+                gameControllers.get(gameID).getWeaponController().appendPotentiableWeapon(damageToMake);
+                applied = false;
+            }
         }
+        if(applied) {
+            this.didUseWeapon(weapon, userID, gameID);
+            powerups = gameControllers.get(gameID).getPowerupController().getAfterShotPowerups(shooter);
+            if(!powerups.isEmpty())
+                for(Damage d : damageToMake)
+                    if(!d.getTarget().equals(shooter))
+                        gameControllers.get(gameID).getPowerupController().addPowerupTarget(d.getTarget());
+        }
+        return powerups;
     }
 
     /**
-     * Method called after the successfull usage of a weapon: it unloads the weapon and subs the cost of its usage from the player who has used it.
+     * Private method called after the successfull usage of a weapon: it unloads the weapon and subs the cost of its usage from the player who has used it.
      * @param weapon it's the weapon used.
      * @param userID it's the ID of the user.
      * @param gameID it's the ID of the game.
      */
-    @Override
-    public void didUseWeapon(String weapon, int userID, UUID gameID) {
+    private void didUseWeapon(String weapon, int userID, UUID gameID) {
         Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
         Weapon weaponUsed = gameControllers.get(gameID).getWeaponController().lookForWeapon(weapon, shooter);
         weaponUsed.unload();
         gameControllers.get(gameID).getWeaponController().applyCost(shooter, gameControllers.get(gameID).getDecks());
+        gameControllers.get(gameID).getPowerupController().clearPowerupTargets();
     }
 
     /**
@@ -445,7 +462,10 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         List<Damage> forPotentiableWeaponDamages = gameControllers.get(gameID).getWeaponController().getForPotentiableWeapon();
         if (forPotentiableWeapon.isEmpty()) forPotentiableWeapon = null;
         ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).getWeaponController().useEffect(weapon, effect, shooter, forPotentiableWeaponDamages, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getPlayers());
-        if(possibleDamages.isEmpty()) responseArgs.put(Damage.damage_key, Damage.no_damage);
+        if(possibleDamages.isEmpty()) {
+            responseArgs.put(Damage.damage_key, Damage.no_damage);
+            gameControllers.get(gameID).getWeaponController().restoreMap(gameControllers.get(gameID).getBoard().getMap(), gameControllers.get(gameID).getPlayers());
+        }
         else stringifyDamages(possibleDamages, responseArgs);
         Map<AmmoColor, Integer> effectCost = effect.getCost();
         gameControllers.get(gameID).getWeaponController().addEffectsCost(effectCost);
@@ -497,7 +517,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public List<String> getUsablePowerups(int userID, UUID gameID) {
-        return gameControllers.get(gameID).getUsablePowerups(findUserFromID(userID));
+        return gameControllers.get(gameID).getPowerupController().getUsablePowerups(gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)));
     }
 
     /**
@@ -509,7 +529,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public List<String> getPowerupDamages(int userID, UUID gameID, String powerup) {
-        List<Damage> possibleDamages = gameControllers.get(gameID).getPowerupDamages(powerup, findUserFromID(userID));
+        List<Damage> possibleDamages = gameControllers.get(gameID).getPowerupController().getPowerupDamages(powerup, gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)), gameControllers.get(gameID).getBoard().getMap(), gameControllers.get(gameID).getPlayers());
         List<String> returnValues = new ArrayList<>();
         for(Damage damage : possibleDamages)
             returnValues.add(damage.toString());
@@ -525,11 +545,35 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public void applyPowerupDamage(int userID, UUID gameID, String powerup, String damage) {
-        List<Damage> possibleDamages = gameControllers.get(gameID).getPowerupDamages(powerup, findUserFromID(userID));
+        List<Damage> possibleDamages = gameControllers.get(gameID).getPowerupController().getPowerupDamages(powerup, gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)), gameControllers.get(gameID).getBoard().getMap(), gameControllers.get(gameID).getPlayers());
         for(Damage d : possibleDamages)
             if(d.toString().equals(damage))
                 gameControllers.get(gameID).getWeaponController().applyDamage(d, gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)).getCharacter().getColor(), gameControllers.get(gameID).getBoard());
-        gameControllers.get(gameID).wastePowerup(powerup, findUserFromID(userID));
+        gameControllers.get(gameID).getPowerupController().wastePowerup(powerup, gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)), gameControllers.get(gameID).getDecks());
+    }
+
+    /**
+     * Method used to find the powerups in the hand of the user.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     * @return the list of Powerup::toString that the player owns.
+     */
+    @Override
+    public List<String> getPowerupsInHand(int userID, UUID gameID) {
+        Map<String, String> powerupsMap = gameControllers.get(gameID).getPowerupController().getPowerupInHand(gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)));
+        List<String> powerupsList = new ArrayList<>(powerupsMap.values());
+        return powerupsList;
+    }
+
+    /**
+     * Method used to sell the powerups selected to reload the weapons.
+     * @param powerups it's the list of powerups to sell.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     */
+    @Override
+    public void sellPowerupToReload(List<String> powerups, int userID, UUID gameID) {
+        gameControllers.get(gameID).getWeaponController().addPowerupSold(powerups, gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)));
     }
 
 }

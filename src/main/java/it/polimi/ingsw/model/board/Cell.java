@@ -34,7 +34,9 @@ public class Cell implements Comparable<Cell> {
      */
     private AmmoTile ammoCard;
 
-    //added for weapons testing purposes
+    /**
+     * Position of the cell in the matrix.
+     */
     private final int row;
     private final int column;
 
@@ -111,4 +113,19 @@ public class Cell implements Comparable<Cell> {
         return ("Row: " + row + "; Column: " + column);
     }
 
+    /**
+     * Row getter.
+     * @return the row of the cell.
+     */
+    public int getRow() {
+        return row;
+    }
+
+    /**
+     * Column getter.
+     * @return the column of the cell.
+     */
+    public int getColumn() {
+        return column;
+    }
 }

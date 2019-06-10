@@ -237,7 +237,7 @@ public abstract class View implements Observer{
     public abstract void onPowerupInHandFailure();
 
     /**
-     * Public method implemented by subclasses when choosing if using a powerup or not.
+     * Public method implemented by subclasses when choosing if using a powerup to get its ammo or not.
      *
      * @param powerups it's a map containing the powerups that the player has in his hand and the next thing to do after the powerups choosing.
      */
@@ -300,12 +300,16 @@ public abstract class View implements Observer{
     }
 
     /**
-     * Called when the process of using a weapon has ended.
-     * @param weapon it's the weapon that has been used.
+     * Called when the player has to decide if use a powerup to make additional damage after the shoot.
+     * @param powerups it's a list containing the powerup that can be used.
      */
-    public void didUseWeapon(String weapon) {
+    public abstract void askPowerupAfterShot(List<String> powerups);//vedi clientRMI
+
+    /**
+     * Called when the process of using a weapon has ended.
+     */
+    public void didUseWeapon() {
         AdrenalineLogger.info(DID_USE_WEAPON);
-        this.client.weaponUsed(weapon);
     }
 
     /**
@@ -317,6 +321,12 @@ public abstract class View implements Observer{
      * Public method implemented by subclasses when the player has to decide whether he wants to reload his weapons or not.
      */
     public abstract void askReload();
+
+    /**
+     * Public method called when the player has decided which powerup does he want to sell to reload his weapons.
+     * @param powerups it's the list of powerups that has been chosen by the player.
+     */
+    public abstract void willSellPowerupToReload(List<String> powerups);
 
     /**
      * Public method implemented by subclasses and called when the player has no weapons unloaded in his hand but has chosen to reload them.
@@ -354,7 +364,7 @@ public abstract class View implements Observer{
      * Starts the process of using a powerup.
      */
     public void willUsePowerup() {
-        this.client.askForPowerup();
+        this.client.askForUsablePowerups();
     }
 
     /**

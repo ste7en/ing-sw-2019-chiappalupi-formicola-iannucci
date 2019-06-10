@@ -61,13 +61,11 @@ public enum CommunicationMessage {
      *
      * SHOOT_PEOPLE_FAILURE is sent by the server to the client if the player who wants to shoot doesn't have any weapon.
      * DAMAGE_FAILURE is sent by the server to the client if no damage can be done with the combination of effect and weapon selected.
-     * POWERUP_IN_HAND_FAILURE is sent by the server to the client if the player has selected to use powerup to afford the cost of any weapon but has no powerup in his hand.
      *
      * Arguments: none.
      */
     SHOOT_PEOPLE_FAILURE,
     DAMAGE_FAILURE,
-    POWERUP_IN_HAND_FAILURE,
 
     /**
      * Weapon selection message.
@@ -145,14 +143,12 @@ public enum CommunicationMessage {
      * ASK_WEAPONS is sent by the client to the server to ask the weapons that the player has in his hand. The request has no arguments.
      * WEAPON_LIST is sent by the server to the client to provide the weapons that the player has in his hand.
      * NO_WEAPON_UNLOADED_IN_HAND is sent by the server to the client when there are no weapons unloaded in the hand of the player, but he wanted to reload.
-     * WEAPON_USING_OVER is sent by the client to the server when the process of using a weapon is over.
      *
      * Arguments: <indexOf_Weapon, Weapon_name>
      */
     ASK_WEAPONS,
     WEAPON_LIST,
     NO_WEAPON_UNLOADED_IN_HAND,
-    WEAPON_USING_OVER,
 
     /**
      * Weapon reloading messages.
@@ -165,6 +161,20 @@ public enum CommunicationMessage {
     WEAPON_TO_RELOAD,
     RELOAD_WEAPON_OK,
     RELOAD_WEAPON_FAILED,
+
+    /**
+     * Weapon reloading messages.
+     *
+     * ASK_POWERUP_TO_RELOAD is sent by the client to the server to ask the list of powerup that the player has in his hand.
+     * POWERUP_TO_RELOAD is sent by the server to the client to notify the list of powerup that the player has in his hand.
+     * SELL_POWERUP is sent by the client to the server to send the list of powerup that the player has decided to sell to reload.
+     *
+     * Arguments: <indexOf_Powerup, Powerup::toString>
+     */
+    ASK_POWERUP_TO_RELOAD,
+    POWERUP_TO_RELOAD,
+    SELL_POWERUP,
+
 
     /**
      * Powerup selection messages.

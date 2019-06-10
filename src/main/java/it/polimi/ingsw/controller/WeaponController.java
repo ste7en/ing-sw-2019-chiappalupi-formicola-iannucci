@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Effect;
 import it.polimi.ingsw.model.cards.Powerup;
@@ -21,6 +22,7 @@ public class WeaponController {
     private List<Damage> forPotentiableWeapon;
     private List<Powerup> powerupUsedToPayCost;
     private Map<AmmoColor, Integer> effectsCost;
+    private GameMap gameMapBox;
 
     /**
      * Class constructor.
@@ -28,6 +30,7 @@ public class WeaponController {
     WeaponController() {
         this.forPotentiableWeapon = new ArrayList<>();
         this.effectsCost = new EnumMap<> (AmmoColor.class);
+        this.powerupUsedToPayCost = new ArrayList<>();
     }
 
     /**
@@ -87,14 +90,28 @@ public class WeaponController {
      */
     public boolean checkCostOfReload(List<Weapon> weapons, Player player) {
         Map<AmmoColor, Integer> cost = new EnumMap<>(AmmoColor.class);
-        for(AmmoColor color : AmmoColor.values())
+        Map<AmmoColor, Integer> powerupAmmos = new EnumMap<>(AmmoColor.class);
+        for(AmmoColor color : AmmoColor.values()) {
             cost.put(color, 0);
+            powerupAmmos.put(color, 0);
+        }
+        for(Powerup powerup : powerupUsedToPayCost) powerupAmmos.put(powerup.getColor(), powerupAmmos.get(powerup.getColor()) + 1);
         for(Weapon weapon : weapons)
             for(AmmoColor color : weapon.getCost()) {
                 int costBox = cost.get(color);
                 costBox++;
                 cost.put(color, costBox);
             }
+        for(AmmoColor color : AmmoColor.values()) {
+            while(powerupAmmos.get(color) > 0 && cost.get(color) > 0) {
+                powerupAmmos.put(color, powerupAmmos.get(color) - 1);
+                cost.put(color, cost.get(color) - 1);
+            }
+            if(powerupAmmos.get(color) > 0) {
+                powerupUsedToPayCost.clear();
+                return false;
+            }
+        }
         for(AmmoColor color : AmmoColor.values()) {
             int newAmmo = player.getPlayerHand().getAmmosAmount(color) - cost.get(color);
             if (newAmmo < 0)
@@ -123,11 +140,13 @@ public class WeaponController {
     /**
      * This method is used to find all of the names of the weapons in the hand of a player.
      * @param player it's the player to return the weapons of.
+     * @param map it's the map of the game to be saved if anything goes bad during the process.
      */
-    public List<String> lookForPlayerWeapons(Player player) {
+    public List<String> lookForPlayerWeapons(Player player, GameMap map) {
         List<String> playerWeapons = new ArrayList<>();
         for(Weapon weapon : player.getPlayerHand().getWeapons())
             playerWeapons.add(weapon.getName());
+        this.gameMapBox = (GameMap)map.clone();
         return playerWeapons;
     }
 
@@ -218,6 +237,7 @@ public class WeaponController {
             player.getPlayerHand().wastePowerup(powerup);
             decks.wastePowerup(powerup);
         }
+        powerupUsedToPayCost.clear();
         for(AmmoColor color : effectsCost.keySet()) {
             int newAmount = player.getPlayerHand().getAmmosAmount(color) - effectsCost.get(color);
             player.getPlayerHand().updateAmmos(color, newAmount);
@@ -235,6 +255,15 @@ public class WeaponController {
             for(String pow : powerups)
                 if(powerup.toString().equalsIgnoreCase(pow))
                     this.powerupUsedToPayCost.add(powerup);
+    }
+
+    /**
+     * Method used to restore the gameMap if something goes wrong during the shooting process.
+     */
+    public void restoreMap(GameMap map, List<Player> players) {
+        for(Player player : players)
+            if(map.getPositionFromPlayer(player).compareTo(gameMapBox.getPositionFromPlayer(player)) != 0)
+                map.setPlayerPosition(player, gameMapBox.getPositionFromPlayer(player).getRow(), gameMapBox.getPositionFromPlayer(player).getColumn());
     }
 
 }

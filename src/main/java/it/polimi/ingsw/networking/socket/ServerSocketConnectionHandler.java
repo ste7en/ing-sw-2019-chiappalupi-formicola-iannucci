@@ -178,11 +178,11 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case DAMAGE_TO_MAKE:
                     damageToDo(communicationMessage, connectionID, args, gameID);
                     break;
-                case WEAPON_USING_OVER:
-                    this.server.didUseWeapon(args.get(Weapon.weapon_key), connectionID, gameID);
-                    break;
                 case EFFECT_TO_USE:
                     effectToUse(connectionID, args, gameID);
+                    break;
+                case ASK_POWERUP_TO_RELOAD:
+                    askPowerupToReload(connectionID, gameID);
                     break;
                 case WEAPON_TO_RELOAD:
                     weaponToReload(connectionID, args, gameID);
@@ -199,11 +199,21 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case POWERUP_DAMAGE_TO_MAKE:
                     server.applyPowerupDamage(connectionID, gameID, args.get(Powerup.powerup_key), args.get(Damage.damage_key));
                     break;
+                case SELL_POWERUP:
+                    server.sellPowerupToReload(new ArrayList<>(args.values()), connectionID, gameID);
+                    break;
                 default:
                     break;
             }
 
         }).start();
+    }
+
+    private void askPowerupToReload(int connectionID, UUID gameID) {
+        List<String> powerups = server.getPowerupsInHand(connectionID, gameID);
+        Map<String, String> responseArgs = new HashMap<>();
+        for(String powerup : powerups) responseArgs.put(Integer.toString(powerups.indexOf(powerup)), powerup);
+        send(CommunicationMessage.from(connectionID, POWERUP_TO_RELOAD, responseArgs));
     }
 
     private void askPowerupDamages(int connectionID, Map<String, String> args, UUID gameID) {
@@ -258,10 +268,11 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         String weapon = args.get(Weapon.weapon_key);
         String potentiableBoolean = args.get(PotentiableWeapon.forPotentiableWeapon_key);
         String effectIndex = args.get(Effect.effect_key);
-        server.makeDamage(connectionID, potentiableBoolean, effectIndex, gameID, damage, weapon);
+        List<String> pows = server.makeDamage(connectionID, potentiableBoolean, effectIndex, gameID, damage, weapon);
         if(communicationMessage == LAST_DAMAGE) {
             Map<String, String> responseArgs = new HashMap<>();
-            responseArgs.put(Weapon.weapon_key, weapon);
+            for(String pow : pows)
+                responseArgs.put(Integer.toString(pows.indexOf(pow)), pow);
             send(CommunicationMessage.from(connectionID, LAST_DAMAGE_DONE, responseArgs));
         }
     }
