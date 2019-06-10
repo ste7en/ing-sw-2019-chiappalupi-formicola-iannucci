@@ -3,6 +3,7 @@ package it.polimi.ingsw.networking;
 import it.polimi.ingsw.controller.DecksHandler;
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.AmmoColor;
@@ -236,14 +237,15 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     @Override
     public ArrayList<String> getAvailableCharacters(UUID gameID) {
-        //return gameControllers.get(gameID).getAvailableCharacters();
-        //toDo: fix build failure
-        return null;
+        return (ArrayList<String>)gameControllers.get(gameID).getAvailableCharacters();
     }
 
     @Override
     public void choseCharacter(int userID, UUID gameID, String character) {
-
+        var gameController = gameControllers.get(gameID);
+        var chosenCharacter = Character.getCharacterFromName(character);
+        var newPlayer = new Player(findUserFromID(userID), chosenCharacter);
+        gameController.addPlayer(newPlayer);
     }
 
     @Override

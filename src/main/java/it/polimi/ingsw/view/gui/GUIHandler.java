@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GUIHandler extends Application  {
 
@@ -195,7 +196,7 @@ public class GUIHandler extends Application  {
         root.setBottom(box);
     }
 
-    public void chooseCharacter(ArrayList<String> availableCharacters) throws FileNotFoundException{
+    public void chooseCharacter(List<String> availableCharacters) throws FileNotFoundException{
         root.getChildren().clear();
 
         Text text = new Text();

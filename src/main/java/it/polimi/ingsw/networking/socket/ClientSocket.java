@@ -2,6 +2,7 @@ package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
@@ -86,6 +87,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         var gameUUID = UUID.fromString(args.get(GameLogic.gameID_key));
                         this.viewObserver.onStart(gameUUID);
                         break;
+                    case CHOOSE_CHARACTER:
+                        var availableCharacters = Arrays.asList(args.get(Character.character_list).split(","));
+                        viewObserver.willChooseCharacter(availableCharacters);
+                        break;
                     case SHOOT_PEOPLE:
                         List<String> weapons = new ArrayList<>(args.values());
                         this.viewObserver.willChooseWeapon(weapons);
@@ -169,12 +174,14 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
     @Override
     public void askForCharacters(){
-
+        this.send(CommunicationMessage.from(userID, GET_AVAILABLE_CHARACTERS, gameID));
     }
 
     @Override
     public void choseCharacter(String character){
-
+        var args = new HashMap<String, String>();
+        args.put(Character.character, character);
+        this.send(CommunicationMessage.from(userID, CHOOSE_CHARACTER, args, gameID));
     }
 
     @Override

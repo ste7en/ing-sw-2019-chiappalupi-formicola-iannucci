@@ -165,6 +165,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case USER_JOIN_WAITING_ROOM:
                     joinWaitingRoom(connectionID, args);
                     break;
+                case GET_AVAILABLE_CHARACTERS:
+                    getAvailableCharacters(gameID);
+                    break;
                 case SHOOT_PEOPLE:
                     shootPeople(connectionID, gameID);
                     break;
@@ -342,5 +345,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         var args = new HashMap<String, String>();
         args.put(GameLogic.gameID_key, gameID);
         send(CommunicationMessage.from(0, USER_JOINED_GAME, args));
+    }
+
+    private void getAvailableCharacters(UUID gameID) {
+        server.getAvailableCharacters(gameID);
     }
 }

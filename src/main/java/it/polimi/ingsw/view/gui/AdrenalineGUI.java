@@ -38,7 +38,10 @@ public class AdrenalineGUI extends View {
         didJoinWaitingRoom();
     }
 
+    @Override
+    public void didJoinWaitingRoom() {
 
+    }
 
     @Override
     public void onViewUpdate() {
@@ -56,7 +59,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChooseCharacter(ArrayList<String> availableCharacters) {
+    public void willChooseCharacter(List<String> availableCharacters) {
         try {
             handlerGUI.chooseCharacter(availableCharacters);
         } catch (FileNotFoundException e){

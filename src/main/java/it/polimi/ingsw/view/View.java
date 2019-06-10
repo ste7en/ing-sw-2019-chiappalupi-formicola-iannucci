@@ -124,7 +124,7 @@ public abstract class View implements Observer{
     /**
      * Ele
      */
-    public abstract void willChooseCharacter(ArrayList<String> availableCharacters);
+    public abstract void willChooseCharacter(List<String> availableCharacters);
 
     /**
      * Ele

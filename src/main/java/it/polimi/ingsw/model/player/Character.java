@@ -29,6 +29,12 @@ public class Character {
     private static final String EMPTY_STRING_DESCRIPTION = "Cannot create a character with an empty string as description.";
 
     /**
+     * String constant used in messages between client-server
+     */
+    public final static String character_list = "CHARACTER_LIST";
+    public final static String character      = "CHARACTER";
+
+    /**
      * Log string
      */
     private static final String ERR_CHARACTER_INIT = "An error has occurred while trying to read characters from json.";
@@ -115,7 +121,7 @@ public class Character {
      * Getter of all the available characters
      * @return a collection of all the available characters of the game
      */
-    public static ArrayList<Character> getCharacters() { return (ArrayList<Character>)characters.clone(); }
+    public static List<Character> getCharacters() { return (ArrayList<Character>)characters.clone(); }
 
     /**
      * Returns a Character from a given name, if exists

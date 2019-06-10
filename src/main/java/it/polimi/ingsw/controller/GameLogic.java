@@ -3,9 +3,11 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.*;
+import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.utility.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Main controller. It will handle everything in regards to the communication between view and model.
@@ -114,7 +116,8 @@ public class GameLogic {
      *
      * @param player it's the player to be added.
      */
-    public void addPlayer(Player player) {
+    public synchronized void addPlayer(Player player) {
+        //TODO: - color check and maximum number of players check
         this.players.add(player);
     }
 
@@ -170,15 +173,16 @@ public class GameLogic {
      * This method is used to get the available characters.
      * @return an arraylist of available player colors.
      */
-    public List<String> getAvailableCharacters() {
-        ArrayList<String> availableCharacters = new ArrayList<>();
-        for (PlayerColor playerColor : PlayerColor.values()){
-            availableCharacters.add(playerColor.toString());
-        }
-        for (Player player : players) {
-            availableCharacters.remove(player.getCharacter().getColor().toString());
-        }
-        return availableCharacters;
+    public synchronized List<String> getAvailableCharacters() {
+        return Character.getCharacters()
+                        .stream()
+                        .filter(c -> !players.stream()
+                                                .map(Player::getCharacter)
+                                                .collect(Collectors.toList())
+                                                .contains(c))
+                        .map(Character::getColor)
+                        .map(PlayerColor::toString)
+                        .collect(Collectors.toList());
     }
 
 }

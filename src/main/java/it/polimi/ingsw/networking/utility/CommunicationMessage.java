@@ -48,6 +48,24 @@ public enum CommunicationMessage {
     USER_JOINED_GAME,
 
     /**
+     * Messages sent to handle the selection of a character for the game
+     *
+     * GET_AVAILABLE_CHARACTERS is sent by the client to get the list of available characters,
+     * the server will respond with a CHOOSE_CHARACTER message containing a list of characters.
+     * The selected character is then sent with a CHOOSE_CHARACTER message and a confirmation
+     * message will be sent.
+     *
+     * Arguments: <Character.character_list, value> in CHOOSE_CHARACTER server ---> client,
+     *            <Character.character, value> in CHOOSE_CHARACTER client ---> server, CHARACTER_NOT_AVAILABLE and CHARACTER_CHOSEN_OK
+     *
+     */
+    GET_AVAILABLE_CHARACTERS,
+    CHOOSE_CHARACTER,
+    CHARACTER_NOT_AVAILABLE,
+    CHARACTER_CHOSEN_OK,
+
+
+    /**
      * Weapon using message.
      *
      * SHOOT_PEOPLE is sent both by the client to the server and vice versa to start the process of weapon using.

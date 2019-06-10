@@ -34,7 +34,6 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_SERVER_ADDR          = "Insert the server host address: ";
     private static final String CHOOSE_USERNAME             = "Please, insert your username to log in: ";
     private static final String USER_NOT_AVAILABLE          = "The username you provided is not available. Try again, please";
-    private static final String DID_JOIN_WAITING_R          = "Waiting Room joined successfully. A new game will start as soon as other players will createUser.";
     private static final String ON_START                    = "Game started.";
     private static final String SHOOT_PEOPLE_FAILURE        = "You have no weapon in your hand, so you can't shoot anyone.";
     private static final String DAMAGE_FAILURE              = "No damage can be made with the weapon and the effects selected.";
@@ -177,17 +176,17 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void onStart(UUID gameID) {
-        super.onStart(gameID);
         out.println(ON_START);
+        super.onStart(gameID);
     }
 
     @Override
     public void didJoinWaitingRoom() {
-        out.println(DID_JOIN_WAITING_R);
+        out.println(DID_JOIN_WAITING_ROOM);
     }
 
     @Override
-    public void willChooseCharacter(ArrayList <String> availableCharacters) {
+    public void willChooseCharacter(List<String> availableCharacters) {
 
     }
 
