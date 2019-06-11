@@ -1,9 +1,5 @@
 package it.polimi.ingsw.networking.rmi;
 
-import it.polimi.ingsw.model.cards.Powerup;
-import it.polimi.ingsw.model.utility.AmmoColor;
-
-import java.lang.module.ResolvedModule;
 import java.rmi.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +19,15 @@ public interface ServerInterface extends Remote {
 
     ArrayList<String> getAvailableCharacters(UUID gameID) throws RemoteException;
 
-    void choseCharacter(int userID, UUID gameID, String character) throws RemoteException;
+    /**
+     * When the user chooses a character, the server is asked for its availability
+     * @param gameID a gameID
+     * @param userID a userID
+     * @param characterColor character's color
+     * @return true if the character is available, false otherwise
+     * @throws RemoteException RMI exception
+     */
+    boolean choseCharacter(UUID gameID, int userID, String characterColor) throws RemoteException;
 
     void choseGameMap(UUID gameID, String configuration) throws RemoteException;
 

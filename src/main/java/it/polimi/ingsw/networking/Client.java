@@ -7,7 +7,6 @@ import it.polimi.ingsw.view.View;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -112,9 +111,9 @@ public abstract class Client implements Loggable {
 
     /**
      * Abstract method implemented by subclasses when a player has chosen his character between the ones available.
-     * @param character the chosen character
+     * @param characterColor the chosen character
      */
-    public abstract void choseCharacter(String character);
+    public abstract void choseCharacter(String characterColor);
 
     /**
      * Abstract method implemented by subclasses when the first player has chosen the configuration of the map.

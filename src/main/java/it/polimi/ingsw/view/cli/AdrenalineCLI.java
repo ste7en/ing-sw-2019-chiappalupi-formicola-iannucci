@@ -35,6 +35,8 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_USERNAME             = "Please, insert your username to log in: ";
     private static final String USER_NOT_AVAILABLE          = "The username you provided is not available. Try again, please";
     private static final String ON_START                    = "Game started.";
+    private static final String CHOOSE_CHARACTER            = "Choose a character who will represent you in the game. Insert the character number: ";
+    private static final String CHOOSE_CHARACTER_NOT_OK     = "";
     private static final String SHOOT_PEOPLE_FAILURE        = "You have no weapon in your hand, so you can't shoot anyone.";
     private static final String DAMAGE_FAILURE              = "No damage can be made with the weapon and the effects selected.";
     private static final String CHOOSE_POWERUP_TO_SELL      = "What powerup do you want to sell?";
@@ -187,7 +189,10 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void willChooseCharacter(List<String> availableCharacters) {
-
+        out.println(CHOOSE_CHARACTER);
+        var li = availableCharacters.listIterator();
+        while (li.hasNext()) out.println(li.nextIndex()+") "+li.next());
+        didChooseCharacter(in.nextLine());
     }
 
     @Override

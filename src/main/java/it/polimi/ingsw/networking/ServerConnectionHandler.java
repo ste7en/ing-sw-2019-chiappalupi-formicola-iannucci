@@ -2,6 +2,9 @@ package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.utility.Loggable;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
  * Abstract superclass of Server's connectionHandlers for both
  * RMI and Socket connections.
@@ -20,6 +23,20 @@ public abstract class ServerConnectionHandler implements Loggable {
      */
     public abstract boolean isConnectionAvailable();
 
-
     protected abstract void gameDidStart(String gameID);
+
+    /**
+     * Asks the client to choose a character to start the game
+     * @param availableCharacters a list of character colors
+     */
+    protected abstract void willChooseCharacter(List<String> availableCharacters);
+
+    /**
+     * When the user chooses a character, this method verifies its availability
+     * and notifies the user if the character can be selected or not.
+     * @param gameID gameID
+     * @param userID userID
+     * @param chosenCharacterColor character's color
+     */
+    protected abstract void didChooseCharacter(UUID gameID, int userID, String chosenCharacterColor);
 }

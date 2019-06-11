@@ -88,7 +88,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.onStart(gameUUID);
                         break;
                     case CHOOSE_CHARACTER:
-                        var availableCharacters = Arrays.asList(args.get(Character.character_list).split(","));
+                        var availableCharacters = Arrays.asList(args.get(Character.character_list).split(", "));
                         viewObserver.willChooseCharacter(availableCharacters);
                         break;
                     case SHOOT_PEOPLE:
@@ -178,9 +178,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
-    public void choseCharacter(String character){
+    public void choseCharacter(String characterColor){
         var args = new HashMap<String, String>();
-        args.put(Character.character, character);
+        args.put(Character.character, characterColor);
         this.send(CommunicationMessage.from(userID, CHOOSE_CHARACTER, args, gameID));
     }
 

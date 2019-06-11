@@ -82,8 +82,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private static final String EXC_SETUP      = "Error while setting up the server :: ";
     private static final String DID_DISCONNECT = "User disconnected: ";
 
-
-
     /**
      * Entry point of the server application
      * @param args arguments
@@ -156,11 +154,15 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     public void startNewGame(List<User> userList) {
         var gameID = UUID.randomUUID();
         var gameLogic = new GameLogic(gameID);
+        var characters = gameLogic.getAvailableCharacters();
+
         gameControllers.put(gameID, gameLogic);
-        userList.forEach(user -> {
-            var connection = users.get(user);
-            connection.gameDidStart(gameID.toString());
-        });
+
+        userList.stream()
+                .map(users::get)
+                .forEach(s -> s.gameDidStart(gameID.toString()));
+
+        userList.stream().map(users::get).forEach(s-> s.willChooseCharacter(characters));
     }
 
     /**
@@ -188,8 +190,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         }
         return null;
     }
-
-
 
     /**
      * When a client registers a new user
@@ -241,11 +241,16 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public void choseCharacter(int userID, UUID gameID, String character) {
-        var gameController = gameControllers.get(gameID);
-        var chosenCharacter = Character.getCharacterFromName(character);
-        var newPlayer = new Player(findUserFromID(userID), chosenCharacter);
-        gameController.addPlayer(newPlayer);
+    public boolean choseCharacter(UUID gameID, int userID, String characterColor) {
+        var gameController      = gameControllers.get(gameID);
+        var chosenCharacter     = Character.getCharacterFromColor(PlayerColor.valueOf(characterColor));
+        var availableCharacters = gameController.getAvailableCharacters();
+
+        if (availableCharacters.contains(chosenCharacter)) {
+            gameController.addPlayer(new Player(findUserFromID(userID), chosenCharacter));
+            return true;
+        }
+        return false;
     }
 
     @Override

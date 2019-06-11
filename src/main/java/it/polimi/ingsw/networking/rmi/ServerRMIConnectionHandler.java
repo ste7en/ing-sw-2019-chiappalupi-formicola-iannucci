@@ -5,6 +5,7 @@ import it.polimi.ingsw.networking.Server;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
@@ -28,5 +29,10 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
     public boolean isConnectionAvailable(){
         return true;
+    }
+
+    @Override
+    protected void willChooseCharacter(List<String> availableCharacters) {
+
     }
 }

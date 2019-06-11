@@ -88,9 +88,9 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
-    public void choseCharacter(String character){
+    public void choseCharacter(String characterColor){
         try {
-            server.choseCharacter(userID, gameID, character);
+            server.choseCharacter(gameID, userID, characterColor);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             e.printStackTrace();

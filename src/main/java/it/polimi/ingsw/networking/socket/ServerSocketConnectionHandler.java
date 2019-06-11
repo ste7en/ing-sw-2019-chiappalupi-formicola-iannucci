@@ -2,6 +2,7 @@ package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.Server;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
@@ -165,8 +166,8 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case USER_JOIN_WAITING_ROOM:
                     joinWaitingRoom(connectionID, args);
                     break;
-                case GET_AVAILABLE_CHARACTERS:
-                    getAvailableCharacters(gameID);
+                case CHOOSE_CHARACTER:
+                    didChooseCharacter(gameID, connectionID, args.get(Character.character));
                     break;
                 case SHOOT_PEOPLE:
                     shootPeople(connectionID, gameID);
@@ -347,7 +348,17 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         send(CommunicationMessage.from(0, USER_JOINED_GAME, args));
     }
 
-    private void getAvailableCharacters(UUID gameID) {
-        server.getAvailableCharacters(gameID);
+    @Override
+    protected void willChooseCharacter(List<String> availableCharacters) {
+        var args = new HashMap<String, String>();
+        args.put(Character.character_list, String.join(", ", availableCharacters));
+        send(CommunicationMessage.from(0, CHOOSE_CHARACTER, args));
+    }
+
+    @Override
+    protected void didChooseCharacter(UUID gameID, int userID, String chosenCharacterColor) {
+        server.choseCharacter(gameID, userID, chosenCharacterColor);
+        // TODO: - if the method above returns false...
+        // server.getAvailableCharacters(gameID);
     }
 }

@@ -122,12 +122,12 @@ public abstract class View implements Observer{
     public abstract void didJoinWaitingRoom();
 
     /**
-     * Ele
+     * When the client is asked to choose a character
      */
     public abstract void willChooseCharacter(List<String> availableCharacters);
 
     /**
-     * Ele
+     * When the client chooses a character
      */
     public void didChooseCharacter(String character){
         client.choseCharacter(character);
