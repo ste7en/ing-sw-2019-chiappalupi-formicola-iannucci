@@ -24,6 +24,7 @@ public class WaitingRoom {
      */
     private static final String WAITING_ROOM_CREATED = "Waiting Room created";
     private static final String USER_JOINED          = "User joined the waiting room :: ";
+    private static final String USER_REMOVED         = "User removed from the waiting room :: ";
     private static final String MIN_NUM_REACHED      = "Minimum number of users for a game reached";
     private static final String MAX_NUM_REACHED      = "Maximum number of users for a game reached. Next users will be added for a new game.";
     private static final String COUNTDOWN_STARTED    = "A new game is going to be created. Countdown started...";
@@ -123,6 +124,7 @@ public class WaitingRoom {
     public void removeUser(User user) {
         if (userQueue.remove(user)) didRemoveUser();
         else userWaitingList.remove(user);
+        AdrenalineLogger.info(USER_REMOVED+user.getUsername());
     }
 
     /**
@@ -152,7 +154,8 @@ public class WaitingRoom {
      */
     private void didRemoveUser() {
         if (userQueue.size() < minimumNumberOfPlayers && isRunning) {
-            executorService.shutdown();
+            executorService.shutdownNow();
+            isRunning = false;
             executorService = Executors.newSingleThreadScheduledExecutor();
         }
     }
@@ -163,9 +166,8 @@ public class WaitingRoom {
      * creating a new game with the selected users.
      */
     private void didReachMinimumNumberOfPlayers() {
-        //TODO: - Stop the timer if the number of players becomes less than 3
         AdrenalineLogger.info(COUNTDOWN_STARTED);
-        AdrenalineLogger.success(NEXT_GAME_CREATION + timeout + "ms");
+        AdrenalineLogger.success(NEXT_GAME_CREATION + timeout + "s");
         isRunning = true;
         executorService.schedule(
                 () -> {

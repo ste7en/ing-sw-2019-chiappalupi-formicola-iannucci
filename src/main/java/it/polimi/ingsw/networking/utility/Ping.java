@@ -55,7 +55,7 @@ public class Ping {
          * setting each state in the collection as false, meaning that a PONG message hasn't
          * been received yet. When a PONG message is received, the convenience didPong(int)
          * method re-sets the state to true. If a PONG message hasn't been received after
-         * EXECUTION_PERIOD ms, the connection is interrupted meaning the client
+         * EXECUTION_PERIOD timeUnit, the connection is interrupted meaning the client
          * isn't connected anymore.
          */
         new ScheduledThreadPoolExecutor(1)

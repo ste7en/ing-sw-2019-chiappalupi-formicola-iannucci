@@ -81,6 +81,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     private static final String EXC_SETUP      = "Error while setting up the server :: ";
     private static final String DID_DISCONNECT = "User disconnected: ";
+    private static final String START_NEW_GAME = "A new game is starting...";
 
     /**
      * Entry point of the server application
@@ -152,6 +153,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public void startNewGame(List<User> userList) {
+        logOnSuccess(START_NEW_GAME);
         var gameID = UUID.randomUUID();
         var gameLogic = new GameLogic(gameID);
         var characters = gameLogic.getAvailableCharacters();
