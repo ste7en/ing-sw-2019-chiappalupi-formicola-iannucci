@@ -156,7 +156,7 @@ public class AdrenalineCLI extends View {
         out.flush();
         out.println();
         out.println(CHOOSE_USERNAME);
-        var username = in.nextLine();
+        var username = in.next();
         createUser(username);
     }
 

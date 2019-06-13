@@ -12,6 +12,7 @@ import it.polimi.ingsw.networking.rmi.ClientInterface;
 import it.polimi.ingsw.networking.rmi.ServerInterface;
 import it.polimi.ingsw.networking.rmi.ServerRMIConnectionHandler;
 import it.polimi.ingsw.networking.socket.*;
+import it.polimi.ingsw.networking.utility.Ping;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
@@ -79,7 +80,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     private static final String EXC_SETUP      = "Error while setting up the server :: ";
     private static final String DID_DISCONNECT = "User disconnected: ";
-    private static final String START_NEW_GAME = "A new game is starting...";
+    private static final String START_NEW_GAME = "New game started - ID: ";
+    private static final String RMI_EXCEPTION  = "ServerRMI exception: ";
 
     /**
      * Entry point of the server application
@@ -135,9 +137,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     /**
      * Method that export the server in order to create a RMI connection
      */
-    public void launch() throws RemoteException {
+    private void launch() throws RemoteException {
         registry = LocateRegistry.createRegistry(portNumberRMI);
-        registry.rebind("rmiInterface", this);
+        registry.rebind(remoteReference, this);
         UnicastRemoteObject.exportObject(this, 0);
         Logger.getGlobal().info("rmi Server running correctly...");
     }
@@ -151,12 +153,13 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public void startNewGame(List<User> userList) {
-        logOnSuccess(START_NEW_GAME);
         var gameID = UUID.randomUUID();
         var gameLogic = new GameLogic(gameID);
         var characters = gameLogic.getAvailableCharacters();
 
         gameControllers.put(gameID, gameLogic);
+
+        logOnSuccess(START_NEW_GAME+gameID.toString());
 
         userList.stream()
                 .map(users::get)
@@ -223,10 +226,10 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             System.out.println(registry);
             ClientInterface clientRMI = (ClientInterface) remoteRegistry.lookup("ClientInterface");
             ServerConnectionHandler connectionHandler = new ServerRMIConnectionHandler(this, clientRMI);
+            Ping.getInstance().addPing(connectionHandler);
             return createUser(username, connectionHandler);
         }catch (Exception e) {
-            System.err.println("ServerRMI exception: " + e.toString());
-            e.printStackTrace();
+            logOnException(RMI_EXCEPTION, e);
         }
         return false;
     }

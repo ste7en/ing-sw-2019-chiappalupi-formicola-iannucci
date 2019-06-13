@@ -27,7 +27,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  *
  * @author Stefano Formicola
  */
-public class ServerSocketConnectionHandler extends ServerConnectionHandler implements Runnable, Pingable {
+public class ServerSocketConnectionHandler extends ServerConnectionHandler implements Runnable {
 
     /**
      * The socket instance, the object that represents a connection
@@ -345,14 +345,14 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     protected void gameDidStart(String gameID) {
         var args = new HashMap<String, String>();
         args.put(GameLogic.gameID_key, gameID);
-        send(CommunicationMessage.from(0, USER_JOINED_GAME, args));
+        send(CommunicationMessage.from(getConnectionHashCode(), USER_JOINED_GAME, args));
     }
 
     @Override
     protected void willChooseCharacter(List<String> availableCharacters) {
         var args = new HashMap<String, String>();
         args.put(Character.character_list, String.join(", ", availableCharacters));
-        send(CommunicationMessage.from(0, CHOOSE_CHARACTER, args));
+        send(CommunicationMessage.from(getConnectionHashCode(), CHOOSE_CHARACTER, args));
     }
 
     @Override

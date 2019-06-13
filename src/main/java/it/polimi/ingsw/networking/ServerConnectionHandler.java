@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking;
 
+import it.polimi.ingsw.networking.utility.Pingable;
 import it.polimi.ingsw.utility.Loggable;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.UUID;
  * @author Stefano Formicola
  */
 
-public abstract class ServerConnectionHandler implements Loggable {
+public abstract class ServerConnectionHandler implements Loggable, Pingable {
     /**
      * The server instance which exposes communication methods
      */
@@ -23,6 +24,10 @@ public abstract class ServerConnectionHandler implements Loggable {
      */
     public abstract boolean isConnectionAvailable();
 
+    /**
+     * Notifies the client about a game that is going to start
+     * @param gameID game identifier
+     */
     protected abstract void gameDidStart(String gameID);
 
     /**

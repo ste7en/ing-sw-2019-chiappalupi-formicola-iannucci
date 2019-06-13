@@ -21,6 +21,9 @@ public class ClientRMI extends Client implements ClientInterface {
         super(host, port);
     }
 
+    /**
+     * Log strings
+     */
     private static String CLIENT_RMI_EXCEPTION = "ClientRMI exception: ";
 
     @Override
@@ -29,16 +32,14 @@ public class ClientRMI extends Client implements ClientInterface {
         try{
             registry = LocateRegistry.getRegistry(connectionPort);
             System.out.println(registry);
-            server = (ServerInterface) registry.lookup("rmiInterface");
+            server = (ServerInterface) registry.lookup(ServerInterface.remoteReference);
             try {
                 exportClient();
             } catch (RemoteException e) {
-                AdrenalineLogger.error("ClientRMI exception: " + e.toString());
-                e.printStackTrace();
+                logOnException(CLIENT_RMI_EXCEPTION, e);
             }
         } catch (Exception e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
-            e.printStackTrace();
         }
     }
 
@@ -301,8 +302,8 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
-    public void test(){
-        System.out.println("test passed");
+    public boolean ping() {
+        return true;
     }
 }
 

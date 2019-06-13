@@ -154,7 +154,8 @@ public class AdrenalineGUI extends View {
 
     }
 
-    public  void askPowerupAfterShot(List<String> powerups){
+    @Override
+    public void askPowerupAfterShot(List<String> powerups) {
 
     }
 
@@ -212,7 +213,5 @@ public class AdrenalineGUI extends View {
     public void update(Observable o, Object arg) {
 
     }
-
-
 }
 

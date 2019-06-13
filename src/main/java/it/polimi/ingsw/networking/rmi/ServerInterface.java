@@ -9,6 +9,8 @@ import java.util.UUID;
 
 public interface ServerInterface extends Remote {
 
+    String remoteReference = "RMIInterface";
+
     boolean createUserRMIHelper(String username) throws RemoteException;
 
     /**
