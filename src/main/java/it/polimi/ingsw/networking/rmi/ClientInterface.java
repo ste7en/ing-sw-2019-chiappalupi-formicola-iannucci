@@ -7,4 +7,6 @@ public interface ClientInterface extends Remote {
 
     public void gameStarted(String gameID) throws RemoteException;
 
+    public void test() throws RemoteException;
+
 }

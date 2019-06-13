@@ -155,12 +155,14 @@ public class GUIHandler extends Application  {
         Integer portNumber = Integer.parseInt(port);
         String address = addressTextfield.getText();
         this.adrenalineGUI.didChooseConnection(connectionType, portNumber, address);
-        //login();
+        login();
+        /*
         try {
             chooseGameMap();
         }catch (FileNotFoundException e){
             System.err.println("File exception:" + e.toString());
         }
+        */
     }
 
     public void login(){

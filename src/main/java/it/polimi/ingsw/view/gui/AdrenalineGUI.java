@@ -154,6 +154,10 @@ public class AdrenalineGUI extends View {
 
     }
 
+    public  void askPowerupAfterShot(List<String> powerups){
+
+    }
+
     @Override
     public void onEndTurn() {
 

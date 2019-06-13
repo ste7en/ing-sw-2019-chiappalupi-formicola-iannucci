@@ -16,11 +16,9 @@ public class ClientRMI extends Client implements ClientInterface {
 
     private Registry registry;
     private ServerInterface server;
-    private boolean flag;
 
     public ClientRMI(String host, Integer port){
         super(host, port);
-        flag = false;
     }
 
     private static String CLIENT_RMI_EXCEPTION = "ClientRMI exception: ";
@@ -45,11 +43,8 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     public void exportClient() throws RemoteException{
-        if (flag == false) {
-            ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
-            registry.rebind("ClientInterface", stub);
-            flag = true;
-        }
+        ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
+        registry.rebind("ClientInterface", stub);
     }
 
     @Override
@@ -303,6 +298,11 @@ public class ClientRMI extends Client implements ClientInterface {
     public void gameStarted(String gameID){
         this.viewObserver.onStart(UUID.fromString(gameID));
         this.gameID = UUID.fromString(gameID);
+    }
+
+    @Override
+    public void test(){
+        System.out.println("test passed");
     }
 }
 

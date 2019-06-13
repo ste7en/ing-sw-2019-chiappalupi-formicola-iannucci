@@ -174,7 +174,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
     @Override
     public void askForCharacters(){
-        this.send(CommunicationMessage.from(userID, GET_AVAILABLE_CHARACTERS, gameID));
+        //this.send(CommunicationMessage.from(userID, GET_AVAILABLE_CHARACTERS, gameID));
     }
 
     @Override

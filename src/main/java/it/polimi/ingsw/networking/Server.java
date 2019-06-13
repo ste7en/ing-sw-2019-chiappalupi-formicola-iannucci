@@ -41,8 +41,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     private ServerRMIConnectionHandler serverRMIConnectionHandler;
 
-    private ClientInterface clientRMI;
-
     private Registry registry;
 
     /**
@@ -224,12 +222,13 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             Registry remoteRegistry = LocateRegistry.getRegistry(portNumberRMI);
             System.out.println(registry);
             ClientInterface clientRMI = (ClientInterface) remoteRegistry.lookup("ClientInterface");
+            ServerConnectionHandler connectionHandler = new ServerRMIConnectionHandler(this, clientRMI);
+            return createUser(username, connectionHandler);
         }catch (Exception e) {
             System.err.println("ServerRMI exception: " + e.toString());
             e.printStackTrace();
         }
-        ServerConnectionHandler connectionHandler = new ServerRMIConnectionHandler(this, clientRMI);
-        return createUser(username, connectionHandler);
+        return false;
     }
 
     @Override

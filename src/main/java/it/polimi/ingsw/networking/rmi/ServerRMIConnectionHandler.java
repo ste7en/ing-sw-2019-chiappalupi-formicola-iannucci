@@ -6,6 +6,7 @@ import it.polimi.ingsw.networking.ServerConnectionHandler;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.UUID;
 
 public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
@@ -33,6 +34,11 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
     @Override
     protected void willChooseCharacter(List<String> availableCharacters) {
+
+    }
+
+    @Override
+    protected void didChooseCharacter(UUID gameID, int userID, String chosenCharacterColor){
 
     }
 }
