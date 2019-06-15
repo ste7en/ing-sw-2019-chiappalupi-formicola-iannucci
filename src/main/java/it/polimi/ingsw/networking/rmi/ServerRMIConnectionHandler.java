@@ -18,10 +18,8 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
     private ClientInterface clientRMI;
 
-    private Server server;
-
     public ServerRMIConnectionHandler(Server server, ClientInterface clientRMI) {
-        this.server = server;
+        super.server = server;
         this.clientRMI = clientRMI;
     }
 
@@ -37,7 +35,7 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
         try {
             return clientRMI.ping();
         } catch (RemoteException e) {
-            logOnException(REMOTE_EXC, e);
+            logOnException(REMOTE_EXC+"ping failed.", e);
         }
         return false;
     }
@@ -62,10 +60,5 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
         //TODO: - Mark this connection handler as not connected
         server.didDisconnect(this);
         AdrenalineLogger.info(PING_TIMEOUT+clientRMI.toString());
-    }
-
-    @Override
-    public int getConnectionHashCode() {
-        return this.hashCode();
     }
 }

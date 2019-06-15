@@ -66,8 +66,8 @@ public class Ping {
                                 pH.forEach(
                                         (p, b) -> {
                                             if (!b) { remove(p); return; }
-                                            p.ping();
                                             pH.replace(p, false);
+                                            p.ping();
                                         }
                                 );
                             } catch (RuntimeException e) {
