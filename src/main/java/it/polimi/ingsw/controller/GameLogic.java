@@ -50,6 +50,7 @@ public class GameLogic {
         this.forPotentiableWeapon = null;
         this.weaponController = new WeaponController();
         this.powerupController = new PowerupController();
+        this.players = new ArrayList<>();
     }
 
     /**
