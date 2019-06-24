@@ -14,8 +14,13 @@ public class TargetingScope extends Powerup {
     }
 
     @Override
-    public boolean isUsableAfterShot() {
+    public boolean isUsableAfterDamageMade() {
         return true;
+    }
+
+    @Override
+    public boolean isUsableAfterDamageTaken() {
+        return false;
     }
 
     @Override

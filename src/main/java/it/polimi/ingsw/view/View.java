@@ -303,7 +303,7 @@ public abstract class View implements Observer{
      * Called when the player has to decide if use a powerup to make additional damage after the shoot.
      * @param powerups it's a list containing the powerup that can be used.
      */
-    public abstract void askPowerupAfterShot(List<String> powerups);//vedi clientRMI
+    public abstract void askPowerupAfterShot(List<String> powerups);
 
     /**
      * Called when the process of using a weapon has ended.

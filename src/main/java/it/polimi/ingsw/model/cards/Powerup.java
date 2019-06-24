@@ -51,9 +51,15 @@ public abstract class Powerup {
 
     /**
      * Public method implemented by subclasses to know when a powerup can be used.
-     * @return TRUE if the powerup can be used after the shot, FALSE otherwise.
+     * @return TRUE if the powerup can be used after the player have made damage, FALSE otherwise.
      */
-    public abstract boolean isUsableAfterShot();
+    public abstract boolean isUsableAfterDamageMade();
+
+    /**
+     * Public method implemented by subclasses to know when a powerup can be used.
+     * @return TRUE if the powerup can be used after the player have taken damage, FALSE otherwise.
+     */
+    public abstract boolean isUsableAfterDamageTaken();
 
     /**
      * Public method implemented by subclasses, used when a powerup is being used.

@@ -14,7 +14,12 @@ public class Teleporter extends Powerup {
     }
 
     @Override
-    public boolean isUsableAfterShot() {
+    public boolean isUsableAfterDamageMade() {
+        return false;
+    }
+
+    @Override
+    public boolean isUsableAfterDamageTaken() {
         return false;
     }
 

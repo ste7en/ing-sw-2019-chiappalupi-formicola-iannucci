@@ -265,4 +265,9 @@ public class GameMapTest {
         assertEquals(positionCell, gameMapTest.getPositionFromPlayer(playerTest));
     }
 
+    @Test
+    public void testToString() {
+        System.out.println(gameMapTest.toString());
+    }
+
 }

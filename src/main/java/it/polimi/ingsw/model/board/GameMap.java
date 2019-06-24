@@ -16,6 +16,12 @@ import java.util.*;
 public class GameMap {
 
     /**
+     * Static ANSI colors;
+     */
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+
+    /**
      * Rep of the game's map through a matrix
      */
     private Cell[][] map;
@@ -109,6 +115,114 @@ public class GameMap {
      */
     public Cell getCell(int row, int column) {
         return map[row][column];
+    }
+
+    @Override
+    public String toString() {
+        String mapString = new String();
+        String box1 = new String();
+        String box2 = new String();
+        String box3 = new String();
+        for(int i = 0; i < map.length; i++) {
+            for(int j = 0; j < map[i].length; j++) {
+                switch (map[i][j].adiajency(Direction.North)) {
+                        case wall:
+                            box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + "xxx" + ANSI_RESET;
+                            break;
+                        case door:
+                            box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + "x x" + ANSI_RESET;
+                            break;
+                        case space:
+                            switch (map[i][j].adiajency(Direction.West)) {
+                                case wall:
+                                case door:
+                                    switch (map[i][j].adiajency(Direction.East)) {
+                                        case wall:
+                                        case door:
+                                            box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + "x x" + ANSI_RESET;
+                                            break;
+                                        case space:
+                                            box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + "x  " + ANSI_RESET;
+                                    }
+                                    break;
+                                case space:
+                                    switch (map[i][j].adiajency(Direction.East)) {
+                                        case wall:
+                                        case door:
+                                            box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + "  x" + ANSI_RESET;
+                                            break;
+                                        case space:
+                                            box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + "   " + ANSI_RESET;
+                                    }
+                                    break;
+                            }
+                            break;
+                    }
+                switch (map[i][j].adiajency(Direction.West)) {
+                    case wall:
+                        switch(map[i][j].adiajency(Direction.East)) {
+                            case wall:
+                                box2 = box2 + map[i][j].getANSIColor() + ANSI_BLACK + "x x" + ANSI_RESET;
+                                break;
+                            case space:
+                            case door:
+                                box2 = box2 + map[i][j].getANSIColor() + ANSI_BLACK + "x  " + ANSI_RESET;
+                                break;
+                        }
+                        break;
+                    case door:
+                    case space:
+                        switch(map[i][j].adiajency(Direction.East)) {
+                            case wall:
+                                box2 = box2 + map[i][j].getANSIColor() + ANSI_BLACK + "  x" + ANSI_RESET;
+                                break;
+                            case space:
+                            case door:
+                                box2 = box2 + map[i][j].getANSIColor() + ANSI_BLACK + "   " + ANSI_RESET;
+                                break;
+                        }
+                        break;
+                }
+                switch (map[i][j].adiajency(Direction.South)) {
+                    case wall:
+                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + "xxx" + ANSI_RESET;
+                        break;
+                    case door:
+                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + "x x" + ANSI_RESET;
+                        break;
+                    case space:
+                        switch (map[i][j].adiajency(Direction.West)) {
+                            case wall:
+                            case door:
+                                switch (map[i][j].adiajency(Direction.East)) {
+                                    case wall:
+                                    case door:
+                                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + "x x" + ANSI_RESET;
+                                        break;
+                                    case space:
+                                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + "x  " + ANSI_RESET;
+                                }
+                                break;
+                            case space:
+                                switch (map[i][j].adiajency(Direction.East)) {
+                                    case wall:
+                                    case door:
+                                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + "  x" + ANSI_RESET;
+                                        break;
+                                    case space:
+                                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + "   " + ANSI_RESET;
+                                }
+                                break;
+                        }
+                        break;
+                }
+            }
+            mapString = mapString + box1 + "\n" + box2 + "\n" + box3 + "\n";
+            box1 = new String();
+            box2 = new String();
+            box3 = new String();
+         }
+        return mapString;
     }
 
     /**

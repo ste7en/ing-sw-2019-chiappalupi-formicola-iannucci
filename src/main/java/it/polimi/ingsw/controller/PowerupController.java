@@ -34,7 +34,7 @@ public class PowerupController {
     public List<String> getAfterShotPowerups(Player player) {
         List<String> returnPows = new ArrayList<>();
         for(Powerup powerup : player.getPlayerHand().getPowerups())
-            if(powerup.isUsableAfterShot())
+            if(powerup.isUsableAfterDamageMade())
                 returnPows.add(powerup.toString());
         return returnPows;
     }
@@ -83,7 +83,7 @@ public class PowerupController {
             if(p.toString().equalsIgnoreCase(powerup))
                 selectedPowerup = p;
         if(selectedPowerup == null) throw new NullPointerException("This powerup is not in the hand of this player!");
-        if(selectedPowerup.isUsableAfterShot()) return selectedPowerup.use(player, map, new ArrayList<>(targets));
+        if(selectedPowerup.isUsableAfterDamageMade()) return selectedPowerup.use(player, map, new ArrayList<>(targets));
         return selectedPowerup.use(player, map, players);
     }
 

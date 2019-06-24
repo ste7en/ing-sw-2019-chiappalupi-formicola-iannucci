@@ -162,7 +162,5 @@ public class BoardTest {
         boardTest.addBloodFrom(playerTest.getCharacter().getColor(), 2);
         boardTest.addBloodFrom(playerTest2.getCharacter().getColor(), 1);
         assertEquals(6, boardTest.skullsLeft());
-        assertEquals(blood, boardTest.getBlood(0));
-        assertEquals(blood2, boardTest.getBlood(1));
     }
 }
