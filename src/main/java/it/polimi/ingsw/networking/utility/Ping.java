@@ -24,12 +24,12 @@ public class Ping {
     /**
      * Period between a scheduled pings
      */
-    private static final long EXECUTION_PERIOD = 1;
+    private static final long EXECUTION_PERIOD = 500;
 
     /**
      * Delay when executing a ping for the first time
      */
-    private static final long EXECUTION_DELAY = (long)0.5;
+    private static final long EXECUTION_DELAY = (long)500;
 
     /**
      * Maximum number of delayed pings
@@ -39,7 +39,7 @@ public class Ping {
     /**
      * TimeUnit
      */
-    private static final TimeUnit timeUnit = TimeUnit.SECONDS;
+    private static final TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 
     /**
      * Collection that manages pings over time
