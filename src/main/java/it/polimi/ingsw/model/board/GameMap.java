@@ -1,15 +1,21 @@
 package it.polimi.ingsw.model.board;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import it.polimi.ingsw.model.utility.Border;
 import it.polimi.ingsw.model.utility.CellColor;
 import it.polimi.ingsw.model.utility.Direction;
 import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.utility.AdrenalineLogger;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
  *
+ * @author Daniele Chiappalupi
  * @author Elena Iannucci
  */
 
@@ -18,8 +24,33 @@ public class GameMap {
     /**
      * Static ANSI colors;
      */
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLACK = "\u001B[30m";
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_BLACK = "\u001B[30m";
+
+    /**
+     * Static GameMap max dimensions
+     */
+    private static final int rows       = 3;
+    private static final int columns = 4;
+
+    /**
+     * String that contains the path to where the resources are located.
+     */
+    private static final String PATHNAME = "src" + File.separator + "main" + File.separator + "resources" + File.separator;
+
+    /**
+     * Static gameMap Strings used to print the map;
+     */
+    private static final String ALL_WALL            = "-------";
+    private static final String WEST_WALL           = "|      ";
+    private static final String EAST_WALL           = "      |";
+    private static final String BOTH_WALL           = "|     |";
+    private static final String SPACE               = "       ";
+    private static final String FORMAT              = "%7s";
+    private static final String HIGHER_GRID_LEFT    = "|  ";
+    private static final String HIGHER_GRID_RIGHT   = "  |";
+    private static final String LEFT_GRID           = "- ";
+    private static final String RIGHT_GRID          = " -";
 
     /**
      * Rep of the game's map through a matrix
@@ -32,24 +63,35 @@ public class GameMap {
     private LinkedHashMap<Player, Cell> playersPosition;
 
     /**
-     * Number of rows in the map
-     */
-    private int rows;
-
-    /**
-     * Number of columns in the map
-     */
-    private int columns;
-
-    /**
      * Configuration's type of the map
      */
     private MapType mapType;
 
+    /**
+     * Method that initializes the map from a json file
+     * @return a matrix of cells that will be the map of the game
+     */
+    private Cell[][] initializeMap(MapType mapType) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Cell[][] box = new Cell[rows][columns];
+        try {
+            File json = new File(PATHNAME + mapType + ".json");
+            box = objectMapper.readValue(json, Cell[][].class);
+
+        } catch (IOException e) {
+            AdrenalineLogger.error(e.toString());
+        }
+        return box;
+    }
+
+    public GameMap(MapType mapType) {
+        this.mapType = mapType;
+        this.playersPosition = new LinkedHashMap<>();
+        this.map = initializeMap(mapType);
+    }
+
     public GameMap(MapType mapType, LinkedHashMap<Player, Cell> playersPosition){
         this.mapType = mapType;
-        rows=3;
-        columns=4;
         this.playersPosition = new LinkedHashMap<>();
         this.playersPosition.putAll(playersPosition);
         this.map = new Cell[3][4];
@@ -80,8 +122,6 @@ public class GameMap {
             }
         }
         this.playersPosition.putAll(playersPosition);
-        this.rows=rows;
-        this.columns=columns;
     }
 
     @Override
@@ -119,76 +159,55 @@ public class GameMap {
 
     @Override
     public String toString() {
-        String mapString = new String();
+        String mapString = "  ";
         String box1 = new String();
         String box2 = new String();
         String box3 = new String();
+        for(int k = 0; k < map[0].length; k++) {
+            mapString = mapString + HIGHER_GRID_LEFT + k + HIGHER_GRID_RIGHT;
+        }
+        mapString = mapString + "\n";
         for(int i = 0; i < map.length; i++) {
             for(int j = 0; j < map[i].length; j++) {
+                if(j == 0) {
+                    box1 = LEFT_GRID;
+                    box2 = i + " ";
+                    box3 = LEFT_GRID;
+                }
                 switch (map[i][j].adiajency(Direction.North)) {
-                        case wall:
-                            box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + "xxx" + ANSI_RESET;
-                            break;
-                        case door:
-                            box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + "x x" + ANSI_RESET;
-                            break;
-                        case space:
-                            switch (map[i][j].adiajency(Direction.West)) {
-                                case wall:
-                                case door:
-                                    switch (map[i][j].adiajency(Direction.East)) {
-                                        case wall:
-                                        case door:
-                                            box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + "x x" + ANSI_RESET;
-                                            break;
-                                        case space:
-                                            box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + "x  " + ANSI_RESET;
-                                    }
-                                    break;
-                                case space:
-                                    switch (map[i][j].adiajency(Direction.East)) {
-                                        case wall:
-                                        case door:
-                                            box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + "  x" + ANSI_RESET;
-                                            break;
-                                        case space:
-                                            box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + "   " + ANSI_RESET;
-                                    }
-                                    break;
-                            }
-                            break;
-                    }
-                switch (map[i][j].adiajency(Direction.West)) {
                     case wall:
-                        switch(map[i][j].adiajency(Direction.East)) {
-                            case wall:
-                                box2 = box2 + map[i][j].getANSIColor() + ANSI_BLACK + "x x" + ANSI_RESET;
-                                break;
-                            case space:
-                            case door:
-                                box2 = box2 + map[i][j].getANSIColor() + ANSI_BLACK + "x  " + ANSI_RESET;
-                                break;
-                        }
+                        box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + String.format(FORMAT, ALL_WALL) + ANSI_RESET;
                         break;
                     case door:
+                        box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + String.format(FORMAT, BOTH_WALL) + ANSI_RESET;
+                        break;
                     case space:
-                        switch(map[i][j].adiajency(Direction.East)) {
+                        switch (map[i][j].adiajency(Direction.West)) {
                             case wall:
-                                box2 = box2 + map[i][j].getANSIColor() + ANSI_BLACK + "  x" + ANSI_RESET;
+                            case door:
+                                box1 = toStringHelperLine3(box1, i, j, BOTH_WALL, WEST_WALL);
                                 break;
                             case space:
-                            case door:
-                                box2 = box2 + map[i][j].getANSIColor() + ANSI_BLACK + "   " + ANSI_RESET;
+                                box1 = toStringHelperLine1(box1, i, j, EAST_WALL, SPACE);
                                 break;
                         }
                         break;
                 }
-                switch (map[i][j].adiajency(Direction.South)) {
+                switch (map[i][j].adiajency(Direction.West)) {
                     case wall:
-                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + "xxx" + ANSI_RESET;
+                        box2 = toStringHelperLine2(box2, i, j, BOTH_WALL, WEST_WALL);
                         break;
                     case door:
-                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + "x x" + ANSI_RESET;
+                    case space:
+                        box2 = toStringHelperLine2(box2, i, j, EAST_WALL, SPACE);
+                        break;
+                }
+                switch (map[i][j].adiajency(Direction.South)) {
+                    case wall:
+                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + String.format(FORMAT, ALL_WALL) + ANSI_RESET;
+                        break;
+                    case door:
+                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + String.format(FORMAT, BOTH_WALL) + ANSI_RESET;
                         break;
                     case space:
                         switch (map[i][j].adiajency(Direction.West)) {
@@ -197,24 +216,22 @@ public class GameMap {
                                 switch (map[i][j].adiajency(Direction.East)) {
                                     case wall:
                                     case door:
-                                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + "x x" + ANSI_RESET;
+                                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + String.format(FORMAT, BOTH_WALL) + ANSI_RESET;
                                         break;
                                     case space:
-                                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + "x  " + ANSI_RESET;
+                                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + String.format(FORMAT, String.format(FORMAT, WEST_WALL)) + ANSI_RESET;
                                 }
                                 break;
                             case space:
-                                switch (map[i][j].adiajency(Direction.East)) {
-                                    case wall:
-                                    case door:
-                                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + "  x" + ANSI_RESET;
-                                        break;
-                                    case space:
-                                        box3 = box3 + map[i][j].getANSIColor() + ANSI_BLACK + "   " + ANSI_RESET;
-                                }
+                                box3 = toStringHelperLine3(box3, i, j, EAST_WALL, SPACE);
                                 break;
                         }
                         break;
+                }
+                if(j == map[i].length-1) {
+                    box1 = box1 + RIGHT_GRID;
+                    box2 = box2 + " " + i;
+                    box3 = box3 + RIGHT_GRID;
                 }
             }
             mapString = mapString + box1 + "\n" + box2 + "\n" + box3 + "\n";
@@ -222,7 +239,69 @@ public class GameMap {
             box2 = new String();
             box3 = new String();
          }
+        mapString = mapString + "  ";
+        for(int k = 0; k < map[0].length; k++) {
+            mapString = mapString + HIGHER_GRID_LEFT + k + HIGHER_GRID_RIGHT;
+        }
+        mapString = mapString + "\n";
         return mapString;
+    }
+
+    /**
+     * Helper method to avoid code repetition
+     * @param box1 it's the string where the data should be stored
+     * @param i it's the row of the map
+     * @param j it's the column of the map
+     * @param wallType1 it's the wall type to be used in the first case
+     * @param wallType2 it's the wall type to be used in the other case
+     * @return the modified String
+     */
+    private String toStringHelperLine1(String box1, int i, int j, String wallType1, String wallType2) {
+        switch (map[i][j].adiajency(Direction.East)) {
+            case wall:
+            case door:
+                box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + String.format(FORMAT, wallType1) + ANSI_RESET;
+                break;
+            case space:
+                box1 = box1 + map[i][j].getANSIColor() + ANSI_BLACK + String.format(FORMAT, wallType2) + ANSI_RESET;
+        }
+        return box1;
+    }
+
+    /**
+     * Helper method to avoid code repetition
+     * @param box3 it's the string where the data should be stored
+     * @param i it's the row of the map
+     * @param j it's the column of the map
+     * @param wallType1 it's the wall type to be used in the first case
+     * @param wallType2 it's the wall type to be used in the other case
+     * @return the modified String
+     */
+    private String toStringHelperLine3(String box3, int i, int j, String wallType1, String wallType2) {
+        box3 = toStringHelperLine1(box3, i, j, wallType1, wallType2);
+        return box3;
+    }
+
+    /**
+     * Helper method to avoid code repetition
+     * @param box2 it's the string where the data should be stored
+     * @param i it's the row of the map
+     * @param j it's the column of the map
+     * @param wallType1 it's the wall type to be used in the first case
+     * @param wallType2 it's the wall type to be used in the other case
+     * @return the modified String
+     */
+    private String toStringHelperLine2(String box2, int i, int j, String wallType1, String wallType2) {
+        switch (map[i][j].adiajency(Direction.East)) {
+            case wall:
+                box2 = box2 + map[i][j].getANSIColor() + ANSI_BLACK + String.format(FORMAT, wallType1) + ANSI_RESET;
+                break;
+            case space:
+            case door:
+                box2 = box2 + map[i][j].getANSIColor() + ANSI_BLACK + String.format(FORMAT, wallType2) + ANSI_RESET;
+                break;
+        }
+        return box2;
     }
 
     /**
@@ -331,7 +410,7 @@ public class GameMap {
             }
         }
         targets.addAll(getPlayersFromCell(cell));
-        targets.addAll(getAdiacentTargets(cell));
+        targets.addAll(getAdjacentTargets(cell));
         Set<Player> duplicatesEliminator = new LinkedHashSet<>();
         duplicatesEliminator.addAll(targets);
         targets.clear();
@@ -365,7 +444,7 @@ public class GameMap {
      * @param cell the cell of the player that wants to know his adjacent targets
      * @return a collection of adjacent players
      */
-    public ArrayList<Player> getAdiacentTargets (Cell cell){
+    public ArrayList<Player> getAdjacentTargets(Cell cell){
         ArrayList<Player> targets = new ArrayList<>();
         for (Direction direction : Direction.values()) {
             if (cell.adiajency(direction) != Border.wall) {

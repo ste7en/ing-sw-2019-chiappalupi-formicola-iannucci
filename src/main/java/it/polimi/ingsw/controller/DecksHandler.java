@@ -2,13 +2,12 @@ package it.polimi.ingsw.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.model.cards.*;
-
+import it.polimi.ingsw.utility.AdrenalineLogger;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 /**
  *
@@ -20,6 +19,11 @@ public class DecksHandler {
      * String passed as message of RuntimeException when it is asked to draw from an empty deck.
      */
     private static final String WEAPONS_OVER_EXC = "Tried to draw from a finished deck.";
+
+    /**
+     * String that contains the path to where the resources are located.
+     */
+    private static final String PATHNAME = "src" + File.separator + "main" + File.separator + "resources" + File.separator;
 
     /**
      * Integer to initialize the weaponsDeck
@@ -84,22 +88,21 @@ public class DecksHandler {
 
     /**
      * Method that initializes the weapons deck using a json file
-     * @return an ArrayList containing the deck of weapons for testing purposes
      */
-    public List<Weapon> initializeWeapons() {
+    private void initializeWeapons() {
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleWeapon[] boxSimple = new SimpleWeapon[NUM_OF_SIMPLE_WEAPONS];
         PotentiableWeapon[] boxPotentiable = new PotentiableWeapon[NUM_OF_POTENTIABLE_WEAPONS];
         SelectableWeapon[] boxSelectable = new SelectableWeapon[NUM_OF_SELECTABLE_WEAPONS];
         try {
-            File json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "simpleWeapons.json");
+            File json = new File(PATHNAME + "simpleWeapons.json");
             boxSimple = objectMapper.readValue(json, SimpleWeapon[].class);
-            json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "potentiableWeapons.json");
+            json = new File(PATHNAME + "potentiableWeapons.json");
             boxPotentiable = objectMapper.readValue(json, PotentiableWeapon[].class);
-            json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "selectableWeapons.json");
+            json = new File(PATHNAME + "selectableWeapons.json");
             boxSelectable = objectMapper.readValue(json, SelectableWeapon[].class);
         } catch (IOException e) {
-            e.printStackTrace();
+            AdrenalineLogger.error(e.toString());
         }
         ArrayList<SimpleWeapon> simpleWeapons = new ArrayList<>(Arrays.asList(boxSimple));
         ArrayList<PotentiableWeapon> potentiableWeapons = new ArrayList<>(Arrays.asList(boxPotentiable));
@@ -110,48 +113,44 @@ public class DecksHandler {
         weapons.addAll(potentiableWeapons);
         for(Weapon w : weapons) w.reload();
         Collections.shuffle(weapons);
-        return (List<Weapon>) weapons.clone();
     }
 
     /**
-     * Method that initializes the weapons deck using a json file
-     * @return an ArrayList containing the deck of weapons for testing purposes
+     * Method that initializes the ammo tiles deck using a json file
      */
-    public List<AmmoTile> initializeAmmoTiles() {
+    private void initializeAmmoTiles() {
         ObjectMapper objectMapper = new ObjectMapper();
         AmmoTile[] box = new AmmoTile[NUM_OF_AMMOTILES];
         try {
-            File json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "ammoTiles.json");
+            File json = new File(PATHNAME + "ammoTiles.json");
             box = objectMapper.readValue(json, AmmoTile[].class);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            AdrenalineLogger.error(e.toString());
         }
         ammoTiles = new ArrayList<>(Arrays.asList(box));
-        return (List<AmmoTile>) ammoTiles.clone();
     }
 
     /**
      * Method that initializes the powerups deck using a json file
-     * @return an ArrayList containing the deck of powerups for testing purposes
      */
-    public List<Powerup> initializePowerups() {
+    private void initializePowerups() {
         ObjectMapper objectMapper = new ObjectMapper();
         Newton[] boxNewton = new Newton[NUM_OF_POWERUPS];
         TargetingScope[] boxTargetingScope = new TargetingScope[NUM_OF_POWERUPS];
         TagbackGrenade[] boxTagbackGrenade = new TagbackGrenade[NUM_OF_POWERUPS];
         Teleporter[] boxTeleporter = new Teleporter[NUM_OF_POWERUPS];
         try {
-            File json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "newtonPowerups.json");
+            File json = new File(PATHNAME + "newtonPowerups.json");
             boxNewton = objectMapper.readValue(json, Newton[].class);
-            json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "tagbackGrenadePowerups.json");
+            json = new File(PATHNAME + "tagbackGrenadePowerups.json");
             boxTagbackGrenade = objectMapper.readValue(json, TagbackGrenade[].class);
-            json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "targetingScopePowerups.json");
+            json = new File(PATHNAME + "targetingScopePowerups.json");
             boxTargetingScope = objectMapper.readValue(json, TargetingScope[].class);
-            json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "teleporterPowerups.json");
+            json = new File(PATHNAME + "teleporterPowerups.json");
             boxTeleporter = objectMapper.readValue(json, Teleporter[].class);
         } catch (IOException e) {
-            e.printStackTrace();
+            AdrenalineLogger.error(e.toString());
         }
         ArrayList<Newton> newtons = new ArrayList<>(Arrays.asList(boxNewton));
         ArrayList<TagbackGrenade> tagbackGrenades = new ArrayList<>(Arrays.asList(boxTagbackGrenade));
@@ -162,15 +161,14 @@ public class DecksHandler {
         powerups.addAll(tagbackGrenades);
         powerups.addAll(targetingScopes);
         powerups.addAll(teleporters);
-        return (List<Powerup>) powerups.clone();
     }
 
     /**
      * Method that lets other classes verify if the weapons are over (in that case, no weapon can be drawn)
      * @return true if there are no weapons in the weapons deck
      */
-    public boolean weaponsOver() {
-        return weapons.size() == 0;
+    private boolean weaponsOver() {
+        return weapons.isEmpty();
     }
 
     /**
@@ -179,7 +177,7 @@ public class DecksHandler {
      * @throws RuntimeException if the deck is empty
      */
     public Weapon drawWeapon() {
-        if(weaponsOver()) throw new RuntimeException(WEAPONS_OVER_EXC);
+        if(weaponsOver()) throw new IllegalStateException(WEAPONS_OVER_EXC);
         Collections.shuffle(weapons);
         return weapons.remove(0);
     }
@@ -241,6 +239,7 @@ public class DecksHandler {
     /**
      * Private method that refills the ammo tiles deck with all of the used ammo tiles, and clears the recycle bin after that
      */
+    @SuppressWarnings("unchecked")
     private void recycleAmmos() {
         Collections.shuffle(ammoRecycleBin);
         ammoTiles = (ArrayList<AmmoTile>) ammoRecycleBin.clone();
@@ -250,6 +249,7 @@ public class DecksHandler {
     /**
      * Private method that refills the powerups deck with all of the used powerups, and clears the recycle bin after that
      */
+    @SuppressWarnings("unchecked")
     private void recyclePowerups() {
         Collections.shuffle(powerupsRecycleBin);
         powerups = (ArrayList<Powerup>) powerupsRecycleBin.clone();
