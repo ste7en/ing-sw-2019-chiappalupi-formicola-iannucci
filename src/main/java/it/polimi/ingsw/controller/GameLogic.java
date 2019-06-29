@@ -26,7 +26,6 @@ public class GameLogic {
     private Board board;
     private boolean finalFrenzy;
     private UUID gameID;
-    private ArrayList<Damage> forPotentiableWeapon;
     private DecksHandler decks;
     private WeaponController weaponController;
     private PowerupController powerupController;
@@ -47,7 +46,6 @@ public class GameLogic {
         this.decks = new DecksHandler();
         this.finalFrenzy = false;
         this.gameID = gameID;
-        this.forPotentiableWeapon = null;
         this.weaponController = new WeaponController();
         this.powerupController = new PowerupController();
         this.players = new ArrayList<>();

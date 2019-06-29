@@ -172,7 +172,7 @@ public class GameMapTest {
 
     /**
      * Tests the getAdiancentTargets method
-     * @see GameMap#getAdiacentTargets(Cell)
+     * @see GameMap#getAdjacentTargets(Cell)
      */
     @Test
     public void testGetAdiacentTargets (){
@@ -180,7 +180,7 @@ public class GameMapTest {
         gameMapTest.setPlayerPosition(playerTest,1,0);
         gameMapTest.setPlayerPosition(playerTest2,0,0);
         targets.add(playerTest2);
-        assertEquals(targets, gameMapTest.getAdiacentTargets(gameMapTest.getCellFromPlayer(playerTest)));
+        assertEquals(targets, gameMapTest.getAdjacentTargets(gameMapTest.getCellFromPlayer(playerTest)));
     }
 
     /**
