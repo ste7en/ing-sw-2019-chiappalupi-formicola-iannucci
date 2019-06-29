@@ -270,4 +270,10 @@ public class GameMapTest {
         System.out.println(gameMapTest.toString());
     }
 
+    @Test
+    public void testInitializeMapFromJson() {
+        GameMap map1 = new GameMap(MapType.conf_4);
+        System.out.println(map1.toString());
+    }
+
 }

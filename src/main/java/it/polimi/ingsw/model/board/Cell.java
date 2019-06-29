@@ -1,11 +1,13 @@
 package it.polimi.ingsw.model.board;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.utility.CellColor;
 import it.polimi.ingsw.model.cards.AmmoTile;
 import it.polimi.ingsw.model.utility.Border;
 import it.polimi.ingsw.model.utility.Direction;
-
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -14,26 +16,21 @@ import java.util.ArrayList;
 
 public class Cell implements Comparable<Cell> {
 
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_WHITE = "\u001B[37m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_RESET = "\u001B[0m";
 
-    public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
-    public static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
-    public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
-    public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
-    public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
-    public static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
+    private static final String ANSI_RED_BACKGROUND = "\u001B[41m";
+    private static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
+    private static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
+    private static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
+    private static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
+    private static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
 
 
     /**
      * borders' types of the cell
      */
-    private ArrayList<Border> borders;
+    @JsonProperty("borders")
+    private List<Border> borders;
 
     /**
      * Cell's color
@@ -41,23 +38,29 @@ public class Cell implements Comparable<Cell> {
     private CellColor color;
 
     /**
-     * Boolean that is true only if the cell contains a spawnpoint
+     * Boolean that is true only if the cell contains a spawnPoint
      */
+    @JsonProperty("respawner")
     private boolean respawner;
 
     /**
-     * Ammo tile positioned on the cell; it is null if the cell contains spawnpoints
+     * Ammo tile positioned on the cell; it is null if the cell contains spawnPoints
      */
     private AmmoTile ammoCard;
 
     /**
      * Position of the cell in the matrix.
      */
-    private final int row;
-    private final int column;
-
+    private int row;
+    private int column;
 
     /**
+     * Default constructor: added to let Jackson deserialize the map.
+     */
+    public Cell() {}
+
+    /**
+     * N.B.: this constructor acts only for testing purposes, as all the cell of the game maps are deserialized from json through the default constructor;
      * Constructor: creates a new Cell based on its borders, color, ammo tile, position on the map and whether it is a respawner cell
      * @param b1 northern border of the cell, defined as a Border Enum value
      * @param b2 eastern border of the cell, defined as a Border Enum value

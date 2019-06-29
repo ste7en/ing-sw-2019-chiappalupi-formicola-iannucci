@@ -1,15 +1,21 @@
 package it.polimi.ingsw.model.board;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import it.polimi.ingsw.model.utility.Border;
 import it.polimi.ingsw.model.utility.CellColor;
 import it.polimi.ingsw.model.utility.Direction;
 import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.utility.AdrenalineLogger;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
  *
+ * @author Daniele Chiappalupi
  * @author Elena Iannucci
  */
 
@@ -18,22 +24,33 @@ public class GameMap {
     /**
      * Static ANSI colors;
      */
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLACK = "\u001B[30m";
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_BLACK = "\u001B[30m";
 
     /**
-     * Static gameMap String;
+     * Static GameMap max dimensions
      */
-    public static final String ALL_WALL            = "-------";
-    public static final String WEST_WALL           = "|      ";
-    public static final String EAST_WALL           = "      |";
-    public static final String BOTH_WALL           = "|     |";
-    public static final String SPACE               = "       ";
-    public static final String FORMAT              = "%7s";
-    public static final String HIGHER_GRID_LEFT    = "|  ";
-    public static final String HIGHER_GRID_RIGHT   = "  |";
-    public static final String LEFT_GRID           = "- ";
-    public static final String RIGHT_GRID          = " -";
+    private static final int rows       = 3;
+    private static final int columns = 4;
+
+    /**
+     * String that contains the path to where the resources are located.
+     */
+    private static final String PATHNAME = "src" + File.separator + "main" + File.separator + "resources" + File.separator;
+
+    /**
+     * Static gameMap Strings used to print the map;
+     */
+    private static final String ALL_WALL            = "-------";
+    private static final String WEST_WALL           = "|      ";
+    private static final String EAST_WALL           = "      |";
+    private static final String BOTH_WALL           = "|     |";
+    private static final String SPACE               = "       ";
+    private static final String FORMAT              = "%7s";
+    private static final String HIGHER_GRID_LEFT    = "|  ";
+    private static final String HIGHER_GRID_RIGHT   = "  |";
+    private static final String LEFT_GRID           = "- ";
+    private static final String RIGHT_GRID          = " -";
 
     /**
      * Rep of the game's map through a matrix
@@ -46,24 +63,35 @@ public class GameMap {
     private LinkedHashMap<Player, Cell> playersPosition;
 
     /**
-     * Number of rows in the map
-     */
-    private int rows;
-
-    /**
-     * Number of columns in the map
-     */
-    private int columns;
-
-    /**
      * Configuration's type of the map
      */
     private MapType mapType;
 
+    /**
+     * Method that initializes the map from a json file
+     * @return a matrix of cells that will be the map of the game
+     */
+    private Cell[][] initializeMap(MapType mapType) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Cell[][] box = new Cell[rows][columns];
+        try {
+            File json = new File(PATHNAME + mapType + ".json");
+            box = objectMapper.readValue(json, Cell[][].class);
+
+        } catch (IOException e) {
+            AdrenalineLogger.error(e.toString());
+        }
+        return box;
+    }
+
+    public GameMap(MapType mapType) {
+        this.mapType = mapType;
+        this.playersPosition = new LinkedHashMap<>();
+        this.map = initializeMap(mapType);
+    }
+
     public GameMap(MapType mapType, LinkedHashMap<Player, Cell> playersPosition){
         this.mapType = mapType;
-        rows=3;
-        columns=4;
         this.playersPosition = new LinkedHashMap<>();
         this.playersPosition.putAll(playersPosition);
         this.map = new Cell[3][4];
@@ -94,8 +122,6 @@ public class GameMap {
             }
         }
         this.playersPosition.putAll(playersPosition);
-        this.rows=rows;
-        this.columns=columns;
     }
 
     @Override
