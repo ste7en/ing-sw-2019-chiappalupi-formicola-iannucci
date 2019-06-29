@@ -3,11 +3,13 @@ package it.polimi.ingsw.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -88,8 +90,9 @@ public class DecksHandler {
 
     /**
      * Method that initializes the weapons deck using a json file
+     * @return an ArrayList containing the deck of weapons for testing purposes
      */
-    private void initializeWeapons() {
+    List<Weapon> initializeWeapons() {
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleWeapon[] boxSimple = new SimpleWeapon[NUM_OF_SIMPLE_WEAPONS];
         PotentiableWeapon[] boxPotentiable = new PotentiableWeapon[NUM_OF_POTENTIABLE_WEAPONS];
@@ -113,12 +116,14 @@ public class DecksHandler {
         weapons.addAll(potentiableWeapons);
         for(Weapon w : weapons) w.reload();
         Collections.shuffle(weapons);
+        return new ArrayList<>(weapons);
     }
 
     /**
      * Method that initializes the ammo tiles deck using a json file
+     * @return an ArrayList containing the deck of ammo tiles for testing purposes
      */
-    private void initializeAmmoTiles() {
+    List<AmmoTile> initializeAmmoTiles() {
         ObjectMapper objectMapper = new ObjectMapper();
         AmmoTile[] box = new AmmoTile[NUM_OF_AMMOTILES];
         try {
@@ -129,12 +134,14 @@ public class DecksHandler {
             AdrenalineLogger.error(e.toString());
         }
         ammoTiles = new ArrayList<>(Arrays.asList(box));
+        return new ArrayList<>(ammoTiles);
     }
 
     /**
      * Method that initializes the powerups deck using a json file
+     * @return an ArrayList containing the deck of powerups for testing purposes
      */
-    private void initializePowerups() {
+    List<Powerup> initializePowerups() {
         ObjectMapper objectMapper = new ObjectMapper();
         Newton[] boxNewton = new Newton[NUM_OF_POWERUPS];
         TargetingScope[] boxTargetingScope = new TargetingScope[NUM_OF_POWERUPS];
@@ -161,13 +168,14 @@ public class DecksHandler {
         powerups.addAll(tagbackGrenades);
         powerups.addAll(targetingScopes);
         powerups.addAll(teleporters);
+        return new ArrayList<>(powerups);
     }
 
     /**
      * Method that lets other classes verify if the weapons are over (in that case, no weapon can be drawn)
      * @return true if there are no weapons in the weapons deck
      */
-    private boolean weaponsOver() {
+    boolean weaponsOver() {
         return weapons.isEmpty();
     }
 
@@ -239,20 +247,18 @@ public class DecksHandler {
     /**
      * Private method that refills the ammo tiles deck with all of the used ammo tiles, and clears the recycle bin after that
      */
-    @SuppressWarnings("unchecked")
     private void recycleAmmos() {
         Collections.shuffle(ammoRecycleBin);
-        ammoTiles = (ArrayList<AmmoTile>) ammoRecycleBin.clone();
+        ammoTiles = new ArrayList<>(ammoRecycleBin);
         ammoRecycleBin.clear();
     }
 
     /**
      * Private method that refills the powerups deck with all of the used powerups, and clears the recycle bin after that
      */
-    @SuppressWarnings("unchecked")
     private void recyclePowerups() {
         Collections.shuffle(powerupsRecycleBin);
-        powerups = (ArrayList<Powerup>) powerupsRecycleBin.clone();
+        powerups = new ArrayList<>(powerupsRecycleBin);
         powerupsRecycleBin.clear();
     }
 

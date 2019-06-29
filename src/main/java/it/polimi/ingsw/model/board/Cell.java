@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.cards.AmmoTile;
 import it.polimi.ingsw.model.utility.Border;
 import it.polimi.ingsw.model.utility.Direction;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
