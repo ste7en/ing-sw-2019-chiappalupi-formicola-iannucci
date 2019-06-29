@@ -53,7 +53,7 @@ public class SelectableWeapon extends Weapon {
             if(map.getTargetsFromDirection(shooter, direction).size() > 0) {
                 ArrayList<Damage> arrayD = new ArrayList<>();
                 damages.add(arrayD);
-                ArrayList<Player> targetsInDirection = map.getTargetsFromDirection(shooter, direction);
+                List<Player> targetsInDirection = map.getTargetsFromDirection(shooter, direction);
                 targetsInDirection.removeAll(map.getTargetsInMyCell(shooter));
                 for(Player player : targetsInDirection) {
                     Damage damage = new Damage();

@@ -306,7 +306,7 @@ public abstract class Weapon {
                     if(marks < 0 && k == 0) {
                         int positiveMarks = (-1) * marks;
                         d.setMarks(positiveMarks);
-                        ArrayList<Player> markedPlayers = map.getTargetsInMyCell(d.getTarget());
+                        List<Player> markedPlayers = map.getTargetsInMyCell(d.getTarget());
                         for(Player p : markedPlayers) {
                             arrayD.add(new Damage());
                             arrayD.get(arrayD.size() - 1).setTarget(p);
@@ -495,7 +495,7 @@ public abstract class Weapon {
                     ArrayList<ArrayList<Player>> solutions = new ArrayList<>();
                     for (Player player : p) {
                         int exists = 0;
-                        ArrayList<Cell> room = map.getRoomFromCell(map.getCellFromPlayer(player));
+                        List<Cell> room = map.getRoomFromCell(map.getCellFromPlayer(player));
                         for (ArrayList<Player> solution : solutions)
                             if (map.getRoomFromCell(map.getCellFromPlayer(solution.get(0))).equals(room)) {
                                 solution.add(player);

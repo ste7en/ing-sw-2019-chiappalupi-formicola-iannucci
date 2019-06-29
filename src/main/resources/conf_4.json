@@ -51,7 +51,7 @@
                   "column": 1
             },
             {
-                  "borders": ["door", "wall", "space", "space"],
+                  "borders": ["door", "space", "space", "wall"],
                   "color": "yellow",
                   "respawner": false,
                   "ammoCard": null,

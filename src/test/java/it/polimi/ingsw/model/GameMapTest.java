@@ -265,15 +265,36 @@ public class GameMapTest {
         assertEquals(positionCell, gameMapTest.getPositionFromPlayer(playerTest));
     }
 
+    /**
+     * Tests the toString method, asserting that the string is not null.
+     * @see GameMap#toString()
+     */
     @Test
     public void testToString() {
-        System.out.println(gameMapTest.toString());
+        String map = gameMapTest.toString();
+        assertNotNull(map);
     }
 
+    /**
+     * Tests the deserialization of the map from the json.
+     * @see GameMap#GameMap(MapType)
+     */
     @Test
     public void testInitializeMapFromJson() {
-        GameMap map1 = new GameMap(MapType.conf_4);
+        GameMap map1 = new GameMap(MapType.conf_1);
+        assertNotNull(map1);
         System.out.println(map1.toString());
-    }
 
+        GameMap map2 = new GameMap(MapType.conf_2);
+        assertNotNull(map2);
+        System.out.println(map2.toString());
+
+        GameMap map3 = new GameMap(MapType.conf_3);
+        assertNotNull(map3);
+        System.out.println(map3.toString());
+
+        GameMap map4 = new GameMap(MapType.conf_4);
+        assertNotNull(map4);
+        System.out.println(map4.toString());
+    }
 }
