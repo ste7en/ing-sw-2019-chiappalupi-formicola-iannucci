@@ -156,7 +156,7 @@ public class AdrenalineCLI extends View {
         out.flush();
         out.println();
         out.println(CHOOSE_USERNAME);
-        var username = in.next();
+        var username = in.nextLine();
         createUser(username);
     }
 
@@ -177,9 +177,9 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void onStart(UUID gameID) {
+    public void onStart() {
         out.println(ON_START);
-        super.onStart(gameID);
+        super.onStart();
     }
 
     @Override
@@ -189,10 +189,18 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void willChooseCharacter(List<String> availableCharacters) {
-        out.println(CHOOSE_CHARACTER);
-        var li = availableCharacters.listIterator();
-        while (li.hasNext()) out.println(li.nextIndex()+") "+li.next());
-        didChooseCharacter(in.nextLine());
+        Integer choice;
+        do { out.println(CHOOSE_CHARACTER);
+            var li = availableCharacters.listIterator();
+            while (li.hasNext()) out.println(li.nextIndex()+") "+li.next());
+            //flushInput();
+            choice = in.nextInt();
+        } while (choice > availableCharacters.size() || choice < 0);
+        didChooseCharacter(availableCharacters.get(choice));
+    }
+
+    private void flushInput() {
+        if (in.hasNext()) in.nextLine();
     }
 
     @Override

@@ -46,9 +46,8 @@ public abstract class View implements Observer{
      * Method implemented by subclasses when a new game starts.
      * This super method should be called in order to set View's
      * gameID attribute.
-     * @param gameID the game identifier used by tbe server
      */
-    public void onStart(UUID gameID) {
+    public void onStart() {
         this.gameID = gameID;
         client.askForCharacters();
     }

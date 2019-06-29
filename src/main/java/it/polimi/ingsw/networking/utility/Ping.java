@@ -29,7 +29,7 @@ public class Ping {
     /**
      * Delay when executing a ping for the first time
      */
-    private static final long EXECUTION_DELAY = 0;
+    private static final long EXECUTION_DELAY = (long)0.5;
 
     /**
      * TimeUnit

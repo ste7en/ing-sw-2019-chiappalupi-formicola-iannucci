@@ -297,7 +297,7 @@ public class ClientRMI extends Client implements ClientInterface {
 
     @Override
     public void gameStarted(String gameID){
-        this.viewObserver.onStart(UUID.fromString(gameID));
+        this.viewObserver.onStart();
         this.gameID = UUID.fromString(gameID);
     }
 

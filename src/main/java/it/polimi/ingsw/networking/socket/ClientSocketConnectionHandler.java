@@ -89,7 +89,7 @@ public class ClientSocketConnectionHandler implements ConnectionHandlerSenderDel
         try {
             this.socket = new Socket(serverName, portNumber);
             var clientSocketConnectionHandlerThread = new Thread(this);
-            clientSocketConnectionHandlerThread.setPriority(Thread.NORM_PRIORITY);
+            clientSocketConnectionHandlerThread.setPriority(Thread.MAX_PRIORITY);
             clientSocketConnectionHandlerThread.start();
         } catch (UnknownHostException e) {
             logOnException(INIT_EXCEPTION+UNKNOWN_HOST, e);
@@ -128,7 +128,7 @@ public class ClientSocketConnectionHandler implements ConnectionHandlerSenderDel
                 }
                 if (!outBuf.isEmpty()) outBuf.forEach(printWriter::println);
                 outBuf.clear();
-                Thread.sleep(100);
+                Thread.sleep(50);
             }
 
             if (connectionState == CLOSED) socket.close();

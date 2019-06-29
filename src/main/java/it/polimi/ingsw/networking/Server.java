@@ -165,7 +165,10 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                 .map(users::get)
                 .forEach(s -> s.gameDidStart(gameID.toString()));
 
-        userList.stream().map(users::get).forEach(s-> s.willChooseCharacter(characters));
+        userList.stream()
+                .map(users::get)
+                .forEach(s-> s.willChooseCharacter(characters));
+
     }
 
     /**
@@ -249,6 +252,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         var gameController      = gameControllers.get(gameID);
         var chosenCharacter     = Character.getCharacterFromColor(PlayerColor.valueOf(characterColor));
         var availableCharacters = gameController.getAvailableCharacters();
+
+        AdrenalineLogger.info("Game " + gameID + ": " + userID + " chose " + chosenCharacter.getColor());
 
         if (availableCharacters.contains(chosenCharacter)) {
             gameController.addPlayer(new Player(findUserFromID(userID), chosenCharacter));

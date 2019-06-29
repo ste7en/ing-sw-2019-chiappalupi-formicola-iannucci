@@ -54,7 +54,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onStart(UUID gameID) {
+    public void onStart() {
 
     }
 

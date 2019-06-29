@@ -95,7 +95,7 @@ public final class ServerSocketHandler implements Runnable, Loggable {
 
             var connectionThread = new Thread(connection);
             connectionThread.setDaemon(true);
-            connectionThread.setPriority(Thread.MIN_PRIORITY);
+            connectionThread.setPriority(Thread.NORM_PRIORITY);
             connectionThread.start();
         } catch (IOException e) {
             logOnException(EXC_ON_CLIENT_CONNECTION, e);

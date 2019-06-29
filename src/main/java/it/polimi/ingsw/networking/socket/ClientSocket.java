@@ -64,7 +64,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
      */
     @Override
     public void receive(String message, ConnectionHandlerSenderDelegate sender) {
-        new Thread(
+        var task = new Thread(
             () -> {
                 var communicationMessage = CommunicationMessage.getCommunicationMessageFrom(message);
                 var id = CommunicationMessage.getConnectionIDFrom(message);
@@ -72,6 +72,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
                 switch (communicationMessage) {
                     case PING:
+                        super.userID = id;
                         sender.send(CommunicationMessage.from(id, PONG));
                         break;
                     case CREATE_USER_OK:
@@ -84,8 +85,8 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.didJoinWaitingRoom();
                         break;
                     case USER_JOINED_GAME:
-                        var gameUUID = UUID.fromString(args.get(GameLogic.gameID_key));
-                        this.viewObserver.onStart(gameUUID);
+                        this.gameID = UUID.fromString(args.get(GameLogic.gameID_key));
+                        this.viewObserver.onStart();
                         break;
                     case CHOOSE_CHARACTER:
                         var availableCharacters = Arrays.asList(args.get(Character.character_list).split(", "));
@@ -147,7 +148,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         break;
                 }
             }
-        ).start();
+        );
+        task.setDaemon(false);
+        task.setPriority(Thread.MAX_PRIORITY);
+        task.start();
     }
 
     /**
@@ -181,6 +185,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     public void choseCharacter(String characterColor){
         var args = new HashMap<String, String>();
         args.put(Character.character, characterColor);
+        args.put(GameLogic.gameID_key, gameID.toString());
         this.send(CommunicationMessage.from(userID, CHOOSE_CHARACTER, args, gameID));
     }
 
