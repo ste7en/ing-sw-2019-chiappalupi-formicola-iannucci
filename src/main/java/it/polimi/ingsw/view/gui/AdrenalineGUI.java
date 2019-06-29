@@ -49,7 +49,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onFailure() {
+    public void onFailure(String message) {
 
     }
 
@@ -209,9 +209,5 @@ public class AdrenalineGUI extends View {
 
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-
-    }
 }
 

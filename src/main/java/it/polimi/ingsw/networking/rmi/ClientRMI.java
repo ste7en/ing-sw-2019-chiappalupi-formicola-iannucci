@@ -73,7 +73,7 @@ public class ClientRMI extends Client implements ClientInterface {
 
     @Override
     public void askForCharacters(){
-        ArrayList<String> availableCharacters = new ArrayList<>();
+        List<String> availableCharacters = new ArrayList<>();
         try {
             availableCharacters = server.getAvailableCharacters(gameID);
         } catch (RemoteException e) {

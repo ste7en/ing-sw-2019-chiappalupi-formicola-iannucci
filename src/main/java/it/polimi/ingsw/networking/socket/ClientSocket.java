@@ -9,6 +9,7 @@ import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
 import it.polimi.ingsw.networking.ConnectionHandlerSenderDelegate;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
+import it.polimi.ingsw.view.View;
 
 import java.io.*;
 import java.net.ConnectException;
@@ -24,6 +25,11 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  * @author Daniele Chiappalupi
  */
 public class ClientSocket extends Client implements ConnectionHandlerReceiverDelegate {
+
+    /**
+     * Log strings
+     */
+    private static final String UNKNOWN_COMMUNICATION_MESSAGE = "Unsupported communication message: ";
 
     /**
      * Delegate class responsible to send messages
@@ -90,7 +96,13 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         break;
                     case CHOOSE_CHARACTER:
                         var availableCharacters = Arrays.asList(args.get(Character.character_list).split(", "));
-                        viewObserver.willChooseCharacter(availableCharacters);
+                        this.viewObserver.willChooseCharacter(availableCharacters);
+                        break;
+                    case CHARACTER_CHOSEN_OK:
+                        //TODO: - send an ACK??
+                        break;
+                    case CHARACTER_NOT_AVAILABLE:
+                        this.viewObserver.onFailure(View.CHARACTER_NOT_AVAILABLE);
                         break;
                     case SHOOT_PEOPLE:
                         List<String> weapons = new ArrayList<>(args.values());
@@ -145,6 +157,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.willChoosePowerupDamage(args);
                         break;
                     default:
+                        logOnFailure(UNKNOWN_COMMUNICATION_MESSAGE+communicationMessage);
                         break;
                 }
             }

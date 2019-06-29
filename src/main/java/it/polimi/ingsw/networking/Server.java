@@ -243,19 +243,19 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public ArrayList<String> getAvailableCharacters(UUID gameID) {
-        return (ArrayList<String>)gameControllers.get(gameID).getAvailableCharacters();
+    public List<String> getAvailableCharacters(UUID gameID) {
+        return gameControllers.get(gameID).getAvailableCharacters();
     }
 
     @Override
     public boolean choseCharacter(UUID gameID, int userID, String characterColor) {
         var gameController      = gameControllers.get(gameID);
-        var chosenCharacter     = Character.getCharacterFromColor(PlayerColor.valueOf(characterColor));
         var availableCharacters = gameController.getAvailableCharacters();
 
-        AdrenalineLogger.info("Game " + gameID + ": " + userID + " chose " + chosenCharacter.getColor());
+        AdrenalineLogger.info("Game " + gameID + ": " + userID + " chose " + characterColor);
 
-        if (availableCharacters.contains(chosenCharacter)) {
+        if (availableCharacters.contains(characterColor)) {
+            var chosenCharacter = Character.getCharacterFromColor(PlayerColor.valueOf(characterColor));
             gameController.addPlayer(new Player(findUserFromID(userID), chosenCharacter));
             return true;
         }

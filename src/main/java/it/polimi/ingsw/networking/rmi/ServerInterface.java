@@ -19,7 +19,7 @@ public interface ServerInterface extends Remote {
      */
     void joinWaitingRoom(String username) throws RemoteException;
 
-    ArrayList<String> getAvailableCharacters(UUID gameID) throws RemoteException;
+    List<String> getAvailableCharacters(UUID gameID) throws RemoteException;
 
     /**
      * When the user chooses a character, the server is asked for its availability

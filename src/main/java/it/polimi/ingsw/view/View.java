@@ -16,7 +16,7 @@ import java.util.*;
  * @author Stefano Formicola
  * @author Elena Iannucci
  */
-public abstract class View implements Observer{
+public abstract class View {
 
     protected Client client;
 
@@ -36,10 +36,14 @@ public abstract class View implements Observer{
     private   static final String DID_SELECT_WEAPONS_TO_RELOAD  = "Weapons selected to reload: ";
     private   static final String DID_USE_WEAPON                = "Weapon used with success.";
 
+    /**
+     * Failure messages
+     */
+    public static final String CHARACTER_NOT_AVAILABLE          = "The character you chose isn't available.";
 
     public abstract void onViewUpdate();
 
-    public abstract void onFailure();
+    public abstract void onFailure(String message);
 
     /**
      * Method implemented by subclasses when a new game starts.
@@ -126,7 +130,7 @@ public abstract class View implements Observer{
     /**
      * When the client chooses a character
      */
-    public void didChooseCharacter(String character){
+    public void didChooseCharacter(String character) {
         client.choseCharacter(character);
     }
 
@@ -138,7 +142,7 @@ public abstract class View implements Observer{
     /**
      * Ele
      */
-    public void didChooseGameMap(String configuration){
+    public void didChooseGameMap(String configuration) {
         client.choseGameMap(configuration);
     }
 
@@ -157,7 +161,7 @@ public abstract class View implements Observer{
     /**
      * Ele
      */
-    public void didChooseSpawnPoint(String powerup){
+    public void didChooseSpawnPoint(String powerup) {
         client.choseSpawnPoint(powerup);
     }
 

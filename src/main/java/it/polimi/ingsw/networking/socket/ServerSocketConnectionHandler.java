@@ -9,7 +9,6 @@ import it.polimi.ingsw.networking.ServerConnectionHandler;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionState;
 import it.polimi.ingsw.networking.utility.Ping;
-import it.polimi.ingsw.networking.utility.Pingable;
 import it.polimi.ingsw.utility.*;
 
 import java.io.*;
@@ -357,8 +356,12 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
 
     @Override
     protected void didChooseCharacter(UUID gameID, int userID, String chosenCharacterColor) {
-        server.choseCharacter(gameID, userID, chosenCharacterColor);
-        // TODO: - if the method above returns false...
-        // server.getAvailableCharacters(gameID);
+        var args = new HashMap<String, String>();
+        args.put(Character.character, chosenCharacterColor);
+        if (server.choseCharacter(gameID, userID, chosenCharacterColor)) send(CommunicationMessage.from(userID, CHARACTER_CHOSEN_OK, args, gameID));
+        else {
+            send(CommunicationMessage.from(userID, CHARACTER_NOT_AVAILABLE, args, gameID));
+            willChooseCharacter(server.getAvailableCharacters(gameID));
+        }
     }
 }

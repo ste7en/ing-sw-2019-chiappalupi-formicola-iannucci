@@ -56,8 +56,6 @@ public enum CommunicationMessage {
      *
      * Arguments: <Character.character_list, value> in CHOOSE_CHARACTER server ---> client,
      *            <Character.character, value> in CHOOSE_CHARACTER client ---> server, CHARACTER_NOT_AVAILABLE and CHARACTER_CHOSEN_OK
-     *            <User.username_key, value>
-     *            <GameLogic.gameID_key, value>
      */
     CHOOSE_CHARACTER,
     CHARACTER_NOT_AVAILABLE,

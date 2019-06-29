@@ -172,8 +172,14 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void onFailure() {
-
+    public void onFailure(String message) {
+        switch (message) {
+            case CHARACTER_NOT_AVAILABLE:
+                out.println(message);
+                break;
+            default:
+                out.println(message);
+        }
     }
 
     @Override
@@ -553,7 +559,4 @@ public class AdrenalineCLI extends View {
         out.println(POWERUP_USED);
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-    }
 }
