@@ -166,14 +166,14 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     public void createUser(String username) {
         var args = new HashMap<String, String>();
         args.put(User.username_key, username);
-        this.send(CommunicationMessage.from(0, CREATE_USER, args));
+        this.send(CommunicationMessage.from(userID, CREATE_USER, args));
     }
 
     @Override
     public void joinWaitingRoom(String username) {
         var args = new HashMap<String, String>();
         args.put(User.username_key, username);
-        this.send(CommunicationMessage.from(0, USER_JOIN_WAITING_ROOM, args));
+        this.send(CommunicationMessage.from(userID, USER_JOIN_WAITING_ROOM, args));
     }
 
     @Override

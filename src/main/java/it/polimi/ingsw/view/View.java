@@ -19,7 +19,6 @@ import java.util.*;
 public abstract class View implements Observer{
 
     protected Client client;
-    protected UUID gameID;
 
     /**
      * Log strings
@@ -48,7 +47,6 @@ public abstract class View implements Observer{
      * gameID attribute.
      */
     public void onStart() {
-        this.gameID = gameID;
         client.askForCharacters();
     }
 
