@@ -192,28 +192,28 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     /**
-     * When a client registers a new user
-     * @param user the user to register
-     * @param connectionHandler client connection handler
-     * @return false if the user already exists and is connected, true otherwise
-     */
-    public boolean createUser(String username, ServerConnectionHandler connectionHandler) {
-        var user = new User(username);
-        if (checkUserAvailability(user)) {
-            users.put(user, connectionHandler);
-            return true;
-        } else return false;
-    }
-
-    /**
-     * @param name user name
+     * Checks is a user with the same username already exists and is connected
+     * @param user User instance to check
      * @return true if the user doesn't exist or isn't connected, false otherwise
      */
-    @SuppressWarnings("all")
     private boolean checkUserAvailability(User user) {
         var connectionHandler = users.get(user);
         if ( connectionHandler != null ) return !connectionHandler.isConnectionAvailable();
         else return true;
+    }
+
+    /**
+     * When a client registers a new user
+     * @param user the user to register
+     * @param connectionHandler client connection handler
+     * @return -1 if the user already exists and is connected, user's hashCode  otherwise
+     */
+    public int createUser(String username, ServerConnectionHandler connectionHandler) {
+        var user = new User(username);
+        if (checkUserAvailability(user)) {
+            users.put(user, connectionHandler);
+            return user.hashCode();
+        } else return -1;
     }
 
     @Override

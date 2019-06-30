@@ -16,6 +16,7 @@ public class User {
      * String constants used in messages between client-server
      */
     public static final String username_key = "USERNAME";
+    public static final String userID_key   = "USER_ID";
 
     /**
      * Constructor: creates a new User from a username and generating a random UUID

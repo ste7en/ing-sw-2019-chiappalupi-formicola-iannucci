@@ -78,10 +78,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
                 switch (communicationMessage) {
                     case PING:
-                        super.userID = id;
                         sender.send(CommunicationMessage.from(id, PONG));
                         break;
                     case CREATE_USER_OK:
+                        super.userID = Integer.parseInt(args.get(User.userID_key));
                         this.viewObserver.onLoginSuccess(args.get(User.username_key));
                         break;
                     case CREATE_USER_FAILED:
@@ -179,7 +179,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     public void createUser(String username) {
         var args = new HashMap<String, String>();
         args.put(User.username_key, username);
-        this.send(CommunicationMessage.from(userID, CREATE_USER, args));
+        this.send(CommunicationMessage.from(0, CREATE_USER, args));
     }
 
     @Override

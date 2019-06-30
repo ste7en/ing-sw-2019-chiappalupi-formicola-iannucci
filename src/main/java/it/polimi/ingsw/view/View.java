@@ -111,8 +111,6 @@ public abstract class View {
      */
     protected void joinWaitingRoom(String username) {
         AdrenalineLogger.info(JOIN_WAITING_ROOM);
-        var args = new HashMap<String, String>();
-        args.put(User.username_key, username);
         client.joinWaitingRoom(username);
     }
 
