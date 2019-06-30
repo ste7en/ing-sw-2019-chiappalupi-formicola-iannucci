@@ -173,15 +173,19 @@ public class GameLogic {
      * @return an arraylist of available player colors.
      */
     public synchronized List<String> getAvailableCharacters() {
-        return Character.getCharacters()
-                        .stream()
-                        .filter(c -> !players.stream()
-                                                .map(Player::getCharacter)
-                                                .collect(Collectors.toList())
-                                                .contains(c))
-                        .map(Character::getColor)
-                        .map(PlayerColor::toString)
-                        .collect(Collectors.toList());
+        try {
+            return Character.getCharacters()
+                    .stream()
+                    .filter(c -> !players.stream()
+                            .map(Player::getCharacter)
+                            .collect(Collectors.toList())
+                            .contains(c))
+                    .map(Character::getColor)
+                    .map(PlayerColor::toString)
+                    .collect(Collectors.toList());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
-
 }

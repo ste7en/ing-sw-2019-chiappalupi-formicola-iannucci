@@ -50,7 +50,6 @@ public abstract class View {
      * gameID attribute.
      */
     public void onStart() {
-        client.askForCharacters();
     }
 
     /**

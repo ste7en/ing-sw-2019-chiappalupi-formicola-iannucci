@@ -190,11 +190,6 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
-    public void askForCharacters(){
-        //this.send(CommunicationMessage.from(userID, GET_AVAILABLE_CHARACTERS, gameID));
-    }
-
-    @Override
     public void choseCharacter(String characterColor){
         var args = new HashMap<String, String>();
         args.put(Character.character, characterColor);
