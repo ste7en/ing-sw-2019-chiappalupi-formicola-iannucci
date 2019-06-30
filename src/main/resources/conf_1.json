@@ -1,0 +1,97 @@
+[
+      [
+            {
+                  "borders": ["wall", "door", "space", "wall"],
+                  "color": "red",
+                  "respawner": false,
+                  "ammoCard": null,
+                  "row": 0,
+                  "column": 0
+            },
+            {
+                  "borders": ["wall", "space", "door", "door"],
+                  "color": "blue",
+                  "respawner": false,
+                  "ammoCard": null,
+                  "row": 0,
+                  "column": 1
+            },
+            {
+                  "borders": ["wall", "wall", "door", "space"],
+                  "color": "blue",
+                  "respawner": true,
+                  "ammoCard": null,
+                  "row": 0,
+                  "column": 2
+            },
+            null
+      ],
+      [
+            {
+                  "borders": ["space", "wall", "door", "wall"],
+                  "color": "red",
+                  "respawner": true,
+                  "ammoCard": null,
+                  "row": 1,
+                  "column": 0
+            },
+            {
+                  "borders": ["door", "space", "door", "wall"],
+                  "color": "pink",
+                  "respawner": false,
+                  "ammoCard": null,
+                  "row": 1,
+                  "column": 1
+            },
+            {
+                  "borders": ["door", "door", "wall", "space"],
+                  "color": "pink",
+                  "respawner": false,
+                  "ammoCard": null,
+                  "row": 1,
+                  "column": 2
+            },
+            {
+                  "borders": ["wall", "wall", "space", "door"],
+                  "color": "yellow",
+                  "respawner": false,
+                  "ammoCard": null,
+                  "row": 1,
+                  "column": 3
+            }
+      ],
+      [
+            {
+                  "borders": ["door", "space", "wall", "wall"],
+                  "color": "white",
+                  "respawner": true,
+                  "ammoCard": null,
+                  "row": 2,
+                  "column": 0
+            },
+            {
+                  "borders": ["door", "space", "wall", "space"],
+                  "color": "white",
+                  "respawner": false,
+                  "ammoCard": null,
+                  "row": 2,
+                  "column": 1
+            },
+            {
+                  "borders": ["wall", "door", "wall", "space"],
+                  "color": "white",
+                  "respawner": false,
+                  "ammoCard": null,
+                  "row": 2,
+                  "column": 2
+            },
+            {
+                  "borders": ["space", "wall", "wall", "door"],
+                  "color": "yellow",
+                  "respawner": true,
+                  "ammoCard": null,
+                  "row": 2,
+                  "column": 3
+            }
+      ]
+]
