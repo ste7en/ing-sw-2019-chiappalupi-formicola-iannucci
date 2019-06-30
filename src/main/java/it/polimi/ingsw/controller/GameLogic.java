@@ -79,27 +79,6 @@ public class GameLogic {
     }
 
     /**
-     * Board setter.
-     *
-     * @param map it's the map of the game.
-     * @param skulls it's the number of skulls that will be in the game.
-     */
-    public void setBoard(GameMap map, int skulls) {
-        Map<AmmoColor, List<Weapon>> weapons = new EnumMap<>(AmmoColor.class);
-        List<AmmoColor> spawnColorList = new ArrayList<>();
-        spawnColorList.add(AmmoColor.blue);
-        spawnColorList.add(AmmoColor.red);
-        spawnColorList.add(AmmoColor.yellow);
-        for(AmmoColor color : spawnColorList) {
-            List<Weapon> weaponTrio = new ArrayList<>();
-            for(int i = 0; i < NUM_OF_WEAPONS_IN_SPAWNS; i++)
-                weaponTrio.add(decks.drawWeapon());
-            weapons.put(color, weaponTrio);
-        }
-        this.board = new Board(map, weapons, skulls);
-    }
-
-    /**
      * It's the player list getter.
      *
      * @return a clone of the list of the player in game.
@@ -146,12 +125,42 @@ public class GameLogic {
     }
 
     /**
-     * DecksHandler getter.
+     * Board getter.
      *
-     * @return the DecksHandler of the game.
+     * @return the Board of the game.
      */
     public Board getBoard() {
         return board;
+    }
+
+    /**
+     * Initializes the map of a game when the configuration has been chosen.
+     *
+     * @param mapType it's the MapType.toString() of the chosen configuration.
+     */
+    public void initializeMap(MapType mapType) {
+        GameMap map = new GameMap(mapType);
+        Map<AmmoColor, List<Weapon>> weapons = new EnumMap<>(AmmoColor.class);
+        List<AmmoColor> spawnColorList = new ArrayList<>();
+        spawnColorList.add(AmmoColor.blue);
+        spawnColorList.add(AmmoColor.red);
+        spawnColorList.add(AmmoColor.yellow);
+        for(AmmoColor color : spawnColorList) {
+            List<Weapon> weaponTrio = new ArrayList<>();
+            for(int i = 0; i < NUM_OF_WEAPONS_IN_SPAWNS; i++)
+                weaponTrio.add(decks.drawWeapon());
+            weapons.put(color, weaponTrio);
+        }
+        this.board = new Board(map, weapons);
+    }
+
+    /**
+     * Skulls setter.
+     *
+     * @param skulls it's the number of skulls that will be in the game.
+     */
+    public void setSkulls(int skulls) {
+        this.board.setSkulls(skulls);
     }
 
     /**
