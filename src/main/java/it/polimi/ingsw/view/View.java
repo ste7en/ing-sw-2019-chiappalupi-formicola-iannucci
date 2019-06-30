@@ -132,8 +132,9 @@ public abstract class View {
     }
 
     /**
-     * Ele
-     */
+       * Public method implemented by subclasses when choosing a weapon. * The user will be prompted to
+       * choose which weapon he wants to use.
+       */
     public abstract void willChooseGameMap();
 
     /**

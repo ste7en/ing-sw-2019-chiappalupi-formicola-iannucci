@@ -171,11 +171,11 @@ public class GameMapTest {
     }
 
     /**
-     * Tests the getAdiancentTargets method
+     * Tests the getAdjancentTargets method
      * @see GameMap#getAdjacentTargets(Cell)
      */
     @Test
-    public void testGetAdiacentTargets (){
+    public void testGetAdjacentTargets(){
         ArrayList<Player> targets = new ArrayList<>();
         gameMapTest.setPlayerPosition(playerTest,1,0);
         gameMapTest.setPlayerPosition(playerTest2,0,0);
