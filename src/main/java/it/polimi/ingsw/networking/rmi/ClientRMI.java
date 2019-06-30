@@ -101,9 +101,9 @@ public class ClientRMI extends Client implements ClientInterface {
 
     @Override
     public void askForPossibleSpawnPoints(){
-        ArrayList<String> powerups = new ArrayList<>();
+        List<String> powerups = new ArrayList<>();
         try {
-            powerups = server.getPowerups(userID, gameID);
+            powerups = server.getSpawnPowerups(userID, gameID);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             AdrenalineLogger.error(e.getMessage());
@@ -112,9 +112,9 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
-    public void choseSpawnPoint(String powerup){
+    public void choseSpawnPoint(String spawnPoint, String otherPowerup){
         try {
-            server.choseSpawnPoint(userID, gameID, powerup);
+            server.choseSpawnPoint(userID, gameID, spawnPoint, otherPowerup);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             AdrenalineLogger.error(e.getMessage());

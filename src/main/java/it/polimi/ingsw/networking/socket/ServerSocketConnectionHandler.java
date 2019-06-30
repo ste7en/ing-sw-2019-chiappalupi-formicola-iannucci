@@ -170,8 +170,14 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     didChooseCharacter(gameID, connectionID, args.get(Character.character));
                     break;
                 case MAP_CHOSEN:
-                    this.server.choseGameMap(gameID, args.get(GameMap.gameMap_key));
-                    this.send(CommunicationMessage.from(connectionID, CHOOSE_SPAWN_POINT));
+                    mapChosen(connectionID, args, gameID);
+                    break;
+                case ASK_FOR_SPAWN_POINT:
+                    spawnPointGenerator(connectionID, gameID);
+                    break;
+                case SPAWN_POINT_CHOSEN:
+                    this.server.choseSpawnPoint(connectionID, gameID, args.get(Powerup.spawnPowerup_key), args.get(Powerup.powerup_key));
+                    this.send(CommunicationMessage.from(connectionID, CHOOSE_ACTION));
                     break;
                 case SHOOT_PEOPLE:
                     shootPeople(connectionID, gameID);
@@ -215,6 +221,29 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
             }
 
         }).start();
+    }
+
+    /**
+     * Called when the player has to spawn, draws two powerups and sends them to the client
+     * @param connectionID it's the ID of the user who has to spawn
+     * @param gameID it's the ID of the game
+     */
+    private void spawnPointGenerator(int connectionID, UUID gameID) {
+        List<String> spawnPowerups = this.server.getSpawnPowerups(connectionID, gameID);
+        Map<String, String> responseArgs = new HashMap<>();
+        for(int i = 0; i < spawnPowerups.size(); i++) responseArgs.put(Integer.toString(i), spawnPowerups.get(i));
+        this.send(CommunicationMessage.from(connectionID, DRAWN_SPAWN_POINT, responseArgs, gameID));
+    }
+
+    /**
+     * Called when the map to use has been chosen
+     * @param connectionID it's the ID of the user who has chosen the map
+     * @param args it's the map containing the arguments of the message received
+     * @param gameID it's the ID of the game
+     */
+    private void mapChosen(int connectionID, Map<String, String> args, UUID gameID) {
+        this.server.choseGameMap(gameID, args.get(GameMap.gameMap_key));
+        this.send(CommunicationMessage.from(connectionID, CHOOSE_SPAWN_POINT));
     }
 
     private void askPowerupToReload(int connectionID, UUID gameID) {

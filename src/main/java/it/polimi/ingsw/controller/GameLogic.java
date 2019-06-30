@@ -99,22 +99,6 @@ public class GameLogic {
         this.players.add(player);
     }
 
-    public void move(Player player) { }
-
-    private void grabStuff(Player player) { }
-
-    private void shootPeople(Player player) { }
-
-    private void death(Player player) { }
-
-    private void spawn(Player player) { }
-
-    private void round(Player player) { }
-
-    private void finalFrenzyRound(Player player) { }
-
-    public void gameOver() { }
-
     /**
      * Board getter.
      *
@@ -152,6 +136,29 @@ public class GameLogic {
             weapons.put(color, weaponTrio);
         }
         this.board = new Board(map, weapons);
+    }
+
+    /**
+     * This method let an user spawn in the decided color and adds the other powerup to the user's hand.
+     * @param user it's the user who is spawning.
+     * @param spawnPoint it's the Powerup::toString of the powerup that the player has chosen to discard.
+     * @param otherPowerup it's the Powerup::toString of the powerup that the player will have in his hand.
+     */
+    public void spawn(User user, String spawnPoint, String otherPowerup) {
+        Player player = lookForPlayerFromUser(user);
+
+        DecksHandler box = new DecksHandler();
+        Powerup spawnPowerup = box.drawPowerup();
+        while(!spawnPowerup.toString().equalsIgnoreCase(spawnPoint)) spawnPowerup = box.drawPowerup();
+
+        box = new DecksHandler();
+        Powerup powerupInHand = box.drawPowerup();
+        while(!powerupInHand.toString().equalsIgnoreCase(otherPowerup)) powerupInHand = box.drawPowerup();
+
+        AmmoColor spawnColor = spawnPowerup.getColor();
+        this.board.getMap().setPlayerPosition(player, this.board.getMap().getSpawnPoint(spawnColor));
+        player.getPlayerHand().addPowerup(powerupInHand);
+        this.decks.wastePowerup(spawnPowerup);
     }
 
     /**
