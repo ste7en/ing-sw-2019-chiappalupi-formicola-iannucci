@@ -81,7 +81,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         sender.send(CommunicationMessage.from(id, PONG));
                         break;
                     case CREATE_USER_OK:
-                        super.userID = Integer.parseInt(args.get(User.userID_key));
+                        super.userID = id;
                         this.viewObserver.onLoginSuccess(args.get(User.username_key));
                         break;
                     case CREATE_USER_FAILED:

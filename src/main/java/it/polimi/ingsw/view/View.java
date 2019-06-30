@@ -1,5 +1,4 @@
 package it.polimi.ingsw.view;
-import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.socket.ClientSocket;
 import it.polimi.ingsw.networking.rmi.ClientRMI;

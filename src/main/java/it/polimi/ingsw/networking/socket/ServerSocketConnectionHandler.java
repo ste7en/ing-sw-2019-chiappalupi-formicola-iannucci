@@ -322,8 +322,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         String responseMessage;
 
         if (userID != -1) {
-            args.put(User.userID_key, String.valueOf(userID));
-            responseMessage = CommunicationMessage.from(connectionID, CREATE_USER_OK, args);
+            responseMessage = CommunicationMessage.from(userID, CREATE_USER_OK, args);
         } else {
             responseMessage = CommunicationMessage.from(connectionID, CREATE_USER_FAILED, args);
         }
