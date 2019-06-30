@@ -187,7 +187,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     private User findUserFromID(int connectionID) {
         for(User user : users.keySet()) {
-            if (users.get(user).hashCode() == connectionID) {
+            if (user.hashCode() == connectionID) {
                 return user;
             }
         }

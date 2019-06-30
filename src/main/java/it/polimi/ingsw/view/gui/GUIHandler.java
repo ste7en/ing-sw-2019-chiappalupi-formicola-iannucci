@@ -384,22 +384,22 @@ public class GUIHandler extends Application  {
 
         boxFirst.setOnMouseClicked(e -> {
             text.setText("You selected the first configuration!");
-            button.setOnAction(ev -> handleGameMapOptions(MapType.values()[1].toString()));
+            button.setOnAction(ev -> handleGameMapOptions(MapType.values()[0].toString()));
         });
 
         boxSecond.setOnMouseClicked(e -> {
             text.setText("You selected the second configuration!");
-            button.setOnAction(ev -> handleGameMapOptions(MapType.values()[2].toString()));
+            button.setOnAction(ev -> handleGameMapOptions(MapType.values()[1].toString()));
         });
 
         boxThird.setOnMouseClicked(e -> {
             text.setText("You selected the third configuration!");
-            button.setOnAction(ev -> handleGameMapOptions(MapType.values()[3].toString()));
+            button.setOnAction(ev -> handleGameMapOptions(MapType.values()[2].toString()));
         });
 
         boxFourth.setOnMouseClicked(e -> {
             text.setText("You selected the fourth configuration!");
-            button.setOnAction(ev -> handleGameMapOptions(MapType.values()[4].toString()));
+            button.setOnAction(ev -> handleGameMapOptions(MapType.values()[3].toString()));
         });
     }
 

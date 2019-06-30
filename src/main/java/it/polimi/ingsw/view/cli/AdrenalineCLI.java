@@ -39,6 +39,10 @@ public class AdrenalineCLI extends View {
     private static final String ON_START                    = "Game started.";
     private static final String CHOOSE_CHARACTER            = "Choose a character who will represent you in the game. Insert the character number: ";
     private static final String CHOOSE_CHARACTER_NOT_OK     = "";
+    private static final String CHOOSE_ACTION               = "Choose your next move between the following:\n\t" +
+                                                              "1. Move\n\t" +
+                                                              "2. Grab something\n\t" +
+                                                              "3. Shoot";
     private static final String SHOOT_PEOPLE_FAILURE        = "You have no weapon in your hand, so you can't shoot anyone.";
     private static final String DAMAGE_FAILURE              = "No damage can be made with the weapon and the effects selected.";
     private static final String CHOOSE_POWERUP_TO_SELL      = "What powerup do you want to sell?";
@@ -73,6 +77,7 @@ public class AdrenalineCLI extends View {
                                                               "Please note that if you select [Y], you will only have the possibility " +
                                                               "to reload a list of weapon where the color/s of the powerup/s that you select is/are involved.";
     private static final String MORE_POWERUP_SELLING        = "Do you want use another powerup to afford the cost of the shoot?";
+
 
     /**
      * Log strings or exceptions
@@ -248,6 +253,22 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void onChooseAction() {
+        out.println(CHOOSE_ACTION);
+        var action = in.nextLine();
+        var choice = Integer.parseInt(action);
+        switch (choice){
+            case 1:
+                willChooseMovement();
+                break;
+            case 2:
+                willChooseWhatToGrab();
+                break;
+            case 3:
+                shootPeople();
+                break;
+            default:
+                throw new IllegalArgumentException(INCORRECT_CHOICE);
+        }
 
     }
 
