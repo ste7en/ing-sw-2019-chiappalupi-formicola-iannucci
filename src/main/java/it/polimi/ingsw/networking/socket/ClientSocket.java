@@ -89,7 +89,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.onLoginFailure();
                         break;
                     case USER_JOINED_WAITING_ROOM:
-                        this.viewObserver.didJoinWaitingRoom();
+                        /* Basically, if the gameID is not null the client won't be notified
+                           he entered the waitingRoom because he actually didn't. Instead,
+                           the client joined a game he already started previously. */
+                        if (this.gameID == null) this.viewObserver.didJoinWaitingRoom();
                         break;
                     case USER_JOINED_GAME:
                         this.gameID = UUID.fromString(args.get(GameLogic.gameID_key));

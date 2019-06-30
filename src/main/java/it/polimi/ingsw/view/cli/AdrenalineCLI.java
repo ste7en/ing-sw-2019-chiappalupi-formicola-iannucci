@@ -100,7 +100,7 @@ public class AdrenalineCLI extends View {
         try {
             var connection = ConnectionType.parse(connectionType);
             var serverPort  = Integer.parseInt(port);
-            Inet4Address.getByName(hostname);
+            Inet4Address.getByName(hostname); //used to verify the hostname
             this.didChooseConnection(connection, serverPort, hostname);
         } catch (NumberFormatException e) {
             AdrenalineLogger.errorException(INCORRECT_PORT, e);
