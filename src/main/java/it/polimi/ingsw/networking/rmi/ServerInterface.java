@@ -14,7 +14,8 @@ public interface ServerInterface extends Remote {
     boolean createUserRMIHelper(String username) throws RemoteException;
 
     /**
-     * When a client decides to join a game
+     * When a client decides to join a game.
+     * This method also handles the case when a user disconnected from a game and reconnects.
      * @param username username of the user who will play the game
      */
     void joinWaitingRoom(String username) throws RemoteException;

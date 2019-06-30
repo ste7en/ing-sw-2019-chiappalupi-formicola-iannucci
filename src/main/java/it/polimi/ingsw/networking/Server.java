@@ -233,7 +233,32 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     @Override
     public void joinWaitingRoom(String username) {
-        users.forEach( (user, conn) -> { if (user.getUsername().equals(username)) waitingRoom.addUser(user); } );
+        gameControllers.values()
+                .stream()
+                .filter( gameLogic -> gameLogic     // for every GameController
+                        .getPlayers()               // filter the ones
+                        .stream()                   // whose players
+                        .filter( player -> player   // have the specified username
+                                .getUser()
+                                .getUsername()
+                                .equals(username)
+                        )
+                        .count() != 0
+                ).findAny()                         // return an optional from this filtering operation
+                .ifPresentOrElse(                   // if a GameController exists
+                        gameLogic -> {              // find the user connected to the server and
+                            users.forEach(          // notify him that the game has started (in this case, resumed)
+                                    (user, conn) -> {
+                                        if (user.getUsername().equals(username)) conn.gameDidStart(gameLogic.getGameID().toString());
+                                    }
+                            );
+                        },
+                        () -> users.forEach(
+                                (user, conn) -> {
+                                    if (user.getUsername().equals(username)) waitingRoom.addUser(user);
+                                }
+                        )
+                );
     }
 
     @Override

@@ -105,7 +105,7 @@ public class GameLogic {
      * @return a clone of the list of the player in game.
      */
     public List<Player> getPlayers() {
-        return (List<Player>)players.clone();
+        return new ArrayList<>(players);
     }
 
 
