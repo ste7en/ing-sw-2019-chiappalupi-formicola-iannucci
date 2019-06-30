@@ -73,7 +73,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onChooseSpawnPoint(ArrayList<String> powerups) {
+    public void onChooseSpawnPoint(List<String> powerups) {
         try {
             handlerGUI.chooseSpawnPoint(powerups);
         } catch (FileNotFoundException e ){

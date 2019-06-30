@@ -1,6 +1,5 @@
 package it.polimi.ingsw.networking;
 
-import it.polimi.ingsw.controller.DecksHandler;
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
@@ -295,11 +294,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public ArrayList<String> getPowerups(int userID, UUID gameID) {
         ArrayList<String> powerups = new ArrayList<>();
-        DecksHandler decks = new DecksHandler();
-        //powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
-        //powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
-        powerups.add(decks.drawPowerup().toString());
-        powerups.add(decks.drawPowerup().toString());
+        powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
+        powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
         return powerups;
     }
 

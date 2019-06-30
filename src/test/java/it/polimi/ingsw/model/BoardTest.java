@@ -80,7 +80,8 @@ public class BoardTest {
      */
     @Before
     public void setUp() {
-        boardTest = new Board(gameMap, weaponsDecks, 8);
+        boardTest = new Board(gameMap, weaponsDecks);
+        boardTest.setSkulls(8);
     }
 
     /**

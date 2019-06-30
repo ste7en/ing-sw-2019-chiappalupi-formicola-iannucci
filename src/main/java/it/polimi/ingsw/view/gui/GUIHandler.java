@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -407,7 +406,7 @@ public class GUIHandler extends Application  {
         adrenalineGUI.didChooseGameMap(configuration);
     }
 
-    public void chooseSpawnPoint(ArrayList<String> powerups) throws FileNotFoundException{
+    public void chooseSpawnPoint(List<String> powerups) throws FileNotFoundException{
         root.getChildren().clear();
         Text text = new Text("Draw two power-up cards from this power-ups deck!");
         Image back = new Image(new FileInputStream("src/main/resources/images/powerups/Back.png"));
@@ -429,7 +428,7 @@ public class GUIHandler extends Application  {
         });
     }
 
-    public void chooseSpawnPointHelper(ArrayList<String> powerups) throws FileNotFoundException{
+    public void chooseSpawnPointHelper(List<String> powerups) throws FileNotFoundException{
         root.getChildren().clear();
         Text text = new Text("Choose a spawn point by selecting one card that you will not keep");
         HBox textBox = new HBox(text);
