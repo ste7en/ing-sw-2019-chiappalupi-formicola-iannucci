@@ -61,6 +61,26 @@ public enum CommunicationMessage {
     CHARACTER_NOT_AVAILABLE,
     CHARACTER_CHOSEN_OK,
 
+    /**
+     * Messages sent to handle the selection of a map configuration
+     *
+     * CHOOSE_MAP is sent from the server to the client to ask the selection of a game map and it has no arguments
+     * MAP_CHOSEN is sent from the client to the server to notify that the map has been chosen
+     *
+     * Arguments: <GameMap.gameMap_key, configuration>
+     */
+    CHOOSE_MAP,
+    MAP_CHOSEN,
+
+    /**
+     * Messages sent to handle the selection of a spawn point
+     *
+     * CHOOSE_SPAWN_POINT is sent from the server to the client to notify that the the player should choose the spawn point
+     *
+     * Arguments: none
+     */
+    CHOOSE_SPAWN_POINT,
+
 
     /**
      * Weapon using message.

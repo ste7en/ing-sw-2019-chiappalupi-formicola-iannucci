@@ -19,6 +19,11 @@ import java.util.*;
  */
 public class GameMap implements Cloneable{
 
+    /**
+     * String constants used in messages between client-server
+     */
+    public static final String gameMap_key = "GAME_MAP";
+
     /** Static ANSI colors; */
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_BLACK = "\u001B[30m";

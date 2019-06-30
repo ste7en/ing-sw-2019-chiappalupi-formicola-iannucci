@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.model.utility.AmmoColor;
+import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.rmi.ClientInterface;
 import it.polimi.ingsw.networking.rmi.ServerInterface;
@@ -287,7 +288,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     @Override
     public void choseGameMap(UUID gameID, String configuration) {
-
+        MapType mapType = MapType.valueOf(configuration);
+        this.gameControllers.get(gameID).initializeMap(mapType);
     }
 
     @Override

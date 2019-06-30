@@ -1,6 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
+import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.player.User;
@@ -167,6 +168,10 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     break;
                 case CHOOSE_CHARACTER:
                     didChooseCharacter(gameID, connectionID, args.get(Character.character));
+                    break;
+                case MAP_CHOSEN:
+                    this.server.choseGameMap(gameID, args.get(GameMap.gameMap_key));
+                    this.send(CommunicationMessage.from(connectionID, CHOOSE_SPAWN_POINT));
                     break;
                 case SHOOT_PEOPLE:
                     shootPeople(connectionID, gameID);

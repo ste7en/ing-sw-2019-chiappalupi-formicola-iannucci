@@ -61,7 +61,7 @@ public class ClientRMI extends Client implements ClientInterface {
             }
         } catch (RemoteException e){
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
-            e.printStackTrace();
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -71,7 +71,7 @@ public class ClientRMI extends Client implements ClientInterface {
             server.joinWaitingRoom(username);
         } catch (RemoteException e){
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
-            e.printStackTrace();
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -83,7 +83,7 @@ public class ClientRMI extends Client implements ClientInterface {
             System.out.println(characterColor);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
-            e.printStackTrace();
+            AdrenalineLogger.error(e.getMessage());
         }
         viewObserver.willChooseGameMap();
     }
@@ -94,7 +94,7 @@ public class ClientRMI extends Client implements ClientInterface {
             server.choseGameMap(gameID, configuration);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
-            e.printStackTrace();
+            AdrenalineLogger.error(e.getMessage());
         }
         viewObserver.willChooseSpawnPoint();
     }
@@ -106,7 +106,7 @@ public class ClientRMI extends Client implements ClientInterface {
             powerups = server.getPowerups(userID, gameID);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
-            e.printStackTrace();
+            AdrenalineLogger.error(e.getMessage());
         }
         viewObserver.onChooseSpawnPoint(powerups);
     }
@@ -117,7 +117,7 @@ public class ClientRMI extends Client implements ClientInterface {
             server.choseSpawnPoint(userID, gameID, powerup);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
-            e.printStackTrace();
+            AdrenalineLogger.error(e.getMessage());
         }
         viewObserver.onChooseAction();
     }

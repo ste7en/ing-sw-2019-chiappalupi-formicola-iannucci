@@ -153,7 +153,7 @@ public abstract class View {
     /**
      * Ele
      */
-    public abstract void onChooseSpawnPoint(ArrayList<String> powerups);
+    public abstract void onChooseSpawnPoint(List<String> powerups);
 
     /**
      * Ele

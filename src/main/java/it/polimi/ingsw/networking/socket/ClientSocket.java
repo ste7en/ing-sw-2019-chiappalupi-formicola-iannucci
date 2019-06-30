@@ -1,6 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
+import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.player.User;
@@ -104,6 +105,12 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case CHARACTER_NOT_AVAILABLE:
                         this.viewObserver.onFailure(View.CHARACTER_NOT_AVAILABLE);
                         break;
+                    case CHOOSE_MAP:
+                        this.viewObserver.willChooseGameMap();
+                        break;
+                    case CHOOSE_SPAWN_POINT:
+                        this.viewObserver.willChooseSpawnPoint();
+                        break;
                     case SHOOT_PEOPLE:
                         List<String> weapons = new ArrayList<>(args.values());
                         this.viewObserver.willChooseWeapon(weapons);
@@ -199,7 +206,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
     @Override
     public void choseGameMap(String configuration){
-
+        var args = new HashMap<String, String>();
+        args.put(GameMap.gameMap_key, configuration);
+        this.send(CommunicationMessage.from(userID, MAP_CHOSEN, args, gameID));
     }
 
     @Override

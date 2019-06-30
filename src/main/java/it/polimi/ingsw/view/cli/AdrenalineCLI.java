@@ -242,7 +242,7 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void onChooseSpawnPoint(ArrayList<String> powerups) {
+    public void onChooseSpawnPoint(List<String> powerups) {
 
     }
 

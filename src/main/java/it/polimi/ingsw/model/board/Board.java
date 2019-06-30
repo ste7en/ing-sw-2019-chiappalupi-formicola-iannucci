@@ -33,13 +33,19 @@ public class Board {
      * Constructor: creates a new board based on its map, its killshot track and weapons positioned near its spawnpoint
      * @param map the map of the board
      * @param weapons a collection of three boards placed next to the spawpoints defined by a color and that contain three weapons each
-     * @param skulls it's the number of skulls that the game will have.
      * */
-    public Board(GameMap map, Map<AmmoColor, List<Weapon>> weapons, int skulls){
+    public Board(GameMap map, Map<AmmoColor, List<Weapon>> weapons){
         this.weapons = new EnumMap<>(AmmoColor.class);
         this.skullsTrack = new LinkedHashMap<>();
         this.map = map;
         this.weapons.putAll(weapons);
+    }
+
+    /**
+     * Sets the number of skulls of the game.
+     * @param skulls it's the number of skulls that the game will have.
+     */
+    public void setSkulls(int skulls) {
         for(int i = 0; i < skulls; i++) skullsTrack.put(i, null);
     }
 
