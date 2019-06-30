@@ -11,7 +11,7 @@ public interface ServerInterface extends Remote {
 
     String remoteReference = "RMIInterface";
 
-    boolean createUserRMIHelper(String username) throws RemoteException;
+    int createUserRMIHelper(String username) throws RemoteException;
 
     /**
      * When a client decides to join a game.

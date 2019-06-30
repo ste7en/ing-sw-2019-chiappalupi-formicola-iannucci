@@ -15,6 +15,11 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
+    public void onStart(){
+
+    }
+
+    @Override
     protected void willChooseConnection() {
         try {
             handlerGUI.chooseConnection();
@@ -34,11 +39,6 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onLoginSuccess(String username) {
-        didJoinWaitingRoom();
-    }
-
-    @Override
     public void didJoinWaitingRoom() {
 
     }
@@ -54,15 +54,10 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onStart() {
-
-    }
-
-    @Override
     public void willChooseCharacter(List<String> availableCharacters) {
         try {
-            handlerGUI.chooseCharacter(availableCharacters);
-        } catch (FileNotFoundException e){
+            handlerGUI.onChooseCharacter(availableCharacters);
+        } catch (Exception e){
             System.err.println("ClientRMI exception: " + e.toString());
         }
 

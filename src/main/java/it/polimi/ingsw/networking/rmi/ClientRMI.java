@@ -51,10 +51,14 @@ public class ClientRMI extends Client implements ClientInterface {
     @Override
     public void createUser(String username){
         try{
-            if(!server.createUserRMIHelper(username)) {
+            var userID = server.createUserRMIHelper(username);
+            if(userID == -1) {
                 viewObserver.onLoginFailure();
             }
-            else viewObserver.onLoginSuccess(username);
+            else{
+                this.userID = userID;
+                viewObserver.onLoginSuccess(username);
+            }
         } catch (RemoteException e){
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             e.printStackTrace();
@@ -72,21 +76,11 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
-    public void askForCharacters(){
-        List<String> availableCharacters = new ArrayList<>();
-        try {
-            availableCharacters = server.getAvailableCharacters(gameID);
-        } catch (RemoteException e) {
-            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
-            e.printStackTrace();
-        }
-        viewObserver.willChooseCharacter(availableCharacters);
-    }
-
-    @Override
     public void choseCharacter(String characterColor){
         try {
+            System.out.println(userID);
             server.choseCharacter(gameID, userID, characterColor);
+            System.out.println(characterColor);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             e.printStackTrace();
@@ -297,13 +291,18 @@ public class ClientRMI extends Client implements ClientInterface {
 
     @Override
     public void gameStarted(String gameID){
-        this.viewObserver.onStart();
         this.gameID = UUID.fromString(gameID);
+        viewObserver.onStart();
     }
 
     @Override
     public boolean ping() {
         return true;
+    }
+
+    @Override
+    public void willChooseCharacter(ArrayList<String> availableCharacters){
+        viewObserver.willChooseCharacter(availableCharacters);
     }
 }
 

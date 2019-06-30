@@ -99,7 +99,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         this.gameControllers  = new ConcurrentHashMap<>();
 
         // TODO: - The following is a test with test parameters, the real waiting room settings must be read from a file
-        this.waitingRoom = new WaitingRoom(3, 5, 5, this);
+        this.waitingRoom = new WaitingRoom(1, 5, 5, this);
 
         setupConnections();
     }
@@ -186,7 +186,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     private User findUserFromID(int connectionID) {
         for(User user : users.keySet()) {
-            if(users.get(user).hashCode() == connectionID) return user;
+            if (users.get(user).hashCode() == connectionID) {
+                return user;
+            }
         }
         return null;
     }
@@ -212,12 +214,14 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         var user = new User(username);
         if (checkUserAvailability(user)) {
             users.put(user, connectionHandler);
-            return user.hashCode();
+            var x =user.hashCode();
+            System.out.println(x);
+            return x;
         } else return -1;
     }
 
     @Override
-    public boolean createUserRMIHelper(String username) throws RemoteException {
+    public int createUserRMIHelper(String username) throws RemoteException {
         try {
             Registry remoteRegistry = LocateRegistry.getRegistry(portNumberRMI);
             System.out.println(registry);
@@ -228,7 +232,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         }catch (Exception e) {
             logOnException(RMI_EXCEPTION, e);
         }
-        return false;
+        return -1;
     }
 
     @Override
@@ -283,7 +287,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     @Override
     public void choseGameMap(UUID gameID, String configuration) {
-        System.out.println("OK");
+
     }
 
     @Override

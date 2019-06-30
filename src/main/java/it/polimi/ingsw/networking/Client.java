@@ -105,11 +105,6 @@ public abstract class Client implements Loggable {
     public abstract void joinWaitingRoom(String username);
 
     /**
-     * Abstract method implemented by subclasses to get the available characters.
-     */
-    public abstract void askForCharacters();
-
-    /**
      * Abstract method implemented by subclasses when a player has chosen his character between the ones available.
      * @param characterColor the chosen character
      */

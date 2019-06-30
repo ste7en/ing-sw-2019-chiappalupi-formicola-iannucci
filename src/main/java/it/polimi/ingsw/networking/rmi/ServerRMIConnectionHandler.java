@@ -8,6 +8,7 @@ import it.polimi.ingsw.networking.utility.Pingable;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +43,11 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
     @Override
     protected void willChooseCharacter(List<String> availableCharacters) {
-
+        try {
+            clientRMI.willChooseCharacter((ArrayList)availableCharacters);
+        } catch (Exception e){
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
     }
 
     @Override

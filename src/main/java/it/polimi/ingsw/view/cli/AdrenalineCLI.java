@@ -1,6 +1,8 @@
 package it.polimi.ingsw.view.cli;
 
+import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -41,6 +43,7 @@ public class AdrenalineCLI extends View {
     private static final String DAMAGE_FAILURE              = "No damage can be made with the weapon and the effects selected.";
     private static final String CHOOSE_POWERUP_TO_SELL      = "What powerup do you want to sell?";
     private static final String POWERUP_FAILURE             = "You haven't got any powerup!";
+    private static final String CHOOSE_MAP                  = "Which map do you want to play on?";
     private static final String CHOOSE_WEAPON               = "Which weapon do you want to use?";
     private static final String CHOOSE_DAMAGE               = "What damage do you want to make?";
     private static final String CHOOSE_MODALITY             = "Which modality do you want to use?";
@@ -211,7 +214,31 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void willChooseGameMap() {
+        List<String> options = new ArrayList<>();
+        GameMap[] maps = new GameMap[4];
+        for(int i = 0; i < 4; i++) {
+            maps[i] = new GameMap(MapType.values()[i]);
+            options.add(Integer.toString(i+1));
+        }
 
+        out.println(CHOOSE_MAP);
+
+        for(int i = 1; i < 5; i++) {
+            out.println(i + ")\n");
+            out.println(maps[i-1].toString());
+            out.println("\n");
+        }
+
+        String choice = null;
+        while(choice == null) {
+            var scanInput = in.nextLine();
+            choice = selectionChecker(scanInput, options);
+            if(choice == null) out.println(INCORRECT_CHOICE);
+        }
+
+        MapType chosenMapType = MapType.values()[Integer.parseInt(choice) - 1];
+
+        this.didChooseGameMap(chosenMapType.toString());
     }
 
     @Override
