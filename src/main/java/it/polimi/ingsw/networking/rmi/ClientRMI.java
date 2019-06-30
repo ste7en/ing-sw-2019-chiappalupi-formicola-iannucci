@@ -30,7 +30,7 @@ public class ClientRMI extends Client implements ClientInterface {
     protected void setupConnection() {
 
         try{
-            registry = LocateRegistry.getRegistry(connectionPort);
+            registry = LocateRegistry.getRegistry(serverName, connectionPort);
             System.out.println(registry);
             server = (ServerInterface) registry.lookup(ServerInterface.remoteReference);
             try {

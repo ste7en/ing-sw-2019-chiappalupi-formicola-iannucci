@@ -642,6 +642,64 @@ public class GameMap implements Cloneable{
     }
 
     /**
+     * Method that gets the cells that are at less than a certain distance (in terms of valid steps)
+     * from a given cell
+     *
+     * @param player the player that wants to know the cells that are at less than a certain distance from him
+     * @param distance the maximum distance accepted
+     * @return a collection of cells at certain values of distance
+     */
+    public List<Cell> getCellsAtMaxDistance(Player player, int distance) {
+        ArrayList<Cell> cells = getCellsAtMaxDistanceHelper(getCellFromPlayer(player), distance);
+        return cells;
+    }
+
+    /**
+     * Method that gets the cells that are adjacent to a certain cell and not separated by a wall
+     *
+     * @param cell the cell of the player that wants to know his adjacent cells
+     * @return a collection of adjacent cells
+     */
+    public List<Cell> getAdjacentCells(Cell cell) {
+        ArrayList<Cell> adjacentCells = new ArrayList<>();
+        for (Direction direction : Direction.values()) {
+            if (cell.adiajency(direction) != Border.wall) {
+                adjacentCells.add(getCellFromDirection(cell, direction));
+            }
+        }
+        return adjacentCells;
+    }
+
+    /**
+     * Method that gets the cells that are at less than a certain distance (in terms of valid steps)
+     * from a given cell
+     *
+     * @param cell the cell from which we get the distance
+     * @param distance the maximum distance accepted
+     * @return a collection of cells at certain values of distance
+     */
+    private ArrayList<Cell> getCellsAtMaxDistanceHelper(Cell cell, int distance) {
+        ArrayList<Cell> cells = new ArrayList<>();
+        if (distance == 0) {
+            cells.add(cell);
+            return cells;
+        }
+        for (Direction direction : Direction.values()) {
+            if ((getCellFromDirection(cell, direction) != null)
+                    && (cell.adiajency(direction) != Border.wall)) {
+                cells.addAll(
+                        getCellsAtMaxDistanceHelper(getCellFromDirection(cell, direction), distance - 1));
+            }
+        }
+        cells.add(cell);
+        cells.addAll(getAdjacentCells(cell));
+        Set<Cell> duplicatesEliminator = new LinkedHashSet<>(cells);
+        cells.clear();
+        cells.addAll(duplicatesEliminator);
+        return cells;
+    }
+
+    /**
      * Method that gets the targets that are at less than a certain distance (in terms of valid steps)
      * from a given player
      *

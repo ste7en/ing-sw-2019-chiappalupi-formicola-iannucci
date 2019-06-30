@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.gui;
 import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.networking.utility.ConnectionType;
+import it.polimi.ingsw.utility.AdrenalineLogger;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -27,6 +28,7 @@ public class GUIHandler extends Application  {
     private HBox boxButton;
     private Button button;
     private ConnectionType connectionType;
+    private Stage primaryStage;
 
     public static void main(String[] args) {
         AdrenalineLogger.setLogName("GUI");
@@ -35,6 +37,8 @@ public class GUIHandler extends Application  {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        this.primaryStage = primaryStage;
 
         this.adrenalineGUI = new AdrenalineGUI(this);
 

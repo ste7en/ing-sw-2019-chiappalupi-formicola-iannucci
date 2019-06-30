@@ -308,8 +308,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public void chooseMovement() {
-
+    public List<String> chooseMovement(int userID, UUID gameID) {
+        User user = findUserFromID(userID);
+        return gameControllers.get(gameID).getAvailableMoves(user);
     }
 
     @Override

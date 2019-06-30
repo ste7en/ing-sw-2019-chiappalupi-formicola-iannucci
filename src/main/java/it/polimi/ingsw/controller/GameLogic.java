@@ -204,4 +204,13 @@ public class GameLogic {
         }
         return null;
     }
+
+    public List<String> getAvailableMoves(User user){
+        ArrayList<String> availableMoves = new ArrayList<String>();
+        List<Cell> availableCells = board.getMap().getCellsAtMaxDistance(lookForPlayerFromUser(user), 2);
+        for(Cell cell : availableCells){
+            availableMoves.add(cell.toString());
+        }
+        return availableMoves;
+    }
 }
