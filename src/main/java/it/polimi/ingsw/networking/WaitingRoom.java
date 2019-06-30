@@ -24,6 +24,7 @@ public class WaitingRoom {
      */
     private static final String WAITING_ROOM_CREATED = "Waiting Room created";
     private static final String USER_JOINED          = "User joined the waiting room :: ";
+    private static final String CURR_NUMBER_OF_USER  = " – number of users waiting: ";
     private static final String USER_REMOVED         = "User removed from the waiting room :: ";
     private static final String MIN_NUM_REACHED      = "Minimum number of users for a game reached";
     private static final String MAX_NUM_REACHED      = "Maximum number of users for a game reached. Next users will be added for a new game.";
@@ -107,7 +108,7 @@ public class WaitingRoom {
         if (userQueue.contains(user) || userWaitingList.contains(user)) throw new RuntimeException(USER_ALREADY_ADDED_EXC + user.toString());
         if (userQueue.size() < maximumNumberOfPlayers) {
             userQueue.add(user);
-            AdrenalineLogger.info(USER_JOINED + user.getUsername());
+            AdrenalineLogger.info(USER_JOINED + user.getUsername() + CURR_NUMBER_OF_USER + userQueue.size());
             didAddUser();
             return true;
         } else {

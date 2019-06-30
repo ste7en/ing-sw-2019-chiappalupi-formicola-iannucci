@@ -55,11 +55,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private Integer portNumberRMI;
 
     /**
-     * The delegates to send messages via socket/rmi
-     */
-    private List<ConnectionHandlerSenderDelegate> senderDelegate;
-
-    /**
      * The game waiting room, when new users log in
      */
     private WaitingRoom waitingRoom;
@@ -100,7 +95,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private Server(Integer portNumberSocket, Integer portNumberRMI) {
         this.portNumberSocket = portNumberSocket;
         this.portNumberRMI    = portNumberRMI;
-        this.senderDelegate   = new LinkedList<>();
         this.users            = new ConcurrentHashMap<>();
         this.gameControllers  = new ConcurrentHashMap<>();
 
@@ -116,10 +110,10 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private void setupConnections() {
         ServerSocketHandler socketConnectionHandler;
         ServerRMIConnectionHandler RMIConnectionHandler;
+        Thread socketConnectionHandlerThread;
         try {
             socketConnectionHandler = new ServerSocketHandler(portNumberSocket, this);
-//            senderDelegate.add(socketConnectionHandler);
-            var socketConnectionHandlerThread = new Thread(socketConnectionHandler);
+            socketConnectionHandlerThread = new Thread(socketConnectionHandler);
             socketConnectionHandlerThread.setPriority(Thread.MIN_PRIORITY);
             socketConnectionHandlerThread.start();
         } catch (Exception e) {

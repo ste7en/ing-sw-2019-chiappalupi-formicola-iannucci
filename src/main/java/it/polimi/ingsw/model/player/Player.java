@@ -72,14 +72,14 @@ public class Player implements Comparable<Player>{
     }
 
     /**
-     * @return
+     * @return player's playerHand
      */
     public PlayerHand getPlayerHand() {
         return playerHand;
     }
 
     /**
-     * @return
+     * @return player's character
      */
     public Character getCharacter() {
         return character;
