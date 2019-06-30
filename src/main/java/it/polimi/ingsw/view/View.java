@@ -107,7 +107,7 @@ public abstract class View {
      * Called to join the server's waiting room for a new game
      * @param username username
      */
-    protected void joinWaitingRoom(String username) {
+    private void joinWaitingRoom(String username) {
         AdrenalineLogger.info(JOIN_WAITING_ROOM);
         client.joinWaitingRoom(username);
     }
@@ -131,20 +131,20 @@ public abstract class View {
     }
 
     /**
-       * Public method implemented by subclasses when choosing a weapon. * The user will be prompted to
-       * choose which weapon he wants to use.
-       */
+     * Public method implemented by subclasses when choosing a weapon. * The user will be prompted to
+     * choose which weapon he wants to use.
+     */
     public abstract void willChooseGameMap();
 
     /**
-     * Ele
+     * Called when the map configuration has been chosen by the player.
      */
     public void didChooseGameMap(String configuration) {
         client.choseGameMap(configuration);
     }
 
     /**
-     * Ele
+     * Called to begin the process of choosing a spawn point.
      */
     public void willChooseSpawnPoint() {
         client.askForPossibleSpawnPoints();

@@ -154,7 +154,17 @@ public class AdrenalineCLI extends View {
         if (connectionType == ConnectionType.SOCKET) out.println(CHOOSE_SOCKET_PORT);
         else out.println(CHOOSE_RMI_PORT);
 
-        var port = in.nextInt();
+        int port = -1;
+
+        while(port == -1) {
+            var scan = in.nextLine();
+            try {
+                port = Integer.parseInt(scan);
+            } catch (NumberFormatException exception) {
+                port = -1;
+                out.println(INCORRECT_CHOICE);
+            }
+        }
 
         this.didChooseConnection(connectionType, port, hostAddress);
     }
@@ -214,7 +224,9 @@ public class AdrenalineCLI extends View {
     }
 
     private void flushInput() {
-        if (in.hasNext()) in.nextLine();
+        //if (in.hasNext()) in.nextLine();
+        out.println();
+        in.nextLine();
     }
 
     @Override
@@ -226,12 +238,12 @@ public class AdrenalineCLI extends View {
             options.add(Integer.toString(i+1));
         }
 
+        flushInput();
         out.println(CHOOSE_MAP);
 
         for(int i = 1; i < 5; i++) {
             out.println(i + ")\n");
             out.println(maps[i-1].toString());
-            out.println("\n");
         }
 
         String choice = null;
