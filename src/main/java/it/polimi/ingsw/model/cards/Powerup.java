@@ -13,9 +13,10 @@ import java.util.List;
 public abstract class Powerup {
 
     /**
-     * String constant used in messages between client-server
+     * String constantsS used in messages between client-server
      */
-    public static final String powerup_key = "POWERUP";
+    public static final String powerup_key      = "POWERUP";
+    public static final String spawnPowerup_key = "POWERUP";
 
     /**
      * Description of the powerup

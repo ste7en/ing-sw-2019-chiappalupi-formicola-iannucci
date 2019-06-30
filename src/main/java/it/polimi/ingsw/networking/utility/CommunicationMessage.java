@@ -75,11 +75,27 @@ public enum CommunicationMessage {
     /**
      * Messages sent to handle the selection of a spawn point
      *
-     * CHOOSE_SPAWN_POINT is sent from the server to the client to notify that the the player should choose the spawn point
+     * CHOOSE_SPAWN_POINT is sent from the server to the client to notify that the the player should choose the spawn point (no arguments)
+     * ASK_FOR_SPAWN_POINT is sent from the client to the server to ask for the powerups that will lead to a spawn point decision (no arguments)
+     * DRAWN_SPAWN_POINT is sent from the server to the client to provide the two powerup cards that will be used to choose the spawn point
+     * SPAWN_POINT_CHOSEN is sent from the client to the server to notify that the spawn point has been chosen from the user
+     *
+     * Arguments: <Integer.toString(index), Powerup.toString> for DRAWN_SPAWN_POINT,
+     *            <Powerup.powerup_key/Powerup.spawnPowerup_key, Powerup::toString> for SPAWN_POINT_CHOSEN
+     */
+    CHOOSE_SPAWN_POINT,
+    ASK_FOR_SPAWN_POINT,
+    DRAWN_SPAWN_POINT,
+    SPAWN_POINT_CHOSEN,
+
+    /**
+     * Messages sent to start the process of choosing the action to do
+     *
+     * CHOOSE_ACTION is sent from the server to the client to notify that the the player should choose the action to do
      *
      * Arguments: none
      */
-    CHOOSE_SPAWN_POINT,
+    CHOOSE_ACTION,
 
 
     /**

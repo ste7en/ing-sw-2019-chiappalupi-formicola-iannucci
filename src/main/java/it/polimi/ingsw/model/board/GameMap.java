@@ -2,10 +2,7 @@ package it.polimi.ingsw.model.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.polimi.ingsw.model.utility.Border;
-import it.polimi.ingsw.model.utility.CellColor;
-import it.polimi.ingsw.model.utility.Direction;
-import it.polimi.ingsw.model.utility.MapType;
+import it.polimi.ingsw.model.utility.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
@@ -600,6 +597,22 @@ public class GameMap implements Cloneable{
                     }
                 }
         return null;
+    }
+
+    /**
+     * Returns the spawn cell of the color provided.
+     * @param spawnColor it's the color of the spawn cell looked.
+     * @return the spawn cell of that color.s
+     */
+    public Cell getSpawnPoint(AmmoColor spawnColor) {
+        for(int i = 0; i < ROWS; i++) {
+            for(int j = 0; j < COLUMNS; j++) {
+                if(map[i][j] != null && map[i][j].isRespawn()) {
+                    return map[i][j];
+                }
+            }
+        }
+        throw new IllegalArgumentException("This spawn point does not exists!");
     }
 
     /**

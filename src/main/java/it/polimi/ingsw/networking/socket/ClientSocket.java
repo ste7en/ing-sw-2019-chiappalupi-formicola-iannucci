@@ -114,9 +114,13 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case CHOOSE_SPAWN_POINT:
                         this.viewObserver.willChooseSpawnPoint();
                         break;
+                    case DRAWN_SPAWN_POINT:
+                        this.viewObserver.onChooseSpawnPoint(new ArrayList<>(args.values()));
+                        break;
+                    case CHOOSE_ACTION:
+                        this.viewObserver.onChooseAction();
                     case SHOOT_PEOPLE:
-                        List<String> weapons = new ArrayList<>(args.values());
-                        this.viewObserver.willChooseWeapon(weapons);
+                        this.viewObserver.willChooseWeapon(new ArrayList<>(args.values()));
                         break;
                     case SHOOT_PEOPLE_FAILURE:
                         this.viewObserver.onShootPeopleFailure();
@@ -216,12 +220,15 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
     @Override
     public void askForPossibleSpawnPoints(){
-
+        this.send(CommunicationMessage.from(userID, ASK_FOR_SPAWN_POINT, gameID));
     }
 
     @Override
-    public void choseSpawnPoint(String powerup){
-
+    public void choseSpawnPoint(String spawnPoint, String otherPowerup) {
+        var args = new HashMap<String, String>();
+        args.put(Powerup.powerup_key, otherPowerup);
+        args.put(Powerup.spawnPowerup_key, otherPowerup);
+        this.send(CommunicationMessage.from(userID, SPAWN_POINT_CHOSEN, args, gameID));
     }
 
     @Override

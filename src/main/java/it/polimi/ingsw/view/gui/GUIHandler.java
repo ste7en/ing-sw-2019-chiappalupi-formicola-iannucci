@@ -3,7 +3,6 @@ import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
@@ -20,7 +19,6 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GUIHandler extends Application  {
@@ -457,7 +455,7 @@ public class GUIHandler extends Application  {
 
         ivFirst.setOnMouseClicked(e -> {
             textBelow.setText("You selected the first card as a spawpoint!");
-            button.setOnAction(ev -> handleSpawnPointsOptions(powerups.get(0)));
+            button.setOnAction(ev -> handleSpawnPointsOptions(powerups.get(0), powerups.get(1)));
             try {
                 Image firstCard_click = new Image(new FileInputStream("src/main/resources/images/powerups/" + powerups.get(0) + "_click.png"));
                 ivFirst.setImage(firstCard_click);
@@ -469,7 +467,7 @@ public class GUIHandler extends Application  {
 
         ivSecond.setOnMouseClicked(e -> {
             textBelow.setText("You selected the second card as a spawpoint!");
-            button.setOnAction(ev -> handleSpawnPointsOptions(powerups.get(1)));
+            button.setOnAction(ev -> handleSpawnPointsOptions(powerups.get(1), powerups.get(0)));
             try {
                 Image secondCard_click = new Image(new FileInputStream("src/main/resources/images/powerups/" + powerups.get(1) + "_click.png"));
                 ivSecond.setImage(secondCard_click);
@@ -480,8 +478,8 @@ public class GUIHandler extends Application  {
         });
     }
 
-    public void handleSpawnPointsOptions(String powerup){
-        adrenalineGUI.didChooseSpawnPoint(powerup);
+    public void handleSpawnPointsOptions(String spawnPoint, String otherPowerup){
+        adrenalineGUI.didChooseSpawnPoint(spawnPoint, otherPowerup);
     }
 
     public void onChooseCharacter(List<String> availableCharacters) {
@@ -560,7 +558,7 @@ public class GUIHandler extends Application  {
                 ivShoot.setImage(shoot);
                 ivGrab.setImage(grab);
             } catch (FileNotFoundException e1){
-                System.err.println(e.toString());
+                AdrenalineLogger.error(e.toString());
             }
         });
     }

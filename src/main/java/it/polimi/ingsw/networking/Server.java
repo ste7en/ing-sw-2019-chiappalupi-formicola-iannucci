@@ -295,7 +295,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public ArrayList<String> getPowerups(int userID, UUID gameID) {
+    public List<String> getSpawnPowerups(int userID, UUID gameID) {
         ArrayList<String> powerups = new ArrayList<>();
         powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
         powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
@@ -303,8 +303,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public void choseSpawnPoint(int userID, UUID gameID, String powerup) {
-        System.out.println("OK");
+    public void choseSpawnPoint(int userID, UUID gameID, String spawnPoint, String otherPowerup) {
+        gameControllers.get(gameID).spawn(findUserFromID(userID), spawnPoint, otherPowerup);
     }
 
     @Override

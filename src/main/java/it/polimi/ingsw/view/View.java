@@ -131,8 +131,8 @@ public abstract class View {
     }
 
     /**
-     * Public method implemented by subclasses when choosing a weapon. * The user will be prompted to
-     * choose which weapon he wants to use.
+     * Public method implemented by subclasses when choosing a map configuration.
+     * The user will be prompted to choose which map configuration does he wants to pick.
      */
     public abstract void willChooseGameMap();
 
@@ -151,15 +151,18 @@ public abstract class View {
     }
 
     /**
-     * Ele
+     * Called when the server has sent the two powerups that will be used to choose the spawn point.
+     * @param powerups it's the array of powerup that will be used to choose the spawn point.
      */
     public abstract void onChooseSpawnPoint(List<String> powerups);
 
     /**
-     * Ele
+     * Public method implemented by subclasses when choosing a weapon.
+     * @param powerupChosenAsSpawnPoint it's the powerup that has been chosen from the player: it will be discarded and used to let him spawn.
+     * @param otherPowerup it's the other powerup: it will be added to the hand of the player.
      */
-    public void didChooseSpawnPoint(String powerup) {
-        client.choseSpawnPoint(powerup);
+    public void didChooseSpawnPoint(String powerupChosenAsSpawnPoint, String otherPowerup) {
+        client.choseSpawnPoint(powerupChosenAsSpawnPoint, otherPowerup);
     }
 
     /**

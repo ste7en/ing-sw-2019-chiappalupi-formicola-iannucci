@@ -39,6 +39,8 @@ public class AdrenalineCLI extends View {
     private static final String ON_START                    = "Game started.";
     private static final String CHOOSE_CHARACTER            = "Choose a character who will represent you in the game. Insert the character number: ";
     private static final String CHOOSE_CHARACTER_NOT_OK     = "";
+    private static final String CHOOSE_SPAWN_POINT          = "Here are two powerup cards. Choose the one you want to discard: its color will be the color where you will spawn.\n" +
+                                                              "You will keep the powerup that you don't discard.";
     private static final String CHOOSE_ACTION               = "Choose your next move between the following:\n\t" +
                                                               "1. Move\n\t" +
                                                               "2. Grab something\n\t" +
@@ -214,18 +216,16 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void willChooseCharacter(List<String> availableCharacters) {
-        Integer choice;
+        int choice;
         do { out.println(CHOOSE_CHARACTER);
             var li = availableCharacters.listIterator();
             while (li.hasNext()) out.println(li.nextIndex()+") "+li.next());
-            //flushInput();
             choice = in.nextInt();
         } while (choice > availableCharacters.size() || choice < 0);
         didChooseCharacter(availableCharacters.get(choice));
     }
 
     private void flushInput() {
-        //if (in.hasNext()) in.nextLine();
         out.println();
         in.nextLine();
     }
@@ -261,7 +261,15 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void onChooseSpawnPoint(List<String> powerups) {
-
+        out.println(CHOOSE_SPAWN_POINT);
+        String spawnPoint = null;
+        while(spawnPoint == null) {
+            spawnPoint = decisionHandlerFromList(powerups);
+        }
+        String otherPowerup;
+        if(powerups.get(0).equalsIgnoreCase(spawnPoint)) otherPowerup = powerups.get(1);
+        else otherPowerup = powerups.get(0);
+        this.didChooseSpawnPoint(spawnPoint, otherPowerup);
     }
 
     @Override
