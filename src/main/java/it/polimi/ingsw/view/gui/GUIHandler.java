@@ -32,6 +32,7 @@ public class GUIHandler extends Application  {
     private ConnectionType connectionType;
 
     public static void main(String[] args) {
+        AdrenalineLogger.setLogName("GUI");
         launch(args);
     }
 

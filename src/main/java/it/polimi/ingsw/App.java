@@ -11,7 +11,6 @@ public class App
 {
     public static void main( String[] args )
     {
-        AdrenalineLogger.LOG_TYPE = "ClientSocket";
         var client = new ClientSocket("localhost", 3334);
     }
 }

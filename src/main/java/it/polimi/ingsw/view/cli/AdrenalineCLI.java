@@ -116,6 +116,7 @@ public class AdrenalineCLI extends View {
     }
 
     public static void main(String[] args) {
+        AdrenalineLogger.setLogName("CLI");
         if (args.length < 3) {
             AdrenalineLogger.warning(MISSING_ARGUMENTS);
             new AdrenalineCLI();

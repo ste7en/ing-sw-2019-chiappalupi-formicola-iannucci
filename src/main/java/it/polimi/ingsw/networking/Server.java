@@ -17,13 +17,13 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
 
+import java.net.Inet4Address;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.logging.Logger;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
@@ -73,10 +73,13 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     /**
      * Log strings
      */
-    private static final String EXC_SETUP      = "Error while setting up the server :: ";
-    private static final String DID_DISCONNECT = "User disconnected: ";
-    private static final String START_NEW_GAME = "New game started - ID: ";
-    private static final String RMI_EXCEPTION  = "ServerRMI exception: ";
+    private static final String EXC_SETUP          = "Error while setting up the server :: ";
+    private static final String DID_DISCONNECT     = "User disconnected: ";
+    private static final String START_NEW_GAME     = "New game started - ID: ";
+    private static final String RMI_EXCEPTION      = "ServerRMI exception: ";
+    private static final String SERVER_RMI_CONFIG  = "RMI Server configured on port ";
+    private static final String SERVER_RMI_SUCCESS = "RMI Server is running on ";
+
 
     /**
      * Entry point of the server application
@@ -84,7 +87,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     public static void main(String[] args) {
         AdrenalineLogger.setLogName("Server");
-        AdrenalineLogger.LOG_TYPE = "SERVER";
         new Server(3334, 4444);
     }
 
@@ -122,6 +124,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         }
         try {
             launch();
+            logOnSuccess(SERVER_RMI_SUCCESS+Inet4Address.getLocalHost()+":"+portNumberRMI);
         } catch (Exception e) {
             logOnException(EXC_SETUP, e);
             return;
@@ -135,7 +138,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         registry = LocateRegistry.createRegistry(portNumberRMI);
         registry.rebind(remoteReference, this);
         UnicastRemoteObject.exportObject(this, 0);
-        Logger.getGlobal().info("rmi Server running correctly...");
+        AdrenalineLogger.config(SERVER_RMI_CONFIG+portNumberRMI);
     }
 
     /**
@@ -275,7 +278,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         var gameController      = gameControllers.get(gameID);
         var availableCharacters = gameController.getAvailableCharacters();
 
-        AdrenalineLogger.info("Game " + gameID + ": " + userID + " chose " + characterColor);
+        AdrenalineLogger.info("Game " + gameID + ": " + users.keySet().stream().filter(user -> user.hashCode() == userID).findFirst().orElseThrow().getUsername() + " chose " + characterColor);
 
         if (availableCharacters.contains(characterColor)) {
             var chosenCharacter = Character.getCharacterFromColor(PlayerColor.valueOf(characterColor));
