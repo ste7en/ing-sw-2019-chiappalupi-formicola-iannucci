@@ -1,10 +1,8 @@
 package it.polimi.ingsw.networking.rmi;
 
-import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.Server;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
 import it.polimi.ingsw.networking.utility.Ping;
-import it.polimi.ingsw.networking.utility.Pingable;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.rmi.RemoteException;

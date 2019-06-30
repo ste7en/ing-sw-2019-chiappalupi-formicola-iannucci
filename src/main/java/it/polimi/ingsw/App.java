@@ -1,7 +1,6 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.networking.socket.ClientSocket;
-import it.polimi.ingsw.utility.AdrenalineLogger;
 
 /**
  * Hello world!

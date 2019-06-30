@@ -244,7 +244,6 @@ public abstract class Weapon {
                 recursiveMovementsInCell(movements, distance-1, shooter, target, box, MaxDistance);
             }
         }
-        return;
     }
 
     /**
@@ -647,7 +646,7 @@ public abstract class Weapon {
      */
     public ArrayList<ArrayList<Integer>> effectsCombinations() {
         throw new RuntimeException("This is not a Potentiable Weapon!");
-    };
+    }
 
     /**
      * Used to ask the message to return when using the weapon of the weapon.

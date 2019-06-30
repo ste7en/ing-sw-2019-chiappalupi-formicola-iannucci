@@ -1,10 +1,7 @@
 package it.polimi.ingsw.utility;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests for {@link AdrenalineLogger} class

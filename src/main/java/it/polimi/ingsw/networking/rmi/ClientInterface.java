@@ -8,10 +8,10 @@ public interface ClientInterface extends Remote {
 
     String remoteReference = "ClientInterface";
 
-    public void gameStarted(String gameID) throws RemoteException;
+    void gameStarted(String gameID) throws RemoteException;
 
-    public boolean ping() throws RemoteException;
+    boolean ping() throws RemoteException;
 
-    public void willChooseCharacter(ArrayList<String> availableCharacters) throws RemoteException;
+    void willChooseCharacter(ArrayList<String> availableCharacters) throws RemoteException;
 
 }

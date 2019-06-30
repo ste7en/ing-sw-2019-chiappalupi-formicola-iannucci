@@ -4,8 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import java.util.List;
-
 /**
  * Unit test for simple App.
  */

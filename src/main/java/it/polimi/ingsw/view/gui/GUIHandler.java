@@ -1,9 +1,7 @@
 package it.polimi.ingsw.view.gui;
 import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.networking.utility.ConnectionType;
-import it.polimi.ingsw.utility.AdrenalineLogger;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
@@ -20,7 +18,6 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GUIHandler extends Application  {

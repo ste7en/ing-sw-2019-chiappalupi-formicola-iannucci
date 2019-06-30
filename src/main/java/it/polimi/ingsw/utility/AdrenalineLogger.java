@@ -3,7 +3,6 @@ package it.polimi.ingsw.utility;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.*;
-import java.util.logging.Level;
 
 /**
  * A logger class useful for both deployment and production debugging.
@@ -50,7 +49,7 @@ public class AdrenalineLogger {
      * Logger factor method
      * @return a specific logger for the app
      */
-    private static Logger getLogger() {
+    private static synchronized Logger getLogger() {
         if (logger != null) return logger;
         logger = Logger.getLogger(APP_NAME);
         // Removing default console handler
