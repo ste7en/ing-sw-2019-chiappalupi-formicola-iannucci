@@ -626,6 +626,7 @@ public class GameMap implements Cloneable{
      */
     public List<Cell> getCellsAtMaxDistance(Player player, int distance) {
         ArrayList<Cell> cells = getCellsAtMaxDistanceHelper(getCellFromPlayer(player), distance);
+        cells.remove(getCellFromPlayer(player));
         return cells;
     }
 
@@ -635,7 +636,7 @@ public class GameMap implements Cloneable{
      * @param cell the cell of the player that wants to know his adjacent cells
      * @return a collection of adjacent cells
      */
-    public List<Cell> getAdjacentCells(Cell cell) {
+    private List<Cell> getAdjacentCells(Cell cell) {
         ArrayList<Cell> adjacentCells = new ArrayList<>();
         for (Direction direction : Direction.values()) {
             if (cell.adiajency(direction) != Border.wall) {

@@ -101,7 +101,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         this.gameControllers  = new ConcurrentHashMap<>();
 
         // TODO: - The following is a test with test parameters, the real waiting room settings must be read from a file
-        this.waitingRoom = new WaitingRoom(3, 5, 5, this);
+        this.waitingRoom = new WaitingRoom(3, 5, 20, this);
 
         setupConnections();
     }
@@ -209,7 +209,18 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     /**
-     * Checks is a user with the same username already exists and is connected
+     * Checks if a user with the same username already exists and is connected
+     * @param username String username to check
+     * @return true if the user doesn't exist or isn't connected, false otherwise
+     */
+    @Override
+    public boolean checkUsernameAvailability(String username){
+        var user = new User(username);
+        return checkUserAvailability(user);
+    }
+
+    /**
+     * Checks if a user with the same username already exists and is connected
      * @param user User instance to check
      * @return true if the user doesn't exist or isn't connected, false otherwise
      */
@@ -238,7 +249,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         try {
             Registry remoteRegistry = LocateRegistry.getRegistry(portNumberRMI);
             logDescription(registry);
-            ClientInterface clientRMI = (ClientInterface) remoteRegistry.lookup("ClientInterface");
+            ClientInterface clientRMI = (ClientInterface) remoteRegistry.lookup(username);
             ServerConnectionHandler connectionHandler = new ServerRMIConnectionHandler(this, clientRMI);
             Ping.getInstance().addPing(connectionHandler);
             return createUser(username, connectionHandler);

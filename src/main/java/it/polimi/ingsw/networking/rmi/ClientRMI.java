@@ -35,24 +35,26 @@ public class ClientRMI extends Client implements ClientInterface {
             registry = LocateRegistry.getRegistry(serverName, connectionPort);
             System.out.println(registry);
             server = (ServerInterface) registry.lookup(ServerInterface.remoteReference);
-            try {
-                exportClient();
-            } catch (RemoteException e) {
-                logOnException(CLIENT_RMI_EXCEPTION, e);
-            }
         } catch (Exception e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
         }
     }
 
-    public void exportClient() throws RemoteException{
+    public void exportClient(String username) throws RemoteException{
         ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
-        registry.rebind("ClientInterface", stub);
+        registry.rebind(username, stub);
     }
 
     @Override
     public void createUser(String username){
         try{
+            if(server.checkUsernameAvailability(username)==true){
+                try {
+                    exportClient(username);
+                } catch (RemoteException e) {
+                    logOnException(CLIENT_RMI_EXCEPTION, e);
+                }
+            }
             var userID = server.createUserRMIHelper(username);
             if(userID == -1) {
                 viewObserver.onLoginFailure();

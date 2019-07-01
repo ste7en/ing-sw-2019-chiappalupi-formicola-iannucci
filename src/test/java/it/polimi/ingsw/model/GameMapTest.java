@@ -112,12 +112,32 @@ public class GameMapTest {
      * @see GameMap#getTargetsInMyCell(Player)
      */
     @Test
-    public void testGetTargetsInMyCell (){
+    public void testGetTargetsInMyCell(){
         ArrayList<Player> playersInThatCell = new ArrayList<>();
         gameMapTest.setPlayerPosition(playerTest,1,2);
         gameMapTest.setPlayerPosition(playerTest2, 1,2);
         playersInThatCell.add(playerTest2);
         assertEquals(playersInThatCell, gameMapTest.getTargetsInMyCell(playerTest));
+    }
+
+    /**
+     * Tests the getCellsAtMaxDistance method
+     * @see GameMap#getCellsAtMaxDistance(Player, int)
+     */
+    @Test
+    public void testGetCellsAtMaxDistance(){
+        ArrayList<Cell> cells = new ArrayList<>();
+        assertEquals(cells, gameMapTest.getCellsAtMaxDistance(playerTest, 0));
+
+        cells.add(gameMapTest.getCell(0,0));
+        cells.add(gameMapTest.getCell(1,0));
+        cells.add(gameMapTest.getCell(1,1));
+        cells.add(gameMapTest.getCell(2,2));
+        cells.add(gameMapTest.getCell(2,1));
+
+        gameMapTest.setPlayerPosition(playerTest, 2,0);
+
+        assertEquals(cells, gameMapTest.getCellsAtMaxDistance(playerTest, 2));
     }
 
     /**
