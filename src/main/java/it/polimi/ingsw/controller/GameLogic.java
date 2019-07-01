@@ -64,6 +64,22 @@ public class GameLogic {
     }
 
     /**
+     * Method called when a connected user disconnects
+     * @param user old user instance
+     */
+    public void userDidDisconnect(User user) {
+        Optional.of(lookForPlayerFromUser(user)).ifPresent(Player::disablePlayer);
+    }
+
+    /**
+     * Method called when a disabled user reconnects
+     * @param user new user instance
+     */
+    public void userDidConnect(User user) {
+        Optional.of(lookForPlayerFromUser(user)).ifPresent(player -> player.reEnablePlayer(user));
+    }
+
+    /**
      * It's the weapon controller getter.
      *
      * @return the {@link PowerupController} of the game.
@@ -114,6 +130,7 @@ public class GameLogic {
      */
     public synchronized void addPlayer(Player player) {
         //TODO: - color check and maximum number of players check
+        if (players.isEmpty()) setFirstPlayer(player);
         this.players.add(player);
     }
 
@@ -231,20 +248,15 @@ public class GameLogic {
      * @return a list of available player colors.
      */
     public synchronized List<String> getAvailableCharacters() {
-        try {
-            return Character.getCharacters()
-                    .stream()
-                    .filter(c -> !players.stream()
-                            .map(Player::getCharacter)
-                            .collect(Collectors.toList())
-                            .contains(c))
-                    .map(Character::getColor)
-                    .map(PlayerColor::toString)
-                    .collect(Collectors.toList());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
+        return Character.getCharacters()
+                .stream()
+                .filter(c -> !players.stream()
+                        .map(Player::getCharacter)
+                        .collect(Collectors.toList())
+                        .contains(c))
+                .map(Character::getColor)
+                .map(PlayerColor::toString)
+                .collect(Collectors.toList());
     }
 
     public List<String> getAvailableMoves(User user){

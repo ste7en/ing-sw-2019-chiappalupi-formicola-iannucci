@@ -48,6 +48,28 @@ public class Player implements Comparable<Player>{
      */
     private Integer points = 0;
 
+    /**
+     * Called when a user disconnects
+     */
+    public void disablePlayer() {
+        this.user = null;
+    }
+
+    /**
+     * Called when a user reconnects
+     * @param user new user instance
+     */
+    public void reEnablePlayer(User user) {
+        this.user = user;
+    }
+
+    /**
+     * @return true if the user is connected to the server, false otherwise
+     */
+    public boolean isActive() {
+        return user != null;
+    }
+
 
     /**
      * Constructor: creates a new Player based on given user and character.
@@ -99,6 +121,9 @@ public class Player implements Comparable<Player>{
         return points;
     }
 
+    /**
+     * @return the user associated to the Player
+     */
     public User getUser() { return user; }
 
     /**
