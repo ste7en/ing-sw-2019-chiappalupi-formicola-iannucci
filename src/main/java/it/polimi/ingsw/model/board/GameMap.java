@@ -294,47 +294,68 @@ public class GameMap implements Cloneable{
      */
     @Override
     public String toString() {
-        String mapString = "  ";
-        String box1 = "";
-        String box2 = "";
-        String box3 = "";
+        StringBuilder mapString = new StringBuilder();
+        mapString.append("  ");
+        StringBuilder box1 = new StringBuilder();
+        StringBuilder box2 = new StringBuilder();
+        StringBuilder box3 = new StringBuilder();
         for (int k = 0; k < map[0].length; k++) {
-            mapString = mapString + HIGHER_GRID_LEFT + k + HIGHER_GRID_RIGHT;
+            mapString.append(HIGHER_GRID_LEFT).append(k).append(HIGHER_GRID_RIGHT);
         }
-        mapString = mapString + "\n";
+        mapString.append("\n");
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
-                if (j == 0) {
-                    box1 = LEFT_GRID;
-                    box2 = i + " ";
-                    box3 = LEFT_GRID;
-                }
-                if (map[i][j] != null) {
-                    box1 = northDirectionStringFormatter(box1, i, j);
-                    box2 = eastWestDirectionStringFormatter(box2, i, j);
-                    box3 = southDirectionStringFormatter(box3, i, j);
-                } else {
-                    box1 = box1 + SPACE;
-                    box2 = box2 + SPACE;
-                    box3 = box3 + SPACE;
-                }
-                if (j == map[i].length - 1) {
-                    box1 = box1 + RIGHT_GRID;
-                    box2 = box2 + " " + i;
-                    box3 = box3 + RIGHT_GRID;
-                }
+                stringCaseHandler(box1, box2, box3, i, j);
             }
-            mapString = mapString + box1 + "\n" + box2 + "\n" + box3 + "\n";
-            box1 = "";
-            box2 = "";
-            box3 = "";
+            mapString.append(box1).append("\n").append(box2).append("\n").append(box3).append("\n");
+            box1 = new StringBuilder();
+            box2 = new StringBuilder();
+            box3 = new StringBuilder();
         }
-        mapString = mapString + "  ";
+        mapString.append("  ");
         for (int k = 0; k < map[0].length; k++) {
-            mapString = mapString + HIGHER_GRID_LEFT + k + HIGHER_GRID_RIGHT;
+            mapString.append(HIGHER_GRID_LEFT).append(k).append(HIGHER_GRID_RIGHT);
         }
-        mapString = mapString + "\n";
-        return mapString;
+        mapString.append("\n");
+
+        if(!playersPosition.keySet().isEmpty()) {
+            mapString.append("\n").append("Players positions:").append("\n");
+            List<Player> players = new ArrayList<>(playersPosition.keySet());
+            for (Player player : players) {
+                mapString.append(player.getNickname()).append(": ").append(playersPosition.get(player).toString()).append("\n");
+            }
+        }
+        return mapString.toString();
+    }
+
+    /**
+     * Helper method used to reduce the cognitive complexity of the code. Handles the case of the nested for and builds the box strings.
+     * @param box1 it's the first StringBuilder.
+     * @param box2 it's the second StringBuilder.
+     * @param box3 it's the third StringBuilder.
+     * @param i it's the row index of the map matrix.
+     * @param j it's the column index of the map matrix.
+     */
+    private void stringCaseHandler(StringBuilder box1, StringBuilder box2, StringBuilder box3, int i, int j) {
+        if (j == 0) {
+            box1.append(LEFT_GRID);
+            box2.append(i).append(" ");
+            box3.append(LEFT_GRID);
+        }
+        if (map[i][j] != null) {
+            box1.append(northDirectionStringFormatter(box1.toString(), i, j));
+            box2.append(eastWestDirectionStringFormatter(box2.toString(), i, j));
+            box3.append(southDirectionStringFormatter(box3.toString(), i, j));
+        } else {
+            box1.append(SPACE);
+            box2.append(SPACE);
+            box3.append(SPACE);
+        }
+        if (j == map[i].length - 1) {
+            box1.append(RIGHT_GRID);
+            box2.append(" ").append(i);
+            box3.append(RIGHT_GRID);
+        }
     }
 
     /**

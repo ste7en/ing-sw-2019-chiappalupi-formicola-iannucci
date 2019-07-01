@@ -93,7 +93,7 @@ public enum CommunicationMessage {
      *
      * CHOOSE_ACTION is sent from the server to the client to notify that the the player should choose the action to do
      *
-     * Arguments: none
+     * Arguments: <GameMap.gameMap_key, GameMap::toString>
      */
     CHOOSE_ACTION,
 

@@ -3,7 +3,9 @@ package it.polimi.ingsw.model.board;
 import java.util.*;
 
 import it.polimi.ingsw.controller.*;
+import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.cards.Weapon;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.PlayerColor;
 
@@ -13,6 +15,16 @@ import it.polimi.ingsw.model.utility.PlayerColor;
  */
 
 public class Board {
+
+    /**
+     * String constants used in Board::toString
+     */
+    private static final String WEAPON_IN_RESPAWN = "Here are the weapons in the spawn points:";
+    private static final String WEAPONS_IN_HAND = "Here are your weapons:";
+    private static final String NO_WEAPON_IN_HAND = "You haven't got any weapon in your hand.";
+    private static final String POWERUPS_IN_HAND = "Here are your powerups: ";
+    private static final String NO_POWERUP_IN_HAND = "You haven't got any powerup in your hand.";
+    private static final String AMMOS_IN_HAND = "Here are your ammos:";
 
     /**
      * Map of the board
@@ -139,6 +151,58 @@ public class Board {
      */
     public GameMap getMap() {
         return map;
+    }
+
+    public String toStringFromPlayer(Player player) {
+        StringBuilder board = new StringBuilder();
+        board.append(this.getMap().toString());
+        board.append(WEAPON_IN_RESPAWN).append("\n");
+
+
+        for(AmmoColor color : AmmoColor.values()) {
+            board.append(color.toString()).append(": ");
+            List<Weapon> weaponList = this.weapons.get(color);
+            for(Weapon weapon : weaponList) {
+                board.append(weapon.getName()).append("; ");
+            }
+            board.append("\n");
+        }
+        board.append("\n");
+
+        List<Weapon> weaponList = player.getPlayerHand().getWeapons();
+        board.append(player.getNickname()).append(", ");
+        if(weaponList.isEmpty()) {
+            board.append(NO_WEAPON_IN_HAND).append("\n");
+        }
+        else {
+            board.append(WEAPONS_IN_HAND);
+            for(Weapon weapon : weaponList) {
+                board.append(weapon.getName()).append("; ");
+            }
+            board.append("\n");
+        }
+        board.append("\n");
+
+        List<Powerup> powerupList = player.getPlayerHand().getPowerups();
+        board.append(player.getNickname()).append(", ");
+        if(powerupList.isEmpty()) {
+            board.append(NO_POWERUP_IN_HAND).append("\n");
+        }
+        else {
+            board.append(POWERUPS_IN_HAND);
+            for(Powerup powerup : powerupList) {
+                board.append(powerup.toString()).append("; ");
+            }
+            board.append("\n");
+        }
+        board.append("\n");
+
+        board.append(AMMOS_IN_HAND).append("\n");
+        for(AmmoColor color : AmmoColor.values())
+            board.append(color.toString()).append(": ").append(player.getPlayerHand().getAmmosAmount((color))).append("\n");
+        board.append("\n");
+
+        return board.toString();
     }
 
 }

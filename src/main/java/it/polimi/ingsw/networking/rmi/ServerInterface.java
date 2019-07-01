@@ -36,7 +36,7 @@ public interface ServerInterface extends Remote {
 
     List<String> getSpawnPowerups(int userID, UUID gameID) throws RemoteException;
 
-    void choseSpawnPoint(int userID, UUID gameID, String spawnPoint, String otherPowerup) throws RemoteException;
+    String choseSpawnPoint(int userID, UUID gameID, String spawnPoint, String otherPowerup) throws RemoteException;
 
     List<String> chooseMovement(int userID, UUID gameID) throws RemoteException;
 

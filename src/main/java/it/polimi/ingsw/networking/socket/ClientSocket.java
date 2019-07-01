@@ -118,7 +118,8 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.onChooseSpawnPoint(new ArrayList<>(args.values()));
                         break;
                     case CHOOSE_ACTION:
-                        this.viewObserver.onChooseAction();
+                        this.viewObserver.onChooseAction(args.get(GameMap.gameMap_key));
+                        break;
                     case SHOOT_PEOPLE:
                         this.viewObserver.willChooseWeapon(new ArrayList<>(args.values()));
                         break;

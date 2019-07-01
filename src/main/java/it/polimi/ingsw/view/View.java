@@ -166,9 +166,10 @@ public abstract class View {
     }
 
     /**
-     * Ele
+     * Public method implemented by subclasses when choosing an action.
+     * @param map it's the map to be displayed.
      */
-    public abstract void onChooseAction();
+    public abstract void onChooseAction(String map);
 
     /**
      * Ele

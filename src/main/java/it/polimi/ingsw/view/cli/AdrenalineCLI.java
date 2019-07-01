@@ -242,9 +242,9 @@ public class AdrenalineCLI extends View {
         flushInput();
         out.println(CHOOSE_MAP);
 
-        for(int i = 1; i < 5; i++) {
+        for(int i = 0; i < 4; i++) {
             out.println(i + ")\n");
-            out.println(maps[i-1].toString());
+            out.println(maps[i].toString());
         }
 
         String choice = null;
@@ -254,7 +254,7 @@ public class AdrenalineCLI extends View {
             if(choice == null) out.println(INCORRECT_CHOICE);
         }
 
-        MapType chosenMapType = MapType.values()[Integer.parseInt(choice) - 1];
+        MapType chosenMapType = MapType.values()[Integer.parseInt(choice)];
 
         this.didChooseGameMap(chosenMapType.toString());
     }
@@ -273,7 +273,8 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void onChooseAction() {
+    public void onChooseAction(String map) {
+        out.println(map);
         out.println(CHOOSE_ACTION);
         var action = in.nextLine();
         var choice = Integer.parseInt(action);
@@ -316,7 +317,8 @@ public class AdrenalineCLI extends View {
     @Override
     public void onShootPeopleFailure() {
         out.println(SHOOT_PEOPLE_FAILURE);
-        this.onChooseAction();
+        //toDo map
+        this.onChooseAction(new String());
     }
 
     @Override
@@ -350,7 +352,8 @@ public class AdrenalineCLI extends View {
     @Override
     public void onDamageFailure() {
         out.println(DAMAGE_FAILURE);
-        this.onChooseAction();
+        //toDo MAP
+        this.onChooseAction(new String());
     }
 
     @Override
@@ -385,7 +388,8 @@ public class AdrenalineCLI extends View {
     @Override
     public void onPowerupInHandFailure() {
         out.println(POWERUP_FAILURE);
-        this.onChooseAction();
+        //toDo map
+        this.onChooseAction(new String());
     }
 
     @Override

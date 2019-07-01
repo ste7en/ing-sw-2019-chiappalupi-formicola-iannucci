@@ -82,7 +82,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onChooseAction() {
+    public void onChooseAction(String map) {
         try {
             handlerGUI.chooseAction();
         } catch (FileNotFoundException e){

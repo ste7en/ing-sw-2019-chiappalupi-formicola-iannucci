@@ -303,8 +303,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public void choseSpawnPoint(int userID, UUID gameID, String spawnPoint, String otherPowerup) {
+    public String choseSpawnPoint(int userID, UUID gameID, String spawnPoint, String otherPowerup) {
         gameControllers.get(gameID).spawn(findUserFromID(userID), spawnPoint, otherPowerup);
+        return gameControllers.get(gameID).getBoard().toStringFromPlayer(gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)));
     }
 
     @Override

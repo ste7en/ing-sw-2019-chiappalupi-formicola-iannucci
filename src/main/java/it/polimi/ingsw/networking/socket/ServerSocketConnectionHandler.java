@@ -176,8 +176,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     spawnPointGenerator(connectionID, gameID);
                     break;
                 case SPAWN_POINT_CHOSEN:
-                    this.server.choseSpawnPoint(connectionID, gameID, args.get(Powerup.spawnPowerup_key), args.get(Powerup.powerup_key));
-                    this.send(CommunicationMessage.from(connectionID, CHOOSE_ACTION));
+                    spawnPointChosen(connectionID, args, gameID);
                     break;
                 case SHOOT_PEOPLE:
                     shootPeople(connectionID, gameID);
@@ -221,6 +220,19 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
             }
 
         }).start();
+    }
+
+    /**
+     * Called when the player has decided where to spawn.
+     * @param connectionID it's the ID of the user
+     * @param args it's the map containing the arguments needed to perform the action
+     * @param gameID it's the ID of the game
+     */
+    private void spawnPointChosen(int connectionID, Map<String, String> args, UUID gameID) {
+        String map = this.server.choseSpawnPoint(connectionID, gameID, args.get(Powerup.spawnPowerup_key), args.get(Powerup.powerup_key));
+        Map<String, String> responseArgs = new HashMap<>();
+        responseArgs.put(GameMap.gameMap_key, map);
+        this.send(CommunicationMessage.from(connectionID, CHOOSE_ACTION, responseArgs));
     }
 
     /**
