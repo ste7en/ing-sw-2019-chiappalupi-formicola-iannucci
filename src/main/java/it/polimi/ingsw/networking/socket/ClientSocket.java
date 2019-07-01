@@ -276,7 +276,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     public void choseSpawnPoint(String spawnPoint, String otherPowerup) {
         var args = new HashMap<String, String>();
         args.put(Powerup.powerup_key, otherPowerup);
-        args.put(Powerup.spawnPowerup_key, otherPowerup);
+        args.put(Powerup.spawnPowerup_key, spawnPoint);
         this.send(CommunicationMessage.from(userID, SPAWN_POINT_CHOSEN, args, gameID));
     }
 

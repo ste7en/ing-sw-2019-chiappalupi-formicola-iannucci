@@ -101,7 +101,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         this.gameControllers  = new ConcurrentHashMap<>();
 
         // TODO: - The following is a test with test parameters, the real waiting room settings must be read from a file
-        this.waitingRoom = new WaitingRoom(3, 5, 20, this);
+        this.waitingRoom = new WaitingRoom(3, 5, 5, this);
 
         setupConnections();
     }
@@ -337,11 +337,16 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         this.gameControllers.get(gameID).initializeMap(mapType);
     }
 
+    //HERE
     @Override
     public List<String> getSpawnPowerups(int userID, UUID gameID) {
         ArrayList<String> powerups = new ArrayList<>();
-        powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
-        powerups.add(gameControllers.get(gameID).getDecks().drawPowerup().toString());
+        Powerup pow1 = gameControllers.get(gameID).getDecks().drawPowerup();
+        Powerup pow2 = gameControllers.get(gameID).getDecks().drawPowerup();
+        powerups.add(pow1.toString());
+        powerups.add(pow2.toString());
+        gameControllers.get(gameID).getDecks().wastePowerup(pow1);
+        gameControllers.get(gameID).getDecks().wastePowerup(pow2);
         return powerups;
     }
 
