@@ -2,7 +2,7 @@ package it.polimi.ingsw.networking.rmi;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.List;
 
 public interface ClientInterface extends Remote {
 
@@ -12,7 +12,7 @@ public interface ClientInterface extends Remote {
 
     boolean ping() throws RemoteException;
 
-    void willChooseCharacter(ArrayList<String> availableCharacters) throws RemoteException;
+    void willChooseCharacter(List<String> availableCharacters) throws RemoteException;
 
     /**
      * When the user has to choose a game map configuration

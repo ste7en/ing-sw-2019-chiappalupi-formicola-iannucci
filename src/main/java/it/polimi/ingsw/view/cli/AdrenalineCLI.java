@@ -258,7 +258,7 @@ public class AdrenalineCLI extends View {
             options.add(Integer.toString(i));
         }
 
-        flushInput();
+        //flushInput();
         out.println(CHOOSE_MAP);
 
         for(int i = 0; i < 4; i++) {

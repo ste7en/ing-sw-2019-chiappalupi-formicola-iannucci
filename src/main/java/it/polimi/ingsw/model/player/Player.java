@@ -49,10 +49,15 @@ public class Player implements Comparable<Player>{
     private Integer points = 0;
 
     /**
+     * checks if the user is connected
+     */
+    private boolean _isActive = true;
+
+    /**
      * Called when a user disconnects
      */
     public void disablePlayer() {
-        this.user = null;
+        _isActive = true;
     }
 
     /**
@@ -61,6 +66,7 @@ public class Player implements Comparable<Player>{
      */
     public void reEnablePlayer(User user) {
         this.user = user;
+        _isActive = true;
     }
 
     /**

@@ -34,7 +34,7 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
         try {
             return clientRMI.ping();
         } catch (RemoteException e) {
-            logOnException(REMOTE_EXC+"ping failed.", e);
+            logOnException(REMOTE_EXC+PING_TIMEOUT, e);
         }
         return false;
     }
@@ -42,7 +42,7 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
     @Override
     protected void willChooseCharacter(List<String> availableCharacters) {
         try {
-            clientRMI.willChooseCharacter((ArrayList)availableCharacters);
+            clientRMI.willChooseCharacter(availableCharacters);
         } catch (Exception e){
             logOnException(REMOTE_EXC, e);
         }

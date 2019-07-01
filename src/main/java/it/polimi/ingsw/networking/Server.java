@@ -79,6 +79,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private static final String RMI_EXCEPTION      = "ServerRMI exception: ";
     private static final String SERVER_RMI_CONFIG  = "RMI Server configured on port ";
     private static final String SERVER_RMI_SUCCESS = "RMI Server is running on ";
+    private static final String ASKING_CHARACTER   = "Asking which character to use...";
 
 
     /**
@@ -86,6 +87,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * @param args arguments
      */
     public static void main(String[] args) {
+        var arguments = Arrays.asList(args);
+        AdrenalineLogger.setDebugMode(true);
         AdrenalineLogger.setLogName("Server");
         new Server(3334, 4444);
     }
@@ -162,7 +165,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                 .map(users::get)
                 .forEach(s -> s.gameDidStart(gameID.toString()));
 
-        userList.stream()
+        userList.parallelStream()
                 .map(users::get)
                 .forEach(s-> s.willChooseCharacter(characters));
 
@@ -301,19 +304,21 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     public boolean choseCharacter(UUID gameID, int userID, String characterColor) {
         var gameController      = gameControllers.get(gameID);
         var availableCharacters = gameController.getAvailableCharacters();
-
-        AdrenalineLogger.info("Game " + gameID + ": " + users.keySet().stream().filter(user -> user.hashCode() == userID).findFirst().orElseThrow().getUsername() + " chose " + characterColor);
+        var user                = findUserFromID(userID);
 
         if (availableCharacters.contains(characterColor)) {
             var chosenCharacter = Character.getCharacterFromColor(PlayerColor.valueOf(characterColor));
-            if (gameController.addPlayer(new Player(findUserFromID(userID), chosenCharacter))) {
+            if (gameController.addPlayer(new Player(user, chosenCharacter))) {
                 // Number of players reached - server's going to ask the firs
                 // player (or the first one connected) for the choice of the game map
                 var firstPlayer = gameController.getFirstActivePlayer();
                 willChooseGameMap(firstPlayer.getUser(), gameID);
             }
+            AdrenalineLogger.info("Game " + gameID + ": " + user.getUsername() + " chose " + characterColor);
             return true;
         }
+        AdrenalineLogger.error("Game " + gameID + ": " + user.getUsername() + " chose " + characterColor);
+        AdrenalineLogger.info(ASKING_CHARACTER);
         return false;
     }
 

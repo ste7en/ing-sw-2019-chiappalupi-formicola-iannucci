@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.*;
 import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.utility.*;
+import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,6 +36,11 @@ public class GameLogic {
     private Player firstPlayer;
 
     /**
+     * Log strings
+     */
+    private static final String RECONNECTED     = " reconnected and resumed the game.";
+
+    /**
      * String constants used in messages between client-server
      */
     public static final String gameID_key       = "GAME_ID";
@@ -54,6 +60,7 @@ public class GameLogic {
         this.powerupController = new PowerupController();
         this.grabController = new GrabController();
         this.players = new ArrayList<>();
+        this.numberOfPlayers = numberOfPlayers;
     }
 
     /**
@@ -79,6 +86,7 @@ public class GameLogic {
      */
     public void userDidConnect(User user) {
         Optional.of(lookForPlayerFromUser(user)).ifPresent(player -> player.reEnablePlayer(user));
+        AdrenalineLogger.success(user.getUsername()+RECONNECTED);
     }
 
     /**
@@ -147,11 +155,12 @@ public class GameLogic {
      * Adds a player to the list of players in game.
      *
      * @param player it's the player to be added.
+     * @return true if the numberOfPlayers Players have been added
      */
     public synchronized boolean addPlayer(Player player) {
         if (players.isEmpty()) setFirstPlayer(player);
         this.players.add(player);
-        return this.players.size() >= numberOfPlayers;
+        return this.players.size() == numberOfPlayers;
     }
 
     /**

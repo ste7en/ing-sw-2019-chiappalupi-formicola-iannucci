@@ -87,7 +87,6 @@ public class ClientRMI extends Client implements ClientInterface {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             AdrenalineLogger.error(e.getMessage());
         }
-        viewObserver.willChooseGameMap();
     }
 
     @Override
@@ -393,7 +392,7 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
-    public void willChooseCharacter(ArrayList<String> availableCharacters){
+    public void willChooseCharacter(List<String> availableCharacters){
         viewObserver.willChooseCharacter(availableCharacters);
     }
 }
