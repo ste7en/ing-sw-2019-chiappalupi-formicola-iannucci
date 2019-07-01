@@ -172,6 +172,12 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case MAP_CHOSEN:
                     mapChosen(connectionID, args, gameID);
                     break;
+                case GET_AVAILABLE_MOVES:
+                    chooseMovement(connectionID, gameID);
+                    break;
+                case MOVE:
+                    server.move(connectionID, gameID, args.get(GameLogic.movement));
+                    break;
                 case ASK_FOR_SPAWN_POINT:
                     spawnPointGenerator(connectionID, gameID);
                     break;
@@ -256,6 +262,19 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     private void mapChosen(int connectionID, Map<String, String> args, UUID gameID) {
         this.server.choseGameMap(gameID, args.get(GameMap.gameMap_key));
         this.send(CommunicationMessage.from(connectionID, CHOOSE_SPAWN_POINT));
+    }
+
+    /**
+     * Called when the client asks for available moves, it sends a list of available moves to the client
+     * @param connectionID connectionID
+     * @param gameID gameID
+     */
+    private void chooseMovement(int connectionID, UUID gameID) {
+        this.send(CommunicationMessage.from(
+                connectionID,
+                CHOOSE_MOVEMENT,
+                argsFrom(GameLogic.available_moves, String.join(", ", server.getAvailableMoves(connectionID, gameID))),
+                gameID));
     }
 
     private void askPowerupToReload(int connectionID, UUID gameID) {

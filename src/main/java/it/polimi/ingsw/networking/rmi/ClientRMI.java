@@ -6,6 +6,7 @@ import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -121,6 +122,25 @@ public class ClientRMI extends Client implements ClientInterface {
             AdrenalineLogger.error(e.getMessage());
         }
         viewObserver.onChooseAction(map);
+    }
+
+    @Override
+    public void getAvailableMoves() {
+        try {
+            viewObserver.willChooseMovement(server.getAvailableMoves(userID, gameID));
+        } catch (RemoteException e ) {
+            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public void move(String movement) {
+        try {
+            server.move(userID, gameID, movement);
+        } catch (RemoteException e) {
+            logOnException(CLIENT_RMI_EXCEPTION, e);
+        }
     }
 
     @Override

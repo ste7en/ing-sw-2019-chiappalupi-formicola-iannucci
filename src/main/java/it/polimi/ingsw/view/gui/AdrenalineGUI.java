@@ -91,12 +91,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChooseMovement() {
-
-    }
-
-    @Override
-    public void didChooseMovement() {
+    public void willChooseMovement(List<String> moves) {
 
     }
 

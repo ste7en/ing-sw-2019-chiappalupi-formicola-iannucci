@@ -131,5 +131,5 @@ public class AdrenalineLogger {
      * @param s message
      * @param t Throwable information
      */
-    public static void errorException(String s, Throwable t) { getLogger().log(Level.SEVERE, s, t); }
+    public static void errorException(String s, Throwable t) { getLogger().log(Level.SEVERE, s+t.getMessage(), t); }
 }

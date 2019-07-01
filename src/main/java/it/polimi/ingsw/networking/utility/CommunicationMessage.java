@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -97,6 +98,17 @@ public enum CommunicationMessage {
      */
     CHOOSE_ACTION,
 
+    /**
+     * Messages sent to implement player's movements on the board
+     *
+     * GET_AVAILABLE_MOVES is sent by the client without arguments
+     * CHOOSE_MOVEMENT is sent by the server with arguments: <GameLogic.available_moves, values>
+     * where values is a list of Strings joined as a single string with a comma separator
+     * MOVE is sent by the client when a movement has been chosen with arguments: <GameLogic.movement, value>
+     */
+    GET_AVAILABLE_MOVES,
+    CHOOSE_MOVEMENT,
+    MOVE,
 
     /**
      * Weapon using message.
@@ -373,6 +385,28 @@ public enum CommunicationMessage {
             AdrenalineLogger.errorException(EXC_MESS_JSON, e);
         }
         return jsonMessage;
+    }
+
+
+    /**
+     * Helper method when constructing an arguments map on socket communication
+     * @return an empty <String, String> map
+     */
+    public static Map<String, String> argsFactory() {
+        return new HashMap<>();
+    }
+
+    /**
+     * Helper method when constructing an arguments map on socket communication
+     * @param values the values in the map in the repeating order KEY, VALUE
+     * @return a map <String, String> with the given arguments
+     */
+    public static Map<String, String> argsFrom(String... values) {
+        var map = argsFactory();
+        var li = Arrays.asList(values).iterator();
+
+        while (li.hasNext()) map.put(li.next(), li.next());
+        return map;
     }
 
     /**

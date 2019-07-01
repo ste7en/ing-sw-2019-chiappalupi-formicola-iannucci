@@ -209,7 +209,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     /**
      * When a client registers a new user
-     * @param user the user to register
+     * @param username the user to register
      * @param connectionHandler client connection handler
      * @return -1 if the user already exists and is connected, user's hashCode  otherwise
      */
@@ -217,9 +217,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         var user = new User(username);
         if (checkUserAvailability(user)) {
             users.put(user, connectionHandler);
-            var x =user.hashCode();
-            System.out.println(x);
-            return x;
+            return user.hashCode();
         } else return -1;
     }
 
@@ -227,7 +225,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     public int createUserRMIHelper(String username) throws RemoteException {
         try {
             Registry remoteRegistry = LocateRegistry.getRegistry(portNumberRMI);
-            System.out.println(registry);
+            logDescription(registry);
             ClientInterface clientRMI = (ClientInterface) remoteRegistry.lookup("ClientInterface");
             ServerConnectionHandler connectionHandler = new ServerRMIConnectionHandler(this, clientRMI);
             Ping.getInstance().addPing(connectionHandler);
@@ -309,9 +307,14 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public List<String> chooseMovement(int userID, UUID gameID) {
+    public List<String> getAvailableMoves(int userID, UUID gameID) {
         User user = findUserFromID(userID);
         return gameControllers.get(gameID).getAvailableMoves(user);
+    }
+
+    @Override
+    public void move(int userID, UUID gameID, String movement) {
+        gameControllers.get(gameID).movePlayer(findUserFromID(userID), movement);
     }
 
     @Override

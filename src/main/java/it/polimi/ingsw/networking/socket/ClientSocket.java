@@ -120,6 +120,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case CHOOSE_ACTION:
                         this.viewObserver.onChooseAction(args.get(GameMap.gameMap_key));
                         break;
+                    case CHOOSE_MOVEMENT:
+                        this.viewObserver.willChooseMovement(Arrays.asList(args.get(GameLogic.available_moves).split(", ")));
+                        break;
                     case SHOOT_PEOPLE:
                         this.viewObserver.willChooseWeapon(new ArrayList<>(args.values()));
                         break;
@@ -192,24 +195,17 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
     @Override
     public void createUser(String username) {
-        var args = new HashMap<String, String>();
-        args.put(User.username_key, username);
-        this.send(CommunicationMessage.from(0, CREATE_USER, args));
+        this.send(CommunicationMessage.from(0, CREATE_USER, argsFrom(User.username_key, username)));
     }
 
     @Override
     public void joinWaitingRoom(String username) {
-        var args = new HashMap<String, String>();
-        args.put(User.username_key, username);
-        this.send(CommunicationMessage.from(userID, USER_JOIN_WAITING_ROOM, args));
+        this.send(CommunicationMessage.from(userID, USER_JOIN_WAITING_ROOM, argsFrom(User.username_key, username)));
     }
 
     @Override
     public void choseCharacter(String characterColor){
-        var args = new HashMap<String, String>();
-        args.put(Character.character, characterColor);
-        args.put(GameLogic.gameID_key, gameID.toString());
-        this.send(CommunicationMessage.from(userID, CHOOSE_CHARACTER, args, gameID));
+        this.send(CommunicationMessage.from(userID, CHOOSE_CHARACTER, argsFrom(Character.character, characterColor, GameLogic.gameID_key, gameID.toString()), gameID));
     }
 
     @Override
@@ -230,6 +226,16 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         args.put(Powerup.powerup_key, otherPowerup);
         args.put(Powerup.spawnPowerup_key, otherPowerup);
         this.send(CommunicationMessage.from(userID, SPAWN_POINT_CHOSEN, args, gameID));
+    }
+
+    @Override
+    public void getAvailableMoves() {
+        this.send(CommunicationMessage.from(userID, GET_AVAILABLE_MOVES, gameID));
+    }
+
+    @Override
+    public void move(String movement) {
+        this.send(CommunicationMessage.from(userID, MOVE, argsFrom(GameLogic.movement, movement), gameID));
     }
 
     @Override
@@ -336,5 +342,4 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         args.put(Damage.damage_key, damage);
         this.send(CommunicationMessage.from(userID, POWERUP_DAMAGE_TO_MAKE, args, gameID));
     }
-
 }

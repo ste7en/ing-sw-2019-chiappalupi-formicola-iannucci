@@ -30,7 +30,7 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_CONNECTION           = "Please, choose between a \n\t" +
                                                               "1. SOCKET connection\n\t" +
                                                               "2. RMI connection";
-    private static final String INCORRECT_CHOICE            = "Incorrect choice. Retry.";
+    private static final String INCORRECT_CHOICE            = "Incorrect choice. Retry.\n";
     private static final String CHOOSE_SOCKET_PORT          = "On which port the SOCKET server is listening? ";
     private static final String CHOOSE_RMI_PORT             = "On which port the RMI server is listening? ";
     private static final String CHOOSE_SERVER_ADDR          = "Insert the server host address: ";
@@ -45,6 +45,7 @@ public class AdrenalineCLI extends View {
                                                               "1. Move\n\t" +
                                                               "2. Grab something\n\t" +
                                                               "3. Shoot";
+    private static final String CHOOSE_MOVEMENT             = "These are the available movements you can do. Please, choose one by selecting its number: ";
     private static final String SHOOT_PEOPLE_FAILURE        = "You have no weapon in your hand, so you can't shoot anyone.";
     private static final String DAMAGE_FAILURE              = "No damage can be made with the weapon and the effects selected.";
     private static final String CHOOSE_POWERUP_TO_SELL      = "What powerup do you want to sell?";
@@ -280,7 +281,7 @@ public class AdrenalineCLI extends View {
         var choice = Integer.parseInt(action);
         switch (choice){
             case 1:
-                willChooseMovement();
+                client.getAvailableMoves();
                 break;
             case 2:
                 willChooseWhatToGrab();
@@ -295,13 +296,14 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChooseMovement() {
-
-    }
-
-    @Override
-    public void didChooseMovement() {
-
+    public void willChooseMovement(List<String> moves) {
+        out.println(CHOOSE_MOVEMENT);
+        String chosenMovement;
+        do {
+            chosenMovement = decisionHandlerFromList(moves);
+            if (chosenMovement == null) out.println(INCORRECT_CHOICE);
+        } while (chosenMovement == null);
+        didChooseMovement(chosenMovement);
     }
 
     @Override

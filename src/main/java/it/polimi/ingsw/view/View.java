@@ -172,14 +172,18 @@ public abstract class View {
     public abstract void onChooseAction(String map);
 
     /**
-     * Ele
+     * Public method implemented by subclasses when choosing a movement
+     * @param moves list of moves a player can choose
      */
-    public abstract void willChooseMovement();
+    public abstract void willChooseMovement(List<String> moves);
 
     /**
-     * Ele
+     * When the client chooses where to move
+     * @param movement the chosen movement
      */
-    public abstract void didChooseMovement();
+    protected void didChooseMovement(String movement) {
+        client.move(movement);
+    }
 
     /**
      * Ele

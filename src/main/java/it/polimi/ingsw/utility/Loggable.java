@@ -24,5 +24,5 @@ public interface Loggable {
     /**
      * Method to implement in order to debug with more verbosity a class or method
      */
-    default void logDescription(Object o) { AdrenalineLogger.info(o.toString()); }
+    default void logDescription(Object o) { AdrenalineLogger.info(o.getClass().toGenericString()+": "+o.toString()); }
 }

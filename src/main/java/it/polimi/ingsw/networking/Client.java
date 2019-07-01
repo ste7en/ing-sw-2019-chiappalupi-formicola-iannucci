@@ -127,6 +127,17 @@ public abstract class Client implements Loggable {
     public abstract void choseSpawnPoint(String spawnPoint, String otherPowerup);
 
     /**
+     * Abstract method asking the server for available moves
+     */
+    public abstract void getAvailableMoves();
+
+    /**
+     * When the client chooses where to move
+     * @param movement the chosen movement
+     */
+    public abstract void move(String movement);
+
+    /**
      * Abstract method implemented by subclasses when a player wants to shoot people.
      */
     public abstract void askWeapons();

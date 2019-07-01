@@ -38,7 +38,16 @@ public interface ServerInterface extends Remote {
 
     String choseSpawnPoint(int userID, UUID gameID, String spawnPoint, String otherPowerup) throws RemoteException;
 
-    List<String> chooseMovement(int userID, UUID gameID) throws RemoteException;
+    List<String> getAvailableMoves(int userID, UUID gameID) throws RemoteException;
+
+    /**
+     * When the user chooses a movement on the board
+     * @param userID userID
+     * @param gameID gameID
+     * @param movement string description of the movement
+     * @throws RemoteException RMI exception
+     */
+    void move(int userID, UUID gameID, String movement) throws RemoteException;
 
     void chooseWhatToGrab() throws RemoteException;
 

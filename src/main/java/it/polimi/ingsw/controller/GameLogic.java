@@ -33,7 +33,9 @@ public class GameLogic {
     /**
      * String constants used in messages between client-server
      */
-    public static final String gameID_key = "GAME_ID";
+    public static final String gameID_key       = "GAME_ID";
+    public static final String available_moves  = "MOVES";
+    public static final String movement         = "MOVEMENT";
 
     //TODO: - Method implementation
 
@@ -206,11 +208,23 @@ public class GameLogic {
     }
 
     public List<String> getAvailableMoves(User user){
-        ArrayList<String> availableMoves = new ArrayList<String>();
-        List<Cell> availableCells = board.getMap().getCellsAtMaxDistance(lookForPlayerFromUser(user), 2);
+        ArrayList<String> availableMoves = new ArrayList<>();
+        List<Cell> availableCells = getBoard().getMap().getCellsAtMaxDistance(lookForPlayerFromUser(user), lookForPlayerFromUser(user).getPlayerBoard().getStepsOfMovement());
         for(Cell cell : availableCells){
             availableMoves.add(cell.toString());
         }
         return availableMoves;
+    }
+
+    /**
+     * Moves the player to the specified cell in the map
+     * @param user user
+     * @param movement string description of the movement
+     */
+    public void movePlayer(User user, String movement) {
+        var map = getBoard().getMap();
+        var player = lookForPlayerFromUser(user);
+        var availableCells = map.getCellsAtMaxDistance(player, player.getPlayerBoard().getStepsOfMovement());
+        availableCells.forEach( cell -> { if (cell.toString().equalsIgnoreCase(movement))map.setPlayerPosition(player, cell); });
     }
 }
