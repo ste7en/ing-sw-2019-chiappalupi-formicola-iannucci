@@ -103,11 +103,23 @@ public enum CommunicationMessage {
      *
      * CHOOSE_ACTION is sent from the client to the server to notify that the the player has selected that he wants to grab something (no arguments)
      * POSSIBLE_PICKS is sent from the server to the client to provide the possible picks of the player
+     * DID_CHOOSE_WHAT_TO_GRAB is sent from the client to the server to notify that the player has selected what does he want to grab
+     * GRAB_SUCCESS is sent from the server to the client to notify that the process ended well
+     * GRAB_FAILURE_WEAPON is sent from the server to the client to notify that the player has too much weapons to grab another one
+     * GRAB_FAILURE_POWERUP is sent from the server to the client to notify that the player has too much powerups to grab another one
      *
-     * Arguments: <indexOf, possiblePick::toString>
+     * Arguments: <indexOf, possiblePick::toString> for POSSIBLE_PICKS, <AmmoTile.ammoTile_key, AmmoTile::toString> for DID_CHOOSE,
+     *            <GameMap.gameMap_key, GameMap::toString> for GRAB_SUCCESS, <indexOf, Weapon::getName/Powerup::toString> for GRAB_FAILURES,
+     *            <Powerup.powerup_key, Powerup::toString> for DISCARD_POWERUP, <Weapon.weapon_key, Weapon::getName> for DISCARD_WEAPON
      */
     GRAB_SOMETHING,
     POSSIBLE_PICKS,
+    DID_CHOOSE_WHAT_TO_GRAB,
+    GRAB_SUCCESS,
+    GRAB_FAILURE_WEAPON,
+    GRAB_FAILURE_POWERUP,
+    GRAB_DISCARD_POWERUP,
+    GRAB_DISCARD_WEAPON,
 
     /**
      * Messages sent to implement player's movements on the board

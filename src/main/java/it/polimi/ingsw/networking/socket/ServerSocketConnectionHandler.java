@@ -181,6 +181,15 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case GRAB_SOMETHING:
                     grabSomething(connectionID, gameID);
                     break;
+                case DID_CHOOSE_WHAT_TO_GRAB:
+                    choseWhatToGrab(connectionID, args, gameID);
+                    break;
+                case GRAB_DISCARD_POWERUP:
+                    grabDiscardPowerup(connectionID, args, gameID);
+                    break;
+                case GRAB_DISCARD_WEAPON:
+                    grabDiscardWeapon(connectionID, args, gameID);
+                    break;
                 case ASK_FOR_SPAWN_POINT:
                     spawnPointGenerator(connectionID, gameID);
                     break;
@@ -231,6 +240,50 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         }).start();
     }
 
+    /**
+     * This method is called when the player has decided which weapon does he want to discard
+     * @param connectionID it's the ID of the user
+     * @param args it's the map containing the arguments needed to perform the action
+     * @param gameID it's the ID of the game
+     */
+    private void grabDiscardWeapon(int connectionID, Map<String, String> args, UUID gameID) {
+        String situation = this.server.weaponToDiscard(connectionID, gameID, args.get(Powerup.powerup_key));
+        Map<String, String> responseArgs = new HashMap<>();
+        responseArgs.put(GameMap.gameMap_key, situation);
+        this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS, responseArgs, gameID));
+    }
+
+    /**
+     * This method is called when the player has decided which powerup does he want to discard
+     * @param connectionID it's the ID of the user
+     * @param args it's the map containing the arguments needed to perform the action
+     * @param gameID it's the ID of the game
+     */
+    private void grabDiscardPowerup(int connectionID, Map<String, String> args, UUID gameID) {
+        String situation = this.server.powerupToDiscard(connectionID, gameID, args.get(Powerup.powerup_key));
+        Map<String, String> responseArgs = new HashMap<>();
+        responseArgs.put(GameMap.gameMap_key, situation);
+        this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS, responseArgs, gameID));
+    }
+
+    /**
+     * This method is called when the player has decided what does he want to grab
+     * @param connectionID it's the ID of the user
+     * @param args it's the map containing the arguments needed to perform the action
+     * @param gameID it's the ID of the game
+     */
+    private void choseWhatToGrab(int connectionID, Map<String, String> args, UUID gameID) {
+        Map<String, String> responseArgs = this.server.didChooseWhatToGrab(args.get(AmmoTile.ammoTile_key), connectionID, gameID);
+        if(responseArgs.containsKey(GameMap.gameMap_key)) this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS, responseArgs));
+        else if(responseArgs.containsKey(Powerup.powerup_key)) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE_POWERUP, responseArgs));
+        else if(responseArgs.containsKey(Weapon.weapon_key)) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE_WEAPON, responseArgs));
+    }
+
+    /**
+     * This method is called when the player has decided that he wants to grab something
+     * @param connectionID it's the ID of the user
+     * @param gameID it's the ID of the game
+     */
     private void grabSomething(int connectionID, UUID gameID) {
         List<String> possiblePicks = server.askPicks(connectionID, gameID);
         Map<String, String> responseArgs = new HashMap<>();

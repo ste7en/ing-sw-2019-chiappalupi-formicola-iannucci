@@ -126,6 +126,15 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case POSSIBLE_PICKS:
                         this.viewObserver.willChooseWhatToGrab(new ArrayList<>(args.values()));
                         break;
+                    case GRAB_SUCCESS:
+                        this.viewObserver.onGrabSuccess(args.get(GameMap.gameMap_key));
+                        break;
+                    case GRAB_FAILURE_POWERUP:
+                        this.viewObserver.onGrabFailurePowerup(new ArrayList<>(args.values()));
+                        break;
+                    case GRAB_FAILURE_WEAPON:
+                        this.viewObserver.onGrabFailureWeapon(new ArrayList<>(args.values()));
+                        break;
                     case SHOOT_PEOPLE:
                         this.viewObserver.willChooseWeapon(new ArrayList<>(args.values()));
                         break;
@@ -230,17 +239,23 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
     @Override
     public void didChooseWhatToGrab(String pick) {
-        //toDO
+        Map<String, String> args = new HashMap<>();
+        args.put(AmmoTile.ammoTile_key, pick);
+        this.send(CommunicationMessage.from(userID, DID_CHOOSE_WHAT_TO_GRAB, args, gameID));
     }
 
     @Override
     public void powerupGrabToDiscard(String powerup) {
-        //toDO
+        Map<String, String> args = new HashMap<>();
+        args.put(Powerup.powerup_key, powerup);
+        this.send(CommunicationMessage.from(userID, GRAB_DISCARD_POWERUP, args, gameID));
     }
 
     @Override
     public void weaponGrabToDiscard(String weapon) {
-        //toDO
+        Map<String, String> args = new HashMap<>();
+        args.put(Weapon.weapon_key, weapon);
+        this.send(CommunicationMessage.from(userID, GRAB_DISCARD_WEAPON, args, gameID));
     }
 
     @Override

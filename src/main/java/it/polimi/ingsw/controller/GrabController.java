@@ -148,7 +148,9 @@ public class GrabController {
                 for(Weapon w : weaponsInHand) {
                     returnMap.put(Integer.toString(weaponsInHand.indexOf(w)), w.getName());
                 }
-                returnMap.put(Weapon.weapon_key, grabbingWeapon.toString());
+                String w = returnMap.get(Integer.toString(0));
+                returnMap.remove(Integer.toString(0));
+                returnMap.put(Weapon.weapon_key, w);
                 return returnMap;
             }
             playerWeapons.add(grabbedWeapon);

@@ -127,7 +127,6 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     //toDO: check for powerup using to pay cost
-    //toDO: check for max amount of powerups/weapons
     @Override
     public void didChooseWhatToGrab(String pick) {
         Map<String, String> ending = new HashMap<>();

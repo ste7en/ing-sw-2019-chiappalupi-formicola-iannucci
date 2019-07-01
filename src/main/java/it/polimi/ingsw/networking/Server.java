@@ -363,7 +363,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * @return the current situation of the board for the given user
      */
     @Override
-    public String weaponToDiscard(int userID, UUID gameID, String weapon) throws RemoteException {
+    public String weaponToDiscard(int userID, UUID gameID, String weapon) {
         User user = findUserFromID(userID);
         return gameControllers.get(gameID).getGrabController().weaponToDiscard(weapon, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getBoard());
     }

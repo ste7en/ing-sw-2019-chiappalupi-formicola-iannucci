@@ -11,6 +11,11 @@ import java.util.ArrayList;
 public class AmmoTile {
 
     /**
+     * String constant used in messages between client-server
+     */
+    public final static String ammoTile_key = "AMMOTILE";
+
+    /**
      * Private string used for the String construction of the toString;
      */
     private static final String AMMO_CARD = "Ammo Card";
