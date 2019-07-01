@@ -71,7 +71,7 @@ public class ClientSocketConnectionHandler implements ConnectionHandlerSenderDel
     /**
      * Socket timeout
      */
-    private static final int SOCKET_SO_TIMEOUT_MILLIS = 1000;
+    private static final int SOCKET_SO_TIMEOUT_MILLIS = 500;
 
     /**
      * Public constructor of the socket connection between client and server
@@ -128,7 +128,7 @@ public class ClientSocketConnectionHandler implements ConnectionHandlerSenderDel
                 }
                 if (!outBuf.isEmpty()) outBuf.forEach(printWriter::println);
                 outBuf.clear();
-                Thread.sleep(50);
+                Thread.sleep(200);
             }
 
             if (connectionState == CLOSED) socket.close();
