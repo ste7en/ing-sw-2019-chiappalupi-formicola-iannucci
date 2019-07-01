@@ -29,6 +29,7 @@ public class GameLogic {
     private DecksHandler decks;
     private WeaponController weaponController;
     private PowerupController powerupController;
+    private Player firstPlayer;
 
     /**
      * String constants used in messages between client-server
@@ -90,6 +91,21 @@ public class GameLogic {
     }
 
 
+    /**
+     * First player getter
+     * @return the first player in the game
+     */
+    public Player getFirstPlayer() {
+        return firstPlayer;
+    }
+
+    /**
+     * First player getter
+     * @param firstPlayer it's the player to set
+     */
+    public void setFirstPlayer(Player firstPlayer) {
+        this.firstPlayer = firstPlayer;
+    }
 
     /**
      * Adds a player to the list of players in game.
@@ -187,8 +203,32 @@ public class GameLogic {
     }
 
     /**
+     * This method is used to find the possible picks of a player.
+     * @param user it's the user of the player that wants to grab something.
+     * @return the list of AmmoTile::toString of possiblePicks. It also adds the possible weapons that he can take from any spawn point where he can arrive.
+     */
+    public List<String> getPicks(User user) {
+        Player player = lookForPlayerFromUser(user);
+        List<String> possiblePicks = new ArrayList<>();
+        List<Cell> possibleMovements = board.getMap().getCellsAtMaxDistance(player, player.getPlayerBoard().getStepsBeforeGrabbing());
+        List<Cell> spawns = new ArrayList<>();
+        for(Cell cell : possibleMovements) {
+            if(cell.isRespawn()) spawns.add(cell);
+            else possiblePicks.add(cell.getAmmoCard().toString());
+        }
+        for(Cell spawn : spawns) {
+            AmmoColor color = AmmoColor.blue;
+            if(spawn.getColor() == CellColor.red) color = AmmoColor.red;
+            else if(spawn.getColor() == CellColor.yellow) color = AmmoColor.yellow;
+            List<Weapon> weaponsInSpawn = board.showWeapons(color);
+            for(Weapon spawnWeapon : weaponsInSpawn) possiblePicks.add(spawnWeapon.getName());
+        }
+        return possiblePicks;
+    }
+
+    /**
      * This method is used to get the available characters.
-     * @return an arraylist of available player colors.
+     * @return a list of available player colors.
      */
     public synchronized List<String> getAvailableCharacters() {
         try {

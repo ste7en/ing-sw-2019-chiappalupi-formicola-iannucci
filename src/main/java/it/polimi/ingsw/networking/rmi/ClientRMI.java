@@ -113,8 +113,20 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
+    public void askPicks() {
+        List<String> possiblePicks = new ArrayList<>();
+        try {
+            possiblePicks = this.server.askPicks(userID, gameID);
+        } catch (RemoteException e) {
+            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
+        }
+        viewObserver.willChooseWhatToGrab(possiblePicks);;
+    }
+
+    @Override
     public void choseSpawnPoint(String spawnPoint, String otherPowerup){
-        String map = new String();
+        String map = "";
         try {
             map = server.choseSpawnPoint(userID, gameID, spawnPoint, otherPowerup);
         } catch (RemoteException e) {

@@ -178,6 +178,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case MOVE:
                     server.move(connectionID, gameID, args.get(GameLogic.movement));
                     break;
+                case GRAB_SOMETHING:
+                    grabSomething(connectionID, gameID);
+                    break;
                 case ASK_FOR_SPAWN_POINT:
                     spawnPointGenerator(connectionID, gameID);
                     break;
@@ -226,6 +229,13 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
             }
 
         }).start();
+    }
+
+    private void grabSomething(int connectionID, UUID gameID) {
+        List<String> possiblePicks = server.askPicks(connectionID, gameID);
+        Map<String, String> responseArgs = new HashMap<>();
+        for(String pick : possiblePicks) responseArgs.put(Integer.toString(possiblePicks.indexOf(pick)), pick);
+        this.send(CommunicationMessage.from(connectionID, POSSIBLE_PICKS, responseArgs, gameID));
     }
 
     /**

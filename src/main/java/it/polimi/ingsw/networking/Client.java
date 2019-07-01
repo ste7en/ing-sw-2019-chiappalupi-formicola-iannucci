@@ -122,6 +122,11 @@ public abstract class Client implements Loggable {
     public abstract void askForPossibleSpawnPoints();
 
     /**
+     * Abstract method implemented by subclasses when a player wants to pick something.
+     */
+    public abstract void askPicks();
+
+    /**
      * Abstract method implemented by subclasses when a player has chosen his spawn point.
      */
     public abstract void choseSpawnPoint(String spawnPoint, String otherPowerup);

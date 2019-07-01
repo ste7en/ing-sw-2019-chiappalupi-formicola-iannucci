@@ -99,7 +99,7 @@ public abstract class Weapon {
      * @return the ArrayList of Effects of the weapon
      */
     public ArrayList<Effect> getEffects() {
-        return (ArrayList<Effect>)effects.clone();
+        return new ArrayList<>(effects);
     }
 
     /**

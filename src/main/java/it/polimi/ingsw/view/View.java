@@ -186,9 +186,15 @@ public abstract class View {
     }
 
     /**
-     * Ele
+     * Public method implemented by subclasses and called to start the process of the player to pick something on the board.
      */
-    public abstract void willChooseWhatToGrab();
+    public abstract void grabSomething();
+
+    /**
+     * Public method implemented by subclasses when the player has to decide what does he wants to grab.
+     * @param possiblePicks it's a list containing the possible picks of the player.
+     */
+    public abstract void willChooseWhatToGrab(List<String> possiblePicks);
 
     /**
      * Ele

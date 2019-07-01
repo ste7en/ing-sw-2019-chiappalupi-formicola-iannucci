@@ -99,6 +99,17 @@ public enum CommunicationMessage {
     CHOOSE_ACTION,
 
     /**
+     * Messages sent to start the process of grabbing something
+     *
+     * CHOOSE_ACTION is sent from the client to the server to notify that the the player has selected that he wants to grab something (no arguments)
+     * POSSIBLE_PICKS is sent from the server to the client to provide the possible picks of the player
+     *
+     * Arguments: <indexOf, possiblePick::toString>
+     */
+    GRAB_SOMETHING,
+    POSSIBLE_PICKS,
+
+    /**
      * Messages sent to implement player's movements on the board
      *
      * GET_AVAILABLE_MOVES is sent by the client without arguments

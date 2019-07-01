@@ -96,7 +96,12 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChooseWhatToGrab() {
+    public void grabSomething() {
+
+    }
+
+    @Override
+    public void willChooseWhatToGrab(List<String> possiblePicks) {
 
     }
 

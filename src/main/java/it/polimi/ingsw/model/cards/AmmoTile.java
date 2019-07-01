@@ -11,6 +11,13 @@ import java.util.ArrayList;
 public class AmmoTile {
 
     /**
+     * Private string used for the String construction of the toString;
+     */
+    private static final String AMMO_CARD = "Ammo Card";
+    private static final String POWERUP   = "powerup";
+    private static final String AMMO      = "ammo";
+
+    /**
      * Ammos provided by this AmmoTile
      */
     private ArrayList<AmmoColor> ammoColors;
@@ -33,9 +40,22 @@ public class AmmoTile {
      * @return the list of ammos provided by the AmmoTile
      */
     public ArrayList<AmmoColor> getAmmoColors() {
-        return (ArrayList<AmmoColor>)ammoColors.clone();
+        return new ArrayList<>(ammoColors);
     }
 
     public void setPowerup(boolean powerup) {this.powerup = powerup;}
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append(AMMO_CARD).append(": ");
+        if(powerup) s.append(POWERUP).append(", ");
+        for(int i = 0; i < ammoColors.size(); i++) {
+            s.append(ammoColors.get(i).toString()).append(" ").append(AMMO);
+            if(i != ammoColors.size()-1) s.append(", ");
+            else s.append(";\n");
+        }
+        return s.toString();
+    }
 
 }

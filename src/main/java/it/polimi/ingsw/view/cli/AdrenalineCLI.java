@@ -23,6 +23,7 @@ public class AdrenalineCLI extends View {
     @SuppressWarnings("squid:S106")
     private PrintWriter out = new PrintWriter(System.out, true);
     private Scanner     in  = new Scanner(System.in);
+    private String curSituation;
 
     /**
      * Console prompt strings
@@ -45,6 +46,7 @@ public class AdrenalineCLI extends View {
                                                               "1. Move\n\t" +
                                                               "2. Grab something\n\t" +
                                                               "3. Shoot";
+    private static final String GRAB_SOMETHING              = "You have chosen to grab something!";
     private static final String CHOOSE_MOVEMENT             = "These are the available movements you can do. Please, choose one by selecting its number: ";
     private static final String SHOOT_PEOPLE_FAILURE        = "You have no weapon in your hand, so you can't shoot anyone.";
     private static final String DAMAGE_FAILURE              = "No damage can be made with the weapon and the effects selected.";
@@ -275,6 +277,7 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void onChooseAction(String map) {
+        curSituation = map;
         out.println(map);
         out.println(CHOOSE_ACTION);
         var action = in.nextLine();
@@ -284,7 +287,7 @@ public class AdrenalineCLI extends View {
                 client.getAvailableMoves();
                 break;
             case 2:
-                willChooseWhatToGrab();
+                grabSomething();
                 break;
             case 3:
                 shootPeople();
@@ -307,7 +310,13 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void willChooseWhatToGrab() {
+    public void grabSomething() {
+        out.println(GRAB_SOMETHING);
+        this.client.askPicks();
+    }
+
+    @Override
+    public void willChooseWhatToGrab(List<String> possiblePicks) {
 
     }
 
@@ -319,8 +328,7 @@ public class AdrenalineCLI extends View {
     @Override
     public void onShootPeopleFailure() {
         out.println(SHOOT_PEOPLE_FAILURE);
-        //toDo map
-        this.onChooseAction(new String());
+        this.onChooseAction(curSituation);
     }
 
     @Override
@@ -354,8 +362,7 @@ public class AdrenalineCLI extends View {
     @Override
     public void onDamageFailure() {
         out.println(DAMAGE_FAILURE);
-        //toDo MAP
-        this.onChooseAction(new String());
+        this.onChooseAction(curSituation);
     }
 
     @Override
@@ -390,8 +397,7 @@ public class AdrenalineCLI extends View {
     @Override
     public void onPowerupInHandFailure() {
         out.println(POWERUP_FAILURE);
-        //toDo map
-        this.onChooseAction(new String());
+        this.onChooseAction(curSituation);
     }
 
     @Override

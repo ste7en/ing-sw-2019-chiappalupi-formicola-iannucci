@@ -317,6 +317,18 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         gameControllers.get(gameID).movePlayer(findUserFromID(userID), movement);
     }
 
+    /**
+     * Method used to start the process of picking something from the map.
+     * @param userID it's the ID of the user who wants to pick something.
+     * @param gameID it's the ID of the game.
+     * @return the list of possible picks.
+     */
+    @Override
+    public List<String> askPicks(int userID, UUID gameID) {
+        User user = findUserFromID(userID);
+        return gameControllers.get(gameID).getPicks(user);
+    }
+
     @Override
     public void chooseWhatToGrab() {
 

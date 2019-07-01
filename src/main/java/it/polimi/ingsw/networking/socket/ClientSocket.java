@@ -123,6 +123,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case CHOOSE_MOVEMENT:
                         this.viewObserver.willChooseMovement(Arrays.asList(args.get(GameLogic.available_moves).split(", ")));
                         break;
+                    case POSSIBLE_PICKS:
+                        this.viewObserver.willChooseWhatToGrab(new ArrayList<>(args.values()));
+                        break;
                     case SHOOT_PEOPLE:
                         this.viewObserver.willChooseWeapon(new ArrayList<>(args.values()));
                         break;
@@ -218,6 +221,11 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     @Override
     public void askForPossibleSpawnPoints(){
         this.send(CommunicationMessage.from(userID, ASK_FOR_SPAWN_POINT, gameID));
+    }
+
+    @Override
+    public void askPicks() {
+        this.send(CommunicationMessage.from(userID, GRAB_SOMETHING, gameID));
     }
 
     @Override
