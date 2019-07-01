@@ -580,9 +580,12 @@ public class GameMap implements Cloneable{
      * @return the spawn cell of that color.s
      */
     public Cell getSpawnPoint(AmmoColor spawnColor) {
+        CellColor spawnCellColor = CellColor.blue;
+        if(spawnColor == AmmoColor.red) spawnCellColor = CellColor.red;
+        else if(spawnColor == AmmoColor.yellow) spawnCellColor = CellColor.yellow;
         for(int i = 0; i < ROWS; i++) {
             for(int j = 0; j < COLUMNS; j++) {
-                if(map[i][j] != null && map[i][j].isRespawn()) {
+                if(map[i][j] != null && map[i][j].isRespawn() && map[i][j].getColor() == spawnCellColor) {
                     return map[i][j];
                 }
             }

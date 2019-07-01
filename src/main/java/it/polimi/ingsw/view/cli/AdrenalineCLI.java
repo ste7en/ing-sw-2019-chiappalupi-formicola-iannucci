@@ -255,7 +255,7 @@ public class AdrenalineCLI extends View {
         GameMap[] maps = new GameMap[4];
         for(int i = 0; i < 4; i++) {
             maps[i] = new GameMap(MapType.values()[i]);
-            options.add(Integer.toString(i+1));
+            options.add(Integer.toString(i));
         }
 
         flushInput();
@@ -558,8 +558,8 @@ public class AdrenalineCLI extends View {
      * @return the choice, null if the selection was illegal.
      */
     private String decisionHandlerFromList(List<String> options) {
-        for(int i = 1; i <= options.size(); i++)
-            out.println(i + ") " + options.get(i-1));
+        for(int i = 0; i < options.size(); i++)
+            out.println(i + ") " + options.get(i));
         var scanInput = in.nextLine();
         return selectionChecker(scanInput, options);
     }
@@ -574,7 +574,7 @@ public class AdrenalineCLI extends View {
         String optionSelected = null;
         try {
             int choice = Integer.parseInt(scan);
-            if(choice <= options.size())
+            if(choice < options.size())
                 optionSelected = options.get(choice);
         } catch (NumberFormatException exception) {
             for(String s : options)

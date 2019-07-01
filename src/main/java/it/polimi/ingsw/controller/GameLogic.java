@@ -202,15 +202,20 @@ public class GameLogic {
     public void spawn(User user, String spawnPoint, String otherPowerup) {
         Player player = lookForPlayerFromUser(user);
 
-        DecksHandler box = new DecksHandler();
-        Powerup spawnPowerup = box.drawPowerup();
-        while(!spawnPowerup.toString().equalsIgnoreCase(spawnPoint)) spawnPowerup = box.drawPowerup();
+        Powerup spawnPowerup = decks.drawPowerup();
+        while(!spawnPowerup.toString().equalsIgnoreCase(spawnPoint)) {
+            decks.wastePowerup(spawnPowerup);
+            spawnPowerup = decks.drawPowerup();
+        }
 
-        box = new DecksHandler();
-        Powerup powerupInHand = box.drawPowerup();
-        while(!powerupInHand.toString().equalsIgnoreCase(otherPowerup)) powerupInHand = box.drawPowerup();
+        Powerup powerupInHand = decks.drawPowerup();
+        while(!powerupInHand.toString().equalsIgnoreCase(otherPowerup)) {
+            decks.wastePowerup(powerupInHand);
+            powerupInHand = decks.drawPowerup();
+        }
 
         AmmoColor spawnColor = spawnPowerup.getColor();
+
         this.board.getMap().setPlayerPosition(player, this.board.getMap().getSpawnPoint(spawnColor));
         player.getPlayerHand().addPowerup(powerupInHand);
         this.decks.wastePowerup(spawnPowerup);

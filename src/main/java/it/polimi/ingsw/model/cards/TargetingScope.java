@@ -37,6 +37,6 @@ public class TargetingScope extends Powerup {
 
     @Override
     public String toString() {
-        return "TargetingScope - " + this.color.toString();
+        return "TargetingScope - " + this.color.toString() + ";";
     }
 }
