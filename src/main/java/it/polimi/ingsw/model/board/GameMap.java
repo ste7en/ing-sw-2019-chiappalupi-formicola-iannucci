@@ -307,7 +307,7 @@ public class GameMap implements Cloneable{
             for (int j = 0; j < map[i].length; j++) {
                 stringCaseHandler(box1, box2, box3, i, j);
             }
-            mapString.append(box1).append("\n").append(box2).append("\n").append(box3).append("\n");
+            mapString.append(box1.toString()).append("\n").append(box2.toString()).append("\n").append(box3.toString()).append("\n");
             box1 = new StringBuilder();
             box2 = new StringBuilder();
             box3 = new StringBuilder();
@@ -343,9 +343,9 @@ public class GameMap implements Cloneable{
             box3.append(LEFT_GRID);
         }
         if (map[i][j] != null) {
-            box1.append(northDirectionStringFormatter(box1.toString(), i, j));
-            box2.append(eastWestDirectionStringFormatter(box2.toString(), i, j));
-            box3.append(southDirectionStringFormatter(box3.toString(), i, j));
+            northDirectionStringFormatter(box1, i, j);
+            eastWestDirectionStringFormatter(box2, i, j);
+            southDirectionStringFormatter(box3, i, j);
         } else {
             box1.append(SPACE);
             box2.append(SPACE);
@@ -360,28 +360,17 @@ public class GameMap implements Cloneable{
 
     /**
      * It's an helper method to reduce the cognitive complexity of the toString method: it computes the lower string of the final string.
-     * @param box3 it's the string to format
+     * @param box3 it's the stringBuilder to format
      * @param i it's the row of the map
      * @param j it's the column of the map
-     * @return the string formatted
      */
-    private String southDirectionStringFormatter(String box3, int i, int j) {
+    private void southDirectionStringFormatter(StringBuilder box3, int i, int j) {
         switch (map[i][j].adiajency(Direction.South)) {
             case wall:
-                box3 =
-                        box3
-                                + map[i][j].getANSIColor()
-                                + ANSI_BLACK
-                                + String.format(FORMAT, ALL_WALL)
-                                + ANSI_RESET;
+                box3.append(map[i][j].getANSIColor()).append(ANSI_BLACK).append(String.format(FORMAT, ALL_WALL)).append(ANSI_RESET);
                 break;
             case door:
-                box3 =
-                        box3
-                                + map[i][j].getANSIColor()
-                                + ANSI_BLACK
-                                + String.format(FORMAT, SOUTH_DOOR)
-                                + ANSI_RESET;
+                box3.append(map[i][j].getANSIColor()).append(ANSI_BLACK).append(String.format(FORMAT, SOUTH_DOOR)).append(ANSI_RESET);
                 break;
             case space:
                 switch (map[i][j].adiajency(Direction.West)) {
@@ -390,29 +379,18 @@ public class GameMap implements Cloneable{
                         switch (map[i][j].adiajency(Direction.East)) {
                             case wall:
                             case door:
-                                box3 =
-                                        box3
-                                                + map[i][j].getANSIColor()
-                                                + ANSI_BLACK
-                                                + String.format(FORMAT, BOTH_WALL)
-                                                + ANSI_RESET;
+                                box3.append(map[i][j].getANSIColor()).append(ANSI_BLACK).append(String.format(FORMAT, BOTH_WALL)).append(ANSI_RESET);
                                 break;
                             case space:
-                                box3 =
-                                        box3
-                                                + map[i][j].getANSIColor()
-                                                + ANSI_BLACK
-                                                + String.format(FORMAT, String.format(FORMAT, WEST_WALL))
-                                                + ANSI_RESET;
+                                box3.append(map[i][j].getANSIColor()).append(ANSI_BLACK).append(String.format(FORMAT, String.format(FORMAT, WEST_WALL))).append(ANSI_RESET);
                         }
                         break;
                     case space:
-                        box3 = toStringHelperLine3(box3, i, j, EAST_WALL, SPACE);
+                        toStringHelperLine3(box3, i, j, EAST_WALL, SPACE);
                         break;
                 }
                 break;
         }
-        return box3;
     }
 
     /**
@@ -420,21 +398,19 @@ public class GameMap implements Cloneable{
      * @param box2 it's the string to format
      * @param i it's the row of the map
      * @param j it's the column of the map
-     * @return the string formatted
      */
-    private String eastWestDirectionStringFormatter(String box2, int i, int j) {
+    private void eastWestDirectionStringFormatter(StringBuilder box2, int i, int j) {
         switch (map[i][j].adiajency(Direction.West)) {
             case wall:
-                box2 = toStringHelperLine2(box2, i, j, BOTH_WALL, WEST_WALL, WEST_WALL_EAST_DOOR);
+                toStringHelperLine2(box2, i, j, BOTH_WALL, WEST_WALL, WEST_WALL_EAST_DOOR);
                 break;
             case door:
-                box2 = toStringHelperLine2(box2, i, j, WEST_DOOR_EAST_WALL, WEST_DOOR, BOTH_DOOR);
+                toStringHelperLine2(box2, i, j, WEST_DOOR_EAST_WALL, WEST_DOOR, BOTH_DOOR);
                 break;
             case space:
-                box2 = toStringHelperLine2(box2, i, j, EAST_WALL, SPACE, EAST_DOOR);
+                toStringHelperLine2(box2, i, j, EAST_WALL, SPACE, EAST_DOOR);
                 break;
         }
-        return box2;
     }
 
     /**
@@ -442,87 +418,61 @@ public class GameMap implements Cloneable{
      * @param box1 it's the string to format
      * @param i it's the row of the map
      * @param j it's the column of the map
-     * @return the string formatted
      */
-    private String northDirectionStringFormatter(String box1, int i, int j) {
+    private void northDirectionStringFormatter(StringBuilder box1, int i, int j) {
         switch (map[i][j].adiajency(Direction.North)) {
             case wall:
-                box1 =
-                        box1
-                                + map[i][j].getANSIColor()
-                                + ANSI_BLACK
-                                + String.format(FORMAT, ALL_WALL)
-                                + ANSI_RESET;
+                box1.append(map[i][j].getANSIColor()).append(ANSI_BLACK).append(String.format(FORMAT, ALL_WALL)).append(ANSI_RESET);
                 break;
             case door:
-                box1 =
-                        box1
-                                + map[i][j].getANSIColor()
-                                + ANSI_BLACK
-                                + String.format(FORMAT, NORTH_DOOR)
-                                + ANSI_RESET;
+                box1.append(map[i][j].getANSIColor()).append(ANSI_BLACK).append(String.format(FORMAT, NORTH_DOOR)).append(ANSI_RESET);
                 break;
             case space:
                 switch (map[i][j].adiajency(Direction.West)) {
                     case wall:
                     case door:
-                        box1 = toStringHelperLine3(box1, i, j, BOTH_WALL, WEST_WALL);
+                        toStringHelperLine3(box1, i, j, BOTH_WALL, WEST_WALL);
                         break;
                     case space:
-                        box1 = toStringHelperLine1(box1, i, j, EAST_WALL, SPACE);
+                        toStringHelperLine1(box1, i, j, EAST_WALL, SPACE);
                         break;
                 }
                 break;
         }
-        return box1;
     }
 
     /**
      * Helper method to avoid code repetition
-     * @param box1 it's the string where the data should be stored
+     * @param box1 it's the stringBuilder where the data should be stored
      * @param i it's the row of the map
      * @param j it's the column of the map
      * @param wallType1 it's the wall type to be used in the first case
      * @param wallType2 it's the wall type to be used in the other case
-     * @return the modified String
      */
-    private String toStringHelperLine1(
-            String box1, int i, int j, String wallType1, String wallType2) {
+    private void toStringHelperLine1(
+            StringBuilder box1, int i, int j, String wallType1, String wallType2) {
         switch (map[i][j].adiajency(Direction.East)) {
             case wall:
             case door:
-                box1 =
-                        box1
-                                + map[i][j].getANSIColor()
-                                + ANSI_BLACK
-                                + String.format(FORMAT, wallType1)
-                                + ANSI_RESET;
+                box1.append(map[i][j].getANSIColor()).append(ANSI_BLACK).append(String.format(FORMAT, wallType1)).append(ANSI_RESET);
                 break;
             case space:
-                box1 =
-                        box1
-                                + map[i][j].getANSIColor()
-                                + ANSI_BLACK
-                                + String.format(FORMAT, wallType2)
-                                + ANSI_RESET;
+                box1.append(map[i][j].getANSIColor()).append(ANSI_BLACK).append(String.format(FORMAT, wallType2)).append(ANSI_RESET);
         }
-        return box1;
     }
 
     /**
      * Helper method to avoid code repetition
      *
-     * @param box3 it's the string where the data should be stored
+     * @param box3 it's the stringBuilder where the data should be stored
      * @param i it's the row of the map
      * @param j it's the column of the map
      * @param wallType1 it's the wall type to be used in the first case
      * @param wallType2 it's the wall type to be used in the other case
-     * @return the modified String
      */
-    private String toStringHelperLine3(
-            String box3, int i, int j, String wallType1, String wallType2) {
-        box3 = toStringHelperLine1(box3, i, j, wallType1, wallType2);
-        return box3;
+    private void toStringHelperLine3(
+            StringBuilder box3, int i, int j, String wallType1, String wallType2) {
+        toStringHelperLine1(box3, i, j, wallType1, wallType2);
     }
 
     /**
@@ -534,37 +484,20 @@ public class GameMap implements Cloneable{
      * @param wallType1 it's the wall type to be used in the first case
      * @param wallType2 it's the wall type to be used in the second case
      * @param wallType3 it's the wall type to be used in the third case
-     * @return the modified String
      */
-    private String toStringHelperLine2(
-            String box2, int i, int j, String wallType1, String wallType2, String wallType3) {
+    private void toStringHelperLine2(
+            StringBuilder box2, int i, int j, String wallType1, String wallType2, String wallType3) {
         switch (map[i][j].adiajency(Direction.East)) {
             case wall:
-                box2 =
-                        box2
-                                + map[i][j].getANSIColor()
-                                + ANSI_BLACK
-                                + String.format(FORMAT, wallType1)
-                                + ANSI_RESET;
+                box2.append(map[i][j].getANSIColor()).append(ANSI_BLACK).append(String.format(FORMAT, wallType1)).append(ANSI_RESET);
                 break;
             case space:
-                box2 =
-                        box2
-                                + map[i][j].getANSIColor()
-                                + ANSI_BLACK
-                                + String.format(FORMAT, wallType2)
-                                + ANSI_RESET;
+                box2.append(map[i][j].getANSIColor()).append(ANSI_BLACK).append(String.format(FORMAT, wallType2)).append(ANSI_RESET);
                 break;
             case door:
-                box2 =
-                        box2
-                                + map[i][j].getANSIColor()
-                                + ANSI_BLACK
-                                + String.format(FORMAT, wallType3)
-                                + ANSI_RESET;
+                box2.append(map[i][j].getANSIColor()).append(ANSI_BLACK).append(String.format(FORMAT, wallType3)).append(ANSI_RESET);
                 break;
         }
-        return box2;
     }
 
     /**

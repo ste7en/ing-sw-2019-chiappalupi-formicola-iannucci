@@ -60,8 +60,8 @@ public abstract class Weapon {
      * Weapon's cost getter
      * @return the cost of the weapon
      */
-    public ArrayList<AmmoColor> getCost() {
-        return (ArrayList<AmmoColor>)cost.clone();
+    public List<AmmoColor> getCost() {
+        return new ArrayList<>(cost);
     }
 
     /**

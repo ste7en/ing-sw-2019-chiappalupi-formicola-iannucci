@@ -43,8 +43,6 @@ public class GameMapTest {
         userTest2 = new User(username2);
         characterTest2 = new Character("CharacterTestName2", PlayerColor.blue, "Character user for tests.");
         playerTest2 = new Player(userTest2, characterTest2);
-        playersPosition.put(playerTest, null);
-        playersPosition.put(playerTest2, null);
     }
 
     /**
@@ -52,7 +50,10 @@ public class GameMapTest {
      */
     @Before
     public void setUp() {
-        gameMapTest = new GameMap(MapType.conf_4, playersPosition);
+        gameMapTest = new GameMap(MapType.conf_4);
+        for(Player p: playersPosition.keySet()) {
+            gameMapTest.setPlayerPosition(p, gameMapTest.getCell(1, 2));
+        }
     }
 
     /**
