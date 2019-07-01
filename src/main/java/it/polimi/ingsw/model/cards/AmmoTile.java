@@ -53,7 +53,7 @@ public class AmmoTile {
         for(int i = 0; i < ammoColors.size(); i++) {
             s.append(ammoColors.get(i).toString()).append(" ").append(AMMO);
             if(i != ammoColors.size()-1) s.append(", ");
-            else s.append(";\n");
+            else s.append(";");
         }
         return s.toString();
     }

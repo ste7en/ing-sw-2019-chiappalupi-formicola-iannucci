@@ -24,7 +24,7 @@ public class PowerupController {
     /**
      * Class constructor: initializes the attributes.
      */
-    public PowerupController() {
+    PowerupController() {
         this.targets = new HashSet<>();
     }
 

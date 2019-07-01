@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.utility.AmmoColor;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 
 /**
  * This class provides methods and attributes to manage every card the player
@@ -16,13 +17,11 @@ import java.util.EnumMap;
 public class PlayerHand {
 
     private static final String INVALID_AMOUNT_EXC = "Invalid amount of ammos to increment or decrement.";
-    private static final String MAX_CUBES_ALLOWED = "Player has already the maximum number of cubes allowed.";
     private static final String MAX_POWERUPS_ALLOWED = "Player has already the maximum number of powerups allowed.";
-    private static final String NO_COLOR_EXCEPTION = "Invalid color added";
     /**
      * Keeps track of which weapons the player has.
      */
-    private ArrayList<Weapon> weapons;
+    private List<Weapon> weapons;
 
     /**
      * Keeps track of how many cubes (called ammos) the player has,
@@ -50,17 +49,15 @@ public class PlayerHand {
      * Returns the structure containing player's weapons
      * @return the structure containing player's weapons
      */
-    public ArrayList<Weapon> getWeapons() {
-        return (ArrayList<Weapon>)weapons.clone();
+    public List<Weapon> getWeapons() {
+        return new ArrayList<>(weapons);
     }
 
     /**
      * Returns the structure containing player's powerups
      * @return the structure containing player's powerups
      */
-    public ArrayList<Powerup> getPowerups() {
-        return (ArrayList<Powerup>)powerups.clone();
-    }
+    public List<Powerup> getPowerups() { return new ArrayList<>(powerups); }
 
     /**
      * Returns the amount of cubes of the specified color
@@ -77,7 +74,7 @@ public class PlayerHand {
      * @param weapons the list of weapons to update
      * @throws NullPointerException if a null pointer is passed as parameter
      */
-    public void setWeapons(ArrayList<Weapon> weapons) {
+    public void setWeapons(List<Weapon> weapons) {
         if (weapons != null) {
             this.weapons = weapons;
         } else {
@@ -105,13 +102,11 @@ public class PlayerHand {
      * @param amount the amount of cubes to increment or decrement
      * @throws IllegalArgumentException if the total number of ammos is less than zero or
      *          the ammoColor parameter is none
-     * @throws RuntimeException if there's already the maximum number of cubes (ammos) allowed
      */
     public void updateAmmos(AmmoColor ammoColor, Integer amount) {
-        if (getAmmosAmount(ammoColor) == 3) throw new RuntimeException(MAX_CUBES_ALLOWED);
-        else if (getAmmosAmount(ammoColor) + amount < 0 || getAmmosAmount(ammoColor) + amount > 3)
+        if (amount < 0 || amount > 3)
             throw new IllegalArgumentException(INVALID_AMOUNT_EXC);
-        else ammos.put(ammoColor, getAmmosAmount(ammoColor) + amount);
+        else ammos.put(ammoColor, amount);
     }
 
     /**

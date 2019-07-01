@@ -15,12 +15,13 @@ import java.util.stream.Collectors;
  *
  * @author Daniele Chiappalupi
  */
+@SuppressWarnings("squid:S00115")
 public class GameLogic {
 
     /**
      * Number of weapons that are placed in every spawn point of the board.
      */
-    private static int NUM_OF_WEAPONS_IN_SPAWNS = 3;
+    private static final int NUM_OF_WEAPONS_IN_SPAWNS = 3;
 
     private ArrayList<Player> players;
     private Board board;
@@ -29,6 +30,7 @@ public class GameLogic {
     private DecksHandler decks;
     private WeaponController weaponController;
     private PowerupController powerupController;
+    private GrabController grabController;
     private Player firstPlayer;
 
     /**
@@ -37,8 +39,6 @@ public class GameLogic {
     public static final String gameID_key       = "GAME_ID";
     public static final String available_moves  = "MOVES";
     public static final String movement         = "MOVEMENT";
-
-    //TODO: - Method implementation
 
     /**
      * Game Logic constructor.
@@ -51,6 +51,7 @@ public class GameLogic {
         this.gameID = gameID;
         this.weaponController = new WeaponController();
         this.powerupController = new PowerupController();
+        this.grabController = new GrabController();
         this.players = new ArrayList<>();
     }
 
@@ -80,7 +81,16 @@ public class GameLogic {
     }
 
     /**
-     * It's the weapon controller getter.
+     * It's the grab controller getter.
+     *
+     * @return the {@link GrabController} of the game.
+     */
+    public GrabController getGrabController() {
+        return grabController;
+    }
+
+    /**
+     * It's the powerup controller getter.
      *
      * @return the {@link PowerupController} of the game.
      */
@@ -217,30 +227,6 @@ public class GameLogic {
                 player = p;
         if(player == null) throw new NullPointerException("This user doesn't exists.");
         return player;
-    }
-
-    /**
-     * This method is used to find the possible picks of a player.
-     * @param user it's the user of the player that wants to grab something.
-     * @return the list of AmmoTile::toString of possiblePicks. It also adds the possible weapons that he can take from any spawn point where he can arrive.
-     */
-    public List<String> getPicks(User user) {
-        Player player = lookForPlayerFromUser(user);
-        List<String> possiblePicks = new ArrayList<>();
-        List<Cell> possibleMovements = board.getMap().getCellsAtMaxDistance(player, player.getPlayerBoard().getStepsBeforeGrabbing());
-        List<Cell> spawns = new ArrayList<>();
-        for(Cell cell : possibleMovements) {
-            if(cell.isRespawn()) spawns.add(cell);
-            else possiblePicks.add(cell.getAmmoCard().toString());
-        }
-        for(Cell spawn : spawns) {
-            AmmoColor color = AmmoColor.blue;
-            if(spawn.getColor() == CellColor.red) color = AmmoColor.red;
-            else if(spawn.getColor() == CellColor.yellow) color = AmmoColor.yellow;
-            List<Weapon> weaponsInSpawn = board.showWeapons(color);
-            for(Weapon spawnWeapon : weaponsInSpawn) possiblePicks.add(spawnWeapon.getName());
-        }
-        return possiblePicks;
     }
 
     /**

@@ -122,14 +122,31 @@ public abstract class Client implements Loggable {
     public abstract void askForPossibleSpawnPoints();
 
     /**
+     * Abstract method implemented by subclasses when a player has chosen his spawn point.
+     */
+    public abstract void choseSpawnPoint(String spawnPoint, String otherPowerup);
+
+    /**
      * Abstract method implemented by subclasses when a player wants to pick something.
      */
     public abstract void askPicks();
 
     /**
-     * Abstract method implemented by subclasses when a player has chosen his spawn point.
+     * Abstract method implemented by subclasses when a player has decided what does he want to grab.
      */
-    public abstract void choseSpawnPoint(String spawnPoint, String otherPowerup);
+    public abstract void didChooseWhatToGrab(String pick);
+
+    /**
+     * Abstract method implemented by subclasses when a player has decided which powerup does he want to discard.
+     * @param powerup it's the Powerup::toString of the powerup to discard.
+     */
+    public abstract void powerupGrabToDiscard(String powerup);
+
+    /**
+     * Abstract method implemented by subclasses when a player has decided which weapon does he want to discard.
+     * @param weapon it's the Weapon::getName of the powerup to discard.
+     */
+    public abstract void weaponGrabToDiscard(String weapon);
 
     /**
      * Abstract method asking the server for available moves

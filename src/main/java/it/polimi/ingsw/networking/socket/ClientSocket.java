@@ -229,6 +229,21 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
+    public void didChooseWhatToGrab(String pick) {
+        //toDO
+    }
+
+    @Override
+    public void powerupGrabToDiscard(String powerup) {
+        //toDO
+    }
+
+    @Override
+    public void weaponGrabToDiscard(String weapon) {
+        //toDO
+    }
+
+    @Override
     public void choseSpawnPoint(String spawnPoint, String otherPowerup) {
         var args = new HashMap<String, String>();
         args.put(Powerup.powerup_key, otherPowerup);

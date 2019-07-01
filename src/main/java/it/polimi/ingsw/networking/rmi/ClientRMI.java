@@ -1,7 +1,9 @@
 package it.polimi.ingsw.networking.rmi;
 
+import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Powerup;
+import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -122,6 +124,48 @@ public class ClientRMI extends Client implements ClientInterface {
             AdrenalineLogger.error(e.getMessage());
         }
         viewObserver.willChooseWhatToGrab(possiblePicks);;
+    }
+
+    //toDO: check for powerup using to pay cost
+    //toDO: check for max amount of powerups/weapons
+    @Override
+    public void didChooseWhatToGrab(String pick) {
+        Map<String, String> ending = new HashMap<>();
+        try {
+            ending = server.didChooseWhatToGrab(pick, userID, gameID);
+        } catch (RemoteException e) {
+            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
+        }
+        if(ending.containsKey(Powerup.powerup_key)) {
+            this.viewObserver.onGrabFailurePowerup(new ArrayList<>(ending.values()));
+        } else if(ending.containsKey(Weapon.weapon_key)) {
+            this.viewObserver.onGrabFailureWeapon(new ArrayList<>(ending.values()));
+        } else viewObserver.onGrabSuccess(ending.get(GameMap.gameMap_key));
+    }
+
+    @Override
+    public void powerupGrabToDiscard(String powerup) {
+        String currentSituation = "";
+        try {
+            currentSituation = server.powerupToDiscard(userID, gameID, powerup);
+        } catch (RemoteException e) {
+            AdrenalineLogger.error(e.toString());
+            AdrenalineLogger.error(e.getMessage());
+        }
+        this.viewObserver.onGrabSuccess(currentSituation);
+    }
+
+    @Override
+    public void weaponGrabToDiscard(String weapon) {
+        String currentSituation = "";
+        try {
+            currentSituation = server.weaponToDiscard(userID, gameID, weapon);
+        } catch (RemoteException e) {
+            AdrenalineLogger.error(e.toString());
+            AdrenalineLogger.error(e.getMessage());
+        }
+        this.viewObserver.onGrabSuccess(currentSituation);
     }
 
     @Override

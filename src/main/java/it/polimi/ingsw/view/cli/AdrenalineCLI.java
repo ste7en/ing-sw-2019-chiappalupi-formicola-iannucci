@@ -42,11 +42,16 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_CHARACTER_NOT_OK     = "";
     private static final String CHOOSE_SPAWN_POINT          = "Here are two powerup cards. Choose the one you want to discard: its color will be the color where you will spawn.\n" +
                                                               "You will keep the powerup that you don't discard.";
+    private static final String GAME_SITUATION              = "Here is the situation of the game:\n";
     private static final String CHOOSE_ACTION               = "Choose your next move between the following:\n\t" +
                                                               "1. Move\n\t" +
                                                               "2. Grab something\n\t" +
                                                               "3. Shoot";
     private static final String GRAB_SOMETHING              = "You have chosen to grab something!";
+    private static final String PICK_CHOICES                = "Here is what you can grab:";
+    private static final String GRAB_SUCCESS                = "Grabbing phase ended with success!";
+    private static final String TOO_MUCH_POWERUP            = "You can't grab this powerup because you already have three of them in your hand. Choose which one would you like to discard.";
+    private static final String TOO_MUCH_WEAPON             = "You can't grab this weapon because you already have three of them in your hand. Choose which one would you like to discard.";
     private static final String CHOOSE_MOVEMENT             = "These are the available movements you can do. Please, choose one by selecting its number: ";
     private static final String SHOOT_PEOPLE_FAILURE        = "You have no weapon in your hand, so you can't shoot anyone.";
     private static final String DAMAGE_FAILURE              = "No damage can be made with the weapon and the effects selected.";
@@ -317,12 +322,43 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void willChooseWhatToGrab(List<String> possiblePicks) {
-
+        out.println(PICK_CHOICES + "\n");
+        String choice = decisionHandlerFromList(possiblePicks);
+        while(choice == null) {
+            out.println(INCORRECT_CHOICE);
+            choice = decisionHandlerFromList(possiblePicks);
+        }
+        this.didChooseWhatToGrab(choice);
     }
 
     @Override
-    public void didChooseWhatToGrab() {
+    public void onGrabSuccess(String map) {
+        this.curSituation = map;
+        out.println(GRAB_SUCCESS);
+        out.println(GAME_SITUATION);
+        out.println(map);
+    }
 
+    @Override
+    public void onGrabFailurePowerup(List<String> powerup) {
+        out.println(TOO_MUCH_POWERUP);
+        String choice = decisionHandlerFromList(powerup);
+        while(choice == null) {
+            out.println(INCORRECT_CHOICE);
+            choice = decisionHandlerFromList(powerup);
+        }
+        onGrabFailurePowerupToDiscard(choice);
+    }
+
+    @Override
+    public void onGrabFailureWeapon(List<String> weapon) {
+        out.println(TOO_MUCH_WEAPON);
+        String choice = decisionHandlerFromList(weapon);
+        while(choice == null) {
+            out.println(INCORRECT_CHOICE);
+            choice = decisionHandlerFromList(weapon);
+        }
+        onGrabFailureWeaponToDiscard(choice);
     }
 
     @Override

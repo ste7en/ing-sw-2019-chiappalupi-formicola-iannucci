@@ -197,14 +197,51 @@ public abstract class View {
     public abstract void willChooseWhatToGrab(List<String> possiblePicks);
 
     /**
-     * Ele
+     * Protected method called when the player has decided what he wants to pick.
+     * @param pick it's the card that the player wants to pick.
      */
-    public abstract void didChooseWhatToGrab();
+    protected void didChooseWhatToGrab(String pick) {
+        this.client.didChooseWhatToGrab(pick);
+    }
+
+    /**
+     * Public method called when the process of grabbing has ended with success.
+     * @param map it's the updated map situation to be displayed to the player.
+     */
+    public abstract void onGrabSuccess(String map);
+
+    /**
+     * Public method called when the player wants to grab a powerup, but he already has three of them in his hand.
+     * @param powerup it's the powerup that the player should grab.
+     */
+    public abstract void onGrabFailurePowerup(List<String> powerup);
+
+    /**
+     * Protected method called when the player has decided which powerup does he want to discard.
+     * @param powerup it's the Powerup::toString that will be discarded.
+     */
+    protected void onGrabFailurePowerupToDiscard(String powerup) {
+        this.client.powerupGrabToDiscard(powerup);
+    }
+
+    /**
+     * Public method called when the player wants to grab a weapon, but he already has three of them in his hand.
+     * @param weapon it's the weapon that the player should grab.
+     */
+    public abstract void onGrabFailureWeapon(List<String> weapon);
+
+    /**
+     * Protected method called when the player has decided which weapon does he want to discard.
+     * @param weapon it's the Weapon::getName that will be discarded.
+     */
+    protected void onGrabFailureWeaponToDiscard(String weapon) {
+        this.client.weaponGrabToDiscard(weapon);
+    }
 
     /**
      * Public method used to start the process of using weapons.
      */
-    public void shootPeople() {
+    protected void shootPeople() {
         this.client.askWeapons();
     }
 

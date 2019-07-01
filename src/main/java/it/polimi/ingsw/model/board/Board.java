@@ -70,7 +70,7 @@ public class Board {
         for (AmmoColor ammoColor : weapons.keySet()){
             for (Weapon weapon : weapons.get(ammoColor)){
                 if (weapon == chosenWeapon) {
-                    index=weapons.get(ammoColor).indexOf(weapon);
+                    index = weapons.get(ammoColor).indexOf(weapon);
                     weapons.get(ammoColor).set(index, null);
                 }
             }

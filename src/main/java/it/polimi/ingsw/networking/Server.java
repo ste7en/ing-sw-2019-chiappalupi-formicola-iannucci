@@ -326,12 +326,46 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public List<String> askPicks(int userID, UUID gameID) {
         User user = findUserFromID(userID);
-        return gameControllers.get(gameID).getPicks(user);
+        return gameControllers.get(gameID).getGrabController().getPicks(gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getBoard());
     }
 
+    /**
+     * Mehod used when the player has decided what does he want to grab, and also where does he want to move because of the grabbing.
+     * @param pick it's the toString() of the thing that the player has decided to grab.
+     * @param userID it's the ID of the user who wants to pick something
+     * @param gameID it's the ID of the game
+     * @return a map containing the information about the success of the operation
+     */
     @Override
-    public void chooseWhatToGrab() {
+    public Map<String, String> didChooseWhatToGrab(String pick, int userID, UUID gameID) {
+        User user = findUserFromID(userID);
+        return gameControllers.get(gameID).getGrabController().didGrab(pick, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getDecks(), gameControllers.get(gameID).getBoard());
+    }
 
+    /**
+     * Method used when the player has decided what powerup does he want to discard to let place for the new one
+     * @param userID it's the ID of the user
+     * @param gameID it's the ID of the game
+     * @param powerup it's the Powerup::toString of the powerup that is being discarded
+     * @return the current situation of the board for the given user
+     */
+    @Override
+    public String powerupToDiscard(int userID, UUID gameID, String powerup) {
+        User user = findUserFromID(userID);
+        return gameControllers.get(gameID).getGrabController().powerupToDiscard(powerup, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getDecks(), gameControllers.get(gameID).getBoard());
+    }
+
+    /**
+     * Method used when the player has decided what weapon does he want to discard to let place for the new one
+     * @param userID it's the ID of the user
+     * @param gameID it's the ID of the game
+     * @param weapon it's the Weapon::getName of the powerup that is being discarded
+     * @return the current situation of the board for the given user
+     */
+    @Override
+    public String weaponToDiscard(int userID, UUID gameID, String weapon) throws RemoteException {
+        User user = findUserFromID(userID);
+        return gameControllers.get(gameID).getGrabController().weaponToDiscard(weapon, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getBoard());
     }
 
     /**

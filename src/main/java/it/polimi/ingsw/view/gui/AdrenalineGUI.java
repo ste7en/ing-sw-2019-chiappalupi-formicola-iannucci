@@ -106,7 +106,17 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void didChooseWhatToGrab() {
+    public void onGrabSuccess(String map) {
+
+    }
+
+    @Override
+    public void onGrabFailurePowerup(List<String> powerup) {
+
+    }
+
+    @Override
+    public void onGrabFailureWeapon(List<String> weapon) {
 
     }
 

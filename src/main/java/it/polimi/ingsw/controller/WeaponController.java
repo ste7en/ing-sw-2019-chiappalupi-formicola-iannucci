@@ -156,7 +156,7 @@ public class WeaponController {
      * @param player it's the player that has the weapon
      */
     public Weapon lookForWeapon(String weapon, Player player) {
-        ArrayList<Weapon> playerWeapons = player.getPlayerHand().getWeapons();
+        List<Weapon> playerWeapons = player.getPlayerHand().getWeapons();
         for(Weapon w : playerWeapons)
             if(w.getName().equals(weapon)) return w;
         throw new IllegalArgumentException("This user doesn't own this weapon!");

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.networking.rmi;
 
 import java.rmi.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -51,7 +50,11 @@ public interface ServerInterface extends Remote {
 
     List<String> askPicks(int userID, UUID gameID) throws RemoteException;
 
-    void chooseWhatToGrab() throws RemoteException;
+    Map<String, String> didChooseWhatToGrab(String pick, int userID, UUID gameID) throws RemoteException;
+
+    String powerupToDiscard(int userID, UUID gameID, String powerup) throws RemoteException;
+
+    String weaponToDiscard(int userID, UUID gameID, String weapon) throws RemoteException;
 
     List<String> askWeapons(int userID, UUID gameID) throws RemoteException;
 

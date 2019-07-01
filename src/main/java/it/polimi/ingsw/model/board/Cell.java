@@ -143,6 +143,12 @@ public class Cell implements Comparable<Cell> {
      */
     public AmmoTile getAmmoCard() { return ammoCard; }
 
+    /**
+     * Cell's ammo tile setter
+     * @param ammoCard the new ammo tile to be positioned on the cell
+     */
+    public void setAmmoCard(AmmoTile ammoCard) { this.ammoCard = ammoCard; }
+
     @Override
     public int compareTo(Cell anotherCell) {
         return this.toString().compareToIgnoreCase(anotherCell.toString());
@@ -151,6 +157,22 @@ public class Cell implements Comparable<Cell> {
     @Override
     public String toString() {
         return ("Row: " + row + "; Column: " + column);
+    }
+
+    /**
+     * Used in the CLI when the ammo card in the Cell should be displayed.
+     * @return the string containing the ammo card in the cell and the position
+     */
+    public String toStringAmmos() {
+        return ammoCard.toString() + toStringCondensed();
+    }
+
+    /**
+     * This method returns a String containing the condensed frame of a cell.
+     * @return the string containing the cell information.
+     */
+    public String toStringCondensed() {
+        return "[Cell -> (" + row + ", " + column + ")]\n";
     }
 
     /**
