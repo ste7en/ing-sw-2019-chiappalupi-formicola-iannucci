@@ -128,8 +128,9 @@ public abstract class Client implements Loggable {
 
     /**
      * Abstract method implemented by subclasses when a player wants to pick something.
+     * @param powerupToSell it's the list of powerup that the player wants to sell (empty if the player does not want to sell any powerup).
      */
-    public abstract void askPicks();
+    public abstract void askPicks(List<String> powerupToSell);
 
     /**
      * Abstract method implemented by subclasses when a player has decided what does he want to grab.
@@ -147,6 +148,11 @@ public abstract class Client implements Loggable {
      * @param weapon it's the Weapon::getName of the powerup to discard.
      */
     public abstract void weaponGrabToDiscard(String weapon);
+
+    /**
+     * Abstract method implemented by subclasses when a player wants to sell any of his powerup to afford the cost of the weapon.
+     */
+    public abstract void powerupSellingToGrabWeapon();
 
     /**
      * Abstract method asking the server for available moves

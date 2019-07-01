@@ -48,10 +48,16 @@ public class AdrenalineCLI extends View {
                                                               "2. Grab something\n\t" +
                                                               "3. Shoot";
     private static final String GRAB_SOMETHING              = "You have chosen to grab something!";
+    private static final String ASK_POWERUP_TO_GRAB_WEAPON  = "If you want to pick a weapon, do you want use any powerup to afford the cost of it? [Y/N]\n" +
+                                                              "Please note that if you select [Y], you will only have the possibility " +
+                                                              "to pick a weapon where the color/s of the powerup/s that you select is/are involved.";
+    private static final String MORE_GRAB_POWERUP_SELLING   = "Do you want use another powerup to afford the cost of the weapon?";
     private static final String PICK_CHOICES                = "Here is what you can grab:";
     private static final String GRAB_SUCCESS                = "Grabbing phase ended with success!";
     private static final String TOO_MUCH_POWERUP            = "You can't grab this powerup because you already have three of them in your hand. Choose which one would you like to discard.";
     private static final String TOO_MUCH_WEAPON             = "You can't grab this weapon because you already have three of them in your hand. Choose which one would you like to discard.";
+    private static final String POWERUP_TO_SELL_FOR_GRABBING = "Which powerup do you want to sell to afford the cost of the weapon?";
+    private static final String GRAB_FAILURE = "No weapons can be bought using the powerups you wanted to sell.";
     private static final String CHOOSE_MOVEMENT             = "These are the available movements you can do. Please, choose one by selecting its number: ";
     private static final String SHOOT_PEOPLE_FAILURE        = "You have no weapon in your hand, so you can't shoot anyone.";
     private static final String DAMAGE_FAILURE              = "No damage can be made with the weapon and the effects selected.";
@@ -317,7 +323,33 @@ public class AdrenalineCLI extends View {
     @Override
     public void grabSomething() {
         out.println(GRAB_SOMETHING);
-        this.client.askPicks();
+        out.println(ASK_POWERUP_TO_GRAB_WEAPON);
+        String scanInput = in.nextLine();
+        if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y"))
+            this.client.powerupSellingToGrabWeapon();
+        else this.client.askPicks(new ArrayList<>());
+    }
+
+    @Override
+    public void sellPowerupToGrabWeapon(List<String> powerups) {
+        out.println(POWERUP_TO_SELL_FOR_GRABBING);
+        List<String> powerupsSold = new ArrayList<>();
+        boolean keepGoing = true;
+        while(keepGoing && !powerups.isEmpty()) {
+            String choice = decisionHandlerFromList(powerups);
+            while(choice == null) {
+                out.println(INCORRECT_CHOICE);
+                choice = decisionHandlerFromList(powerups);
+            }
+            powerupsSold.add(choice);
+            powerups.remove(choice);
+            out.println(MORE_GRAB_POWERUP_SELLING);
+            String scanInput = in.nextLine();
+            keepGoing = false;
+            if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y"))
+                keepGoing = true;
+        }
+        this.client.askPicks(powerupsSold);
     }
 
     @Override
@@ -337,6 +369,12 @@ public class AdrenalineCLI extends View {
         out.println(GRAB_SUCCESS);
         out.println(GAME_SITUATION);
         out.println(map);
+    }
+
+    @Override
+    public void onGrabFailure() {
+        out.println(GRAB_FAILURE);
+        this.onChooseAction(curSituation);
     }
 
     @Override

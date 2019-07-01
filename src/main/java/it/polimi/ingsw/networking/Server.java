@@ -332,12 +332,13 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * Method used to start the process of picking something from the map.
      * @param userID it's the ID of the user who wants to pick something.
      * @param gameID it's the ID of the game.
+     * @param powerupToSell it's the list of powerup that the player want to sell
      * @return the list of possible picks.
      */
     @Override
-    public List<String> askPicks(int userID, UUID gameID) {
+    public List<String> askPicks(int userID, UUID gameID, List<String> powerupToSell) {
         User user = findUserFromID(userID);
-        return gameControllers.get(gameID).getGrabController().getPicks(gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getBoard());
+        return gameControllers.get(gameID).getGrabController().getPicks(gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getBoard(), powerupToSell);
     }
 
     /**
@@ -376,7 +377,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public String weaponToDiscard(int userID, UUID gameID, String weapon) {
         User user = findUserFromID(userID);
-        return gameControllers.get(gameID).getGrabController().weaponToDiscard(weapon, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getBoard());
+        return gameControllers.get(gameID).getGrabController().weaponToDiscard(weapon, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getDecks());
     }
 
     /**

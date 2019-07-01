@@ -10,10 +10,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.CellColor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Grabbing controller class.
@@ -29,24 +26,41 @@ public class GrabController {
      */
     private static final String CELL_NOT_INITIALIZED_EXC = "The cell of the grab was not initialized!";
     private static final String WEAPON_NOT_IN_HAND = "This weapon is not in your hand!";
+    private static final String NO_CELL_OF_THIS_KIND = "No cell like the one picked can be reached from the player!";
 
     private Cell grabbingCell;
     private Powerup grabbingPowerup;
     private Weapon grabbingWeapon;
+    private List<Powerup> powerupSold;
+
+    GrabController() {
+        powerupSold     = new ArrayList<>();
+        grabbingCell    = null;
+        grabbingWeapon  = null;
+    }
 
     /**
      * This method is used to find the possible picks of a player.
      * @param player it's the player that wants to grab something
      * @param board it's the board of the game
+     * @param powerupToSell it's the list of powerups that the player wants to sell
      * @return the list of AmmoTile::toString of possiblePicks. It also adds the possible weapons that he can take from any spawn point where he can arrive.
      */
-    public List<String> getPicks(Player player, Board board) {
+    public List<String> getPicks(Player player, Board board, List<String> powerupToSell) {
         List<String> possiblePicks = new ArrayList<>();
         List<Cell> possibleMovements = board.getMap().getCellsAtMaxDistance(player, player.getPlayerBoard().getStepsBeforeGrabbing());
         List<Cell> spawns = new ArrayList<>();
+        List<Powerup> soldPowerup = new ArrayList<>();
+        if(!powerupToSell.isEmpty()) {
+            List<Powerup> powerupInHand = player.getPlayerHand().getPowerups();
+            for(Powerup p : powerupInHand)
+                for(String s : powerupToSell)
+                    if(p.toString().equals(s))
+                        soldPowerup.add(p);
+        }
         for(Cell cell : possibleMovements) {
             if(cell.isRespawn()) spawns.add(cell);
-            else if(cell.getAmmoCard() != null) possiblePicks.add(cell.toStringAmmos());
+            else if(cell.getAmmoCard() != null && powerupToSell.isEmpty()) possiblePicks.add(cell.toStringAmmos());
         }
         for(Cell spawn : spawns) {
             AmmoColor color = AmmoColor.blue;
@@ -54,9 +68,83 @@ public class GrabController {
             else if(spawn.getColor() == CellColor.yellow) color = AmmoColor.yellow;
             List<Weapon> weaponsInSpawn = board.showWeapons(color);
         for (Weapon spawnWeapon : weaponsInSpawn)
-            possiblePicks.add(spawnWeapon.getName() + spawn.toStringCondensed());
+            if(checkCost(spawnWeapon, soldPowerup, player)) possiblePicks.add(spawnWeapon.getName() + spawn.toStringCondensed());
         }
         return possiblePicks;
+    }
+
+    /**
+     * Private method that checks if the cost of a weapon can be afforded from the player
+     * @param weapon it's the weapon to be checked
+     * @param powerupToSell it's the list of powerup that the player want to sell
+     * @param player it's the player to be checked
+     * @return true if the cost can be afforded, false otherwise
+     */
+    @SuppressWarnings("Duplicates")
+    private boolean checkCost(Weapon weapon, List<Powerup> powerupToSell, Player player) {
+        Map<AmmoColor, Integer> totalCost = new EnumMap<>(AmmoColor.class);
+        Map<AmmoColor, Integer> powerupAmmos = new EnumMap<>(AmmoColor.class);
+        for(AmmoColor color : AmmoColor.values()) {
+            totalCost.put(color, 0);
+            powerupAmmos.put(color, 0);
+        }
+        for(Powerup powerup : powerupToSell) {
+            AmmoColor color = powerup.getColor();
+            powerupAmmos.put(color, powerupAmmos.get(color) + 1);
+        }
+        List<AmmoColor> weaponCost = weapon.getCost();
+        weaponCost.remove(0);
+        for(AmmoColor color : weaponCost)
+            totalCost.put(color, totalCost.get(color) + 1);
+        for(AmmoColor color : AmmoColor.values()) {
+            while(powerupAmmos.get(color) > 0 && totalCost.get(color) > 0) {
+                powerupAmmos.put(color, powerupAmmos.get(color) - 1);
+                totalCost.put(color, totalCost.get(color) - 1);
+            }
+        }
+        for(AmmoColor color : AmmoColor.values())
+            if(totalCost.get(color) > player.getPlayerHand().getAmmosAmount(color) || powerupAmmos.get(color) > 0)
+                return false;
+        return true;
+    }
+
+    /**
+     * Private method that updates the ammos of a player after he grabbed a weapon
+     * @param weapon it's the weapon to be bought
+     * @param player it's the player that is buying the weapon
+     * @param decks it's the decksHandler of the game
+     */
+    @SuppressWarnings("Duplicates")
+    private void payCost(Weapon weapon, Player player, DecksHandler decks) {
+        Map<AmmoColor, Integer> totalCost = new EnumMap<>(AmmoColor.class);
+        Map<AmmoColor, Integer> powerupAmmos = new EnumMap<>(AmmoColor.class);
+        for(AmmoColor color : AmmoColor.values()) {
+            totalCost.put(color, 0);
+            powerupAmmos.put(color, 0);
+        }
+        for(Powerup powerup : powerupSold) {
+            AmmoColor color = powerup.getColor();
+            powerupAmmos.put(color, powerupAmmos.get(color) + 1);
+        }
+        List<AmmoColor> weaponCost = weapon.getCost();
+        weaponCost.remove(0);
+        for(AmmoColor color : weaponCost)
+            totalCost.put(color, totalCost.get(color) + 1);
+        for(AmmoColor color : AmmoColor.values()) {
+            while(powerupAmmos.get(color) > 0 && totalCost.get(color) > 0) {
+                powerupAmmos.put(color, powerupAmmos.get(color) - 1);
+                totalCost.put(color, totalCost.get(color) - 1);
+            }
+        }
+        for(AmmoColor color : AmmoColor.values()) {
+            int newValue = player.getPlayerHand().getAmmosAmount(color) - totalCost.get(color);
+            player.getPlayerHand().updateAmmos(color, newValue);
+        }
+        for(Powerup pow : powerupSold) {
+            player.getPlayerHand().wastePowerup(pow);
+            decks.wastePowerup(pow);
+        }
+        powerupSold.clear();
     }
 
     /**
@@ -94,7 +182,7 @@ public class GrabController {
             }
         }
 
-        if(pickedCell == null) throw new IllegalArgumentException("No cell like the one picked can be reached from the player!");
+        if(pickedCell == null) throw new IllegalArgumentException(NO_CELL_OF_THIS_KIND);
 
         grabbingCell = pickedCell;
         grabbingWeapon = grabbedWeapon;
@@ -155,13 +243,7 @@ public class GrabController {
             }
             playerWeapons.add(grabbedWeapon);
             board.pickWeapon(grabbedWeapon);
-            List<AmmoColor> weaponCost = new ArrayList<>();
-            if(grabbedWeapon != null) weaponCost = grabbedWeapon.getCost();
-            weaponCost.remove(0);
-            for(AmmoColor color : weaponCost) {
-                int boxAmmos = player.getPlayerHand().getAmmosAmount(color) - 1;
-                player.getPlayerHand().updateAmmos(color, boxAmmos);
-            }
+            payCost(grabbedWeapon, player, decks);
         }
         return returnMap;
     }
@@ -190,6 +272,7 @@ public class GrabController {
             grabbingPowerup = null;
             grabbingWeapon = null;
             grabbingCell = null;
+            powerupSold.clear();
         } else {
             player.getPlayerHand().wastePowerup(toDiscard);
             decks.wastePowerup(toDiscard);
@@ -197,6 +280,7 @@ public class GrabController {
             grabbingPowerup = null;
             grabbingWeapon = null;
             grabbingCell = null;
+            powerupSold.clear();
         }
 
         for(AmmoColor color : box.getAmmoColors()) {
@@ -213,9 +297,10 @@ public class GrabController {
      * @param weapon it's the Powerup::toString of the powerup that is being discarded
      * @param player it's the player that is discarding the powerup
      * @param board it's the board of the game
+     * @param decks it's the decksHandler of the game
      * @return the current situation of the board in the form of String
      */
-    public String weaponToDiscard(String weapon, Player player, Board board) {
+    public String weaponToDiscard(String weapon, Player player, Board board, DecksHandler decks) {
         List<Weapon> weaponsInHand = player.getPlayerHand().getWeapons();
         Weapon toDiscard = null;
         for(Weapon w : weaponsInHand)
@@ -226,6 +311,8 @@ public class GrabController {
         if(toDiscard == null) throw new IllegalArgumentException(WEAPON_NOT_IN_HAND);
         board.getMap().setPlayerPosition(player, grabbingCell);
 
+        payCost(grabbingWeapon, player, decks);
+
         weaponsInHand.remove(toDiscard);
         weaponsInHand.add(grabbingWeapon);
         player.getPlayerHand().setWeapons(weaponsInHand);
@@ -234,6 +321,7 @@ public class GrabController {
         grabbingPowerup = null;
         grabbingWeapon = null;
         grabbingCell = null;
+        powerupSold.clear();
 
         return board.toStringFromPlayer(player);
     }

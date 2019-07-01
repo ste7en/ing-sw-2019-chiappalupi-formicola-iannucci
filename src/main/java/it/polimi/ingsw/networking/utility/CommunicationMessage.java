@@ -107,10 +107,14 @@ public enum CommunicationMessage {
      * GRAB_SUCCESS is sent from the server to the client to notify that the process ended well
      * GRAB_FAILURE_WEAPON is sent from the server to the client to notify that the player has too much weapons to grab another one
      * GRAB_FAILURE_POWERUP is sent from the server to the client to notify that the player has too much powerups to grab another one
+     * SELL_POWERUP_TO_GRAB is sent from the client to the server to notify that the player wants to sell his powerups to afford the cost of a weapon (no arguments)
+     * AVAILABLE_POWERUP_TO_SELL_TO_GRAB is sent from the server to provide the list of powerups that the player has in his hand
+     * GRAB_FAILURE is sent from the server to the client to notify that the process has gone wrong (no arguments)
      *
      * Arguments: <indexOf, possiblePick::toString> for POSSIBLE_PICKS, <AmmoTile.ammoTile_key, AmmoTile::toString> for DID_CHOOSE,
      *            <GameMap.gameMap_key, GameMap::toString> for GRAB_SUCCESS, <indexOf, Weapon::getName/Powerup::toString> for GRAB_FAILURES,
-     *            <Powerup.powerup_key, Powerup::toString> for DISCARD_POWERUP, <Weapon.weapon_key, Weapon::getName> for DISCARD_WEAPON
+     *            <Powerup.powerup_key, Powerup::toString> for DISCARD_POWERUP, <Weapon.weapon_key, Weapon::getName> for DISCARD_WEAPON,
+     *            <indexOf, Powerup::toString> for AVAILABLE_POWERUP, <indexOf, Powerup::toString> for POWERUP_TO_BE_SOLD
      */
     GRAB_SOMETHING,
     POSSIBLE_PICKS,
@@ -120,6 +124,9 @@ public enum CommunicationMessage {
     GRAB_FAILURE_POWERUP,
     GRAB_DISCARD_POWERUP,
     GRAB_DISCARD_WEAPON,
+    SELL_POWERUP_TO_GRAB,
+    AVAILABLE_POWERUP_TO_SELL_TO_GRAB,
+    GRAB_FAILURE,
 
     /**
      * Messages sent to implement player's movements on the board

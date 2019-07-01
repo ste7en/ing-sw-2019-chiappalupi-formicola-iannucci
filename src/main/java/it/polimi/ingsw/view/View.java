@@ -191,6 +191,11 @@ public abstract class View {
     public abstract void grabSomething();
 
     /**
+     * Public method implemented by subclasses when the player wants to sell powerups to afford the cost of a weapon.
+     */
+    public abstract void sellPowerupToGrabWeapon(List<String> powerups);
+
+    /**
      * Public method implemented by subclasses when the player has to decide what does he wants to grab.
      * @param possiblePicks it's a list containing the possible picks of the player.
      */
@@ -209,6 +214,11 @@ public abstract class View {
      * @param map it's the updated map situation to be displayed to the player.
      */
     public abstract void onGrabSuccess(String map);
+
+    /**
+     * Public method called when the process of grabbing has ended with Failure.
+     */
+    public abstract void onGrabFailure();
 
     /**
      * Public method called when the player wants to grab a powerup, but he already has three of them in his hand.
