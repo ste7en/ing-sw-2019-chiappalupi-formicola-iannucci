@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.player;
 import it.polimi.ingsw.model.utility.PlayerColor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Board used by each player to keep track of his points, damages, cubes and
@@ -28,7 +29,7 @@ public class PlayerBoard {
      * received from other players. It has been implemented using an array of
      * values corresponding to other players' colors.
      */
-    private ArrayList<PlayerColor> damage;
+    private List<PlayerColor> damage;
 
     /**
      * The maximum number of points other players can get by killing a player.
@@ -36,11 +37,66 @@ public class PlayerBoard {
     private Integer maxPoints;
 
     /**
+     * Steps of movement getter.
+     * @return the steps that the player can do through his movement.
+     */
+    public int getStepsOfMovement() {
+        return stepsOfMovement;
+    }
+
+    /**
+     * Steps of movement setter.
+     * @param stepsOfMovement it's the new parameter to set.
+     */
+    public void setStepsOfMovement(int stepsOfMovement) {
+        this.stepsOfMovement = stepsOfMovement;
+    }
+
+    /**
+     * Steps before shooting getter.
+     * @return the steps that the player can do before the shot.
+     */
+    public int getStepsBeforeShooting() {
+        return stepsBeforeShooting;
+    }
+
+    /**
+     * Steps before shooting setter.
+     * @param stepsBeforeShooting it's the new parameter to set.
+     */
+    public void setStepsBeforeShooting(int stepsBeforeShooting) {
+        this.stepsBeforeShooting = stepsBeforeShooting;
+    }
+
+    /**
+     * Steps before grabbing getter.
+     * @return the steps that the player can do before the pick.
+     */
+    public int getStepsBeforeGrabbing() {
+        return stepsBeforeGrabbing;
+    }
+
+    /**
+     * Steps before grabbing setter.
+     * @param stepsBeforeGrabbing it's the new parameter to set.
+     */
+    public void setStepsBeforeGrabbing(int stepsBeforeGrabbing) {
+        this.stepsBeforeGrabbing = stepsBeforeGrabbing;
+    }
+
+    /**
      * It is the structure that keeps track of the player's marks
      * received from other players. It has been implemented using an array of
      * values corresponding to other players' colors.
      */
-    private ArrayList<PlayerColor> marks;
+    private List<PlayerColor> marks;
+
+    /**
+     * These attributes are what characterize the action of a player during its turn.
+     */
+    private int stepsOfMovement;
+    private int stepsBeforeShooting;
+    private int stepsBeforeGrabbing;
 
     /**
      * Constructor for a player's board.
@@ -52,6 +108,9 @@ public class PlayerBoard {
         this.damage = new ArrayList<>();
         this.maxPoints = MAX_ASSIGNABLE_POINTS;
         this.marks = new ArrayList<>();
+        this.stepsOfMovement = 3;
+        this.stepsBeforeGrabbing = 1;
+        this.stepsBeforeShooting = 0;
     }
 
     /**
@@ -59,8 +118,8 @@ public class PlayerBoard {
      *
      * @return collection of the player's damage points
      */
-    public ArrayList<PlayerColor> getDamage() {
-        return (ArrayList<PlayerColor>)damage.clone();
+    public List<PlayerColor> getDamage() {
+        return new ArrayList<>(damage);
     }
 
     /**
@@ -97,8 +156,8 @@ public class PlayerBoard {
      *
      * @return collection of the player's marks
      */
-    public ArrayList<PlayerColor> getMarks() {
-        return (ArrayList<PlayerColor>)marks.clone();
+    public List<PlayerColor> getMarks() {
+        return new ArrayList<>(marks);
     }
 
     /**
@@ -108,7 +167,7 @@ public class PlayerBoard {
      * @param value collection of the player's marks
      * @throws IllegalArgumentException if the same color of the player is asked to be added to the array
      */
-    public void setMarks(ArrayList<PlayerColor> value) {
+    public void setMarks(List<PlayerColor> value) {
         if (value.contains(this.boardColor)) { throw new IllegalArgumentException(COLOR_DAMAGE_MARKS_EXCEPTION); }
         this.marks = value;
     }

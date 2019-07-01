@@ -34,27 +34,43 @@ public class GameMap implements Cloneable{
             "src" + File.separator + "main" + File.separator + "resources" + File.separator;
 
     /** Static gameMap Strings used to print the map; */
-    private static final char DOOR_UP               = '\u039B';
-    private static final char DOOR_DOWN             = 'V';
-    private static final char DOOR_RIGHT            = '<';
-    private static final char DOOR_LEFT             = '>';
-    private static final String ALL_WALL            = "-------";
-    private static final String WEST_WALL           = "|      ";
-    private static final String EAST_WALL           = "      |";
-    private static final String BOTH_WALL           = "|     |";
-    private static final String SOUTH_DOOR          = "|  " + DOOR_UP + "  |";
-    private static final String NORTH_DOOR          = "|  " + DOOR_DOWN + "  |";
-    private static final String EAST_DOOR           = "      " + DOOR_RIGHT;
-    private static final String WEST_DOOR           = DOOR_LEFT + "      ";
-    private static final String BOTH_DOOR           = DOOR_LEFT + "     " + DOOR_RIGHT;
-    private static final String SPACE               = "       ";
-    private static final String WEST_WALL_EAST_DOOR = "|     " + DOOR_RIGHT;
-    private static final String WEST_DOOR_EAST_WALL = DOOR_LEFT + "     |";
-    private static final String FORMAT              = "%7s";
-    private static final String HIGHER_GRID_LEFT    = "|  ";
-    private static final String HIGHER_GRID_RIGHT   = "  |";
-    private static final String LEFT_GRID           = "- ";
-    private static final String RIGHT_GRID          = " -";
+    private static final char DOOR_UP                     = '\u039B';
+    private static final char DOOR_DOWN                   = 'V';
+    private static final char DOOR_RIGHT                  = '<';
+    private static final char DOOR_LEFT                   = '>';
+    private static final String SPAWN                     = " spawn ";
+    private static final String AMMOS                     = " ammos ";
+    private static final String BLANK                     = "       ";
+    private static final String ALL_WALL                  = "---------";
+    private static final String WEST_WALL                 = "|" + BLANK + " ";
+    private static final String EAST_WALL                 = " " + BLANK + "|";
+    private static final String BOTH_WALL                 = "|" + BLANK + "|";
+    private static final String SPACE                     = " " + BLANK + " ";
+    private static final String WEST_WALL_SPAWN           = "|" + SPAWN + " ";
+    private static final String EAST_WALL_SPAWN           = " " + SPAWN + "|";
+    private static final String BOTH_WALL_SPAWN           = "|" + SPAWN + "|";
+    private static final String EAST_DOOR_SPAWN           = " " + SPAWN + DOOR_RIGHT;
+    private static final String WEST_DOOR_SPAWN           = DOOR_LEFT + SPAWN + " ";
+    private static final String BOTH_DOOR_SPAWN           = DOOR_LEFT + SPAWN + DOOR_RIGHT;
+    private static final String SPACE_SPAWN               = " " + SPAWN + " ";
+    private static final String WEST_WALL_EAST_DOOR_SPAWN = "|" + SPAWN + DOOR_RIGHT;
+    private static final String WEST_DOOR_EAST_WALL_SPAWN = DOOR_LEFT + SPAWN + "|";
+    private static final String WEST_WALL_AMMOS           = "|" + AMMOS + " ";
+    private static final String EAST_WALL_AMMOS           = " " + AMMOS + "|";
+    private static final String BOTH_WALL_AMMOS           = "|" + AMMOS + "|";
+    private static final String EAST_DOOR_AMMOS           = " " + AMMOS + DOOR_RIGHT;
+    private static final String WEST_DOOR_AMMOS           = DOOR_LEFT + AMMOS + " ";
+    private static final String BOTH_DOOR_AMMOS           = DOOR_LEFT + AMMOS + DOOR_RIGHT;
+    private static final String SPACE_AMMOS               = " " + AMMOS + " ";
+    private static final String WEST_WALL_EAST_DOOR_AMMOS = "|" + AMMOS + DOOR_RIGHT;
+    private static final String WEST_DOOR_EAST_WALL_AMMOS = DOOR_LEFT + AMMOS + "|";
+    private static final String SOUTH_DOOR                = "|   " + DOOR_UP + "   |";
+    private static final String NORTH_DOOR                = "|   " + DOOR_DOWN + "   |";
+    private static final String FORMAT                    = "%9s";
+    private static final String HIGHER_GRID_LEFT          = "|   ";
+    private static final String HIGHER_GRID_RIGHT         = "   |";
+    private static final String LEFT_GRID                 = "- ";
+    private static final String RIGHT_GRID                = " -";
 
     /** Rep of the game's map through a matrix */
     private Cell[][] map;
@@ -348,7 +364,9 @@ public class GameMap implements Cloneable{
             southDirectionStringFormatter(box3, i, j);
         } else {
             box1.append(SPACE);
-            box2.append(SPACE);
+            if(map[i][j] == null) box2.append(SPACE);
+            else if(map[i][j].isRespawn()) box2.append(SPACE_SPAWN);
+            else box2.append(SPACE_AMMOS);
             box3.append(SPACE);
         }
         if (j == map[i].length - 1) {
@@ -402,13 +420,16 @@ public class GameMap implements Cloneable{
     private void eastWestDirectionStringFormatter(StringBuilder box2, int i, int j) {
         switch (map[i][j].adiajency(Direction.West)) {
             case wall:
-                toStringHelperLine2(box2, i, j, BOTH_WALL, WEST_WALL, WEST_WALL_EAST_DOOR);
+                if(map[i][j].isRespawn()) toStringHelperLine2(box2, i, j, BOTH_WALL_SPAWN, WEST_WALL_SPAWN, WEST_WALL_EAST_DOOR_SPAWN);
+                else toStringHelperLine2(box2, i, j, BOTH_WALL_AMMOS, WEST_WALL_AMMOS, WEST_WALL_EAST_DOOR_AMMOS);
                 break;
             case door:
-                toStringHelperLine2(box2, i, j, WEST_DOOR_EAST_WALL, WEST_DOOR, BOTH_DOOR);
+                if(map[i][j].isRespawn()) toStringHelperLine2(box2, i, j, WEST_DOOR_EAST_WALL_SPAWN, WEST_DOOR_SPAWN, BOTH_DOOR_SPAWN);
+                else toStringHelperLine2(box2, i, j, WEST_DOOR_EAST_WALL_AMMOS, WEST_DOOR_AMMOS, BOTH_DOOR_AMMOS);
                 break;
             case space:
-                toStringHelperLine2(box2, i, j, EAST_WALL, SPACE, EAST_DOOR);
+                if(map[i][j].isRespawn()) toStringHelperLine2(box2, i, j, EAST_WALL_SPAWN, SPACE_SPAWN, EAST_DOOR_SPAWN);
+                else toStringHelperLine2(box2, i, j, EAST_WALL_AMMOS, SPACE_AMMOS, EAST_DOOR_AMMOS);
                 break;
         }
     }

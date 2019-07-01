@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -86,22 +87,24 @@ public class PlayerBoardTest {
         playerBoard.appendDamage(PlayerColor.purple, 2);
         playerBoard.appendDamage(PlayerColor.green, 1);
 
-        assertTrue(playerBoard.getDamage().equals(testPlayerColorArray));
+        assertEquals(playerBoard.getDamage(), testPlayerColorArray);
     }
 
     /**
      * Tests how marks are handled
-     * @see PlayerBoard#setMarks(ArrayList)
+     * @see PlayerBoard#setMarks(List)
      */
     @Test
     public void testSetMarks() {
-        ArrayList<PlayerColor> toAdd = playerBoard.getMarks();
-        toAdd.add(testColor);
+        List<PlayerColor> toAdd = playerBoard.getMarks();
         toAdd.add(PlayerColor.green);
         toAdd.add(PlayerColor.blue);
         try {
             playerBoard.setMarks(toAdd);
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        assertTrue(playerBoard.getMarks().containsAll(toAdd));
     }
 
     /**
