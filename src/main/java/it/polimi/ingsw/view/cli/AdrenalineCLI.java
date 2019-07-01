@@ -7,6 +7,8 @@ import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.view.View;
+
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
@@ -245,7 +247,13 @@ public class AdrenalineCLI extends View {
     }
 
     private void flushInput() {
-        out.println();
+        try {
+            while (System.in.available() != 0) {
+                System.in.readAllBytes();
+            }
+        } catch (IOException e) {
+            AdrenalineLogger.errorException("Flush Input exc", e);
+        }
         in.nextLine();
     }
 
@@ -258,13 +266,14 @@ public class AdrenalineCLI extends View {
             options.add(Integer.toString(i));
         }
 
-        //flushInput();
         out.println(CHOOSE_MAP);
 
         for(int i = 0; i < 4; i++) {
             out.println(i + ")\n");
             out.println(maps[i].toString());
         }
+
+        flushInput();
 
         String choice = null;
         while(choice == null) {

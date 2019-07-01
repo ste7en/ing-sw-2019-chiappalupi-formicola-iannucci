@@ -222,12 +222,12 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
-    public void choseCharacter(String characterColor){
+    public void choseCharacter(String characterColor) {
         this.send(CommunicationMessage.from(userID, CHOOSE_CHARACTER, argsFrom(Character.character, characterColor, GameLogic.gameID_key, gameID.toString()), gameID));
     }
 
     @Override
-    public void choseGameMap(String configuration){
+    public void choseGameMap(String configuration) {
         var args = new HashMap<String, String>();
         args.put(GameMap.gameMap_key, configuration);
         this.send(CommunicationMessage.from(userID, MAP_CHOSEN, args, gameID));

@@ -128,7 +128,7 @@ public class ClientSocketConnectionHandler implements ConnectionHandlerSenderDel
                 }
                 if (!outBuf.isEmpty()) outBuf.forEach(printWriter::println);
                 outBuf.clear();
-                Thread.sleep(200);
+                Thread.sleep(100);
             }
 
             if (connectionState == CLOSED) socket.close();
