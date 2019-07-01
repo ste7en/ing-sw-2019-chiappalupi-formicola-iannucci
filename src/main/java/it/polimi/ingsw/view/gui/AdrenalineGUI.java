@@ -16,7 +16,6 @@ public class AdrenalineGUI extends View {
 
     @Override
     public void onStart(){
-
     }
 
     @Override
@@ -101,12 +100,22 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
+    public void sellPowerupToGrabWeapon(List<String> powerups) {
+
+    }
+
+    @Override
     public void willChooseWhatToGrab(List<String> possiblePicks) {
 
     }
 
     @Override
     public void onGrabSuccess(String map) {
+
+    }
+
+    @Override
+    public void onGrabFailure() {
 
     }
 

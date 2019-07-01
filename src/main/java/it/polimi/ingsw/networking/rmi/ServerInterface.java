@@ -50,7 +50,7 @@ public interface ServerInterface extends Remote {
      */
     void move(int userID, UUID gameID, String movement) throws RemoteException;
 
-    List<String> askPicks(int userID, UUID gameID) throws RemoteException;
+    List<String> askPicks(int userID, UUID gameID, List<String> powerupToSell) throws RemoteException;
 
     Map<String, String> didChooseWhatToGrab(String pick, int userID, UUID gameID) throws RemoteException;
 

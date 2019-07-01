@@ -46,7 +46,9 @@ public class WeaponController {
      * @param weapon it's the weapon that is being used.
      * @param effects  it's the list of effects indexes to be tested +1.
      * @param player it's the player who is using the card.
+     * @return true if the player can afford the cost, false otherwise
      */
+    @SuppressWarnings("Duplicates")
     public boolean canAffordCost(Weapon weapon, List<Integer> effects, Player player) {
         Map<AmmoColor, Integer> totalCost = new EnumMap<>(AmmoColor.class);
         Map<AmmoColor, Integer> playerAmmos = new EnumMap<>(AmmoColor.class);

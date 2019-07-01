@@ -119,18 +119,18 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
-    public void askPicks() {
+    public void askPicks(List<String> powerupToSell) {
         List<String> possiblePicks = new ArrayList<>();
         try {
-            possiblePicks = this.server.askPicks(userID, gameID);
+            possiblePicks = this.server.askPicks(userID, gameID, powerupToSell);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             AdrenalineLogger.error(e.getMessage());
         }
-        viewObserver.willChooseWhatToGrab(possiblePicks);;
+        if(possiblePicks.isEmpty()) this.viewObserver.onGrabFailure();
+        viewObserver.willChooseWhatToGrab(possiblePicks);
     }
 
-    //toDO: check for powerup using to pay cost
     @Override
     public void didChooseWhatToGrab(String pick) {
         Map<String, String> ending = new HashMap<>();
@@ -169,6 +169,18 @@ public class ClientRMI extends Client implements ClientInterface {
             AdrenalineLogger.error(e.getMessage());
         }
         this.viewObserver.onGrabSuccess(currentSituation);
+    }
+
+    @Override
+    public void powerupSellingToGrabWeapon() {
+        List<String> powerups = new ArrayList<>();
+        try {
+            powerups = server.getPowerupsInHand(userID, gameID);
+        } catch (RemoteException e) {
+            AdrenalineLogger.error(e.toString());
+            AdrenalineLogger.error(e.getMessage());
+        }
+        this.viewObserver.sellPowerupToGrabWeapon(powerups);
     }
 
     @Override

@@ -123,6 +123,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case CHOOSE_MOVEMENT:
                         this.viewObserver.willChooseMovement(Arrays.asList(args.get(GameLogic.available_moves).split(", ")));
                         break;
+                    case AVAILABLE_POWERUP_TO_SELL_TO_GRAB:
+                        this.viewObserver.sellPowerupToGrabWeapon(new ArrayList<>(args.values()));
+                        break;
                     case POSSIBLE_PICKS:
                         this.viewObserver.willChooseWhatToGrab(new ArrayList<>(args.values()));
                         break;
@@ -134,6 +137,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         break;
                     case GRAB_FAILURE_WEAPON:
                         this.viewObserver.onGrabFailureWeapon(new ArrayList<>(args.values()));
+                        break;
+                    case GRAB_FAILURE:
+                        this.viewObserver.onGrabFailure();
                         break;
                     case SHOOT_PEOPLE:
                         this.viewObserver.willChooseWeapon(new ArrayList<>(args.values()));
@@ -233,8 +239,11 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
-    public void askPicks() {
-        this.send(CommunicationMessage.from(userID, GRAB_SOMETHING, gameID));
+    public void askPicks(List<String> powerupToSell) {
+        Map<String, String> args = new HashMap<>();
+        for(String s : powerupToSell)
+            args.put(Integer.toString(powerupToSell.indexOf(s)), s);
+        this.send(CommunicationMessage.from(userID, GRAB_SOMETHING, args, gameID));
     }
 
     @Override
@@ -256,6 +265,11 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         Map<String, String> args = new HashMap<>();
         args.put(Weapon.weapon_key, weapon);
         this.send(CommunicationMessage.from(userID, GRAB_DISCARD_WEAPON, args, gameID));
+    }
+
+    @Override
+    public void powerupSellingToGrabWeapon() {
+        this.send(CommunicationMessage.from(userID, SELL_POWERUP_TO_GRAB, gameID));
     }
 
     @Override

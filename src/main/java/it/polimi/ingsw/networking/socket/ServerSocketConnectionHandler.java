@@ -180,7 +180,10 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     server.move(connectionID, gameID, args.get(GameLogic.movement));
                     break;
                 case GRAB_SOMETHING:
-                    grabSomething(connectionID, gameID);
+                    grabSomething(connectionID, gameID, args);
+                    break;
+                case SELL_POWERUP_TO_GRAB:
+                    sellPowerupToGrab(connectionID, gameID);
                     break;
                 case DID_CHOOSE_WHAT_TO_GRAB:
                     choseWhatToGrab(connectionID, args, gameID);
@@ -242,6 +245,20 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     }
 
     /**
+     * This method is called when the player has decided that he wants to sell powerups to afford the cost of grabbing a weapon
+     * @param connectionID it's the ID of the user
+     * @param gameID it's the ID of the game
+     */
+    private void sellPowerupToGrab(int connectionID, UUID gameID) {
+        List<String> powerups = server.getPowerupsInHand(connectionID, gameID);
+        if(powerups.isEmpty()) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE));
+        Map<String, String> responseArgs = new HashMap<>();
+        for(String s : powerups)
+            responseArgs.put(Integer.toString(powerups.indexOf(s)), s);
+        this.send(CommunicationMessage.from(connectionID, AVAILABLE_POWERUP_TO_SELL_TO_GRAB, responseArgs));
+    }
+
+    /**
      * This method is called when the player has decided which weapon does he want to discard
      * @param connectionID it's the ID of the user
      * @param args it's the map containing the arguments needed to perform the action
@@ -251,7 +268,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         String situation = this.server.weaponToDiscard(connectionID, gameID, args.get(Powerup.powerup_key));
         Map<String, String> responseArgs = new HashMap<>();
         responseArgs.put(GameMap.gameMap_key, situation);
-        this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS, responseArgs, gameID));
+        this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS, responseArgs));
     }
 
     /**
@@ -264,7 +281,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         String situation = this.server.powerupToDiscard(connectionID, gameID, args.get(Powerup.powerup_key));
         Map<String, String> responseArgs = new HashMap<>();
         responseArgs.put(GameMap.gameMap_key, situation);
-        this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS, responseArgs, gameID));
+        this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS, responseArgs));
     }
 
     /**
@@ -284,9 +301,10 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * This method is called when the player has decided that he wants to grab something
      * @param connectionID it's the ID of the user
      * @param gameID it's the ID of the game
+     * @param args it's the map containing the arguments needed to perform the action
      */
-    private void grabSomething(int connectionID, UUID gameID) {
-        List<String> possiblePicks = server.askPicks(connectionID, gameID);
+    private void grabSomething(int connectionID, UUID gameID, Map<String, String> args) {
+        List<String> possiblePicks = server.askPicks(connectionID, gameID, new ArrayList<>(args.values()));
         Map<String, String> responseArgs = new HashMap<>();
         for(String pick : possiblePicks) responseArgs.put(Integer.toString(possiblePicks.indexOf(pick)), pick);
         this.send(CommunicationMessage.from(connectionID, POSSIBLE_PICKS, responseArgs, gameID));
