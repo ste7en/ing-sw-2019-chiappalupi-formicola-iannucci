@@ -14,4 +14,10 @@ public interface ClientInterface extends Remote {
 
     void willChooseCharacter(ArrayList<String> availableCharacters) throws RemoteException;
 
+    /**
+     * When the user has to choose a game map configuration
+     * @throws RemoteException RMI Exception
+     */
+    void willChooseGameMap() throws RemoteException;
+
 }

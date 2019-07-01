@@ -70,7 +70,6 @@ public class Player implements Comparable<Player>{
         return user != null;
     }
 
-
     /**
      * Constructor: creates a new Player based on given user and character.
      * @param user is an instance of User

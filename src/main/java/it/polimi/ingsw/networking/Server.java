@@ -151,7 +151,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public void startNewGame(List<User> userList) {
         var gameID = UUID.randomUUID();
-        var gameLogic = new GameLogic(gameID);
+        var gameLogic = new GameLogic(gameID, userList.size());
         var characters = gameLogic.getAvailableCharacters();
 
         gameControllers.put(gameID, gameLogic);
@@ -176,7 +176,19 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         users.forEach(
                 (user, connectionHandler) -> {
                     if (connectionHandler == connection) {
-                        waitingRoom.removeUser(user);
+                        gameControllers                             // if the user is binded to a gameLogic, set it as
+                                .values()                           // disconnected, otherwise remove it from the
+                                .stream()                           // waiting room
+                                .filter(gameLogic -> gameLogic
+                                        .getPlayers()
+                                        .stream()
+                                        .filter(player -> player
+                                                .getUser()
+                                                .equals(user))
+                                        .count() != 0)
+                                .findFirst()
+                                .ifPresentOrElse(gameLogic -> gameLogic.userDidDisconnect(user), ()-> waitingRoom.removeUser(user));
+
                         AdrenalineLogger.info(DID_DISCONNECT + user.getUsername());
                     }
                 });
@@ -230,7 +242,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             ServerConnectionHandler connectionHandler = new ServerRMIConnectionHandler(this, clientRMI);
             Ping.getInstance().addPing(connectionHandler);
             return createUser(username, connectionHandler);
-        }catch (Exception e) {
+        } catch (Exception e) {
             logOnException(RMI_EXCEPTION, e);
         }
         return -1;
@@ -254,7 +266,10 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                         gameLogic -> {              // find the user connected to the server and
                             users.forEach(          // notify him that the game has started (in this case, resumed)
                                     (user, conn) -> {
-                                        if (user.getUsername().equals(username)) conn.gameDidStart(gameLogic.getGameID().toString());
+                                        if (user.getUsername().equals(username)) {
+                                            conn.gameDidStart(gameLogic.getGameID().toString());
+                                            gameLogic.userDidConnect(user);
+                                        }
                                     }
                             );
                         },
@@ -280,14 +295,33 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
         if (availableCharacters.contains(characterColor)) {
             var chosenCharacter = Character.getCharacterFromColor(PlayerColor.valueOf(characterColor));
-            gameController.addPlayer(new Player(findUserFromID(userID), chosenCharacter));
+            if (gameController.addPlayer(new Player(findUserFromID(userID), chosenCharacter))) {
+                // Number of players reached - server's going to ask the firs
+                // player (or the first one connected) for the choice of the game map
+                var firstPlayer = gameController.getFirstActivePlayer();
+                willChooseGameMap(firstPlayer.getUser(), gameID);
+            }
             return true;
         }
         return false;
     }
 
+    /**
+     * Method used to ask a player to choose a GameMap
+     * @param user user
+     * @param gameID gameID
+     */
+    private void willChooseGameMap(User user, UUID gameID) {
+        users.get(user).willChooseGameMap(gameID);
+    }
+
+    /**
+     * Method called when a player chose the GameMap
+     * @param gameID gameID
+     * @param configuration string representation of the GameMap
+     */
     @Override
-    public void choseGameMap(UUID gameID, String configuration) {
+    public void didChooseGameMap(UUID gameID, String configuration) {
         MapType mapType = MapType.valueOf(configuration);
         this.gameControllers.get(gameID).initializeMap(mapType);
     }

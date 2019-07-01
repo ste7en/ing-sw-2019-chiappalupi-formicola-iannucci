@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.player.User;
+import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.networking.Server;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
@@ -101,7 +102,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * Sends a message through its connection
      * @param message the message to send
      */
-    public void send(String message) {
+    private void send(String message) {
         outBuf.add(message);
     }
 
@@ -323,7 +324,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * @param gameID it's the ID of the game
      */
     private void mapChosen(int connectionID, Map<String, String> args, UUID gameID) {
-        this.server.choseGameMap(gameID, args.get(GameMap.gameMap_key));
+        this.server.didChooseGameMap(gameID, args.get(GameMap.gameMap_key));
         this.send(CommunicationMessage.from(connectionID, CHOOSE_SPAWN_POINT));
     }
 
@@ -473,14 +474,14 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     protected void gameDidStart(String gameID) {
         var args = new HashMap<String, String>();
         args.put(GameLogic.gameID_key, gameID);
-        send(CommunicationMessage.from(getConnectionHashCode(), USER_JOINED_GAME, args));
+        send(CommunicationMessage.from(0, USER_JOINED_GAME, args));
     }
 
     @Override
     protected void willChooseCharacter(List<String> availableCharacters) {
         var args = new HashMap<String, String>();
         args.put(Character.character_list, String.join(", ", availableCharacters));
-        send(CommunicationMessage.from(getConnectionHashCode(), CHOOSE_CHARACTER, args));
+        send(CommunicationMessage.from(0, CHOOSE_CHARACTER, args));
     }
 
     @Override
@@ -492,5 +493,10 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
             send(CommunicationMessage.from(userID, CHARACTER_NOT_AVAILABLE, args, gameID));
             willChooseCharacter(server.getAvailableCharacters(gameID));
         }
+    }
+
+    @Override
+    protected void willChooseGameMap(UUID gameID) {
+        this.send(CommunicationMessage.from(0, CHOOSE_MAP));
     }
 }

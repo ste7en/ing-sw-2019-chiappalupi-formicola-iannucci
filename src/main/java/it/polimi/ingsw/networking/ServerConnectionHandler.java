@@ -44,4 +44,10 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable {
      * @param chosenCharacterColor character's color
      */
     protected abstract void didChooseCharacter(UUID gameID, int userID, String chosenCharacterColor);
+
+    /**
+     * When the user has to choose a game map configuration
+     * @param gameID gameID
+     */
+    protected abstract void willChooseGameMap(UUID gameID);
 }

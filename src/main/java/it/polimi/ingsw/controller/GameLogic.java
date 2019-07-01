@@ -23,9 +23,10 @@ public class GameLogic {
      */
     private static final int NUM_OF_WEAPONS_IN_SPAWNS = 3;
 
+    private int numberOfPlayers;
+    private boolean finalFrenzy;
     private ArrayList<Player> players;
     private Board board;
-    private boolean finalFrenzy;
     private UUID gameID;
     private DecksHandler decks;
     private WeaponController weaponController;
@@ -45,7 +46,7 @@ public class GameLogic {
      *
      * @param gameID it's the gameID.
      */
-    public GameLogic(UUID gameID) {
+    public GameLogic(UUID gameID, int numberOfPlayers) {
         this.decks = new DecksHandler();
         this.finalFrenzy = false;
         this.gameID = gameID;
@@ -126,10 +127,19 @@ public class GameLogic {
     }
 
     /**
+     * First active player getter
+     * @return the first player in the game
+     */
+    @SuppressWarnings("all")
+    public Player getFirstActivePlayer() {
+        return players.stream().filter(Player::isActive).findFirst().get();
+    }
+
+    /**
      * First player getter
      * @param firstPlayer it's the player to set
      */
-    public void setFirstPlayer(Player firstPlayer) {
+    private void setFirstPlayer(Player firstPlayer) {
         this.firstPlayer = firstPlayer;
     }
 
@@ -138,10 +148,10 @@ public class GameLogic {
      *
      * @param player it's the player to be added.
      */
-    public synchronized void addPlayer(Player player) {
-        //TODO: - color check and maximum number of players check
+    public synchronized boolean addPlayer(Player player) {
         if (players.isEmpty()) setFirstPlayer(player);
         this.players.add(player);
+        return this.players.size() >= numberOfPlayers;
     }
 
     /**

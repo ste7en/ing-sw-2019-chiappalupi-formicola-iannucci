@@ -8,7 +8,6 @@ import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -81,9 +80,7 @@ public class ClientRMI extends Client implements ClientInterface {
     @Override
     public void choseCharacter(String characterColor){
         try {
-            System.out.println(userID);
             server.choseCharacter(gameID, userID, characterColor);
-            System.out.println(characterColor);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             AdrenalineLogger.error(e.getMessage());
@@ -92,9 +89,14 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
+    public void willChooseGameMap() {
+        this.viewObserver.willChooseGameMap();
+    }
+
+    @Override
     public void choseGameMap(String configuration){
         try {
-            server.choseGameMap(gameID, configuration);
+            server.didChooseGameMap(gameID, configuration);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             AdrenalineLogger.error(e.getMessage());

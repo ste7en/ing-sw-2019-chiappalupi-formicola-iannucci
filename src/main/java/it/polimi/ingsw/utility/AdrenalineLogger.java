@@ -30,12 +30,18 @@ public class AdrenalineLogger {
      */
     private static Logger logger;
 
+    private static boolean debug = false;
+
     /**
      * Setter to change the default log name basing on the user (client/server)
      */
     public static void setLogName(String n) {
         LOG_TYPE = n;
         logger = getLogger();
+    }
+    //todo
+    public static void setDebugMode(boolean flag) {
+        debug = flag;
     }
 
     /**
@@ -55,7 +61,7 @@ public class AdrenalineLogger {
         // Removing default console handler
         logger.setUseParentHandlers(false);
         // Adding a custom console handler
-        logger.addHandler(getConsoleHandler());
+        if (debug) logger.addHandler(getConsoleHandler());
         // Adding a custom file handler
         Optional<FileHandler> fH = getFileHandler();
         fH.ifPresent(logger::addHandler);

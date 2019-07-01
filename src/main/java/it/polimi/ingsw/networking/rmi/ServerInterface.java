@@ -31,7 +31,7 @@ public interface ServerInterface extends Remote {
      */
     boolean choseCharacter(UUID gameID, int userID, String characterColor) throws RemoteException;
 
-    void choseGameMap(UUID gameID, String configuration) throws RemoteException;
+    void didChooseGameMap(UUID gameID, String configuration) throws RemoteException;
 
     List<String> getSpawnPowerups(int userID, UUID gameID) throws RemoteException;
 

@@ -125,6 +125,10 @@ public class AdrenalineCLI extends View {
         this.willCreateUser();
     }
 
+    /**
+     * Main method
+     * @param args CLI arguments: <socket/rmi> <serverAddress> <serverPort> [--debug]
+     */
     public static void main(String[] args) {
         AdrenalineLogger.setLogName("CLI");
         if (args.length < 3) {
@@ -134,6 +138,7 @@ public class AdrenalineCLI extends View {
             var connectionType = args[0];
             var serverName     = args[1];
             var serverPort     = args[2];
+            if (Arrays.asList(args).contains("--debug")) AdrenalineLogger.setDebugMode(true);
             new AdrenalineCLI(connectionType, serverName, serverPort);
         }
     }

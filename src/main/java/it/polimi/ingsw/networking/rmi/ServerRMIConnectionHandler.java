@@ -44,13 +44,22 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
         try {
             clientRMI.willChooseCharacter((ArrayList)availableCharacters);
         } catch (Exception e){
-            System.err.println("ClientRMI exception: " + e.toString());
+            logOnException(REMOTE_EXC, e);
         }
     }
 
     @Override
     protected void didChooseCharacter(UUID gameID, int userID, String chosenCharacterColor) {
 
+    }
+
+    @Override
+    protected void willChooseGameMap(UUID gameID) {
+        try {
+            clientRMI.willChooseGameMap();
+        } catch (Exception e) {
+            logOnException(REMOTE_EXC, e);
+        }
     }
 
     @Override
