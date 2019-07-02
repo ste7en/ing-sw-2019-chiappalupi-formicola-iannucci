@@ -124,7 +124,7 @@ public class WaitingRoom {
      */
     public void removeUser(User user) {
         if (userQueue.remove(user)) didRemoveUser();
-        else userWaitingList.remove(user);
+        else if (!userWaitingList.remove(user)) return;
         AdrenalineLogger.info(USER_REMOVED+user.getUsername());
     }
 

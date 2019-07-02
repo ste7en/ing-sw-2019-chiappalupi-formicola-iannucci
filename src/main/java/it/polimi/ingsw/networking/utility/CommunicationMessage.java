@@ -27,6 +27,11 @@ public enum CommunicationMessage {
     PONG,
 
     /**
+     * An operation's timeout associated to a user expired
+     */
+    TIMEOUT_DID_EXPIRE,
+
+    /**
      * User createUser messages.
      * CREATE_USER is sent by the client to the server to create a new User, the server will process the request and send a
      * CREATE_USER_OK or CREATE_USER_FAILED in case of success or failure.
@@ -340,6 +345,11 @@ public enum CommunicationMessage {
      */
     private static final String EXC_MESS_JSON = "Exception while converting the message to json";
     private static final String EXC_JSON_MESS = "Exception while converting the json to message";
+
+    /**
+     * List delimiter when parsing strings to list and vice-versa
+     */
+    public static final String listDelimiter = ", ";
 
     /**
      * Private class used to create json messages

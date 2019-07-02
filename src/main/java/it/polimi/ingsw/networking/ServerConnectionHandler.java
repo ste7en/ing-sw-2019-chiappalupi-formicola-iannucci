@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking;
 
+import it.polimi.ingsw.networking.utility.ConnectionState;
 import it.polimi.ingsw.networking.utility.Pingable;
 import it.polimi.ingsw.utility.Loggable;
 
@@ -18,6 +19,11 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable {
      * The server instance which exposes communication methods
      */
     protected Server server;
+
+    /**
+     * The state of the connection
+     */
+    protected ConnectionState connectionState;
 
     /**
      * @return true if the connection is available

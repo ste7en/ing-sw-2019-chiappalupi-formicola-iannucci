@@ -17,6 +17,11 @@ public interface ServerInterface extends Remote {
     int registerClient(ClientInterface clientInterface, String username) throws RemoteException;
 
     /**
+     *
+     */
+    void timeoutDidExpire(int userID) throws RemoteException;
+
+    /**
      * When a client decides to join a game.
      * This method also handles the case when a user disconnected from a game and reconnects.
      * @param username username of the user who will play the game

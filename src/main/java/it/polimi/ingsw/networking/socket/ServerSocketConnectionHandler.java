@@ -44,16 +44,11 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * Log strings
      */
     @SuppressWarnings("squid:S3008")
-    private static final String IO_EXC = "An IOException has occurred during a socket operation";
-    private static final String STREAM_SUCC = "Socket Input/Output streams successfully created.";
-    private static final String CONN_CLOSED = "Connection closed with the client :: ";
-    private static final String PING_TIMEOUT = "Ping timeout. Closing connection socket :: ";
-    private static final String INTERRUPTED_EXCEPTION = "Thread interrupted exception.";
-
-    /**
-     * The state of the connection
-     */
-    private ConnectionState connectionState;
+    private static final String IO_EXC                  = "An IOException has occurred during a socket operation";
+    private static final String STREAM_SUCC             = "Socket Input/Output streams successfully created.";
+    private static final String CONN_CLOSED             = "Connection closed with the client :: ";
+    private static final String PING_TIMEOUT            = "Ping timeout. Closing connection socket :: ";
+    private static final String INTERRUPTED_EXCEPTION   = "Thread interrupted exception.";
 
     /**
      * Basic class constructor
@@ -63,7 +58,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     ServerSocketConnectionHandler(Socket socket, Server server) {
         this.socket = socket;
         this.outBuf = new ConcurrentLinkedQueue<>();
-        this.connectionState = ONLINE;
+        super.connectionState = ONLINE;
         super.server = server;
     }
 
@@ -159,6 +154,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
             switch (communicationMessage) {
                 case PONG:
                     Ping.getInstance().didPong(connectionID);
+                    break;
+                case TIMEOUT_DID_EXPIRE:
+                    server.timeoutDidExpire(connectionID);
                     break;
                 case CREATE_USER:
                     createUser(connectionID, args);
@@ -385,7 +383,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         this.send(CommunicationMessage.from(
                 connectionID,
                 CHOOSE_MOVEMENT,
-                argsFrom(GameLogic.available_moves, String.join(", ", server.getAvailableMoves(connectionID, gameID))),
+                argsFrom(GameLogic.available_moves, String.join(listDelimiter, server.getAvailableMoves(connectionID, gameID))),
                 gameID));
     }
 
@@ -528,7 +526,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     @Override
     protected void willChooseCharacter(List<String> availableCharacters) {
         var args = new HashMap<String, String>();
-        args.put(Character.character_list, String.join(", ", availableCharacters));
+        args.put(Character.character_list, String.join(listDelimiter, availableCharacters));
         send(CommunicationMessage.from(0, CHOOSE_CHARACTER, args));
     }
 

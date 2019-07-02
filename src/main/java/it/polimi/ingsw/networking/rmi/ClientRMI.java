@@ -7,54 +7,76 @@ import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
-import java.net.Inet4Address;
-import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class ClientRMI extends Client implements ClientInterface {
 
     private Registry serverRegistry;
     private Registry clientRegistry;
     private ServerInterface server;
-    private String address;
+    private ExecutorService executorService;
 
     public ClientRMI(String host, Integer port){
         super(host, port);
+        executorService = Executors.newCachedThreadPool();
     }
 
     /**
      * Log strings
      */
-    private static String CLIENT_RMI_EXCEPTION = "ClientRMI exception: ";
+    private static final String CLIENT_RMI_EXCEPTION  = "ClientRMI exception: ";
+    private static final String INTERRUPTED_EXCEPTION = "Interrupted exception: ";
+
+    /**
+     * @param task a callable task executed in parallel
+     */
+    private void submitRemoteMethodInvocation(Callable<Void> task) {
+        try {
+            executorService.submit(task).get();
+        } catch (InterruptedException e) {
+            logOnException(INTERRUPTED_EXCEPTION +e.getCause(), e);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            logOnException(CLIENT_RMI_EXCEPTION + e.getCause(), e);
+        }
+    }
 
     @Override
     protected void setupConnection() {
-
         try{
             serverRegistry = LocateRegistry.getRegistry(serverName, connectionPort);
-            System.out.println(serverRegistry);
+            logDescription(serverRegistry);
             server = (ServerInterface) serverRegistry.lookup(ServerInterface.remoteReference);
         } catch (Exception e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
         }
     }
 
-    public void exportClient(String username) throws RemoteException{
-       clientRegistry = LocateRegistry.createRegistry(connectionPort);
-        ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
-        clientRegistry.rebind(username, stub);
+    @Override
+    protected void notifyServerTimeoutExpired() {
+        submitRemoteMethodInvocation( () -> {
+            this.server.timeoutDidExpire(userID);
+            return null;
+        });
     }
 
-    public int registerClient(String username){
+    public void exportClient(String username) throws RemoteException {
+       clientRegistry = LocateRegistry.createRegistry(connectionPort);
+       ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
+       clientRegistry.rebind(username, stub);
+    }
+
+    public int registerClient(String username) {
         try {
             ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
             return server.registerClient(stub, username);
         } catch (RemoteException e){
-            e.printStackTrace();
+            logOnException(CLIENT_RMI_EXCEPTION+e.getCause(), e);
         }
         return -1;
     }
@@ -90,12 +112,10 @@ public class ClientRMI extends Client implements ClientInterface {
 
     @Override
     public void joinWaitingRoom(String username) {
-        try {
+        submitRemoteMethodInvocation(() -> {
             server.joinWaitingRoom(username);
-        } catch (RemoteException e){
-            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
-            AdrenalineLogger.error(e.getMessage());
-        }
+            return null;
+        });
     }
 
     @Override
@@ -113,7 +133,9 @@ public class ClientRMI extends Client implements ClientInterface {
     @Override
     public void choseCharacter(String characterColor){
         try {
-            server.choseCharacter(gameID, userID, characterColor);
+            var availableCharacters = server.getAvailableCharacters(gameID);
+            if (!server.choseCharacter(gameID, userID, characterColor))
+                executorService.submit(() -> this.viewObserver.willChooseCharacter(availableCharacters));
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             AdrenalineLogger.error(e.getMessage());
@@ -122,17 +144,26 @@ public class ClientRMI extends Client implements ClientInterface {
 
     @Override
     public void willChooseGameMap() {
-        this.viewObserver.willChooseGameMap();
+        submitRemoteMethodInvocation( () -> {
+            this.viewObserver.willChooseGameMap();
+            return null;
+        });
     }
 
     @Override
     public void willStartTurn() {
-        this.viewObserver.newAction();
+        submitRemoteMethodInvocation( () -> {
+            this.viewObserver.newAction();
+            return null;
+        });
     }
 
     @Override
     public void willStartFromRespawn() {
-        this.viewObserver.willChooseSpawnPoint();
+        submitRemoteMethodInvocation( () -> {
+            this.viewObserver.willChooseSpawnPoint();
+            return null;
+        });
     }
 
     @Override
@@ -141,26 +172,23 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
-    public void choseGameMap(String configuration){
-        try {
+    public void choseGameMap(String configuration) {
+        submitRemoteMethodInvocation(() -> {
             server.didChooseGameMap(gameID, configuration);
-        } catch (RemoteException e) {
-            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
-            AdrenalineLogger.error(e.getMessage());
-        }
+            return null;
+        });
+
         viewObserver.willChooseSpawnPoint();
     }
 
     @Override
-    public void askForPossibleSpawnPoints(){
-        List<String> powerups = new ArrayList<>();
-        try {
+    public void askForPossibleSpawnPoints() {
+        submitRemoteMethodInvocation( () -> {
+            List<String> powerups;
             powerups = server.getSpawnPowerups(userID, gameID);
-        } catch (RemoteException e) {
-            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
-            AdrenalineLogger.error(e.getMessage());
-        }
-        viewObserver.onChooseSpawnPoint(powerups);
+            viewObserver.onChooseSpawnPoint(powerups);
+            return null;
+        });
     }
 
     @Override

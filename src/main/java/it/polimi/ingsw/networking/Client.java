@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Abstract class that will be reimplemented in ClientSocket and ClientRMI.
@@ -34,6 +38,8 @@ public abstract class Client implements Loggable {
     @SuppressWarnings("squid:S3008")
     protected static final String UNKNOWN_HOST       = "Can't find the hostname. Asking for user input...";
     protected static final String IO_EXC             = "An IOException has been thrown. ";
+    protected static final String EXECUTION_EXC      = "Execution exception during a timeout operation :: ";
+    protected static final String INTERRUPTED_EXC    = "Timeout operation on client interrupted.";
     protected static final String CONN_RETRY         = "Connection retrying...";
     protected static final String ON_SUCCESS         = "ClientSocket successfully connected to the server.";
     protected static final String ASK_SERVER_DETAILS = "Asking for server hostname and connection port.";
@@ -88,6 +94,42 @@ public abstract class Client implements Loggable {
             this.connectionPort = Integer.parseInt(in.readLine());
         } catch (IOException e) {
             logOnException(IO_EXC, e);
+        }
+    }
+
+    /**
+     * Subclasses will call this method to notify the server an operation's
+     * timeout expired
+     */
+    protected abstract void notifyServerTimeoutExpired();
+
+    /**
+     * Called to notify both View and Controller that
+     * an operation's timeout expired
+     */
+    protected void timeoutHasExpired() {
+        this.viewObserver.timeoutHasExpired();
+        notifyServerTimeoutExpired();
+    }
+
+    /**
+     * Timeout operation client-side
+     * @param timeoutInSeconds timeout in seconds to wait before blocking an operation
+     * @param task {@link Runnable} task to run and wait for
+     */
+    protected void timeoutOperation(int timeoutInSeconds, Runnable task) {
+        var ex = Executors.newFixedThreadPool(3);
+        var future = ex.submit(task);
+
+        try {
+            future.get(timeoutInSeconds, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            this.timeoutHasExpired();
+        } catch (ExecutionException e) {
+            logOnException(EXECUTION_EXC+e.getCause(), e);
+        } catch (InterruptedException e) {
+            logOnException(INTERRUPTED_EXC, e);
+            Thread.currentThread().interrupt();
         }
     }
 

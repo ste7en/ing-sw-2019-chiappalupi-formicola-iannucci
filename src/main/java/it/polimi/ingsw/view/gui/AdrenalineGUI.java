@@ -19,6 +19,11 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
+    public void timeoutHasExpired() {
+
+    }
+
+    @Override
     protected void willChooseConnection() {
         try {
             handlerGUI.chooseConnection();

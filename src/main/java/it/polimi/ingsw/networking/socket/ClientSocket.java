@@ -31,6 +31,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
      * Log strings
      */
     private static final String UNKNOWN_COMMUNICATION_MESSAGE = "Unsupported communication message: ";
+    private static final String SOCKET_CONFIG_STRING          = "A SOCKET connection is setting up...";
 
     /**
      * Delegate class responsible to send messages
@@ -44,7 +45,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     @Override
     protected void setupConnection() {
         AdrenalineLogger.info(INFO);
-        AdrenalineLogger.config("A SOCKET connection is setting up...");
+        AdrenalineLogger.config(SOCKET_CONFIG_STRING);
         try {
                 senderDelegate = new ClientSocketConnectionHandler(serverName, connectionPort, this);
                 logOnSuccess(ON_SUCCESS);
@@ -61,6 +62,11 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                 logOnException(IO_EXC+CONN_RETRY, e);
                 setupConnection();
             }
+    }
+
+    @Override
+    protected void notifyServerTimeoutExpired() {
+        this.send(CommunicationMessage.from(userID, TIMEOUT_DID_EXPIRE, gameID));
     }
 
     /**
@@ -99,8 +105,8 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.onStart();
                         break;
                     case CHOOSE_CHARACTER:
-                        var availableCharacters = Arrays.asList(args.get(Character.character_list).split(", "));
-                        this.viewObserver.willChooseCharacter(availableCharacters);
+                        var availableCharacters = Arrays.asList(args.get(Character.character_list).split(listDelimiter));
+                        timeoutOperation(10, () -> this.viewObserver.willChooseCharacter(availableCharacters));
                         break;
                     case CHARACTER_CHOSEN_OK:
                         //TODO: - send an ACK??
@@ -124,7 +130,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.onChooseAction(args.get(GameMap.gameMap_key));
                         break;
                     case CHOOSE_MOVEMENT:
-                        this.viewObserver.willChooseMovement(Arrays.asList(args.get(GameLogic.available_moves).split(", ")));
+                        this.viewObserver.willChooseMovement(Arrays.asList(args.get(GameLogic.available_moves).split(listDelimiter)));
                         break;
                     case AVAILABLE_POWERUP_TO_SELL_TO_GRAB:
                         this.viewObserver.sellPowerupToGrabWeapon(new ArrayList<>(args.values()));

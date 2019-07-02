@@ -9,6 +9,9 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
 
+import static it.polimi.ingsw.networking.utility.ConnectionState.CLOSED;
+import static it.polimi.ingsw.networking.utility.ConnectionState.ONLINE;
+
 public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
     private static final String REMOTE_EXC   = "Remote exception :: ";
@@ -18,6 +21,7 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
     public ServerRMIConnectionHandler(Server server, ClientInterface clientRMI) {
         super.server = server;
+        super.connectionState = ONLINE;
         this.clientRMI = clientRMI;
     }
 
@@ -30,12 +34,7 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
     }
 
     public boolean isConnectionAvailable() {
-        try {
-            return clientRMI.ping();
-        } catch (RemoteException e) {
-            logOnException(REMOTE_EXC+PING_TIMEOUT, e);
-        }
-        return false;
+        return connectionState == ONLINE;
     }
 
     @Override
@@ -90,13 +89,18 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
     @Override
     public void ping() {
-        if (this.isConnectionAvailable()) Ping.getInstance().didPong(getConnectionHashCode());
+        try {
+            if (isConnectionAvailable() && clientRMI.ping()) Ping.getInstance().didPong(getConnectionHashCode());
+        } catch (RemoteException e) {
+            logOnException(REMOTE_EXC+PING_TIMEOUT, e);
+            closeConnection();
+        }
     }
 
     @Override
     public void closeConnection() {
-        //TODO: - Mark this connection handler as not connected
         server.didDisconnect(this);
+        super.connectionState = CLOSED;
         AdrenalineLogger.info(PING_TIMEOUT+clientRMI.toString());
     }
 }

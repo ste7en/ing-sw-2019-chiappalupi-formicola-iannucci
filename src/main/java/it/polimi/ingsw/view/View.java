@@ -39,10 +39,17 @@ public abstract class View {
      * Failure messages
      */
     public static final String CHARACTER_NOT_AVAILABLE          = "The character you chose isn't available.";
+    protected static final String TIMEOUT_EXPIRED               = "\n\n\u001B[31mTimeout has expired. Server kicked you out, please reconnect to resume the game.\u001B[0m";
+
 
     public abstract void onViewUpdate();
 
     public abstract void onFailure(String message);
+
+    /**
+     * Called by the client when the timeout expires and the user is kicked out.
+     */
+    public abstract void timeoutHasExpired();
 
     /**
      * Method implemented by subclasses when a new game starts.

@@ -111,6 +111,10 @@ public class AdrenalineCLI extends View {
     private static final String INCORRECT_CONN_TYPE         = "Incorrect cli argument: connection type";
     private static final String MISSING_ARGUMENTS           = "Missing CLI arguments. Asking for user insertion.";
 
+    @Override
+    public void timeoutHasExpired() {
+        out.println(TIMEOUT_EXPIRED);
+    }
 
     /**
      * Private constructor of the Command Line Interface
@@ -144,7 +148,6 @@ public class AdrenalineCLI extends View {
      * @param args CLI arguments: <socket/rmi> <serverAddress> <serverPort> [--debug]
      */
     public static void main(String[] args) {
-        AdrenalineLogger.setLogName("CLI");
         if (args.length < 3) {
             AdrenalineLogger.warning(MISSING_ARGUMENTS);
             new AdrenalineCLI();
@@ -153,6 +156,7 @@ public class AdrenalineCLI extends View {
             var serverName     = args[1];
             var serverPort     = args[2];
             if (Arrays.asList(args).contains("--debug")) AdrenalineLogger.setDebugMode(true);
+            AdrenalineLogger.setLogName("CLI");
             new AdrenalineCLI(connectionType, serverName, serverPort);
         }
     }

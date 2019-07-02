@@ -150,6 +150,11 @@ public class GameLogic {
 
 
     /**
+     * @return the number of active players
+     */
+    public synchronized int numberOfActivePlayers() { return players.stream().filter(Player::isActive).toArray().length; }
+
+    /**
      * First player getter
      * @return the first player in the game
      */
@@ -162,12 +167,12 @@ public class GameLogic {
      * @return the first player in the game
      */
     @SuppressWarnings("all")
-    public Player getFirstActivePlayer() {
+    public synchronized Player getFirstActivePlayer() {
         return players.stream().filter(Player::isActive).findFirst().get();
     }
 
     /**
-     * First player getter
+     * First player setter
      * @param firstPlayer it's the player to set
      */
     private void setFirstPlayer(Player firstPlayer) {

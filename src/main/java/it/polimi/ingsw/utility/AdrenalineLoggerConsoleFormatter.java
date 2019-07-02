@@ -39,6 +39,7 @@ public class AdrenalineLoggerConsoleFormatter extends Formatter {
                 .concat(dash)
                 .concat(space)
                 .concat(record.getMessage())
+                .concat(ANSI_COLORS.ANSI_RESET.value)
                 .concat(newline)
                 ;
     }
