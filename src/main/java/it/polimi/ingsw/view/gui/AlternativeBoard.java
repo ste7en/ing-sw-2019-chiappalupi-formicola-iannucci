@@ -9,23 +9,31 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("Duplicates")
 public class AlternativeBoard extends Application {
 
-    private StackPane stackPane;
-    private GridPane root;
+    private AdrenalineGUI adrenalineGUI;
+    private Stage primaryStage;
+    private Scene mainScene;
+    private GridPane boardGrid;
     private GridPane cardsContainer;
     private ColumnConstraints c;
-    private Stage primaryStage;
+    private RowConstraints r;
     private Button button;
-    private AdrenalineGUI adrenalineGUI;
     private HBox boxButton;
     private BorderPane firstRoot;
+    private GridPane modesChoiceGrid;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -34,7 +42,9 @@ public class AlternativeBoard extends Application {
         primaryStage.setTitle("Adrenaline");
 
         button = new Button("Continue");
-        button.setOnAction(e -> adrenalineGUI.willChooseConnection());
+        ArrayList<String> prova = new ArrayList<>();
+        prova.add("blue");
+        button.setOnAction(e -> {try{chooseGameMap();} catch (Exception ex){ex.printStackTrace();}});
         boxButton = new HBox(button);
         boxButton.setAlignment(Pos.CENTER);
         boxButton.setMargin(button, new Insets(0, 0, 50, 0));
@@ -45,7 +55,8 @@ public class AlternativeBoard extends Application {
         firstRoot.setBackground(new Background(myBI));
         firstRoot.setBottom(boxButton);
 
-        primaryStage.setScene(new Scene(firstRoot, 1200, 800));
+        mainScene = new Scene(firstRoot, 1200,800);
+        primaryStage.setScene(mainScene);
         primaryStage.show();
 
     }
@@ -55,16 +66,244 @@ public class AlternativeBoard extends Application {
         launch(args);
     }
 
+    public void clickedImage(ImageView imageView, String image) {
+        try {
+            Image clickedPic = new Image(new FileInputStream("src/main/resources/images/" + image + ".png"));
+            imageView.setImage(clickedPic);
+        } catch (FileNotFoundException e){
+            System.err.println(e.toString());
+        }
+    }
+
+    public void unclickedImage(ArrayList<ImageView> imageViews, List<String> availableCharacters) throws Exception{
+        for (int i=0; i<availableCharacters.size(); i++){
+            imageViews.get(i).setImage(new Image(new FileInputStream("src/main/resources/images/board/" + availableCharacters.get(i) + "_unclicked.png")));
+        }
+    }
+
+    public void chooseCharacter(List<String> availableCharacters) throws FileNotFoundException {
+        modesChoiceGrid = new GridPane();
+        for (int j = 0; j < 6; j++) {
+            c = new ColumnConstraints();
+            c.setPercentWidth(16.66);
+            modesChoiceGrid.getColumnConstraints().add(c);
+        }
+        RowConstraints r0 = new RowConstraints();
+        r0.setPercentHeight(10);
+        RowConstraints r1 = new RowConstraints();
+        r1.setPercentHeight(35);
+        RowConstraints r2 = new RowConstraints();
+        r2.setPercentHeight(35);
+        RowConstraints r3 = new RowConstraints();
+        r3.setPercentHeight(10);
+        RowConstraints r4 = new RowConstraints();
+        r4.setPercentHeight(10);
+        modesChoiceGrid.getRowConstraints().addAll(r0, r1, r2,r3,r4);
+
+        BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(1.0, 1.0, true, true, false, false));
+        modesChoiceGrid.setBackground(new Background(myBI));
+
+        ArrayList<ImageView> imageViews = new ArrayList<>();
+        ImageView ivChar1 = new ImageView();
+        imageViews.add(ivChar1);
+        ImageView ivChar2 = new ImageView();
+        imageViews.add(ivChar2);
+        ImageView ivChar3 = new ImageView();
+        imageViews.add(ivChar3);
+        ImageView ivChar4 = new ImageView();
+        imageViews.add(ivChar4);
+        ImageView ivChar5 = new ImageView();
+        imageViews.add(ivChar5);
+
+        try {
+            unclickedImage(imageViews, availableCharacters);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        StackPane char1Container = new StackPane();
+        setUpProperties(char1Container, ivChar1);
+        modesChoiceGrid.add(char1Container, 0, 1, 2, 1);
+        ivChar1.setOnMouseClicked(e -> {
+            try {
+                unclickedImage(imageViews, availableCharacters);
+            }catch (Exception e1){
+                e1.printStackTrace();
+            }
+            clickedImage(ivChar1, "characters/" + availableCharacters.get(0));
+        });
+
+        if (availableCharacters.size() > 1) {
+            StackPane char2Container = new StackPane();
+            setUpProperties(char2Container, ivChar2);
+            modesChoiceGrid.add(char2Container, 2, 1, 2, 1);
+            ivChar2.setOnMouseClicked(e -> {
+                try {
+                    unclickedImage(imageViews, availableCharacters);
+                }catch (Exception e1){
+                    e1.printStackTrace();
+                }
+                clickedImage(ivChar2, "characters/" + availableCharacters.get(1));
+            });
+        }
+
+        if (availableCharacters.size() > 2) {
+            StackPane char3Container = new StackPane();
+            setUpProperties(char3Container, ivChar3);
+            modesChoiceGrid.add(char3Container, 4, 1, 2, 1);
+            ivChar3.setOnMouseClicked(e -> {
+                try {
+                    unclickedImage(imageViews, availableCharacters);
+                }catch (Exception e1){
+                    e1.printStackTrace();
+                }
+                clickedImage(ivChar3, "characters/" + availableCharacters.get(2));
+            });
+        }
+
+        if (availableCharacters.size() > 3) {
+            StackPane char4Container = new StackPane();
+            setUpProperties(char4Container, ivChar4);
+            modesChoiceGrid.add(char4Container, 1, 2, 2, 1);
+            ivChar4.setOnMouseClicked(e -> {
+                try {
+                    unclickedImage(imageViews, availableCharacters);
+                }catch (Exception e1){
+                    e1.printStackTrace();
+                }
+                clickedImage(ivChar4, "characters/" + availableCharacters.get(3));
+            });
+        }
+
+        if (availableCharacters.size() > 4) {
+            StackPane char5Container = new StackPane();
+            setUpProperties(char5Container, ivChar5);
+            modesChoiceGrid.add(char5Container, 3, 2, 2, 1);
+            ivChar5.setOnMouseClicked(e -> {
+                try {
+                    unclickedImage(imageViews, availableCharacters);
+                }catch (Exception e1){
+                    e1.printStackTrace();
+                }
+                clickedImage(ivChar5, "characters/" + availableCharacters.get(4));
+            });
+        }
+
+        Text text = new Text("Choose a character");
+        text.setFont(Font.font("Futura", FontWeight.LIGHT, 30));
+        text.setFill(Color.WHITE);
+        //text.setStyle("-fx-font: 40px Tahoma; -fx-fill: linear-gradient(from 0% 0% to 100% 200%, repeat, yellow 0%, white 50%);");
+        modesChoiceGrid.add(text,0,0,3,1);
+        modesChoiceGrid.add(boxButton, 0, 4,6,1);
+
+        mainScene.setRoot(modesChoiceGrid);
+    }
+
+    public void chooseGameMap(){
+        modesChoiceGrid = new GridPane();
+        modesChoiceGrid.getRowConstraints().clear();
+        modesChoiceGrid.getColumnConstraints().clear();
+        modesChoiceGrid.getChildren().clear();
+        modesChoiceGrid.setGridLinesVisible(true);
+        for(int i=0; i<2; i++){
+            c = new ColumnConstraints();
+            c.setPercentWidth(50);
+            modesChoiceGrid.getColumnConstraints().add(c);
+        }
+        RowConstraints r0 = new RowConstraints();
+        r0.setPercentHeight(40);
+        RowConstraints r1 = new RowConstraints();
+        r1.setPercentHeight(40);
+        RowConstraints r2 = new RowConstraints();
+        r2.setPercentHeight(20);
+        modesChoiceGrid.getRowConstraints().addAll(r0,r1,r2);
+
+        ArrayList<ImageView> imageViews = new ArrayList<>();
+        ImageView ivConf1 = new ImageView();
+        imageViews.add(ivConf1);
+        ImageView ivConf2 = new ImageView();
+        imageViews.add(ivConf2);
+        ImageView ivConf3 = new ImageView();
+        imageViews.add(ivConf3);
+        ImageView ivConf4 = new ImageView();
+        imageViews.add(ivConf4);
+        ArrayList<String> confs = new ArrayList<>();
+        confs.add("conf1");
+        confs.add("conf2");
+        confs.add("conf3");
+        confs.add("conf4");
+
+        try {
+            unclickedImage(imageViews, confs);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        StackPane conf1Container = new StackPane();
+        setUpProperties(conf1Container, ivConf1);
+        modesChoiceGrid.add(conf1Container, 0, 0, 1, 1);
+        ivConf1.setOnMouseClicked(e -> {
+            try {
+                unclickedImage(imageViews, confs);
+            }catch (Exception e1){
+                e1.printStackTrace();
+            }
+            clickedImage(ivConf1, "board/conf1");
+        });
+
+        StackPane conf2Container = new StackPane();
+        setUpProperties(conf2Container, ivConf2);
+        modesChoiceGrid.add(conf2Container, 0, 1, 1, 1);
+        ivConf2.setOnMouseClicked(e -> {
+            try {
+                unclickedImage(imageViews, confs);
+            }catch (Exception e1){
+                e1.printStackTrace();
+            }
+            clickedImage(ivConf2, "board/conf2");
+        });
+
+        StackPane conf3Container = new StackPane();
+        setUpProperties(conf3Container, ivConf3);
+        modesChoiceGrid.add(conf3Container, 1, 0, 1, 1);
+        ivConf3.setOnMouseClicked(e -> {
+            try {
+                unclickedImage(imageViews, confs);
+            }catch (Exception e1){
+                e1.printStackTrace();
+            }
+            clickedImage(ivConf3, "board/conf3");
+        });
+
+        StackPane conf4Container = new StackPane();
+        setUpProperties(conf4Container, ivConf4);
+        modesChoiceGrid.add(conf4Container, 1, 1, 1, 1);
+        ivConf4.setOnMouseClicked(e -> {
+            try {
+                unclickedImage(imageViews, confs);
+            }catch (Exception e1){
+                e1.printStackTrace();
+            }
+            clickedImage(ivConf4, "board/conf4");
+        });
+        modesChoiceGrid.add(boxButton, 0, 2,2,1);
+        mainScene.setRoot(modesChoiceGrid);
+    }
+
+
+
+
     public void createMap() throws Exception{
 
 
-        //Main grid creation
-        root = new GridPane();
+        //Main modesChoiceGrid creation
+        boardGrid = new GridPane();
         ColumnConstraints column0 = new ColumnConstraints();
         column0.setPercentWidth(40);
         ColumnConstraints column1 = new ColumnConstraints();
         column1.setPercentWidth(60);
-        root.getColumnConstraints().addAll(column0, column1); // each get 50% of width
+        boardGrid.getColumnConstraints().addAll(column0, column1);
         RowConstraints row0 = new RowConstraints();
         row0.setPercentHeight(15);
         RowConstraints row1 = new RowConstraints();
@@ -75,8 +314,8 @@ public class AlternativeBoard extends Application {
         row3.setPercentHeight(15);
         RowConstraints row4 = new RowConstraints();
         row4.setPercentHeight(40);
-        root.getRowConstraints().addAll(row0, row1, row2, row3, row4);
-        root.setGridLinesVisible(true);
+        boardGrid.getRowConstraints().addAll(row0, row1, row2, row3, row4);
+        boardGrid.setGridLinesVisible(true);
 
         //Map creation
         StackPane mapContainer = new StackPane();
@@ -90,9 +329,9 @@ public class AlternativeBoard extends Application {
         mapContainer.setMinHeight(0.0);
         mapContainer.setMinWidth(0.0);
         mapContainer.setAlignment(Pos.CENTER);
-        root.add(mapContainer, 1,0, 1, 4);
+        boardGrid.add(mapContainer, 1,0, 1, 4);
 
-        //Map's grid creation
+        //Map's modesChoiceGrid creation
         GridPane mapGrid = new GridPane();
         mapGrid.maxWidthProperty().bind(mapContainer.heightProperty().multiply(1.32));
         mapGrid.maxHeightProperty().bind(mapContainer.widthProperty().divide(1.32));
@@ -118,7 +357,7 @@ public class AlternativeBoard extends Application {
         //mapGrid.setGridLinesVisible(true);
         //mapGrid.setStyle("-fx-background-color: cornsilk;");
 
-        //Adding buttons to the map's grid
+        //Adding buttons to the map's modesChoiceGrid
         Button r0c0 = new Button("Move here");
         r0c0.setStyle("-fx-background-color: rgba(210,204,161,0.2);");
         mapGrid.add(r0c0, 1,1);
@@ -186,8 +425,8 @@ public class AlternativeBoard extends Application {
         //Setting background
         BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
-        root.setBackground(new Background(myBI));
-        //root.setStyle("-fx-background-color: black");
+        boardGrid.setBackground(new Background(myBI));
+        //boardGrid.setStyle("-fx-background-color: black");
 
         //Testing
         ArrayList<String> prova = new ArrayList<>();
@@ -216,7 +455,7 @@ public class AlternativeBoard extends Application {
         }
 
         //Showing
-        Scene scene = new Scene(root, 1200, 675);
+        Scene scene = new Scene(boardGrid, 1200, 675);
         primaryStage.setScene(scene);
         primaryStage.setFullScreen(true);
     }
@@ -273,9 +512,9 @@ public class AlternativeBoard extends Application {
         weaponsContainer.add(playerBoardContainer3, 15,1,3,1);
         //weaponsContainer.setStyle("-fx-background-color: cornsilk;");
         weaponsContainer.setGridLinesVisible(true);
-        root.getChildren().remove(cardsContainer);
+        boardGrid.getChildren().remove(cardsContainer);
         cardsContainer = weaponsContainer;
-        root.add(cardsContainer, 1,4, 1, 1);
+        boardGrid.add(cardsContainer, 1,4, 1, 1);
     }
 
     public void addAmmos(ArrayList<String> ammoColor, GridPane ammosContainer) throws Exception{
@@ -341,9 +580,9 @@ public class AlternativeBoard extends Application {
         ivAmmo9.setImage(ammo9);
         setUpProperties(ammoContainer9, ivAmmo9);
         ammosContainer.add(ammoContainer9, 16,0,2,1);
-        root.getChildren().removeAll(cardsContainer);
+        boardGrid.getChildren().removeAll(cardsContainer);
         cardsContainer = ammosContainer;
-        root.add(cardsContainer, 1,4, 1, 1);
+        boardGrid.add(cardsContainer, 1,4, 1, 1);
     }
 
     public void addPlayerBoards(ArrayList<String> playerColors) throws Exception{
@@ -353,21 +592,21 @@ public class AlternativeBoard extends Application {
         ImageView ivMyBoard = new ImageView();
         ivMyBoard.setImage(myBoard);
         setUpProperties(playerBoardContainer, ivMyBoard);
-        root.add(playerBoardContainer, 0,4);
+        boardGrid.add(playerBoardContainer, 0,4);
 
         StackPane board2Container = new StackPane();
         Image board2 = new Image(new FileInputStream("src/main/resources/images/playerboards/playerboard_" + playerColors.get(1) + ".png"));
         ImageView ivBoard2 = new ImageView();
         ivBoard2.setImage(board2);
         setUpProperties(board2Container, ivBoard2);
-        root.add(board2Container, 0,0);
+        boardGrid.add(board2Container, 0,0);
 
         StackPane board3Container = new StackPane();
         Image board3 = new Image(new FileInputStream("src/main/resources/images/playerboards/playerboard_" + playerColors.get(2) + ".png"));
         ImageView ivBoard3 = new ImageView();
         ivBoard3.setImage(board3);
         setUpProperties(board3Container, ivBoard3);
-        root.add(board3Container, 0,1);
+        boardGrid.add(board3Container, 0,1);
 
         if(playerColors.size()>=4) {
             StackPane board4Container = new StackPane();
@@ -375,7 +614,7 @@ public class AlternativeBoard extends Application {
             ImageView ivBoard4 = new ImageView();
             ivBoard4.setImage(board4);
             setUpProperties(board4Container, ivBoard4);
-            root.add(board4Container, 0,2);
+            boardGrid.add(board4Container, 0,2);
         }
 
         if(playerColors.size()==5) {
@@ -384,7 +623,7 @@ public class AlternativeBoard extends Application {
             ImageView ivBoard5 = new ImageView();
             ivBoard5.setImage(board5);
             setUpProperties(board5Container, ivBoard5);
-            root.add(board5Container, 0,3);
+            boardGrid.add(board5Container, 0,3);
         }
     }
 
