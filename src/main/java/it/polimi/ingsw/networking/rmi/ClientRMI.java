@@ -131,15 +131,12 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
-    public void choseCharacter(String characterColor){
-        try {
+    public void choseCharacter(String characterColor) {
+        submitRemoteMethodInvocation(() -> {
             var availableCharacters = server.getAvailableCharacters(gameID);
-            if (!server.choseCharacter(gameID, userID, characterColor))
-                executorService.submit(() -> this.viewObserver.willChooseCharacter(availableCharacters));
-        } catch (RemoteException e) {
-            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
-            AdrenalineLogger.error(e.getMessage());
-        }
+            if (!server.choseCharacter(gameID, userID, characterColor)) this.viewObserver.willChooseCharacter(availableCharacters);
+            return null;
+        });
     }
 
     @Override
@@ -501,7 +498,10 @@ public class ClientRMI extends Client implements ClientInterface {
 
     @Override
     public void willChooseCharacter(List<String> availableCharacters){
-        viewObserver.willChooseCharacter(availableCharacters);
+        submitRemoteMethodInvocation(() -> {
+            viewObserver.willChooseCharacter(availableCharacters);
+            return null;
+        });
     }
 
 
