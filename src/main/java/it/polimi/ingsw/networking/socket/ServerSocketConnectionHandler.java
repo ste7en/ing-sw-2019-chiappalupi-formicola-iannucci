@@ -452,7 +452,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
             for(String pow : pows)
                 responseArgs.put(Integer.toString(pows.indexOf(pow)), pow);
             send(CommunicationMessage.from(connectionID, LAST_DAMAGE_DONE, responseArgs));
-        }
+        } else send(CommunicationMessage.from(connectionID, DAMAGE_DONE));
     }
 
     private void powerupSellingDecided(int connectionID, Map<String, String> args, UUID gameID) {

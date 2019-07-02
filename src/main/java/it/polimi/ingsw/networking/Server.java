@@ -80,6 +80,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private static final String SERVER_RMI_CONFIG  = "RMI Server configured on port ";
     private static final String SERVER_RMI_SUCCESS = "RMI Server is running on ";
     private static final String ASKING_CHARACTER   = "Asking which character to use...";
+    private static final String DAMAGE_DOESN_T_EXIST = "This damage doesn't exist!";
 
 
     /**
@@ -561,7 +562,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         ArrayList<Damage> damageToMake = new ArrayList<>();
         for (ArrayList<Damage> damages : possibleDamages)
             if (damages.toString().equals(damage)) damageToMake = damages;
-        if (damageToMake.isEmpty()) throw new IllegalArgumentException("This damage doesn't exist!");
+        if (damageToMake.isEmpty()) throw new IllegalArgumentException(DAMAGE_DOESN_T_EXIST);
         if (toApply) {
             for (Damage d : damageToMake)
                 gameControllers.get(gameID).getWeaponController().applyDamage(d, playerColor, gameControllers.get(gameID).getBoard());

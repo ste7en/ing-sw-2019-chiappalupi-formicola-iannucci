@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -18,6 +19,7 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("Duplicates")
@@ -43,7 +45,7 @@ public class AlternativeBoard extends Application {
 
         button = new Button("Continue");
         ArrayList<String> prova = new ArrayList<>();
-        prova.add("blue");
+        for(PlayerColor color : Arrays.asList(PlayerColor.values())) prova.add(color.toString());
         button.setOnAction(e -> {try{chooseGameMap();} catch (Exception ex){ex.printStackTrace();}});
         boxButton = new HBox(button);
         boxButton.setAlignment(Pos.CENTER);

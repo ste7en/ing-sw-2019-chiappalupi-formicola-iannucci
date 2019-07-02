@@ -200,12 +200,14 @@ public enum CommunicationMessage {
      *
      * DAMAGE_TO_MAKE is sent from the client to the server to notify the selection of the damage that has to be applied to the other players.
      * LAST_DAMAGE acts just like DAMAGE_TO_MAKE, but signals that it will be the last damage of the weapon to be done.
+     * DAMAGE_DONE is sent from the server to the client to notify that damage has been done
      * LAST_DAMAGE_DONE is sent from the server to the client to notify that the process of using the weapon is over. It has got only the weapon as argument.
      *
      * Arguments: <Damage.damage_key, damage>, <Weapon.weapon_key, Weapon_name>, <Effect.effect_key, indexOf_effect>
      */
     DAMAGE_TO_MAKE,
     LAST_DAMAGE,
+    DAMAGE_DONE,
     LAST_DAMAGE_DONE,
 
     /**

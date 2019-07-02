@@ -36,22 +36,22 @@ public abstract class Client implements Loggable {
      * Log strings
      */
     @SuppressWarnings("squid:S3008")
-    protected static final String UNKNOWN_HOST       = "Can't find the hostname. Asking for user input...";
-    protected static final String IO_EXC             = "An IOException has been thrown. ";
-    protected static final String EXECUTION_EXC      = "Execution exception during a timeout operation :: ";
-    protected static final String INTERRUPTED_EXC    = "Timeout operation on client interrupted.";
-    protected static final String CONN_RETRY         = "Connection retrying...";
-    protected static final String ON_SUCCESS         = "ClientSocket successfully connected to the server.";
-    protected static final String ASK_SERVER_DETAILS = "Asking for server hostname and connection port.";
-    protected static final String INFO               = "Setting up connection...";
-    protected static final String CONNECTION_REFUSED = "Connection refused. Asking for user input...";
-    protected static final String OBS_REGISTERED     = "Observer successfully registered.";
+    protected static final String UNKNOWN_HOST          = "Can't find the hostname. Asking for user input...";
+    protected static final String IO_EXC                = "An IOException has been thrown. ";
+    private static final String EXECUTION_EXC           = "Execution exception during a timeout operation :: ";
+    private static final String INTERRUPTED_EXC         = "Timeout operation on client interrupted.";
+    protected static final String CONN_RETRY            = "Connection retrying...";
+    protected static final String ON_SUCCESS            = "ClientSocket successfully connected to the server.";
+    private static final String ASK_SERVER_DETAILS      = "Asking for server hostname and connection port.";
+    protected static final String INFO                  = "Setting up connection...";
+    protected static final String CONNECTION_REFUSED    = "Connection refused. Asking for user input...";
+    private static final String OBS_REGISTERED          = "Observer successfully registered.";
 
     /**
      * Helper strings for the following method
      */
-    protected static final String ASK_HOST_NAME      = "Please, insert server's address or hostname: ";
-    protected static final String ASK_PORT_NUMBER    = "Please, insert server's port number: ";
+    private static final String ASK_HOST_NAME           = "Please, insert server's address or hostname: ";
+    private static final String ASK_PORT_NUMBER         = "Please, insert server's port number: ";
 
     /**
      * Class constructor

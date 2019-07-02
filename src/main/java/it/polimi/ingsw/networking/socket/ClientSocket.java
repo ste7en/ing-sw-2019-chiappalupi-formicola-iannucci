@@ -173,7 +173,15 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case MODES_LIST:
                         this.viewObserver.willChooseMode(args);
                         break;
+                    case DAMAGE_DONE:
+                        synchronized (this) {
+                            this.notifyAll();
+                        }
+                        break;
                     case LAST_DAMAGE_DONE:
+                        synchronized (this) {
+                            this.notifyAll();
+                        }
                         this.viewObserver.didUseWeapon(new ArrayList<>(args.values()));
                         break;
                     case NO_WEAPON_UNLOADED_IN_HAND:
@@ -367,6 +375,15 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
             effectsToUse.remove(0);
             Map<String, String> argsBox = new HashMap<>(args);
             this.send(CommunicationMessage.from(userID, EFFECT_TO_USE, argsBox, gameID));
+            synchronized (this) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    AdrenalineLogger.error(e.toString());
+                    AdrenalineLogger.error(e.getMessage());
+                    Thread.currentThread().interrupt();
+                }
+            }
             args.remove(PotentiableWeapon.forPotentiableWeapon_key);
             args.remove(Effect.effect_key);
         }

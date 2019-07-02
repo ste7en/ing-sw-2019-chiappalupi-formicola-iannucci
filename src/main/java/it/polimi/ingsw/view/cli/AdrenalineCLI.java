@@ -64,7 +64,7 @@ public class AdrenalineCLI extends View {
     private static final String GRAB_FAILURE                = "No weapons can be bought using the powerups you wanted to sell.";
     private static final String CHOOSE_MOVEMENT             = "These are the available movements you can do. Please, choose one by selecting its number: ";
     private static final String SHOOT_PEOPLE_FAILURE        = "You have no weapon in your hand, so you can't shoot anyone.";
-    private static final String DAMAGE_FAILURE              = "No damage can be made with the weapon and the effects selected.";
+    private static final String DAMAGE_FAILURE              = "No damage can be done with the weapon and the effects selected.";
     private static final String CHOOSE_POWERUP_TO_SELL      = "What powerup do you want to sell?";
     private static final String POWERUP_FAILURE             = "You haven't got any powerup!";
     private static final String CHOOSE_MAP                  = "Which map do you want to play on?";
@@ -475,20 +475,22 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void willChooseDamage(Map<String, String> damagesToChoose) {
+        String forPotentiableWeapon = null;
+        if(damagesToChoose.containsKey(PotentiableWeapon.forPotentiableWeapon_key)) {
+            forPotentiableWeapon = damagesToChoose.get(PotentiableWeapon.forPotentiableWeapon_key);
+            damagesToChoose.remove(PotentiableWeapon.forPotentiableWeapon_key);
+        }
         String weapon = damagesToChoose.get(Weapon.weapon_key);
         damagesToChoose.remove(Weapon.weapon_key);
         String indexOfEffect = damagesToChoose.get(Effect.effect_key);
         damagesToChoose.remove(Effect.effect_key);
-        ArrayList<String> possibleDamages = new ArrayList<>(damagesToChoose.values());
+        List<String> possibleDamages = new ArrayList<>(damagesToChoose.values());
         out.println(CHOOSE_DAMAGE);
         String choice = decisionHandlerFromList(possibleDamages);
         while(choice == null) {
             out.println(INCORRECT_CHOICE);
             choice = decisionHandlerFromList(possibleDamages);
         }
-        String forPotentiableWeapon = null;
-        if(damagesToChoose.containsKey(PotentiableWeapon.forPotentiableWeapon_key))
-            forPotentiableWeapon = damagesToChoose.get(PotentiableWeapon.forPotentiableWeapon_key);
         this.didChooseDamage(weapon, choice, indexOfEffect, forPotentiableWeapon);
         out.println(WEAPON_USED);
     }
