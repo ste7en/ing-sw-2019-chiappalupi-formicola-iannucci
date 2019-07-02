@@ -319,7 +319,16 @@ public enum CommunicationMessage {
      *
      * Arguments: <Powerup.powerup_key, Powerup::toString>, <Damage.damage_key, Damage::toString>
      */
-    POWERUP_DAMAGE_TO_MAKE;
+    POWERUP_DAMAGE_TO_MAKE,
+
+    /**
+     * View update messages.
+     *
+     * UPDATE_SITUATION is sent from the server to the client to notify that some other player has done something in his turn.
+     *
+     * Arguments: <GameMap.gameMap_key, Board::toStringFromPlayer>
+     */
+    UPDATE_SITUATION;
 
     /**
      * String constant used in messages between client-server

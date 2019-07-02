@@ -233,5 +233,10 @@ public class AdrenalineGUI extends View {
 
     }
 
+    @Override
+    public void displayChange(String change) {
+
+    }
+
 }
 

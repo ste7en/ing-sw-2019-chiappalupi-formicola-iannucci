@@ -557,4 +557,11 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     protected void startNewTurnFromRespawn(int userID) {
         this.send(CommunicationMessage.from(userID, CHOOSE_SPAWN_POINT));
     }
+
+    @Override
+    protected void displayChanges(int userID, String newBoardSituation) {
+        Map<String, String> args = new HashMap<>();
+        args.put(GameMap.gameMap_key, newBoardSituation);
+        this.send(CommunicationMessage.from(userID, UPDATE_SITUATION, args));
+    }
 }

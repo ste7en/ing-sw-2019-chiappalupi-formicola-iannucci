@@ -71,6 +71,8 @@ public class GrabController {
             for (Weapon spawnWeapon : weaponsInSpawn)
                 if(spawnWeapon != null && checkCost(spawnWeapon, soldPowerup, player)) possiblePicks.add(spawnWeapon.getName() + " " + spawn.toStringCondensed());
         }
+        powerupSold.clear();
+        powerupSold.addAll(soldPowerup);
         return possiblePicks;
     }
 

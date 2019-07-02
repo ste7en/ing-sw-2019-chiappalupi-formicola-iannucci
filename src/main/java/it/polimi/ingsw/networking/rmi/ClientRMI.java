@@ -116,6 +116,11 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
+    public void willDisplayUpdate(String change) {
+        this.viewObserver.displayChange(change);
+    }
+
+    @Override
     public void choseGameMap(String configuration){
         try {
             server.didChooseGameMap(gameID, configuration);

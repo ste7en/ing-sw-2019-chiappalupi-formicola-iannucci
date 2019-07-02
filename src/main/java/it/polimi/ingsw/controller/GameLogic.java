@@ -355,6 +355,19 @@ public class GameLogic {
     }
 
     /**
+     * This method is used to return all the players that are playing except the selected one.
+     * @param user it's the user who is playing right now
+     * @return a list containing the users looked for
+     */
+    public List<User> getOtherUsers(User user) {
+        List<User> otherUsers = new ArrayList<>();
+        for(Player player : players)
+            if(player.getUser() != user && player.isActive())
+                otherUsers.add(player.getUser());
+        return otherUsers;
+    }
+
+    /**
      * This method returns the info about if the user has already spawned
      * @param user it's the user to get the information from
      * @return true if the user has already spawned, false otherwise

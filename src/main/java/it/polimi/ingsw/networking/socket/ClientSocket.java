@@ -200,6 +200,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case END_TURN:
                         this.viewObserver.onEndTurn(args.get(GameMap.gameMap_key));
                         break;
+                    case UPDATE_SITUATION:
+                        this.viewObserver.displayChange(args.get(GameMap.gameMap_key));
+                        break;
                     default:
                         logOnFailure(UNKNOWN_COMMUNICATION_MESSAGE+communicationMessage);
                         break;

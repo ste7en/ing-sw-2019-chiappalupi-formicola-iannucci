@@ -100,7 +100,8 @@ public class AdrenalineCLI extends View {
     private static final String TURN_ENDED                  = "Your turn has now come to an end. Wait for the next one...";
     private static final String USE_ANY_OF_YOUR_POWERUP     = "Would you like to use any of your powerup? [Y/N]";
     private static final String TURN_ENDING                 = "Your turn is about to end. You will be now given of the possibilities to reload your unloaded weapons and use any powerup that can be used during this phase.";
-
+    private static final String MOVEMENT_MADE               = "A movement has been made! Check out the new situation on the board:";
+    private static final String WILL_PLAY_SOON              = "Keep waiting: soon it will be your turn...";
 
     /**
      * Log strings or exceptions
@@ -753,6 +754,13 @@ public class AdrenalineCLI extends View {
         }
         this.didChoosePowerupDamage(choice, powerup);
         out.println(POWERUP_USED);
+    }
+
+    @Override
+    public void displayChange(String change) {
+        out.println(MOVEMENT_MADE);
+        out.println(change);
+        out.println(WILL_PLAY_SOON);
     }
 
 }

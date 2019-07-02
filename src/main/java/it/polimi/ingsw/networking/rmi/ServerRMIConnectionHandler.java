@@ -80,6 +80,15 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
     }
 
     @Override
+    protected void displayChanges(int userID, String newBoardSituation) {
+        try {
+            clientRMI.willDisplayUpdate(newBoardSituation);
+        } catch (RemoteException e) {
+            logOnException(REMOTE_EXC, e);
+        }
+    }
+
+    @Override
     public void ping() {
         if (this.isConnectionAvailable()) Ping.getInstance().didPong(getConnectionHashCode());
     }

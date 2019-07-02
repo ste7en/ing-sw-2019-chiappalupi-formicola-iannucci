@@ -32,4 +32,11 @@ public interface ClientInterface extends Remote {
      */
     void willStartFromRespawn() throws RemoteException;
 
+    /**
+     * When a player that is not this client has made a move and it should be displayed to the other players
+     * @param change it's the change that should be displayed
+     * @throws RemoteException RMI Exception
+     */
+    void willDisplayUpdate(String change) throws  RemoteException;
+
 }

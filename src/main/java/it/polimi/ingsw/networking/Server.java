@@ -730,7 +730,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public String afterAction(int userID, UUID gameID) {
-        return gameControllers.get(gameID).updateNumOfRemainingActions(findUserFromID(userID));
+        String situation = gameControllers.get(gameID).updateNumOfRemainingActions(findUserFromID(userID));
+        List<User> otherUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
+        for(User user : otherUsers)
+            users.get(user).displayChanges(user.hashCode(), gameControllers.get(gameID).getBoard().toStringFromPlayer(gameControllers.get(gameID).lookForPlayerFromUser(user)));
+        return situation;
     }
 
   /**

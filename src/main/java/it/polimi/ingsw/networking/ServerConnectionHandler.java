@@ -62,4 +62,11 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable {
      * @param userID it's the ID of the user.
      */
     protected abstract void startNewTurnFromRespawn(int userID);
+
+    /**
+     * Displays any change that occurred during other players actions
+     * @param userID it's the ID of the user.
+     * @param newBoardSituation it's the updated situation of the board
+     */
+    protected abstract void displayChanges(int userID, String newBoardSituation);
 }

@@ -476,4 +476,10 @@ public abstract class View {
     protected void didChoosePowerupDamage(String choice, String powerup) {
         this.client.usePowerup(powerup, choice);
     }
+
+    /**
+     * Called whenever any other player finishes an action.
+     * @param change it's the updated Board::toStringFromPlayer
+     */
+    public abstract void displayChange(String change);
 }
