@@ -45,7 +45,7 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_SPAWN_POINT          = "Here are two powerup cards. Choose the one you want to discard: its color will be the color where you will spawn.\n" +
                                                               "You will keep the powerup that you don't discard.";
     private static final String GAME_SITUATION              = "Here is the situation of the game:\n";
-    private static final String NO_POWERUPS_IN_HAND = "You haven't any powerup that you can use right now.";
+    private static final String NO_POWERUPS_IN_HAND         = "You haven't any powerup that you can use right now.";
     private static final String CHOOSE_ACTION               = "Choose your next move between the following:\n\t" +
                                                               "1. Move\n\t" +
                                                               "2. Grab something\n\t" +
@@ -97,6 +97,9 @@ public class AdrenalineCLI extends View {
                                                               ONE_SHOT +
                                                               "to reload a list of weapon where the color/s of the powerup/s that you select is/are involved.";
     private static final String MORE_POWERUP_SELLING        = "Do you want use another powerup to afford the cost of the shoot?";
+    private static final String TURN_ENDED                  = "Your turn has now come to an end. Wait for the next one...";
+    private static final String USE_ANY_OF_YOUR_POWERUP     = "Would you like to use any of your powerup? [Y/N]";
+    private static final String TURN_ENDING                 = "Your turn is about to end. You will be now given of the possibilities to reload your unloaded weapons and use any powerup that can be used during this phase.";
 
 
     /**
@@ -290,9 +293,11 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void onChooseSpawnPoint(List<String> powerups) {
+        flushInput();
         out.println(CHOOSE_SPAWN_POINT);
-        String spawnPoint = null;
+        String spawnPoint = decisionHandlerFromList(powerups);
         while(spawnPoint == null) {
+            out.println(INCORRECT_CHOICE);
             spawnPoint = decisionHandlerFromList(powerups);
         }
         String otherPowerup;
@@ -559,10 +564,7 @@ public class AdrenalineCLI extends View {
      * @throws IllegalArgumentException if an incorrect choice is made.
      */
     private String decisionHandlerFromMap(Map<String, String> args) {
-        ArrayList<String> options = new ArrayList<>(args.values());
-        String optionSelected = decisionHandlerFromList(options);
-        if(optionSelected == null) throw new IllegalArgumentException(INCORRECT_CHOICE);
-        return optionSelected;
+        return decisionHandlerFromList(new ArrayList<>(args.values()));
     }
 
     /**
@@ -603,6 +605,10 @@ public class AdrenalineCLI extends View {
         effectsToChoose.remove(Weapon.weapon_key);
         out.println(CHOOSE_EFFECT);
         String effectsSelected = decisionHandlerFromMap(effectsToChoose);
+        while(effectsSelected == null) {
+            out.println(INCORRECT_CHOICE);
+            effectsSelected = decisionHandlerFromMap(effectsToChoose);
+        }
         String box = effectsSelected.replaceAll("[\\[\\]]", "");
         List<String> effects = List.of(box.split(", "));
         this.didChooseEffects(effects, weapon);
@@ -626,8 +632,17 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void onEndTurn() {
-        out.println("Fine dei giochi amico");
+    public void onEndTurn(String curSituation) {
+        this.curSituation = curSituation;
+        out.println(TURN_ENDING);
+        out.println(GAME_SITUATION);
+        this.askReload();
+        out.println(USE_ANY_OF_YOUR_POWERUP);
+        String scanInput = in.nextLine();
+        if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y"))
+            this.willUsePowerup();
+        out.println(TURN_ENDED);
+        this.client.turnEnded();
     }
 
     @Override
@@ -661,8 +676,6 @@ public class AdrenalineCLI extends View {
     @Override
     public void onWeaponUnloadedFailure() {
         out.println(NO_WEAPON_UNLOADED);
-        //toDo is onEndTurn right?
-        this.onEndTurn();
     }
 
     @Override
@@ -726,7 +739,6 @@ public class AdrenalineCLI extends View {
                 }
             }
         }
-        this.afterAction();
     }
 
     @Override
@@ -735,6 +747,10 @@ public class AdrenalineCLI extends View {
         String powerup = possibleDamages.get(Powerup.powerup_key);
         possibleDamages.remove(Powerup.powerup_key);
         String choice = decisionHandlerFromMap(possibleDamages);
+        while(choice == null) {
+            out.println(INCORRECT_CHOICE);
+            choice = decisionHandlerFromMap(possibleDamages);
+        }
         this.didChoosePowerupDamage(choice, powerup);
         out.println(POWERUP_USED);
     }

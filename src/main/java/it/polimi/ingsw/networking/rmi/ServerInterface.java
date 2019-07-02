@@ -84,5 +84,7 @@ public interface ServerInterface extends Remote {
 
     void sellPowerupToReload(List<String> powerups, int userID, UUID gameID) throws RemoteException;
 
-    int afterAction(int userID, UUID gameID) throws RemoteException;
+    String afterAction(int userID, UUID gameID) throws RemoteException;
+
+    void turnEnded(int userID, UUID gameID) throws RemoteException;
 }

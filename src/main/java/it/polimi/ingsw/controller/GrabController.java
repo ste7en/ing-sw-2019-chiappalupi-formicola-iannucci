@@ -69,7 +69,7 @@ public class GrabController {
             else if(spawn.getColor() == CellColor.yellow) color = AmmoColor.yellow;
             List<Weapon> weaponsInSpawn = board.showWeapons(color);
             for (Weapon spawnWeapon : weaponsInSpawn)
-                if(checkCost(spawnWeapon, soldPowerup, player)) possiblePicks.add(spawnWeapon.getName() + " " + spawn.toStringCondensed());
+                if(spawnWeapon != null && checkCost(spawnWeapon, soldPowerup, player)) possiblePicks.add(spawnWeapon.getName() + " " + spawn.toStringCondensed());
         }
         return possiblePicks;
     }
@@ -158,6 +158,7 @@ public class GrabController {
      */
     public Map<String, String> didGrab(String pick, Player player, DecksHandler decks, Board board) {
         List<Cell> possibleMovements = board.getMap().getCellsAtMaxDistance(player, player.getPlayerBoard().getStepsBeforeGrabbing());
+        possibleMovements.add(board.getMap().getCellFromPlayer(player));
         Cell pickedCell = null;
         Weapon grabbedWeapon = null;
         List<Cell> spawns = new ArrayList<>();
@@ -174,7 +175,7 @@ public class GrabController {
                 else if(cell.getColor() == CellColor.yellow) color = AmmoColor.yellow;
                 List<Weapon> weaponsInSpawn = board.showWeapons(color);
                 for (Weapon spawnWeapon : weaponsInSpawn) {
-                    String box = spawnWeapon.getName() + cell.toStringCondensed();
+                    String box = spawnWeapon.getName() + " " + cell.toStringCondensed();
                     if(box.equals(pick)) {
                         pickedCell = cell;
                         grabbedWeapon = spawnWeapon;

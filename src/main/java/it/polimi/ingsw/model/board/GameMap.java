@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import it.polimi.ingsw.controller.DecksHandler;
 import it.polimi.ingsw.model.utility.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -169,6 +170,14 @@ public class GameMap implements Cloneable{
      */
     public Cell getCell(int row, int column) {
         return map[row][column];
+    }
+
+    /**
+     * Players position getter
+     * @return a clone so that the original list can't be modified
+     */
+    public Map<Player, Cell> getPlayersPosition() {
+        return new LinkedHashMap<>(playersPosition);
     }
 
     /**
@@ -730,5 +739,18 @@ public class GameMap implements Cloneable{
      */
     public Cell getPositionFromPlayer(Player player) {
         return playersPosition.get(player);
+    }
+
+    /**
+     * Refills the ammo tiles with their AmmoCards
+     * @param decks it's the DeckHandler of the game
+     */
+    public void refillAmmoTiles(DecksHandler decks) {
+        for(int i = 0; i < ROWS; i++) {
+            for(int j= 0; j < COLUMNS; j++) {
+                if(map[i][j] != null && map[i][j].getAmmoCard() == null)
+                    map[i][j].setAmmoCard(decks.drawAmmoTile());
+            }
+        }
     }
 }

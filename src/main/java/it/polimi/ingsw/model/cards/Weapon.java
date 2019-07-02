@@ -108,7 +108,9 @@ public abstract class Weapon {
      */
     @Override
     public String toString() {
-        return "Name: " + name + ";\nCost: " + cost.toString() + ";\nNotes: " + notes;
+        String load = "loaded";
+        if(!loaded) load = "unloaded";
+        return name + " - " + load + ";\n";
     }
 
     public void setConstraintOrder(boolean constraintOrder) {

@@ -184,7 +184,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onEndTurn() {
+    public void onEndTurn(String curSituation) {
 
     }
 

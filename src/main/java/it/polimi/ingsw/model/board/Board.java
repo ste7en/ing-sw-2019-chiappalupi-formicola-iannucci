@@ -163,7 +163,7 @@ public class Board {
             board.append(color.toString()).append(": ");
             List<Weapon> weaponList = this.weapons.get(color);
             for(Weapon weapon : weaponList) {
-                board.append(weapon.getName()).append("; ");
+                if(weapon != null) board.append(weapon.getName()).append("; ");
             }
             board.append("\n");
         }
@@ -172,7 +172,7 @@ public class Board {
         List<Weapon> weaponList = player.getPlayerHand().getWeapons();
         board.append(player.getNickname()).append(", ");
         if(weaponList.isEmpty()) {
-            board.append(NO_WEAPON_IN_HAND).append("\n");
+            board.append("\n").append(NO_WEAPON_IN_HAND).append("\n");
         }
         else {
             board.append(WEAPONS_IN_HAND);

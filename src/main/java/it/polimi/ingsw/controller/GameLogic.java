@@ -26,7 +26,7 @@ public class GameLogic {
 
     private int numberOfPlayers;
     private boolean finalFrenzy;
-    private ArrayList<Player> players;
+    private List<Player> players;
     private Board board;
     private UUID gameID;
     private DecksHandler decks;
@@ -76,13 +76,14 @@ public class GameLogic {
 
     /**
      * Number of remaining actions updater: called when a player has done an action successfully
+     * @param user it's the user that is playing right now
      * @return the number of actions that the player can still do
      */
-    public int updateNumOfRemainingActions() {
+    public String updateNumOfRemainingActions(User user) {
         numOfRemainingActions--;
-        int box =  numOfRemainingActions;
         if(numOfRemainingActions < 1) numOfRemainingActions = -1;
-        return box;
+        if(numOfRemainingActions != -1) return null;
+        return this.situation(user);
     }
 
     /**
@@ -316,9 +317,57 @@ public class GameLogic {
         availableCells.forEach( cell -> { if (cell.toString().equalsIgnoreCase(movement))map.setPlayerPosition(player, cell); });
     }
 
+    /**
+     * This method is used to return the string containing the situation of the board.
+     * @param user it's the user who the situation is being looked for
+     * @return a String containing the situation of the user
+     */
     private String situation(User user) {
         String s = board.toStringFromPlayer(lookForPlayerFromUser(user));
         s = s + "Number of remaining actions: " + numOfRemainingActions + "\n";
         return s;
+    }
+
+    /**
+     * This method is used to know which one is the player after the one who is playing
+     * @param user it's the user who is playing right now
+     * @return the next user
+     */
+    public User getNextPlayer(User user) {
+        Player actualPlayer = lookForPlayerFromUser(user);
+        int index = players.indexOf(actualPlayer);
+        Player nextPlayer = null;
+        index++;
+        while(index < players.size()) {
+            if(players.get(index).isActive()) nextPlayer = players.get(index);
+            if(nextPlayer != null) index = players.size();
+            else index++;
+        }
+        if(nextPlayer != null) return nextPlayer.getUser();
+        index = 0;
+        while(index < players.size()) {
+            if(players.get(index).isActive()) nextPlayer = players.get(index);
+            if(nextPlayer != null) index = players.size();
+            else index++;
+        }
+        if(nextPlayer == actualPlayer || nextPlayer == null) throw new IllegalArgumentException("No next player found!");
+        return nextPlayer.getUser();
+    }
+
+    /**
+     * This method returns the info about if the user has already spawned
+     * @param user it's the user to get the information from
+     * @return true if the user has already spawned, false otherwise
+     */
+    public Boolean isAlreadyInGame(User user) {
+        return board.getMap().getPlayersPosition().containsKey(lookForPlayerFromUser(user));
+    }
+
+    /**
+     * Restores weapons and ammo tiles where they are missing
+     */
+    public void endTurn() {
+        this.board.refillWeapons(decks);
+        this.board.getMap().refillAmmoTiles(decks);
     }
 }

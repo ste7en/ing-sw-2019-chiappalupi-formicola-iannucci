@@ -20,4 +20,16 @@ public interface ClientInterface extends Remote {
      */
     void willChooseGameMap() throws RemoteException;
 
+    /**
+     * When a new turn begins
+     * @throws RemoteException RMI Exception
+     */
+    void willStartTurn() throws RemoteException;
+
+    /**
+     * When a new game begins and the player hasn't still spawned
+     * @throws RemoteException RMI Exception
+     */
+    void willStartFromRespawn() throws RemoteException;
+
 }

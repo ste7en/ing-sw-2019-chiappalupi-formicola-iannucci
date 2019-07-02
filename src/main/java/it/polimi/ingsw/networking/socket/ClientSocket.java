@@ -198,7 +198,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.afterAction();
                         break;
                     case END_TURN:
-                        this.viewObserver.onEndTurn();
+                        this.viewObserver.onEndTurn(args.get(GameMap.gameMap_key));
                         break;
                     default:
                         logOnFailure(UNKNOWN_COMMUNICATION_MESSAGE+communicationMessage);
@@ -411,5 +411,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     @Override
     public void afterAction() {
         this.send(CommunicationMessage.from(userID, END_ACTION, gameID));
+    }
+
+    @Override
+    public void turnEnded() {
+        this.send(CommunicationMessage.from(userID, TURN_ENDED, gameID));
     }
 }

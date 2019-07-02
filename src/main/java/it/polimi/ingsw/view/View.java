@@ -384,9 +384,10 @@ public abstract class View {
     public abstract void afterAction();
 
     /**
-     * Ste
+     * Public method implemented by subclasses, called when the player has to finish his turn.
+     * @param curSituation it's the String containing the situation of the board.
      */
-    public abstract void onEndTurn();
+    public abstract void onEndTurn(String curSituation);
 
     /**
      * Public method implemented by subclasses when the player has to decide whether he wants to reload his weapons or not.

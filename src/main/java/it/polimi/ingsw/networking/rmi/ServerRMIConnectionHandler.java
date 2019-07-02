@@ -6,7 +6,6 @@ import it.polimi.ingsw.networking.utility.Ping;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,6 +57,24 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
         try {
             clientRMI.willChooseGameMap();
         } catch (Exception e) {
+            logOnException(REMOTE_EXC, e);
+        }
+    }
+
+    @Override
+    protected void startNewTurn(int userID) {
+        try {
+            clientRMI.willStartTurn();
+        } catch (RemoteException e) {
+            logOnException(REMOTE_EXC, e);
+        }
+    }
+
+    @Override
+    protected void startNewTurnFromRespawn(int userID) {
+        try {
+            clientRMI.willStartFromRespawn();
+        } catch (RemoteException e) {
             logOnException(REMOTE_EXC, e);
         }
     }

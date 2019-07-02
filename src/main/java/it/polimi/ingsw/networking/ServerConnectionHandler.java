@@ -50,4 +50,16 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable {
      * @param gameID gameID
      */
     protected abstract void willChooseGameMap(UUID gameID);
+
+    /**
+     * Starts the turn of a new player.
+     * @param userID it's the ID of the user.
+     */
+    protected abstract void startNewTurn(int userID);
+
+    /**
+     * Starts the game of a new player that isn't the first one.
+     * @param userID it's the ID of the user.
+     */
+    protected abstract void startNewTurnFromRespawn(int userID);
 }

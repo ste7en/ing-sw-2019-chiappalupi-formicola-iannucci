@@ -40,8 +40,6 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 @SuppressWarnings("all")
 public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
-    private ServerRMIConnectionHandler serverRMIConnectionHandler;
-
     private Registry registry;
 
     /**
@@ -728,11 +726,23 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * Method called when a player has done an action successfully.
      * @param userID it's the ID of the user.
      * @param gameID it's the ID of the game.
-     * @return the number of remaining actions.
+     * @return a String containing the situation of the game: it is null if the turn should continue.
      */
     @Override
-    public int afterAction(int userID, UUID gameID) {
-        return gameControllers.get(gameID).updateNumOfRemainingActions();
+    public String afterAction(int userID, UUID gameID) {
+        return gameControllers.get(gameID).updateNumOfRemainingActions(findUserFromID(userID));
     }
 
+  /**
+   * Method called when the turn of a player is over.
+   * @param userID it's the ID of the user.
+   * @param gameID it's the ID of the game.
+   */
+  @Override
+  public void turnEnded(int userID, UUID gameID) {
+      gameControllers.get(gameID).endTurn();
+      User nextUser = gameControllers.get(gameID).getNextPlayer(findUserFromID(userID));
+      if(gameControllers.get(gameID).isAlreadyInGame(nextUser)) users.get(nextUser).startNewTurn(nextUser.hashCode());
+      else users.get(nextUser).startNewTurnFromRespawn(nextUser.hashCode());
+  }
 }

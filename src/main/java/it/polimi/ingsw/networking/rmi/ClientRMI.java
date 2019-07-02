@@ -106,6 +106,16 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
+    public void willStartTurn() {
+        this.viewObserver.newAction();
+    }
+
+    @Override
+    public void willStartFromRespawn() {
+        this.viewObserver.willChooseSpawnPoint();
+    }
+
+    @Override
     public void choseGameMap(String configuration){
         try {
             server.didChooseGameMap(gameID, configuration);
@@ -404,15 +414,25 @@ public class ClientRMI extends Client implements ClientInterface {
 
     @Override
     public void afterAction() {
-        int remainingActions = -1;
+        String curSituation = null;
         try {
-            remainingActions = server.afterAction(userID, gameID);
+            curSituation = server.afterAction(userID, gameID);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             AdrenalineLogger.error(e.getMessage());
         }
-        if(remainingActions < 1) this.viewObserver.onEndTurn();
+        if(curSituation != null) this.viewObserver.onEndTurn(curSituation);
         else this.viewObserver.newAction();
+    }
+
+    @Override
+    public void turnEnded() {
+        try {
+            this.server.turnEnded(userID, gameID);
+        } catch (RemoteException e) {
+            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
+        }
     }
 
     @Override
@@ -430,5 +450,7 @@ public class ClientRMI extends Client implements ClientInterface {
     public void willChooseCharacter(List<String> availableCharacters){
         viewObserver.willChooseCharacter(availableCharacters);
     }
+
+
 }
 

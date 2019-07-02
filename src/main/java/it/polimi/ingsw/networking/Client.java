@@ -259,4 +259,9 @@ public abstract class Client implements Loggable {
      */
     public abstract void afterAction();
 
+    /**
+     * Abstract method implemented by subclasses and used when a turn of a player is finished.
+     */
+    public abstract void turnEnded();
+
 }

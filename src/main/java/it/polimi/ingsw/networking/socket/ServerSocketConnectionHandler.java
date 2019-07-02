@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.player.User;
-import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.networking.Server;
 import it.polimi.ingsw.networking.ServerConnectionHandler;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
@@ -244,6 +243,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case END_ACTION:
                     endAction(connectionID, gameID);
                     break;
+                case TURN_ENDED:
+                    this.server.turnEnded(connectionID, gameID);
+                    break;
                 default:
                     break;
             }
@@ -257,8 +259,12 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * @param gameID it's the ID of the game
      */
     private void endAction(int connectionID, UUID gameID) {
-        int check = this.server.afterAction(connectionID, gameID);
-        if(check < 1) this.send(CommunicationMessage.from(connectionID, END_TURN));
+        String curSituation = this.server.afterAction(connectionID, gameID);
+        if(curSituation != null) {
+            Map<String, String> responseArgs = new HashMap<>();
+            responseArgs.put(GameMap.gameMap_key, curSituation);
+            this.send(CommunicationMessage.from(connectionID, END_TURN, responseArgs));
+        }
         else this.send(CommunicationMessage.from(connectionID, KEEP_ACTION));
     }
 
@@ -540,5 +546,15 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     @Override
     protected void willChooseGameMap(UUID gameID) {
         this.send(CommunicationMessage.from(0, CHOOSE_MAP));
+    }
+
+    @Override
+    protected void startNewTurn(int userID) {
+        this.send(CommunicationMessage.from(userID, KEEP_ACTION));
+    }
+
+    @Override
+    protected void startNewTurnFromRespawn(int userID) {
+        this.send(CommunicationMessage.from(userID, CHOOSE_SPAWN_POINT));
     }
 }

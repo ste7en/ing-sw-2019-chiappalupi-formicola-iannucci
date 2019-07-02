@@ -98,8 +98,9 @@ public enum CommunicationMessage {
      * END_ACTION is sent from the client to the server to notify that an action has been executed correctly from a player (no arguments)
      * AFTER_ACTION is sent from the server to the client to notify what to do after an action has been made (no arguments)
      * END_TURN is sent from the server to the client to notify that his turn has come to an end
+     * TURN_ENDED is sent from the client to the server to notify that the turn has been successfully ended (no arguments)
      *
-     * Arguments: <GameMap.gameMap_key, GameMap::toString>
+     * Arguments: <GameMap.gameMap_key, GameMap::toString> for END_TURN
      */
     NEW_ACTION,
     CHOOSE_ACTION,
@@ -107,6 +108,7 @@ public enum CommunicationMessage {
     END_ACTION,
     AFTER_ACTION,
     END_TURN,
+    TURN_ENDED,
 
     /**
      * Messages sent to start the process of grabbing something
