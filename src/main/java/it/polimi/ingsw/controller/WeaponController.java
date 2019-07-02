@@ -38,7 +38,7 @@ public class WeaponController {
      * @param costs it's a map containing the costs to add.
      */
     public void addEffectsCost(Map<AmmoColor, Integer> costs) {
-        effectsCost.putAll(costs);
+        if(costs != null) effectsCost.putAll(costs);
     }
 
     /**
@@ -51,12 +51,10 @@ public class WeaponController {
     @SuppressWarnings("Duplicates")
     public boolean canAffordCost(Weapon weapon, List<Integer> effects, Player player) {
         Map<AmmoColor, Integer> totalCost = new EnumMap<>(AmmoColor.class);
-        Map<AmmoColor, Integer> playerAmmos = new EnumMap<>(AmmoColor.class);
         Map<AmmoColor, Integer> powerupAmmos = new EnumMap<>(AmmoColor.class);
         for(AmmoColor color : AmmoColor.values()) {
             totalCost.put(color, 0);
             powerupAmmos.put(color, 0);
-            playerAmmos.put(color, player.getPlayerHand().getAmmosAmount(color));
         }
         for(Powerup powerup : this.powerupUsedToPayCost) {
             AmmoColor color = powerup.getColor();
@@ -65,10 +63,12 @@ public class WeaponController {
         for(Integer index : effects) {
             int trueIndex = index-1;
             Map<AmmoColor, Integer> effectCost = weapon.getEffects().get(trueIndex).getCost();
-            for(AmmoColor color : effectCost.keySet()) {
-                int box = totalCost.get(color);
-                box += effectCost.get(color);
-                totalCost.put(color, box);
+            if(effectCost != null) {
+                for(AmmoColor color : effectCost.keySet()) {
+                    int box = totalCost.get(color);
+                    box += effectCost.get(color);
+                    totalCost.put(color, box);
+                }
             }
         }
         for(AmmoColor color : AmmoColor.values()) {

@@ -45,11 +45,11 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_SPAWN_POINT          = "Here are two powerup cards. Choose the one you want to discard: its color will be the color where you will spawn.\n" +
                                                               "You will keep the powerup that you don't discard.";
     private static final String GAME_SITUATION              = "Here is the situation of the game:\n";
+    private static final String RUN_AROUND                  = "Run around";
+    private static final String GRAB                        = "Grab something";
+    private static final String SHOOT_PEOPLE                = "Shoot people";
     private static final String NO_POWERUPS_IN_HAND         = "You haven't any powerup that you can use right now.";
-    private static final String CHOOSE_ACTION               = "Choose your next move between the following:\n\t" +
-                                                              "1. Move\n\t" +
-                                                              "2. Grab something\n\t" +
-                                                              "3. Shoot";
+    private static final String CHOOSE_ACTION               = "Choose your next move between the following:\n";
     private static final String GRAB_SOMETHING              = "You have chosen to grab something!";
     private static final String ONE_SHOT                    = "Please note that if you select [Y], you will only have the possibility ";
     private static final String ASK_POWERUP_TO_GRAB_WEAPON  = "If you want to pick a weapon, do you want use any powerup to afford the cost of it? [Y/N]\n" +
@@ -74,7 +74,7 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_EFFECT               = "What effect/s do you want to use?";
     private static final String WEAPON_USED                 = "The weapon has been used with success.";
     private static final String ASK_POWERUP_AFTER_SHOT      = "Do you want to use any powerup to make additional damage after this shot?";
-    private static final String WILL_POWERUP_AFTER_SHOT     = "You selected that you want to use any powerup to make additional damage after this shot\n" + "What powerup would you like to use?";
+    private static final String WILL_POWERUP_AFTER_SHOT     = "You selected that you want to use any powerup to make additional damage after this shot\n";
     private static final String WON_T_POWERUP_AFTER_SHOT    = "No powerups will be used after this shot.";
     private static final String CHOOSE_WEAPONS_TO_RELOAD    = "What weapons do you want to reload? \nMultiple weapons can be provided with commas.";
     private static final String NOT_ENOUGH_AMMOS            = "You have not enough ammos to reload. Please select only weapons you can afford.";
@@ -96,7 +96,7 @@ public class AdrenalineCLI extends View {
     private static final String ASK_POWERUP_TO_RELOAD       = "Do you want use any powerup to afford the cost of the the reload? [Y/N]\n" +
                                                               ONE_SHOT +
                                                               "to reload a list of weapon where the color/s of the powerup/s that you select is/are involved.";
-    private static final String MORE_POWERUP_SELLING        = "Do you want use another powerup to afford the cost of the shoot?";
+    private static final String MORE_POWERUP_SELLING        = "Do you want use another powerup to afford the cost of the shoot? [Y/N]";
     private static final String TURN_ENDED                  = "Your turn has now come to an end. Wait for the next one...";
     private static final String USE_ANY_OF_YOUR_POWERUP     = "Would you like to use any of your powerup? [Y/N]";
     private static final String TURN_ENDING                 = "Your turn is about to end. You will be now given of the possibilities to reload your unloaded weapons and use any powerup that can be used during this phase.";
@@ -262,7 +262,6 @@ public class AdrenalineCLI extends View {
         } catch (IOException e) {
             AdrenalineLogger.errorException("Flush Input exc", e);
         }
-        in.nextLine();
     }
 
     @Override
@@ -321,16 +320,23 @@ public class AdrenalineCLI extends View {
         curSituation = map;
         out.println(map);
         out.println(CHOOSE_ACTION);
-        var action = in.nextLine();
-        var choice = Integer.parseInt(action);
+        List<String> actions = new ArrayList<>();
+        actions.add(RUN_AROUND);
+        actions.add(GRAB);
+        actions.add(SHOOT_PEOPLE);
+        String choice = decisionHandlerFromList(actions);
+        while(choice == null) {
+            out.println(INCORRECT_CHOICE);
+            choice = decisionHandlerFromList(actions);
+        }
         switch (choice){
-            case 1:
+            case RUN_AROUND:
                 client.getAvailableMoves();
                 break;
-            case 2:
+            case GRAB:
                 grabSomething();
                 break;
-            case 3:
+            case SHOOT_PEOPLE:
                 shootPeople();
                 break;
             default:
@@ -475,31 +481,21 @@ public class AdrenalineCLI extends View {
         damagesToChoose.remove(Effect.effect_key);
         ArrayList<String> possibleDamages = new ArrayList<>(damagesToChoose.values());
         out.println(CHOOSE_DAMAGE);
-        int i = 1;
-        for(String damage : possibleDamages) {
-            out.println(i + ") " + damage);
-            i++;
-        }
-        var scanInput = in.nextLine();
-        try {
-            int choice = Integer.parseInt(scanInput);
-            if(choice > possibleDamages.size())
-                throw new IllegalArgumentException(INCORRECT_CHOICE);
-            i = choice;
-        } catch(NumberFormatException exception) {
-            throw new IllegalArgumentException(INCORRECT_CHOICE);
+        String choice = decisionHandlerFromList(possibleDamages);
+        while(choice == null) {
+            out.println(INCORRECT_CHOICE);
+            choice = decisionHandlerFromList(possibleDamages);
         }
         String forPotentiableWeapon = null;
         if(damagesToChoose.containsKey(PotentiableWeapon.forPotentiableWeapon_key))
             forPotentiableWeapon = damagesToChoose.get(PotentiableWeapon.forPotentiableWeapon_key);
-        this.didChooseDamage(weapon, possibleDamages.get(i-1), indexOfEffect, forPotentiableWeapon);
+        this.didChooseDamage(weapon, choice, indexOfEffect, forPotentiableWeapon);
         out.println(WEAPON_USED);
     }
 
     @Override
     public void onPowerupInHandFailure() {
         out.println(POWERUP_FAILURE);
-        this.onChooseAction(curSituation);
     }
 
     @Override
@@ -616,7 +612,7 @@ public class AdrenalineCLI extends View {
         }
         String box = effectsSelected.replaceAll("[\\[\\]]", "");
         List<String> effects = List.of(box.split(", "));
-        this.didChooseEffects(effects, weapon);
+        this.didChooseEffects(new ArrayList<>(effects), weapon);
     }
 
     @Override
@@ -653,6 +649,7 @@ public class AdrenalineCLI extends View {
     @Override
     public void askReload() {
         out.println(ASK_RELOAD);
+        flushInput();
         String scanInput = in.nextLine();
         if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y")) {
             out.println(WILL_RELOAD);
@@ -688,7 +685,7 @@ public class AdrenalineCLI extends View {
         out.println(CHOOSE_WEAPONS_TO_RELOAD);
         String scanInput = in.nextLine();
         scanInput = scanInput.replaceAll(" ", "");
-        List<String> selections = List.of(scanInput.split(","));
+        List<String> selections = new ArrayList<>(List.of(scanInput.split(",")));
         Set<String> choices = new HashSet<>();
         for(String selection : selections) {
             String box = selectionChecker(selection, weapons);
@@ -727,7 +724,6 @@ public class AdrenalineCLI extends View {
             String choice = decisionHandlerFromList(availablePowerups);
             while(choice == null) {
                 out.println(INCORRECT_CHOICE);
-                out.println(CHOOSE_POWERUP);
                 choice = decisionHandlerFromList(availablePowerups);
             }
             this.didChoosePowerup(choice);

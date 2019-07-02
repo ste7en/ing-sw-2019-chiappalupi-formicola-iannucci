@@ -177,10 +177,12 @@ public class GrabController {
                 else if(cell.getColor() == CellColor.yellow) color = AmmoColor.yellow;
                 List<Weapon> weaponsInSpawn = board.showWeapons(color);
                 for (Weapon spawnWeapon : weaponsInSpawn) {
-                    String box = spawnWeapon.getName() + " " + cell.toStringCondensed();
-                    if(box.equals(pick)) {
-                        pickedCell = cell;
-                        grabbedWeapon = spawnWeapon;
+                    if(spawnWeapon != null) {
+                        String box = spawnWeapon.getName() + " " + cell.toStringCondensed();
+                        if(box.equals(pick)) {
+                            pickedCell = cell;
+                            grabbedWeapon = spawnWeapon;
+                        }
                     }
                 }
             }
@@ -245,6 +247,7 @@ public class GrabController {
                 return returnMap;
             }
             playerWeapons.add(grabbedWeapon);
+            player.getPlayerHand().setWeapons(playerWeapons);
             board.pickWeapon(grabbedWeapon);
             payCost(grabbedWeapon, player, decks);
         }

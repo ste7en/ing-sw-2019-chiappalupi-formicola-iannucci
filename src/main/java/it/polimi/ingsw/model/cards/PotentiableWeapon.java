@@ -17,6 +17,8 @@ public class PotentiableWeapon extends Weapon {
      * String constant used in messages between client-server
      */
     public final static String forPotentiableWeapon_key = "FOR_POTENTIABLE_WEAPON";
+    private static final String HISTORY_NEEDED = "This effects needs the history of the damages made by the other effects to work!";
+    private static final String HISTORY_EMPTY = "The history of damages made by the other effects can't be empty!";
 
     /**
      * Override of the useEffect method when the Weapon is a potentiable one
@@ -54,26 +56,26 @@ public class PotentiableWeapon extends Weapon {
                 return solutions;
             }
             if(effect.getProperties().containsKey(EffectProperty.AdditionalTarget)) {
-                if(forPotentiableWeapons == null) throw new NullPointerException("This effects needs the history of the damages made by the other effects to work!");
-                if(forPotentiableWeapons.size() == 0) throw new RuntimeException("The history of damages made by the other effects can't be empty!");
+                if(forPotentiableWeapons == null) throw new NullPointerException(HISTORY_NEEDED);
+                if(forPotentiableWeapons.isEmpty()) throw new IllegalArgumentException(HISTORY_EMPTY);
                 Set<Player> setForAdditionalEffects = new HashSet<>();
                 for(Damage damage : forPotentiableWeapons) setForAdditionalEffects.add(damage.getTarget());
                 ArrayList<Player> listForAdditionalEffects = new ArrayList<>(setForAdditionalEffects);
                 return computeDamages(effect, shooter, listForAdditionalEffects, map, players);
             }
             if(effect.getProperties().containsKey(EffectProperty.EffectOnTarget)) {
-                if(forPotentiableWeapons == null) throw new NullPointerException("This effects needs the history of the damages made by the other effects to work!");
-                if(forPotentiableWeapons.size() == 0) throw new RuntimeException("The history of damages made by the other effects can't be empty!");
+                if(forPotentiableWeapons == null) throw new NullPointerException(HISTORY_NEEDED);
+                if(forPotentiableWeapons.isEmpty()) throw new IllegalArgumentException(HISTORY_EMPTY);
                 int effectOnTarget = effect.getProperties().get(EffectProperty.EffectOnTarget);
                 if(effectOnTarget < 0) effectOnTarget = (-1) * effectOnTarget;
-                if(forPotentiableWeapons.size() == 0) return new ArrayList<>();
+                if(forPotentiableWeapons.isEmpty()) return new ArrayList<>();
                 ArrayList<Player> toNotShoot = new ArrayList<>();
                 toNotShoot.add(shooter);
                 if(! effect.getProperties().containsKey(EffectProperty.MultipleCell)) for(Damage damage : forPotentiableWeapons) toNotShoot.add(damage.getTarget());
                 if(effect.getProperties().get(EffectProperty.EffectOnTarget) >= 0) solutions = useEffect(forPotentiableWeapons.get(effectOnTarget).getTarget(), getEffects().get(0), null, map, players);
                 else {
                     Effect box = new Effect();
-                    HashMap<EffectProperty, Integer> boxProperties = (HashMap<EffectProperty, Integer>) getEffects().get(effectOnTarget).getProperties().clone();
+                    Map<EffectProperty, Integer> boxProperties = new EnumMap<>(getEffects().get(effectOnTarget).getProperties());
                     boxProperties.remove(EffectProperty.EffectOnTarget);
                     box.setProperties(boxProperties);
                     solutions = computeDamages(box, forPotentiableWeapons.get(0).getTarget(), null, map, players);
@@ -105,8 +107,8 @@ public class PotentiableWeapon extends Weapon {
             if(effect.getProperties().containsKey(EffectProperty.CanMoveBefore)) return computeDamageCanMoveBefore(effect, shooter, forPotentiableWeapons, map, players);
             if(effect.getProperties().containsKey(EffectProperty.Hard))
                 if(effect.getProperties().get(EffectProperty.Hard) == 2) {
-                    if(forPotentiableWeapons == null) throw new NullPointerException("This effects needs the history of the damages made by the other effects to work!");
-                    if(forPotentiableWeapons.size() == 0) throw new RuntimeException("The history of damages made by the other effects can't be empty!");
+                    if(forPotentiableWeapons == null) throw new NullPointerException(HISTORY_NEEDED);
+                    if(forPotentiableWeapons.size() == 0) throw new RuntimeException(HISTORY_EMPTY);
                     return withTurretTripod(shooter, forPotentiableWeapons, players, map);
                 }
             return computeDamages(effect, shooter, null, map, players);
