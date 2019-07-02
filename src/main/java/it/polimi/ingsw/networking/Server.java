@@ -42,6 +42,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     private Registry registry;
 
+    private Registry remoteRegistry;
+
     /**
      * The port on which the server socket is listening
      */
@@ -154,6 +156,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         var gameID = UUID.randomUUID();
         var gameLogic = new GameLogic(gameID, userList.size());
         var characters = gameLogic.getAvailableCharacters();
+        System.out.println(userList.size());
 
         gameControllers.put(gameID, gameLogic);
 
@@ -209,16 +212,18 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         return null;
     }
 
+
     /**
      * Checks if a user with the same username already exists and is connected
      * @param username String username to check
      * @return true if the user doesn't exist or isn't connected, false otherwise
      */
+    /*
     @Override
     public boolean checkUsernameAvailability(String username){
         var user = new User(username);
         return checkUserAvailability(user);
-    }
+    }*/
 
     /**
      * Checks if a user with the same username already exists and is connected
@@ -245,19 +250,31 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         } else return -1;
     }
 
+
+    /*
     @Override
-    public int createUserRMIHelper(String username) throws RemoteException {
+    public int createUserRMIHelper(String username, String address) throws RemoteException {
         try {
-            Registry remoteRegistry = LocateRegistry.getRegistry(portNumberRMI);
+            remoteRegistry = LocateRegistry.getRegistry(address, portNumberRMI);
             logDescription(registry);
             ClientInterface clientRMI = (ClientInterface) remoteRegistry.lookup(username);
             ServerConnectionHandler connectionHandler = new ServerRMIConnectionHandler(this, clientRMI);
             Ping.getInstance().addPing(connectionHandler);
             return createUser(username, connectionHandler);
         } catch (Exception e) {
+            e.printStackTrace();
             logOnException(RMI_EXCEPTION, e);
         }
         return -1;
+    }
+    */
+
+    @Override
+    public int registerClient(ClientInterface clientInterface, String username){
+        ClientInterface clientRMI = clientInterface;
+        ServerConnectionHandler connectionHandler = new ServerRMIConnectionHandler(this, clientRMI);
+        Ping.getInstance().addPing(connectionHandler);
+        return createUser(username, connectionHandler);
     }
 
     @Override

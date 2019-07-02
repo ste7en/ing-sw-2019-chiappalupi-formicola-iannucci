@@ -7,6 +7,8 @@ import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -15,8 +17,10 @@ import java.util.*;
 
 public class ClientRMI extends Client implements ClientInterface {
 
-    private Registry registry;
+    private Registry serverRegistry;
+    private Registry clientRegistry;
     private ServerInterface server;
+    private String address;
 
     public ClientRMI(String host, Integer port){
         super(host, port);
@@ -31,30 +35,45 @@ public class ClientRMI extends Client implements ClientInterface {
     protected void setupConnection() {
 
         try{
-            registry = LocateRegistry.getRegistry(serverName, connectionPort);
-            System.out.println(registry);
-            server = (ServerInterface) registry.lookup(ServerInterface.remoteReference);
+            serverRegistry = LocateRegistry.getRegistry(serverName, connectionPort);
+            System.out.println(serverRegistry);
+            server = (ServerInterface) serverRegistry.lookup(ServerInterface.remoteReference);
         } catch (Exception e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
         }
     }
 
     public void exportClient(String username) throws RemoteException{
+       clientRegistry = LocateRegistry.createRegistry(connectionPort);
         ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
-        registry.rebind(username, stub);
+        clientRegistry.rebind(username, stub);
     }
+
+    public int registerClient(String username){
+        try {
+            ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
+            return server.registerClient(stub, username);
+        } catch (RemoteException e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
 
     @Override
     public void createUser(String username){
-        try{
+       // try{
+
+            var userID = registerClient(username);
+            /*
             if(server.checkUsernameAvailability(username)==true){
                 try {
-                    exportClient(username);
-                } catch (RemoteException e) {
+                    userID = registerClient(username);
+                } catch (Exception e) {
                     logOnException(CLIENT_RMI_EXCEPTION, e);
                 }
             }
-            var userID = server.createUserRMIHelper(username);
+            var userID = server.createUserRMIHelper(username,"localhost");*/
             if(userID == -1) {
                 viewObserver.onLoginFailure();
             }
@@ -62,10 +81,11 @@ public class ClientRMI extends Client implements ClientInterface {
                 this.userID = userID;
                 viewObserver.onLoginSuccess(username);
             }
+            /*
         } catch (RemoteException e){
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             AdrenalineLogger.error(e.getMessage());
-        }
+        }*/
     }
 
     @Override
