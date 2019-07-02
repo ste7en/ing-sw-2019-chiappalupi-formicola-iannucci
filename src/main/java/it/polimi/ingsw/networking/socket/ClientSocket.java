@@ -117,6 +117,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case DRAWN_SPAWN_POINT:
                         this.viewObserver.onChooseSpawnPoint(new ArrayList<>(args.values()));
                         break;
+                    case KEEP_ACTION:
+                        this.viewObserver.newAction();
+                        break;
                     case CHOOSE_ACTION:
                         this.viewObserver.onChooseAction(args.get(GameMap.gameMap_key));
                         break;
@@ -130,7 +133,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.willChooseWhatToGrab(new ArrayList<>(args.values()));
                         break;
                     case GRAB_SUCCESS:
-                        this.viewObserver.onGrabSuccess(args.get(GameMap.gameMap_key));
+                        this.viewObserver.onGrabSuccess();
                         break;
                     case GRAB_FAILURE_POWERUP:
                         this.viewObserver.onGrabFailurePowerup(new ArrayList<>(args.values()));
@@ -164,8 +167,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.willChooseEffects(args);
                         break;
                     case LAST_DAMAGE_DONE:
-                        this.viewObserver.didUseWeapon();
-                        this.viewObserver.askPowerupAfterShot(new ArrayList<>(args.values()));
+                        this.viewObserver.didUseWeapon(new ArrayList<>(args.values()));
                         break;
                     case NO_WEAPON_UNLOADED_IN_HAND:
                         this.viewObserver.onWeaponUnloadedFailure();
@@ -192,6 +194,12 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case POWERUP_DAMAGES_LIST:
                         this.viewObserver.willChoosePowerupDamage(args);
                         break;
+                    case AFTER_ACTION:
+                        this.viewObserver.afterAction();
+                        break;
+                    case END_TURN:
+                        this.viewObserver.onEndTurn();
+                        break;
                     default:
                         logOnFailure(UNKNOWN_COMMUNICATION_MESSAGE+communicationMessage);
                         break;
@@ -207,7 +215,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
      * Sends a json message through its sender delegate
      * @param message a json message to send
      */
-    public void send(String message) {
+    private void send(String message) {
         senderDelegate.send(message);
     }
 
@@ -219,6 +227,11 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     @Override
     public void joinWaitingRoom(String username) {
         this.send(CommunicationMessage.from(userID, USER_JOIN_WAITING_ROOM, argsFrom(User.username_key, username)));
+    }
+
+    @Override
+    public void newAction() {
+        this.send(CommunicationMessage.from(userID, NEW_ACTION, gameID));
     }
 
     @Override
@@ -393,5 +406,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         args.put(Powerup.powerup_key, powerup);
         args.put(Damage.damage_key, damage);
         this.send(CommunicationMessage.from(userID, POWERUP_DAMAGE_TO_MAKE, args, gameID));
+    }
+
+    @Override
+    public void afterAction() {
+        this.send(CommunicationMessage.from(userID, END_ACTION, gameID));
     }
 }

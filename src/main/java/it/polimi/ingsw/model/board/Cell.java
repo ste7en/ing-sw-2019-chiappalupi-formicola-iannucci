@@ -164,7 +164,7 @@ public class Cell implements Comparable<Cell> {
      * @return the string containing the ammo card in the cell and the position
      */
     public String toStringAmmos() {
-        return ammoCard.toString() + toStringCondensed();
+        return ammoCard.toString() + " " + toStringCondensed();
     }
 
     /**

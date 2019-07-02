@@ -13,11 +13,11 @@ import java.util.List;
  */
 public class PlayerBoard {
 
-    private static String COLOR_DAMAGE_MARKS_EXCEPTION = "An attempt to add the same color of the player to his damages or marks has been found. A player can't infer damages or marks to himself.";
-    private static String INVALID_DAMAGES_NUMBER = "The number of damages should be greater than zero.";
-    private static Integer MAX_ASSIGNABLE_POINTS = 8;
-    private static Integer ADRENALINE_1_MIN = 3;
-    private static Integer ADRENALINE_2_MIN = 6;
+    private static final String COLOR_DAMAGE_MARKS_EXCEPTION = "An attempt to add the same color of the player to his damages or marks has been found. A player can't infer damages or marks to himself.";
+    private static final String INVALID_DAMAGES_NUMBER = "The number of damages should be greater than zero.";
+    private static final Integer MAX_ASSIGNABLE_POINTS = 8;
+    private static final Integer ADRENALINE_1_MIN = 3;
+    private static final Integer ADRENALINE_2_MIN = 6;
 
     /**
      * Color corresponding to the player and his character.
@@ -35,6 +35,21 @@ public class PlayerBoard {
      * The maximum number of points other players can get by killing a player.
      */
     private Integer maxPoints;
+
+    /**
+     * It is the structure that keeps track of the player's marks
+     * received from other players. It has been implemented using an array of
+     * values corresponding to other players' colors.
+     */
+    private List<PlayerColor> marks;
+
+    /**
+     * These attributes are what characterize the action of a player during its turn.
+     */
+    private int stepsOfMovement;
+    private int stepsBeforeShooting;
+    private int stepsBeforeGrabbing;
+    private int numOfActions;
 
     /**
      * Steps of movement getter.
@@ -85,18 +100,20 @@ public class PlayerBoard {
     }
 
     /**
-     * It is the structure that keeps track of the player's marks
-     * received from other players. It has been implemented using an array of
-     * values corresponding to other players' colors.
+     * Number of possible action getter.
+     * @return the number of actions that the player can do in his turn.
      */
-    private List<PlayerColor> marks;
+    public int getNumOfActions() {
+        return numOfActions;
+    }
 
-    /**
-     * These attributes are what characterize the action of a player during its turn.
-     */
-    private int stepsOfMovement;
-    private int stepsBeforeShooting;
-    private int stepsBeforeGrabbing;
+  /**
+   * Number of possible action setter.
+   * @param numOfActions the updated number of actions that the player can do in his turn.
+   */
+  public void setNumOfActions(int numOfActions) {
+        this.numOfActions = numOfActions;
+    }
 
     /**
      * Constructor for a player's board.
@@ -111,6 +128,7 @@ public class PlayerBoard {
         this.stepsOfMovement = 3;
         this.stepsBeforeGrabbing = 1;
         this.stepsBeforeShooting = 0;
+        this.numOfActions = 2;
     }
 
     /**

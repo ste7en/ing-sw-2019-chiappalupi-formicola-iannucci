@@ -166,6 +166,11 @@ public abstract class View {
     }
 
     /**
+     * Public method implemented by subclasses when a new turn or a new action is starting.
+     */
+    public abstract void newAction();
+
+    /**
      * Public method implemented by subclasses when choosing an action.
      * @param map it's the map to be displayed.
      */
@@ -211,9 +216,8 @@ public abstract class View {
 
     /**
      * Public method called when the process of grabbing has ended with success.
-     * @param map it's the updated map situation to be displayed to the player.
      */
-    public abstract void onGrabSuccess(String map);
+    public abstract void onGrabSuccess();
 
     /**
      * Public method called when the process of grabbing has ended with Failure.
@@ -366,10 +370,18 @@ public abstract class View {
 
     /**
      * Called when the process of using a weapon has ended.
+     * @param powerups they are the powerups that the player has in his hand.
      */
-    public void didUseWeapon() {
+    public void didUseWeapon(List<String> powerups) {
         AdrenalineLogger.info(DID_USE_WEAPON);
+        if(powerups.isEmpty()) this.afterAction();
+        else this.askPowerupAfterShot(powerups);
     }
+
+    /**
+     * Public method implemented by subclasses, called when the player has done an action.
+     */
+    public abstract void afterAction();
 
     /**
      * Ste

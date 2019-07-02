@@ -45,21 +45,23 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_SPAWN_POINT          = "Here are two powerup cards. Choose the one you want to discard: its color will be the color where you will spawn.\n" +
                                                               "You will keep the powerup that you don't discard.";
     private static final String GAME_SITUATION              = "Here is the situation of the game:\n";
+    private static final String NO_POWERUPS_IN_HAND = "You haven't any powerup that you can use right now.";
     private static final String CHOOSE_ACTION               = "Choose your next move between the following:\n\t" +
                                                               "1. Move\n\t" +
                                                               "2. Grab something\n\t" +
                                                               "3. Shoot";
     private static final String GRAB_SOMETHING              = "You have chosen to grab something!";
+    private static final String ONE_SHOT                    = "Please note that if you select [Y], you will only have the possibility ";
     private static final String ASK_POWERUP_TO_GRAB_WEAPON  = "If you want to pick a weapon, do you want use any powerup to afford the cost of it? [Y/N]\n" +
-                                                              "Please note that if you select [Y], you will only have the possibility " +
+                                                              ONE_SHOT +
                                                               "to pick a weapon where the color/s of the powerup/s that you select is/are involved.";
     private static final String MORE_GRAB_POWERUP_SELLING   = "Do you want use another powerup to afford the cost of the weapon?";
     private static final String PICK_CHOICES                = "Here is what you can grab:";
     private static final String GRAB_SUCCESS                = "Grabbing phase ended with success!";
     private static final String TOO_MUCH_POWERUP            = "You can't grab this powerup because you already have three of them in your hand. Choose which one would you like to discard.";
     private static final String TOO_MUCH_WEAPON             = "You can't grab this weapon because you already have three of them in your hand. Choose which one would you like to discard.";
-    private static final String POWERUP_TO_SELL_FOR_GRABBING = "Which powerup do you want to sell to afford the cost of the weapon?";
-    private static final String GRAB_FAILURE = "No weapons can be bought using the powerups you wanted to sell.";
+    private static final String POWERUP_TO_SELL_TO_GRAB     = "Which powerup do you want to sell to afford the cost of the weapon?";
+    private static final String GRAB_FAILURE                = "No weapons can be bought using the powerups you wanted to sell.";
     private static final String CHOOSE_MOVEMENT             = "These are the available movements you can do. Please, choose one by selecting its number: ";
     private static final String SHOOT_PEOPLE_FAILURE        = "You have no weapon in your hand, so you can't shoot anyone.";
     private static final String DAMAGE_FAILURE              = "No damage can be made with the weapon and the effects selected.";
@@ -89,10 +91,10 @@ public class AdrenalineCLI extends View {
     private static final String WILL_USE_ANOTHER_POWERUP    = "You selected that you want to use another powerup.";
     private static final String WON_T_USE_ANOTHER_POWERUP   = "Powerup using phase finished.";
     private static final String ASK_POWERUP_TO_USE_EFFECTS  = "Do you want use any powerup to afford the cost of the shoot? [Y/N]\n" +
-                                                              "Please note that if you select [Y], you will only have the possibility " +
+                                                              ONE_SHOT +
                                                               "to use a list of effects or modes of the weapon where the color/s of the powerup/s that you select is/are involved.";
     private static final String ASK_POWERUP_TO_RELOAD       = "Do you want use any powerup to afford the cost of the the reload? [Y/N]\n" +
-                                                              "Please note that if you select [Y], you will only have the possibility " +
+                                                              ONE_SHOT +
                                                               "to reload a list of weapon where the color/s of the powerup/s that you select is/are involved.";
     private static final String MORE_POWERUP_SELLING        = "Do you want use another powerup to afford the cost of the shoot?";
 
@@ -215,12 +217,10 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void onFailure(String message) {
-        switch (message) {
-            case CHARACTER_NOT_AVAILABLE:
-                out.println(message);
-                break;
-            default:
-                out.println(message);
+        if (CHARACTER_NOT_AVAILABLE.equals(message)) {
+            out.println(message);
+        } else {
+            out.println(message);
         }
     }
 
@@ -266,6 +266,7 @@ public class AdrenalineCLI extends View {
             options.add(Integer.toString(i));
         }
 
+
         out.println(CHOOSE_MAP);
 
         for(int i = 0; i < 4; i++) {
@@ -298,6 +299,11 @@ public class AdrenalineCLI extends View {
         if(powerups.get(0).equalsIgnoreCase(spawnPoint)) otherPowerup = powerups.get(1);
         else otherPowerup = powerups.get(0);
         this.didChooseSpawnPoint(spawnPoint, otherPowerup);
+    }
+
+    @Override
+    public void newAction() {
+        this.client.newAction();
     }
 
     @Override
@@ -341,12 +347,14 @@ public class AdrenalineCLI extends View {
         String scanInput = in.nextLine();
         if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y"))
             this.client.powerupSellingToGrabWeapon();
-        else this.client.askPicks(new ArrayList<>());
+        else {
+            this.client.askPicks(new ArrayList<>());
+        }
     }
 
     @Override
     public void sellPowerupToGrabWeapon(List<String> powerups) {
-        out.println(POWERUP_TO_SELL_FOR_GRABBING);
+        out.println(POWERUP_TO_SELL_TO_GRAB);
         List<String> powerupsSold = new ArrayList<>();
         boolean keepGoing = true;
         while(keepGoing && !powerups.isEmpty()) {
@@ -359,9 +367,7 @@ public class AdrenalineCLI extends View {
             powerups.remove(choice);
             out.println(MORE_GRAB_POWERUP_SELLING);
             String scanInput = in.nextLine();
-            keepGoing = false;
-            if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y"))
-                keepGoing = true;
+            keepGoing = scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y");
         }
         this.client.askPicks(powerupsSold);
     }
@@ -378,11 +384,9 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void onGrabSuccess(String map) {
-        this.curSituation = map;
+    public void onGrabSuccess() {
         out.println(GRAB_SUCCESS);
-        out.println(GAME_SITUATION);
-        out.println(map);
+        this.afterAction();
     }
 
     @Override
@@ -613,11 +617,17 @@ public class AdrenalineCLI extends View {
             this.willChoosePowerup(powerups);
         }
         else out.println(WON_T_POWERUP_AFTER_SHOT);
+        this.afterAction();
+    }
+
+    @Override
+    public void afterAction() {
+        this.client.afterAction();
     }
 
     @Override
     public void onEndTurn() {
-
+        out.println("Fine dei giochi amico");
     }
 
     @Override
@@ -690,7 +700,7 @@ public class AdrenalineCLI extends View {
     @Override
     public void willChoosePowerup(List<String> availablePowerups) {
         if(availablePowerups.isEmpty()) {
-            out.println("You haven't any powerup that you can use right now.");
+            out.println(NO_POWERUPS_IN_HAND);
             return;
         }
         boolean powerupUsing = true;
@@ -716,6 +726,7 @@ public class AdrenalineCLI extends View {
                 }
             }
         }
+        this.afterAction();
     }
 
     @Override

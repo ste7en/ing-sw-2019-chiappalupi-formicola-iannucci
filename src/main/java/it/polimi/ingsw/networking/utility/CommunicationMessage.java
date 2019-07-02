@@ -90,13 +90,23 @@ public enum CommunicationMessage {
     SPAWN_POINT_CHOSEN,
 
     /**
-     * Messages sent to start the process of choosing the action to do
+     * Actions handling messages
      *
+     * NEW_ACTION is sent from the client to the server to notify the start of a new action or turn from a player (no arguments)
      * CHOOSE_ACTION is sent from the server to the client to notify that the the player should choose the action to do
+     * KEEP_ACTION is sent from the server to the client to notify that the player has to do other actions to complete his turn (no arguments)
+     * END_ACTION is sent from the client to the server to notify that an action has been executed correctly from a player (no arguments)
+     * AFTER_ACTION is sent from the server to the client to notify what to do after an action has been made (no arguments)
+     * END_TURN is sent from the server to the client to notify that his turn has come to an end
      *
      * Arguments: <GameMap.gameMap_key, GameMap::toString>
      */
+    NEW_ACTION,
     CHOOSE_ACTION,
+    KEEP_ACTION,
+    END_ACTION,
+    AFTER_ACTION,
+    END_TURN,
 
     /**
      * Messages sent to start the process of grabbing something

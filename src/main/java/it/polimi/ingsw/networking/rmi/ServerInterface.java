@@ -33,11 +33,13 @@ public interface ServerInterface extends Remote {
      */
     boolean choseCharacter(UUID gameID, int userID, String characterColor) throws RemoteException;
 
+    String startActions(int userID, UUID gameID) throws RemoteException;
+
     void didChooseGameMap(UUID gameID, String configuration) throws RemoteException;
 
     List<String> getSpawnPowerups(int userID, UUID gameID) throws RemoteException;
 
-    String choseSpawnPoint(int userID, UUID gameID, String spawnPoint, String otherPowerup) throws RemoteException;
+    void choseSpawnPoint(int userID, UUID gameID, String spawnPoint, String otherPowerup) throws RemoteException;
 
     List<String> getAvailableMoves(int userID, UUID gameID) throws RemoteException;
 
@@ -54,9 +56,9 @@ public interface ServerInterface extends Remote {
 
     Map<String, String> didChooseWhatToGrab(String pick, int userID, UUID gameID) throws RemoteException;
 
-    String powerupToDiscard(int userID, UUID gameID, String powerup) throws RemoteException;
+    void powerupToDiscard(int userID, UUID gameID, String powerup) throws RemoteException;
 
-    String weaponToDiscard(int userID, UUID gameID, String weapon) throws RemoteException;
+    void weaponToDiscard(int userID, UUID gameID, String weapon) throws RemoteException;
 
     List<String> askWeapons(int userID, UUID gameID) throws RemoteException;
 
@@ -81,4 +83,6 @@ public interface ServerInterface extends Remote {
     List<String> getPowerupsInHand(int userID, UUID gameID) throws RemoteException;
 
     void sellPowerupToReload(List<String> powerups, int userID, UUID gameID) throws RemoteException;
+
+    int afterAction(int userID, UUID gameID) throws RemoteException;
 }

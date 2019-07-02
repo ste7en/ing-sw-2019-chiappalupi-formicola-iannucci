@@ -1,6 +1,5 @@
 package it.polimi.ingsw.networking.rmi;
 
-import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.cards.Weapon;
@@ -80,6 +79,18 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
+    public void newAction() {
+        String situation = "";
+        try {
+            situation = server.startActions(userID, gameID);
+        } catch (RemoteException e) {
+            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
+        }
+        this.viewObserver.onChooseAction(situation);
+    }
+
+    @Override
     public void choseCharacter(String characterColor){
         try {
             server.choseCharacter(gameID, userID, characterColor);
@@ -143,31 +154,29 @@ public class ClientRMI extends Client implements ClientInterface {
             this.viewObserver.onGrabFailurePowerup(new ArrayList<>(ending.values()));
         } else if(ending.containsKey(Weapon.weapon_key)) {
             this.viewObserver.onGrabFailureWeapon(new ArrayList<>(ending.values()));
-        } else viewObserver.onGrabSuccess(ending.get(GameMap.gameMap_key));
+        } else viewObserver.onGrabSuccess();
     }
 
     @Override
     public void powerupGrabToDiscard(String powerup) {
-        String currentSituation = "";
         try {
-            currentSituation = server.powerupToDiscard(userID, gameID, powerup);
+            server.powerupToDiscard(userID, gameID, powerup);
         } catch (RemoteException e) {
             AdrenalineLogger.error(e.toString());
             AdrenalineLogger.error(e.getMessage());
         }
-        this.viewObserver.onGrabSuccess(currentSituation);
+        this.viewObserver.onGrabSuccess();
     }
 
     @Override
     public void weaponGrabToDiscard(String weapon) {
-        String currentSituation = "";
         try {
-            currentSituation = server.weaponToDiscard(userID, gameID, weapon);
+            server.weaponToDiscard(userID, gameID, weapon);
         } catch (RemoteException e) {
             AdrenalineLogger.error(e.toString());
             AdrenalineLogger.error(e.getMessage());
         }
-        this.viewObserver.onGrabSuccess(currentSituation);
+        this.viewObserver.onGrabSuccess();
     }
 
     @Override
@@ -184,14 +193,13 @@ public class ClientRMI extends Client implements ClientInterface {
 
     @Override
     public void choseSpawnPoint(String spawnPoint, String otherPowerup){
-        String map = "";
         try {
-            map = server.choseSpawnPoint(userID, gameID, spawnPoint, otherPowerup);
+            server.choseSpawnPoint(userID, gameID, spawnPoint, otherPowerup);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
             AdrenalineLogger.error(e.getMessage());
         }
-        viewObserver.onChooseAction(map);
+        viewObserver.newAction();
     }
 
     @Override
@@ -209,8 +217,10 @@ public class ClientRMI extends Client implements ClientInterface {
         try {
             server.move(userID, gameID, movement);
         } catch (RemoteException e) {
-            logOnException(CLIENT_RMI_EXCEPTION, e);
+            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
+        this.viewObserver.afterAction();
     }
 
     @Override
@@ -221,6 +231,7 @@ public class ClientRMI extends Client implements ClientInterface {
             else this.viewObserver.willChooseWeapon(this.server.askWeapons(userID, gameID));
         } catch(RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -243,6 +254,7 @@ public class ClientRMI extends Client implements ClientInterface {
             }
         } catch (RemoteException e){
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -257,6 +269,7 @@ public class ClientRMI extends Client implements ClientInterface {
             } else this.viewObserver.willChooseEffects(weaponUsingContinued);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -267,11 +280,11 @@ public class ClientRMI extends Client implements ClientInterface {
             if(forPotentiableWeapon != null) lastDamage = Boolean.parseBoolean(forPotentiableWeapon);
             List<String> powerups = this.server.makeDamage(userID, forPotentiableWeapon, indexOfEffect, gameID, damage, weapon);
             if(lastDamage) {
-                this.viewObserver.didUseWeapon();
-                this.viewObserver.askPowerupAfterShot(powerups);
+                this.viewObserver.didUseWeapon(powerups);
             }
         } catch (RemoteException e){
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -283,6 +296,7 @@ public class ClientRMI extends Client implements ClientInterface {
             else this.viewObserver.willChooseDamage(damageList);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -301,6 +315,7 @@ public class ClientRMI extends Client implements ClientInterface {
             }
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -312,6 +327,7 @@ public class ClientRMI extends Client implements ClientInterface {
             else this.viewObserver.willReload(this.server.getUnloadedWeaponInHand(userID, gameID));
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -323,6 +339,7 @@ public class ClientRMI extends Client implements ClientInterface {
             else this.viewObserver.onReloadFailure();
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -334,6 +351,7 @@ public class ClientRMI extends Client implements ClientInterface {
             else this.viewObserver.willSellPowerupToReload(powerups);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -344,6 +362,7 @@ public class ClientRMI extends Client implements ClientInterface {
             this.askWeaponToReload();
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -355,6 +374,7 @@ public class ClientRMI extends Client implements ClientInterface {
             else this.viewObserver.willChoosePowerup(powerups);
         } catch (RemoteException e) {
             AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -367,7 +387,8 @@ public class ClientRMI extends Client implements ClientInterface {
             damagesMap.put(Powerup.powerup_key, powerup);
             this.viewObserver.willChoosePowerupDamage(damagesMap);
         } catch (RemoteException e) {
-            System.err.print(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
     }
 
@@ -376,8 +397,22 @@ public class ClientRMI extends Client implements ClientInterface {
         try {
             server.applyPowerupDamage(userID, gameID, powerup, damage);
         } catch (RemoteException e) {
-            System.err.print(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
         }
+    }
+
+    @Override
+    public void afterAction() {
+        int remainingActions = -1;
+        try {
+            remainingActions = server.afterAction(userID, gameID);
+        } catch (RemoteException e) {
+            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
+        }
+        if(remainingActions < 1) this.viewObserver.onEndTurn();
+        else this.viewObserver.newAction();
     }
 
     @Override

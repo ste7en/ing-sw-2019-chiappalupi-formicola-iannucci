@@ -34,6 +34,7 @@ public class GameLogic {
     private PowerupController powerupController;
     private GrabController grabController;
     private Player firstPlayer;
+    private int numOfRemainingActions;
 
     /**
      * Log strings
@@ -61,6 +62,27 @@ public class GameLogic {
         this.grabController = new GrabController();
         this.players = new ArrayList<>();
         this.numberOfPlayers = numberOfPlayers;
+        this.numOfRemainingActions = -1;
+    }
+
+    /**
+     * Starts the process of actions of a player
+     * @return the number of actions that the player can still do
+     */
+    public String newAction(User user) {
+        if(numOfRemainingActions == -1) numOfRemainingActions = lookForPlayerFromUser(user).getPlayerBoard().getNumOfActions();
+        return this.situation(user);
+    }
+
+    /**
+     * Number of remaining actions updater: called when a player has done an action successfully
+     * @return the number of actions that the player can still do
+     */
+    public int updateNumOfRemainingActions() {
+        numOfRemainingActions--;
+        int box =  numOfRemainingActions;
+        if(numOfRemainingActions < 1) numOfRemainingActions = -1;
+        return box;
     }
 
     /**
@@ -199,6 +221,10 @@ public class GameLogic {
                 weaponTrio.add(decks.drawWeapon());
             weapons.put(color, weaponTrio);
         }
+        for(int i = 0; i < map.getRows(); i++)
+            for(int j = 0; j < map.getColumns(); j++)
+                if(map.getCell(i, j) != null)
+                    map.getCell(i, j).setAmmoCard(decks.drawAmmoTile());
         this.board = new Board(map, weapons);
     }
 
@@ -288,5 +314,11 @@ public class GameLogic {
         var player = lookForPlayerFromUser(user);
         var availableCells = map.getCellsAtMaxDistance(player, player.getPlayerBoard().getStepsOfMovement());
         availableCells.forEach( cell -> { if (cell.toString().equalsIgnoreCase(movement))map.setPlayerPosition(player, cell); });
+    }
+
+    private String situation(User user) {
+        String s = board.toStringFromPlayer(lookForPlayerFromUser(user));
+        s = s + "Number of remaining actions: " + numOfRemainingActions + "\n";
+        return s;
     }
 }

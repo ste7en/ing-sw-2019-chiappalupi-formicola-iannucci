@@ -105,6 +105,11 @@ public abstract class Client implements Loggable {
     public abstract void joinWaitingRoom(String username);
 
     /**
+     * Abstract method implemented by subclasses when a turn or an action of a player is starting.
+     */
+    public abstract void newAction();
+
+    /**
      * Abstract method implemented by subclasses when a player has chosen his character between the ones available.
      * @param characterColor the chosen character
      */
@@ -245,8 +250,13 @@ public abstract class Client implements Loggable {
     /**
      * Abstract method implemented by subclasses and used when a player has decided how does he wants to use his powerup.
      * @param powerup it's the powerup that the player has selected.
-     * @param damage it's the way the player has decided to use the powerup-
+     * @param damage it's the way the player has decided to use the powerup.
      */
     public abstract void usePowerup(String powerup, String damage);
+
+    /**
+     * Abstract method implemented by subclasses and used when an action has been successfully done.
+     */
+    public abstract void afterAction();
 
 }

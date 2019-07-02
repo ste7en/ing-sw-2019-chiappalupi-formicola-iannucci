@@ -49,6 +49,7 @@ public class GrabController {
     public List<String> getPicks(Player player, Board board, List<String> powerupToSell) {
         List<String> possiblePicks = new ArrayList<>();
         List<Cell> possibleMovements = board.getMap().getCellsAtMaxDistance(player, player.getPlayerBoard().getStepsBeforeGrabbing());
+        possibleMovements.add(board.getMap().getCellFromPlayer(player));
         List<Cell> spawns = new ArrayList<>();
         List<Powerup> soldPowerup = new ArrayList<>();
         if(!powerupToSell.isEmpty()) {
@@ -67,8 +68,8 @@ public class GrabController {
             if(spawn.getColor() == CellColor.red) color = AmmoColor.red;
             else if(spawn.getColor() == CellColor.yellow) color = AmmoColor.yellow;
             List<Weapon> weaponsInSpawn = board.showWeapons(color);
-        for (Weapon spawnWeapon : weaponsInSpawn)
-            if(checkCost(spawnWeapon, soldPowerup, player)) possiblePicks.add(spawnWeapon.getName() + spawn.toStringCondensed());
+            for (Weapon spawnWeapon : weaponsInSpawn)
+                if(checkCost(spawnWeapon, soldPowerup, player)) possiblePicks.add(spawnWeapon.getName() + " " + spawn.toStringCondensed());
         }
         return possiblePicks;
     }
@@ -195,7 +196,6 @@ public class GrabController {
         grabbingWeapon = null;
         grabbingPowerup = null;
 
-        checker.put(GameMap.gameMap_key, board.toStringFromPlayer(player));
         return checker;
     }
 
@@ -254,9 +254,8 @@ public class GrabController {
      * @param player it's the player that is discarding the powerup
      * @param decks it's the decksHandler of the game
      * @param board it's the board of the game
-     * @return the current situation of the board in the form of String
      */
-    public String powerupToDiscard(String powerup, Player player, DecksHandler decks, Board board) {
+    public void powerupToDiscard(String powerup, Player player, DecksHandler decks, Board board) {
         List<Powerup> powerupsInHand = player.getPlayerHand().getPowerups();
         Powerup toDiscard = null;
         for(Powerup p : powerupsInHand)
@@ -288,8 +287,6 @@ public class GrabController {
             if(boxAmmos > 3) boxAmmos = 3;
             player.getPlayerHand().updateAmmos(color, boxAmmos);
         }
-
-        return board.toStringFromPlayer(player);
     }
 
     /**
@@ -298,9 +295,8 @@ public class GrabController {
      * @param player it's the player that is discarding the powerup
      * @param board it's the board of the game
      * @param decks it's the decksHandler of the game
-     * @return the current situation of the board in the form of String
      */
-    public String weaponToDiscard(String weapon, Player player, Board board, DecksHandler decks) {
+    public void weaponToDiscard(String weapon, Player player, Board board, DecksHandler decks) {
         List<Weapon> weaponsInHand = player.getPlayerHand().getWeapons();
         Weapon toDiscard = null;
         for(Weapon w : weaponsInHand)
@@ -322,7 +318,5 @@ public class GrabController {
         grabbingWeapon = null;
         grabbingCell = null;
         powerupSold.clear();
-
-        return board.toStringFromPlayer(player);
     }
 }

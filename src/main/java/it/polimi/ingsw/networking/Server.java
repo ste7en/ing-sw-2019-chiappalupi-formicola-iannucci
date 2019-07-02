@@ -322,6 +322,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         return false;
     }
 
+    @Override
+    public String startActions(int userID, UUID gameID) {
+        return gameControllers.get(gameID).newAction(findUserFromID(userID));
+    }
+
     /**
      * Method used to ask a player to choose a GameMap
      * @param user user
@@ -342,7 +347,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         this.gameControllers.get(gameID).initializeMap(mapType);
     }
 
-    //HERE
     @Override
     public List<String> getSpawnPowerups(int userID, UUID gameID) {
         ArrayList<String> powerups = new ArrayList<>();
@@ -356,9 +360,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     }
 
     @Override
-    public String choseSpawnPoint(int userID, UUID gameID, String spawnPoint, String otherPowerup) {
+    public void choseSpawnPoint(int userID, UUID gameID, String spawnPoint, String otherPowerup) {
         gameControllers.get(gameID).spawn(findUserFromID(userID), spawnPoint, otherPowerup);
-        return gameControllers.get(gameID).getBoard().toStringFromPlayer(gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)));
     }
 
     @Override
@@ -403,12 +406,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * @param userID it's the ID of the user
      * @param gameID it's the ID of the game
      * @param powerup it's the Powerup::toString of the powerup that is being discarded
-     * @return the current situation of the board for the given user
      */
     @Override
-    public String powerupToDiscard(int userID, UUID gameID, String powerup) {
+    public void powerupToDiscard(int userID, UUID gameID, String powerup) {
         User user = findUserFromID(userID);
-        return gameControllers.get(gameID).getGrabController().powerupToDiscard(powerup, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getDecks(), gameControllers.get(gameID).getBoard());
+        gameControllers.get(gameID).getGrabController().powerupToDiscard(powerup, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getDecks(), gameControllers.get(gameID).getBoard());
     }
 
     /**
@@ -416,12 +418,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * @param userID it's the ID of the user
      * @param gameID it's the ID of the game
      * @param weapon it's the Weapon::getName of the powerup that is being discarded
-     * @return the current situation of the board for the given user
      */
     @Override
-    public String weaponToDiscard(int userID, UUID gameID, String weapon) {
+    public void weaponToDiscard(int userID, UUID gameID, String weapon) {
         User user = findUserFromID(userID);
-        return gameControllers.get(gameID).getGrabController().weaponToDiscard(weapon, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getDecks());
+        gameControllers.get(gameID).getGrabController().weaponToDiscard(weapon, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getDecks());
     }
 
     /**
@@ -721,6 +722,17 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public void sellPowerupToReload(List<String> powerups, int userID, UUID gameID) {
         gameControllers.get(gameID).getWeaponController().addPowerupSold(powerups, gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)));
+    }
+
+    /**
+     * Method called when a player has done an action successfully.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     * @return the number of remaining actions.
+     */
+    @Override
+    public int afterAction(int userID, UUID gameID) {
+        return gameControllers.get(gameID).updateNumOfRemainingActions();
     }
 
 }

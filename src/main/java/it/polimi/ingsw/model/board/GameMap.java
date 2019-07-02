@@ -109,141 +109,7 @@ public class GameMap implements Cloneable{
         this.mapType = mapType;
         this.playersPosition = new LinkedHashMap<>();
         this.playersPosition.putAll(playersPosition);
-        this.map = new Cell[3][4];
-        if (mapType == MapType.conf_4) {
-            map[0][0] =
-                    new Cell(
-                            Border.wall,
-                            Border.door,
-                            Border.space,
-                            Border.wall,
-                            CellColor.red,
-                            false,
-                            null,
-                            0,
-                            0);
-            map[0][1] =
-                    new Cell(
-                            Border.wall,
-                            Border.space,
-                            Border.door,
-                            Border.door,
-                            CellColor.blue,
-                            false,
-                            null,
-                            0,
-                            1);
-            map[0][2] =
-                    new Cell(
-                            Border.wall,
-                            Border.door,
-                            Border.door,
-                            Border.space,
-                            CellColor.blue,
-                            true,
-                            null,
-                            0,
-                            2);
-            map[0][3] =
-                    new Cell(
-                            Border.wall,
-                            Border.wall,
-                            Border.door,
-                            Border.door,
-                            CellColor.green,
-                            false,
-                            null,
-                            0,
-                            3);
-            map[1][0] =
-                    new Cell(
-                            Border.space,
-                            Border.wall,
-                            Border.door,
-                            Border.wall,
-                            CellColor.red,
-                            true,
-                            null,
-                            1,
-                            0);
-            map[1][1] =
-                    new Cell(
-                            Border.door,
-                            Border.wall,
-                            Border.door,
-                            Border.wall,
-                            CellColor.pink,
-                            false,
-                            null,
-                            1,
-                            1);
-            map[1][2] =
-                    new Cell(
-                            Border.door,
-                            Border.space,
-                            Border.space,
-                            Border.wall,
-                            CellColor.yellow,
-                            false,
-                            null,
-                            1,
-                            2);
-            map[1][3] =
-                    new Cell(
-                            Border.door,
-                            Border.wall,
-                            Border.space,
-                            Border.space,
-                            CellColor.yellow,
-                            false,
-                            null,
-                            1,
-                            3);
-            map[2][0] =
-                    new Cell(
-                            Border.door,
-                            Border.space,
-                            Border.wall,
-                            Border.wall,
-                            CellColor.white,
-                            false,
-                            null,
-                            2,
-                            0);
-            map[2][1] =
-                    new Cell(
-                            Border.door,
-                            Border.door,
-                            Border.wall,
-                            Border.space,
-                            CellColor.white,
-                            false,
-                            null,
-                            2,
-                            1);
-            map[2][2] =
-                    new Cell(
-                            Border.space,
-                            Border.space,
-                            Border.wall,
-                            Border.door,
-                            CellColor.yellow,
-                            false,
-                            null,
-                            2,
-                            2);
-            map[2][3] =
-                    new Cell(
-                            Border.space,
-                            Border.wall,
-                            Border.wall,
-                            Border.space,
-                            CellColor.yellow,
-                            true,
-                            null,
-                            2,
-                            3);
-        }
+        this.map = initializeMap(mapType);
     }
 
     public GameMap(Cell[][] map, Map<Player, Cell> playersPosition, int rows, int columns) {
@@ -542,7 +408,7 @@ public class GameMap implements Cloneable{
         int i, j;
         for (i = 0; i < ROWS; i++) {
             for (j = 0; j < COLUMNS; j++) {
-                if (map[i][j].getColor().equals(cell.getColor())) room.add(map[i][j]);
+                if (map[i][j] != null && map[i][j].getColor().equals(cell.getColor())) room.add(map[i][j]);
             }
         }
         return room;
@@ -560,7 +426,7 @@ public class GameMap implements Cloneable{
         int j;
         for (i = 0; i < ROWS; i++)
             for (j = 0; j < COLUMNS; j++)
-                if (map[i][j].equals(cell)) {
+                if (map[i][j] != null && map[i][j].equals(cell)) {
                     if (direction == Direction.North) {
                         if (i > 0) return map[i - 1][j];
                     } else if (direction == Direction.East) {
@@ -599,11 +465,11 @@ public class GameMap implements Cloneable{
      * @param cell the cell from which we want to get the players
      * @return a collection of players in the same cell
      */
+    @SuppressWarnings("squid:S2864")
     private ArrayList<Player> getPlayersFromCell(Cell cell) {
         ArrayList<Player> playersInThatCell = new ArrayList<>();
-        for (Player player : playersPosition.keySet()) {
+        for (Player player : playersPosition.keySet())
             if (playersPosition.get(player).equals(cell)) playersInThatCell.add(player);
-        }
         return playersInThatCell;
     }
 
@@ -640,9 +506,9 @@ public class GameMap implements Cloneable{
      * @return a collection of adjacent cells
      */
     private List<Cell> getAdjacentCells(Cell cell) {
-        ArrayList<Cell> adjacentCells = new ArrayList<>();
+        List<Cell> adjacentCells = new ArrayList<>();
         for (Direction direction : Direction.values()) {
-            if (cell.adiajency(direction) != Border.wall) {
+            if (cell.adiajency(direction) != Border.wall && getCellFromDirection(cell, direction) != null) {
                 adjacentCells.add(getCellFromDirection(cell, direction));
             }
         }
@@ -687,7 +553,7 @@ public class GameMap implements Cloneable{
      * @return a collection of players at certain values of distance
      */
     public List<Player> getTargetsAtMaxDistance(Player player, int distance) {
-        ArrayList<Player> targets = getTargetsAtMaxDistanceHelper(getCellFromPlayer(player), distance);
+        List<Player> targets = getTargetsAtMaxDistanceHelper(getCellFromPlayer(player), distance);
         targets.remove(player);
         return targets;
     }
@@ -700,8 +566,8 @@ public class GameMap implements Cloneable{
      * @param distance the maximum distance accepted
      * @return a collection of players at certain values of distance
      */
-    private ArrayList<Player> getTargetsAtMaxDistanceHelper(Cell cell, int distance) {
-        ArrayList<Player> targets = new ArrayList<>();
+    private List<Player> getTargetsAtMaxDistanceHelper(Cell cell, int distance) {
+        List<Player> targets = new ArrayList<>();
         if (distance == 0) {
             targets.addAll(getPlayersFromCell(cell));
             return targets;
@@ -753,7 +619,7 @@ public class GameMap implements Cloneable{
     public List<Player> getAdjacentTargets(Cell cell) {
         ArrayList<Player> targets = new ArrayList<>();
         for (Direction direction : Direction.values()) {
-            if (cell.adiajency(direction) != Border.wall) {
+            if (getCellFromDirection(cell, direction) != null && cell.adiajency(direction) != Border.wall) {
                 targets.addAll(getPlayersFromCell(getCellFromDirection(cell, direction)));
             }
         }
@@ -769,7 +635,7 @@ public class GameMap implements Cloneable{
     public List<Player> getSeenTargets(Player player) {
         ArrayList<Player> targets = new ArrayList<>();
         for (Direction direction : Direction.values()) {
-            if (playersPosition.get(player).adiajency(direction) == Border.door) {
+            if (playersPosition.get(player).adiajency(direction) == Border.door && getCellFromDirection(playersPosition.get(player), direction) != null) {
                 for (Cell cell :
                         getRoomFromCell(getCellFromDirection(playersPosition.get(player), direction))) {
                     targets.addAll(getPlayersFromCell(cell));
@@ -826,7 +692,7 @@ public class GameMap implements Cloneable{
     public boolean isAOneStepValidMove(Player player, Cell cell) {
         for (Direction direction : Direction.values()) {
             if (playersPosition.get(player).adiajency(direction) != Border.wall
-                    && getCellFromDirection(playersPosition.get(player), direction) == cell) {
+                    && getCellFromDirection(playersPosition.get(player), direction) != null &&  getCellFromDirection(playersPosition.get(player), direction) == cell) {
                 return true;
             }
         }

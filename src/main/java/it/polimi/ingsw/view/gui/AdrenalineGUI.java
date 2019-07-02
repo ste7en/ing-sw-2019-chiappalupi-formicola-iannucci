@@ -81,6 +81,11 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
+    public void newAction() {
+
+    }
+
+    @Override
     public void onChooseAction(String map) {
         try {
             handlerGUI.chooseAction();
@@ -110,7 +115,7 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onGrabSuccess(String map) {
+    public void onGrabSuccess() {
 
     }
 
@@ -170,6 +175,11 @@ public class AdrenalineGUI extends View {
 
     @Override
     public void askPowerupAfterShot(List<String> powerups) {
+
+    }
+
+    @Override
+    public void afterAction() {
 
     }
 

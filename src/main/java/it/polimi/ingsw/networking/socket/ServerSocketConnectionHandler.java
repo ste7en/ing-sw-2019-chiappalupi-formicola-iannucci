@@ -173,11 +173,15 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case MAP_CHOSEN:
                     mapChosen(connectionID, args, gameID);
                     break;
+                case NEW_ACTION:
+                    newAction(connectionID, gameID);
+                    break;
                 case GET_AVAILABLE_MOVES:
                     chooseMovement(connectionID, gameID);
                     break;
                 case MOVE:
                     server.move(connectionID, gameID, args.get(GameLogic.movement));
+                    this.send(CommunicationMessage.from(connectionID, AFTER_ACTION));
                     break;
                 case GRAB_SOMETHING:
                     grabSomething(connectionID, gameID, args);
@@ -237,11 +241,37 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case SELL_POWERUP:
                     server.sellPowerupToReload(new ArrayList<>(args.values()), connectionID, gameID);
                     break;
+                case END_ACTION:
+                    endAction(connectionID, gameID);
+                    break;
                 default:
                     break;
             }
 
         }).start();
+    }
+
+    /**
+     * This method is called when an action has been successfully executed
+     * @param connectionID it's the ID of the user
+     * @param gameID it's the ID of the game
+     */
+    private void endAction(int connectionID, UUID gameID) {
+        int check = this.server.afterAction(connectionID, gameID);
+        if(check < 1) this.send(CommunicationMessage.from(connectionID, END_TURN));
+        else this.send(CommunicationMessage.from(connectionID, KEEP_ACTION));
+    }
+
+    /**
+     * This method is called when a new action or turn is starting
+     * @param connectionID it's the ID of the user
+     * @param gameID it's the ID of the game
+     */
+    private void newAction(int connectionID, UUID gameID) {
+        String s = this.server.startActions(connectionID, gameID);
+        Map<String, String> responseArgs = new HashMap<>();
+        responseArgs.put(GameMap.gameMap_key, s);
+        this.send(CommunicationMessage.from(connectionID, CHOOSE_ACTION, responseArgs));
     }
 
     /**
@@ -265,10 +295,8 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * @param gameID it's the ID of the game
      */
     private void grabDiscardWeapon(int connectionID, Map<String, String> args, UUID gameID) {
-        String situation = this.server.weaponToDiscard(connectionID, gameID, args.get(Powerup.powerup_key));
-        Map<String, String> responseArgs = new HashMap<>();
-        responseArgs.put(GameMap.gameMap_key, situation);
-        this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS, responseArgs));
+        this.server.weaponToDiscard(connectionID, gameID, args.get(Powerup.powerup_key));
+        this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS));
     }
 
     /**
@@ -278,10 +306,8 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * @param gameID it's the ID of the game
      */
     private void grabDiscardPowerup(int connectionID, Map<String, String> args, UUID gameID) {
-        String situation = this.server.powerupToDiscard(connectionID, gameID, args.get(Powerup.powerup_key));
-        Map<String, String> responseArgs = new HashMap<>();
-        responseArgs.put(GameMap.gameMap_key, situation);
-        this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS, responseArgs));
+        this.server.powerupToDiscard(connectionID, gameID, args.get(Powerup.powerup_key));
+        this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS));
     }
 
     /**
@@ -292,9 +318,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      */
     private void choseWhatToGrab(int connectionID, Map<String, String> args, UUID gameID) {
         Map<String, String> responseArgs = this.server.didChooseWhatToGrab(args.get(AmmoTile.ammoTile_key), connectionID, gameID);
-        if(responseArgs.containsKey(GameMap.gameMap_key)) this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS, responseArgs));
-        else if(responseArgs.containsKey(Powerup.powerup_key)) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE_POWERUP, responseArgs));
+        if(responseArgs.containsKey(Powerup.powerup_key)) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE_POWERUP, responseArgs));
         else if(responseArgs.containsKey(Weapon.weapon_key)) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE_WEAPON, responseArgs));
+        else this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS));
     }
 
     /**
@@ -317,10 +343,8 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * @param gameID it's the ID of the game
      */
     private void spawnPointChosen(int connectionID, Map<String, String> args, UUID gameID) {
-        String map = this.server.choseSpawnPoint(connectionID, gameID, args.get(Powerup.spawnPowerup_key), args.get(Powerup.powerup_key));
-        Map<String, String> responseArgs = new HashMap<>();
-        responseArgs.put(GameMap.gameMap_key, map);
-        this.send(CommunicationMessage.from(connectionID, CHOOSE_ACTION, responseArgs));
+        this.server.choseSpawnPoint(connectionID, gameID, args.get(Powerup.spawnPowerup_key), args.get(Powerup.powerup_key));
+        this.send(CommunicationMessage.from(connectionID, KEEP_ACTION));
     }
 
     /**
