@@ -156,6 +156,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case SHOOT_PEOPLE_FAILURE:
                         this.viewObserver.onShootPeopleFailure();
                         break;
+                    case EFFECT_TO_USE:
+                    case EFFECTS_LIST:
+                        this.viewObserver.willChooseEffects(args);
+                        break;
                     case DAMAGE_FAILURE:
                         this.viewObserver.onDamageFailure();
                         break;
@@ -168,9 +172,6 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         break;
                     case MODES_LIST:
                         this.viewObserver.willChooseMode(args);
-                        break;
-                    case EFFECT_TO_USE:
-                        this.viewObserver.willChooseEffects(args);
                         break;
                     case LAST_DAMAGE_DONE:
                         this.viewObserver.didUseWeapon(new ArrayList<>(args.values()));
@@ -340,6 +341,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         damageToDo.put(Effect.effect_key, indexOfEffect);
         if(forPotentiableWeapon != null) damageToDo.put(PotentiableWeapon.forPotentiableWeapon_key, forPotentiableWeapon);
         boolean lastDamage = Boolean.parseBoolean(forPotentiableWeapon);
+        if(forPotentiableWeapon == null) lastDamage = true;
         if(lastDamage) this.send(CommunicationMessage.from(userID, LAST_DAMAGE, damageToDo, gameID));
         else this.send(CommunicationMessage.from(userID, DAMAGE_TO_MAKE, damageToDo, gameID));
     }

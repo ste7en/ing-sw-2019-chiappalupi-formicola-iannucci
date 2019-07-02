@@ -21,7 +21,7 @@ public class Board {
      */
     private static final String WEAPON_IN_RESPAWN = "Here are the weapons in the spawn points:";
     private static final String WEAPONS_IN_HAND = "Here are your weapons:";
-    private static final String NO_WEAPON_IN_HAND = "You haven't got any weapon in your hand.";
+    private static final String NO_WEAPON_IN_HAND = "you haven't got any weapon in your hand.";
     private static final String POWERUPS_IN_HAND = "Here are your powerups: ";
     private static final String NO_POWERUP_IN_HAND = "You haven't got any powerup in your hand.";
     private static final String AMMOS_IN_HAND = "Here are your ammos:";
@@ -92,14 +92,12 @@ public class Board {
     }
 
     /**
-     * Method that shows the three weapons placed next to a certain spawnpoint
-     * @param color the color of the spawnpoint next to the weapons that have to be shawn, defined as a AmmoColor Enum type
-     * @return
+     * Method that shows the three weapons placed next to a certain spawn point
+     * @param color the color of the spawn point next to the weapons that have to be shawn, defined as a AmmoColor Enum type
+     * @return a list containing the weapons in the spawn point of the color provided
      */
-    public ArrayList<Weapon> showWeapons(AmmoColor color) {
-        ArrayList<Weapon> decksweapons = new ArrayList<>();
-        decksweapons.addAll(weapons.get(color));
-        return decksweapons;
+    public List<Weapon> showWeapons(AmmoColor color) {
+        return new ArrayList<>(weapons.get(color));
     }
 
     /**
@@ -153,14 +151,19 @@ public class Board {
         return map;
     }
 
+    /**
+     * Saves the situation of the board in a string
+     * @param player it's the player that is playing right now
+     * @return the String with the game situation
+     */
     public String toStringFromPlayer(Player player) {
         StringBuilder board = new StringBuilder();
         board.append(this.getMap().toString());
-        board.append(WEAPON_IN_RESPAWN).append("\n");
+        board.append("\n").append(WEAPON_IN_RESPAWN).append("\n");
 
 
         for(AmmoColor color : AmmoColor.values()) {
-            board.append(color.toString()).append(": ");
+            board.append("\t").append(color.toString()).append(": ");
             List<Weapon> weaponList = this.weapons.get(color);
             for(Weapon weapon : weaponList) {
                 if(weapon != null) board.append(weapon.getName()).append("; ");
@@ -172,14 +175,13 @@ public class Board {
         List<Weapon> weaponList = player.getPlayerHand().getWeapons();
         board.append(player.getNickname()).append(", ");
         if(weaponList.isEmpty()) {
-            board.append("\n").append(NO_WEAPON_IN_HAND).append("\n");
+            board.append(NO_WEAPON_IN_HAND).append("\n");
         }
         else {
-            board.append(WEAPONS_IN_HAND);
+            board.append(WEAPONS_IN_HAND).append("\n");
             for(Weapon weapon : weaponList) {
-                board.append(weapon.getName()).append("; ");
+                board.append("\t").append(weaponList.indexOf(weapon)).append(") ").append(weapon.getName()).append(";\n");
             }
-            board.append("\n");
         }
         board.append("\n");
 
@@ -189,17 +191,16 @@ public class Board {
             board.append(NO_POWERUP_IN_HAND).append("\n");
         }
         else {
-            board.append(POWERUPS_IN_HAND);
+            board.append(POWERUPS_IN_HAND).append("\n");
             for(Powerup powerup : powerupList) {
-                board.append(powerup.toString()).append("; ");
+                board.append("\t").append(powerupList.indexOf(powerup)).append(") ").append(powerup.toString()).append(";\n");
             }
-            board.append("\n");
         }
         board.append("\n");
 
         board.append(AMMOS_IN_HAND).append("\n");
         for(AmmoColor color : AmmoColor.values())
-            board.append(color.toString()).append(": ").append(player.getPlayerHand().getAmmosAmount((color))).append("\n");
+            board.append("\t").append(color.toString()).append(": ").append(player.getPlayerHand().getAmmosAmount((color))).append("\n");
         board.append("\n");
 
         return board.toString();

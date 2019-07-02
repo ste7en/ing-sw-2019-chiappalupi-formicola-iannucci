@@ -328,9 +328,24 @@ public class GameLogic {
      * @return a String containing the situation of the user
      */
     private String situation(User user) {
-        String s = board.toStringFromPlayer(lookForPlayerFromUser(user));
-        s = s + "Number of remaining actions: " + numOfRemainingActions + "\n";
-        return s;
+        return toStringFromPlayers(user) + "\n" + "Number of remaining actions: " + numOfRemainingActions + "\n";
+    }
+
+    /**
+     * Method that stamps the situation of the board.
+     * @param user it's the user that is playing right now.
+     * @return the String containing the board situation.
+     */
+    public String toStringFromPlayers(User user) {
+        StringBuilder stringBuilder = new StringBuilder(board.toStringFromPlayer(lookForPlayerFromUser(user)));
+        stringBuilder.append("Players Blood:").append("\n");
+        for(Player player : players) {
+            List<PlayerColor> blood = player.getPlayerBoard().getDamage();
+            String bloodString = "none";
+            if(!blood.isEmpty()) bloodString = blood.toString();
+            stringBuilder.append("\t").append(player.getNickname()).append(": ").append(" blood -> ").append(bloodString).append("; maxPoints -> ").append(player.getPlayerBoard().getMaxPoints()).append(";\n");
+        }
+        return stringBuilder.toString();
     }
 
     /**

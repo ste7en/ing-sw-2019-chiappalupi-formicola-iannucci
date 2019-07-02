@@ -629,7 +629,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         int indexOfEffect = weapon.getEffects().indexOf(effect);
         responseArgs.put(Effect.effect_key, Integer.toString(indexOfEffect));
         List<Damage> forPotentiableWeaponDamages = gameControllers.get(gameID).getWeaponController().getForPotentiableWeapon();
-        if (forPotentiableWeapon.isEmpty()) forPotentiableWeapon = null;
+        if (forPotentiableWeaponDamages.isEmpty()) forPotentiableWeaponDamages = null;
         ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).getWeaponController().useEffect(weapon, effect, shooter, forPotentiableWeaponDamages, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getPlayers());
         if(possibleDamages.isEmpty()) {
             responseArgs.put(Damage.damage_key, Damage.no_damage);
@@ -756,7 +756,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         String situation = gameControllers.get(gameID).updateNumOfRemainingActions(findUserFromID(userID));
         List<User> otherUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
         for(User user : otherUsers)
-            users.get(user).displayChanges(user.hashCode(), gameControllers.get(gameID).getBoard().toStringFromPlayer(gameControllers.get(gameID).lookForPlayerFromUser(user)));
+            users.get(user).displayChanges(user.hashCode(), gameControllers.get(gameID).toStringFromPlayers(user));
         return situation;
     }
 

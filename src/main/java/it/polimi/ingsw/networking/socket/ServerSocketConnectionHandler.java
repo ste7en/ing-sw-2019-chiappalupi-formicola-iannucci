@@ -462,6 +462,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         Map<String, String> responseArgs = server.useWeaponAfterPowerupSelling(connectionID, gameID, weapon, powerups);
         CommunicationMessage format = CommunicationMessage.valueOf(responseArgs.get(communication_message_key));
         responseArgs.remove(communication_message_key);
+
         send(CommunicationMessage.from(connectionID, format, responseArgs, gameID));
     }
 
