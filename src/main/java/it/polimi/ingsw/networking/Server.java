@@ -72,6 +72,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private ConcurrentMap<User, ServerConnectionHandler> users;
 
     /**
+     * Timeout, in seconds, to wait before a remote operation expires
+     */
+    private int clientOperationTimeoutInSeconds;
+
+    /**
      * Log and exception strings
      */
     private static final String EXC_SETUP                   = "Error while setting up the server :: ";
@@ -93,18 +98,19 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         var arguments = Arrays.asList(args);
         AdrenalineLogger.setDebugMode(true);
         AdrenalineLogger.setLogName("Server");
-        new Server(3334, 4444);
+        new Server(3334, 4444, 10);
     }
 
     /**
      * Server constructor responsible for setting up networking parameters and creates
      * the game and its controller.
      */
-    private Server(Integer portNumberSocket, Integer portNumberRMI) {
+    private Server(Integer portNumberSocket, Integer portNumberRMI, int clientOperationTimeoutInSeconds) {
         this.portNumberSocket = portNumberSocket;
         this.portNumberRMI    = portNumberRMI;
         this.users            = new ConcurrentHashMap<>();
         this.gameControllers  = new ConcurrentHashMap<>();
+        this.clientOperationTimeoutInSeconds = clientOperationTimeoutInSeconds;
 
         // TODO: - The following is a test with test parameters, the real waiting room settings must be read from a file
         this.waitingRoom = new WaitingRoom(3, 5, 2, this);
@@ -120,7 +126,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         ServerRMIConnectionHandler RMIConnectionHandler;
         Thread socketConnectionHandlerThread;
         try {
-            socketConnectionHandler = new ServerSocketHandler(portNumberSocket, this);
+            socketConnectionHandler = new ServerSocketHandler(portNumberSocket, this, clientOperationTimeoutInSeconds);
             socketConnectionHandlerThread = new Thread(socketConnectionHandler);
             socketConnectionHandlerThread.setPriority(Thread.MIN_PRIORITY);
             socketConnectionHandlerThread.start();
@@ -253,7 +259,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public int registerClient(ClientInterface clientInterface, String username){
         ClientInterface clientRMI = clientInterface;
-        ServerConnectionHandler connectionHandler = new ServerRMIConnectionHandler(this, clientRMI);
+        ServerConnectionHandler connectionHandler = new ServerRMIConnectionHandler(this, clientRMI, clientOperationTimeoutInSeconds);
         Ping.getInstance().addPing(connectionHandler);
         return createUser(username, connectionHandler);
     }
