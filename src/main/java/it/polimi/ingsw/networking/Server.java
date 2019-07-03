@@ -342,7 +342,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         var user                = findUserFromID(userID);
 
         if (availableCharacters.contains(characterColor)) {
-            var chosenCharacter = Character.getCharacterFromColor(PlayerColor.valueOf(characterColor));
+            var chosenCharacter = Character.getCharacterFromColor(PlayerColor.valueOf(Character.getColorFromToString(characterColor)));
             if (gameController.addPlayer(new Player(user, chosenCharacter))) {
                 // Number of players reached - server's going to ask the firs
                 // player (or the first one connected) for the choice of the game map
@@ -355,6 +355,13 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         AdrenalineLogger.error("Game " + gameID + ": " + user.getUsername() + " chose " + characterColor);
         AdrenalineLogger.info(ASKING_CHARACTER);
         return false;
+    }
+
+    @Override
+    public String getCharacterName(UUID gameID, int userID) throws RemoteException {
+        String coloredName = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)).getCharacter().getColouredName();
+        coloredName = coloredName.replace("\n", "").replace("\r", "");
+        return coloredName;
     }
 
     /**
@@ -415,6 +422,12 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         return gameControllers.get(gameID).getAvailableMoves(user);
     }
 
+    /**
+     * When the user chooses a movement on the board
+     * @param userID userID
+     * @param gameID gameID
+     * @param movement string description of the movement
+     */
     @Override
     public void move(int userID, UUID gameID, String movement) {
         gameControllers.get(gameID).movePlayer(findUserFromID(userID), movement);

@@ -29,6 +29,25 @@ public class Character {
     private static final String EMPTY_STRING_DESCRIPTION = "Cannot create a character with an empty string as description.";
 
     /**
+     * String colours
+     */
+    private static final String ANSI_GREEN      = "\u001b[32m";
+    private static final String ANSI_YELLOW     = "\u001b[33m";
+    private static final String ANSI_BLUE       = "\u001b[34m";
+    private static final String ANSI_MAGENTA    = "\u001b[35m";
+    private static final String ANSI_WHITE      = "\u001b[37m";
+    private static final String ANSI_RESET      = "\u001B[0m";
+
+    /**
+     * Possible names
+     */
+    private static final String D_STRUCT_OR = "D-Struct-Or";
+    private static final String SPROG = "Sprog";
+    private static final String VIOLET = "Violet";
+    private static final String DOZER = "Dozer";
+    private static final String BANSHEE = "Banshee";
+
+    /**
      * String constant used in messages between client-server
      */
     public final static String character_list = "CHARACTER_LIST";
@@ -75,6 +94,36 @@ public class Character {
      * Default constructor for json parsing
      */
     private Character() {}
+
+    /**
+     * Returns a String containing the coloured name of the character
+     * @return the coloured name of the character
+     */
+    public String getColouredName() {
+        StringBuilder nameBuilder = new StringBuilder();
+        switch (color) {
+            case green:
+                nameBuilder.append(ANSI_GREEN);
+                break;
+            case blue:
+                nameBuilder.append(ANSI_BLUE);
+                break;
+            case yellow:
+                nameBuilder.append(ANSI_YELLOW);
+                break;
+            case grey:
+                nameBuilder.append(ANSI_WHITE);
+                break;
+            case purple:
+                nameBuilder.append(ANSI_MAGENTA);
+                break;
+        }
+
+        nameBuilder.append(name);
+        nameBuilder.append(ANSI_RESET);
+
+        return nameBuilder.toString();
+    }
 
     /**
      * Returns the name of the character
@@ -139,6 +188,36 @@ public class Character {
      */
     public static Character getCharacterFromColor(PlayerColor color) {
         return characters.stream().filter(character -> character.getColor().equals(color)).findFirst().orElseThrow();
+    }
+
+    /**
+     * Returns the color of a character from its toString
+     * @param toString it's the String to analyze
+     * @return the color of the player, null if no player of this kind exists
+     */
+    public static String getColorFromToString(String toString) {
+        toString = toString.replaceAll("[^a-zA-Z\\-]", "").replaceAll("m", "");
+        switch (toString) {
+            case D_STRUCT_OR:
+                return PlayerColor.yellow.toString();
+            case BANSHEE:
+                return PlayerColor.blue.toString();
+            case DOZER:
+                return PlayerColor.grey.toString();
+            case VIOLET:
+                return PlayerColor.purple.toString();
+            case SPROG:
+                return PlayerColor.green.toString();
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        String coloredName = getColouredName();
+        coloredName = coloredName.replace("\n", "").replace("\r", "");
+        return coloredName;
     }
 
 }

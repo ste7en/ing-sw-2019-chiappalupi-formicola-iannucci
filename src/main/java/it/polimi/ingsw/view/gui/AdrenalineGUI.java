@@ -68,6 +68,11 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
+    public void onChooseCharacterSuccess(String characterChosen) {
+
+    }
+
+    @Override
     public void willChooseSkulls() {
 
     }

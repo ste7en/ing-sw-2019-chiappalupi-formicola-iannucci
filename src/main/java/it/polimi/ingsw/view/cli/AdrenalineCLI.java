@@ -42,6 +42,10 @@ public class AdrenalineCLI extends View {
     private static final String ON_START                    = "Game started.";
     private static final String CHOOSE_CHARACTER            = "Choose a character who will represent you in the game. Insert the character number: ";
     private static final String CHOOSE_CHARACTER_NOT_OK     = "";
+    private static final String HAVE_FUN_PT1                = "You have successfully chosen the character: ";
+    private static final String HAVE_FUN_PT2                = ". Please wait while all the other players will choose their.\n" +
+                                                              "After it, the first player will choose the map and the number of skulls.\n" +
+                                                              "As soon as the game begins, you will be notified. Have fun!";
     private static final String CHOOSE_SPAWN_POINT          = "Here are two powerup cards. Choose the one you want to discard: its color will be the color where you will spawn.\n" +
                                                               "You will keep the powerup that you don't discard.";
     private static final String GAME_SITUATION              = "Here is the situation of the game:\n";
@@ -261,6 +265,11 @@ public class AdrenalineCLI extends View {
             choice = in.nextInt();
         } while (choice > availableCharacters.size() || choice < 0);
         didChooseCharacter(availableCharacters.get(choice));
+    }
+
+    @Override
+    public void onChooseCharacterSuccess(String characterChosen) {
+        out.println(HAVE_FUN_PT1 + characterChosen + HAVE_FUN_PT2);
     }
 
     @Override

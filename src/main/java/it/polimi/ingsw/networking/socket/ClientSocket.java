@@ -110,7 +110,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         timeoutOperation(10, () -> this.viewObserver.willChooseCharacter(availableCharacters));
                         break;
                     case CHARACTER_CHOSEN_OK:
-                        //TODO: - send an ACK??
+                        this.viewObserver.onChooseCharacterSuccess(args.get(Character.character));
                         break;
                     case CHARACTER_NOT_AVAILABLE:
                         this.viewObserver.onFailure(View.CHARACTER_NOT_AVAILABLE);

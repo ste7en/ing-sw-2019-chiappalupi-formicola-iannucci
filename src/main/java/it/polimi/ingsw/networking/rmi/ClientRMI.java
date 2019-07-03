@@ -146,6 +146,9 @@ public class ClientRMI extends Client implements ClientInterface {
         submitRemoteMethodInvocation(() -> {
             var availableCharacters = server.getAvailableCharacters(gameID);
             if (!server.choseCharacter(gameID, userID, characterColor)) this.viewObserver.willChooseCharacter(availableCharacters);
+            else {
+                this.viewObserver.onChooseCharacterSuccess(server.getCharacterName(gameID, userID));
+            }
             return null;
         });
     }

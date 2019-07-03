@@ -1,8 +1,14 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.player.Character;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.utility.PlayerColor;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -70,5 +76,18 @@ public class CharacterTest {
     @Test
     public void testGetCharacterFromColor() {
         assertEquals(character, Character.getCharacterFromColor(character.getColor()));
+    }
+
+    /**
+     * Tests getColouredName method
+     */
+    @Test
+    public void testGetColouredName() {
+        System.out.println(character.getColouredName());
+        assertNotNull(character.getColouredName());
+
+        String toString = character.toString();
+        toString = toString.replaceAll("[^a-zA-Z\\-]", "").replaceAll("m", "");
+        System.out.println(toString);
     }
 }

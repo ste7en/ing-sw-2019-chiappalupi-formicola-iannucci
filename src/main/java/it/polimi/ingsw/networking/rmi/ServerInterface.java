@@ -24,6 +24,8 @@ public interface ServerInterface extends Remote {
 
     boolean choseCharacter(UUID gameID, int userID, String characterColor) throws RemoteException;
 
+    String getCharacterName(UUID gameID, int userID) throws RemoteException;
+
     void didChooseSkulls(String skulls, UUID gameID) throws RemoteException;
 
     String startActions(int userID, UUID gameID) throws RemoteException;
@@ -36,13 +38,6 @@ public interface ServerInterface extends Remote {
 
     List<String> getAvailableMoves(int userID, UUID gameID) throws RemoteException;
 
-    /**
-     * When the user chooses a movement on the board
-     * @param userID userID
-     * @param gameID gameID
-     * @param movement string description of the movement
-     * @throws RemoteException RMI exception
-     */
     void move(int userID, UUID gameID, String movement) throws RemoteException;
 
     List<String> askPicks(int userID, UUID gameID, List<String> powerupToSell) throws RemoteException;

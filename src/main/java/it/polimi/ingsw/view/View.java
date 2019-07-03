@@ -137,6 +137,11 @@ public abstract class View {
     }
 
     /**
+     * When the client has successfully selected a character
+     */
+    public abstract void onChooseCharacterSuccess(String characterChosen);
+
+    /**
      * Public method implemented by subclasses when choosing the number of skulls in the game.
      */
     public abstract void willChooseSkulls();

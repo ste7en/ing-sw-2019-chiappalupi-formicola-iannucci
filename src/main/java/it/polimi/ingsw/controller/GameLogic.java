@@ -296,8 +296,7 @@ public class GameLogic {
                         .map(Player::getCharacter)
                         .collect(Collectors.toList())
                         .contains(c))
-                .map(Character::getColor)
-                .map(PlayerColor::toString)
+                .map(Character::toString)
                 .collect(Collectors.toList());
     }
 
