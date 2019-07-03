@@ -22,7 +22,6 @@ import java.util.*;
  * @author Elena Iannucci
  */
 public class AdrenalineCLI extends View {
-    private static final String SPAWN_AFTER_DEATH_DECISION = "You are dead. Choose where you want to respawn! Remember that the powerup you choose will be discarded.";
     @SuppressWarnings("squid:S106")
     private PrintWriter out = new PrintWriter(System.out, true);
     private Scanner     in  = new Scanner(System.in);
@@ -85,7 +84,8 @@ public class AdrenalineCLI extends View {
     private static final String ASK_POWERUP_AFTER_SHOT      = "Do you want to use any powerup to make additional damage after this shot?";
     private static final String WILL_POWERUP_AFTER_SHOT     = "You selected that you want to use any powerup to make additional damage after this shot\n";
     private static final String WON_T_POWERUP_AFTER_SHOT    = "No powerups will be used after this shot.";
-    private static final String CHOOSE_WEAPONS_TO_RELOAD    = "What weapons do you want to reload? \nMultiple weapons can be provided with commas.";
+    private static final String CHOOSE_WEAPONS_TO_RELOAD    = "What weapon do you want to reload? You will have the possibility to choose as much weapons as you wish.";
+    private static final String MORE_WEAPONS_TO_RELOAD      = "What other weapons do you want to reload?";
     private static final String NOT_ENOUGH_AMMOS            = "You have not enough ammos to reload. Please select only weapons you can afford.";
     private static final String ASK_RELOAD                  = "Do you want to reload your weapons? [Y/N]";
     private static final String NO_WEAPON_UNLOADED          = "You have no weapon unloaded in your hand, so you can't reload anything.";
@@ -111,6 +111,8 @@ public class AdrenalineCLI extends View {
     private static final String TURN_ENDING                 = "Your turn is about to end. You will be now given of the possibilities to reload your unloaded weapons and use any powerup that can be used during this phase.";
     private static final String MOVEMENT_MADE               = "A movement has been made! Check out the new situation on the board:";
     private static final String WILL_PLAY_SOON              = "Keep waiting: soon it will be your turn...";
+    private static final String SPAWN_AFTER_DEATH_DECISION  = "You are dead. Choose where you want to respawn! Remember that the powerup you choose will be discarded.";
+    private static final String RELOAD_MORE                 = "Do you want to choose another weapon to reload? [Y/N]";
 
     /**
      * Game parameters
@@ -477,28 +479,11 @@ public class AdrenalineCLI extends View {
     @Override
     public void willChooseWeapon(List<String> weaponsAvailable) {
         out.println(CHOOSE_WEAPON);
-        boolean selected = false;
-        String weaponSelected = "-1";
-        int i = 1;
-        for(String weapon : weaponsAvailable) {
-            out.println(i + ") " + weapon);
-            i++;
+        String weaponSelected = decisionHandlerFromList(weaponsAvailable);
+        while(weaponSelected == null) {
+            out.println(INCORRECT_CHOICE);
+            weaponSelected = decisionHandlerFromList(weaponsAvailable);
         }
-        var scanInput = in.nextLine();
-        try {
-            int choice = Integer.parseInt(scanInput);
-            if(choice <= weaponsAvailable.size()) {
-                weaponSelected = weaponsAvailable.get(choice - 1);
-                selected = true;
-            }
-        } catch(NumberFormatException exception) {
-            for(String s : weaponsAvailable)
-                if(scanInput.equalsIgnoreCase(s)) {
-                    weaponSelected = s;
-                    selected = true;
-                }
-        }
-        if(!selected) throw new IllegalArgumentException(INCORRECT_CHOICE);
         this.didChooseWeapon(weaponSelected);
     }
 
@@ -774,16 +759,22 @@ public class AdrenalineCLI extends View {
     @Override
     public void willReload(List<String> weapons) {
         out.println(CHOOSE_WEAPONS_TO_RELOAD);
-        String scanInput = in.nextLine();
-        scanInput = scanInput.replaceAll(" ", "");
-        List<String> selections = new ArrayList<>(List.of(scanInput.split(",")));
-        Set<String> choices = new HashSet<>();
-        for(String selection : selections) {
-            String box = selectionChecker(selection, weapons);
-            if(box == null) throw new IllegalArgumentException(INCORRECT_CHOICE);
-            choices.add(box);
+        boolean stillReloading = true;
+        List<String> weaponsToReload = new ArrayList<>();
+        while(stillReloading) {
+            out.println(MORE_WEAPONS_TO_RELOAD);
+            String choice = decisionHandlerFromList(weapons);
+            while(choice == null) {
+                out.println(INCORRECT_CHOICE);
+                choice = decisionHandlerFromList(weapons);
+            }
+            weaponsToReload.add(choice);
+            out.println(RELOAD_MORE);
+            String scanInput = in.nextLine();
+            if(!(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y")))
+                stillReloading = false;
+            weapons.remove(choice);
         }
-        List<String> weaponsToReload = new ArrayList<>(choices);
         this.didChooseWeaponsToReload(weaponsToReload);
     }
 
