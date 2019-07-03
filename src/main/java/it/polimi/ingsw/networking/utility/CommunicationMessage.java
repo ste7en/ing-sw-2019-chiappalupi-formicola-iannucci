@@ -392,6 +392,7 @@ public enum CommunicationMessage {
             this.connectionID = id;
             this.message = format;
             this.arguments = arguments;
+            this.timeoutInSeconds = timeoutInSeconds;
         }
 
         Message(int id, CommunicationMessage format, Map<String, String> arguments, UUID gameID, int timeoutInSeconds) {
@@ -597,7 +598,6 @@ public enum CommunicationMessage {
      * @return timeoutInSeconds
      */
     public static int getTimeoutFrom(String json) {
-        var timeout = getMessageFrom(json).getTimeoutInSeconds();
-        return timeout == 0 ? Integer.MAX_VALUE : timeout;
+        return getMessageFrom(json).getTimeoutInSeconds();
     }
 }
