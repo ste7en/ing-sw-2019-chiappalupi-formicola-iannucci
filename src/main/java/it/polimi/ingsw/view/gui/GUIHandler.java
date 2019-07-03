@@ -45,6 +45,7 @@ public class GUIHandler extends Application {
     private Background background;
     private VBox textContainer;
     private VBox textSelectedContainer;
+    private VBox textErrorContainer;
     private ArrayList<String> prova2;
     private DoubleProperty fontSize = new SimpleDoubleProperty(10);
     private ConnectionType connectionType;
@@ -58,6 +59,8 @@ public class GUIHandler extends Application {
         textContainer = new VBox();
         textContainer.setAlignment(Pos.CENTER);
         textSelectedContainer = new VBox();
+        textContainer.setAlignment(Pos.CENTER);
+        textErrorContainer = new VBox();
         textContainer.setAlignment(Pos.CENTER);
         button = new Button("Continue");
         ArrayList<String> prova = new ArrayList<>();
@@ -255,25 +258,31 @@ public class GUIHandler extends Application {
         }
 
         RowConstraints r0 = new RowConstraints();
-        r0.setPercentHeight(10);
+        r0.setPercentHeight(8);
         RowConstraints r1 = new RowConstraints();
-        r1.setPercentHeight(35);
+        r1.setPercentHeight(34);
         RowConstraints r2 = new RowConstraints();
-        r2.setPercentHeight(35);
+        r2.setPercentHeight(34);
         RowConstraints r3 = new RowConstraints();
-        r3.setPercentHeight(10);
+        r3.setPercentHeight(8);
         RowConstraints r4 = new RowConstraints();
-        r4.setPercentHeight(10);
-        modesChoiceGrid.getRowConstraints().addAll(r0, r1, r2,r3,r4);
+        r4.setPercentHeight(8);
+        RowConstraints r5 = new RowConstraints();
+        r5.setPercentHeight(8);
+        modesChoiceGrid.getRowConstraints().addAll(r0, r1, r2,r3, r4, r5);
 
         BackgroundImage backgroundImage= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(1.0, 1.0, true, true, false, false));
         background = new Background(backgroundImage);
         modesChoiceGrid.setBackground(background);
 
-        button.setOnAction(e -> setText(textSelectedContainer, "You have to select something to continue"));
+        //button.setOnAction(e -> setText(textSelectedContainer, "You have to select something to continue"));
+        Button bottoneFunzionante = new Button("continue");
+        boxButton.getChildren().clear();
+        boxButton.getChildren().add(bottoneFunzionante);
         setText(textContainer,"Select a character");
-        modesChoiceGrid.add(boxButton, 0, 4,6,1);
+        modesChoiceGrid.add(boxButton, 0, 5,6,1);
+        modesChoiceGrid.add(textErrorContainer, 0, 4, 6, 1);
         modesChoiceGrid.add(textContainer, 0,0,6,1);
         modesChoiceGrid.add(textSelectedContainer, 0,3,6,1);
 
@@ -299,7 +308,7 @@ public class GUIHandler extends Application {
             String character = availableCharacters.get(i);
             imageViews.get(i).setOnMouseClicked(e -> {
                 try {
-                    button.setOnAction(event -> {
+                    bottoneFunzionante.setOnAction(event -> {
                         try {
                             System.out.println("QUI1");
                             System.out.println(character);
@@ -308,7 +317,7 @@ public class GUIHandler extends Application {
                             ex.printStackTrace();
                         }
                     });
-                    //setText(textSelectedContainer, "You selected " + character);
+                    setText(textErrorContainer, "You selected " + character);
                     try {
                         unclickedImage(imageViews, availableCharacters, "characters/");
                     } catch (Exception e1) {
@@ -873,19 +882,22 @@ public class GUIHandler extends Application {
     }
 
     public void setText(VBox textBox, String string){
-        textBox.getChildren().clear();
-        Text text = new Text(string);
-        //text.setFont(Font.font("Futura", FontWeight.LIGHT, 20));
-        text.setFill(Color.WHITE);
-        text.setStyle("-fx-font-family: 'Andale Mono'");
+        try {
+            textBox.getChildren().clear();
+            Text text = new Text(string);
+            //text.setFont(Font.font("Futura", FontWeight.LIGHT, 20));
+            text.setFill(Color.WHITE);
+            text.setStyle("-fx-font-family: 'Andale Mono'");
 
-        fontSize.bind(mainScene.widthProperty().add(mainScene.heightProperty()).divide(100));
-        textBox.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString(), ";"));
-        text.wrappingWidthProperty().bind(mainScene.widthProperty().subtract(100));
-        textBox.getChildren().add(text);
-        textBox.setMargin(text, new Insets(50, 50, 50, 50));
+            fontSize.bind(mainScene.widthProperty().add(mainScene.heightProperty()).divide(100));
+            textBox.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString(), ";"));
+            text.wrappingWidthProperty().bind(mainScene.widthProperty().subtract(100));
+            textBox.getChildren().add(text);
+            textBox.setMargin(text, new Insets(50, 50, 50, 50));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
-
 
     public void clickedImage(ImageView imageView, String image) {
         try {
