@@ -20,9 +20,12 @@ import java.util.stream.Collectors;
 public class GameLogic {
 
     /**
-     * Number of weapons that are placed in every spawn point of the board.
+     * Configuration parameters and string of exceptions,
      */
     private static final int NUM_OF_WEAPONS_IN_SPAWNS = 3;
+    private static final int DEATH_BLOW_PLACE_ON_THE_BOARD = 10;
+    private static final int MAX_SIZE_OF_THE_BOARD = 12;
+    private static final String NO_PLAYER_WITH_THIS_COLOR = "No player in the game has this color.";
 
     private int numberOfPlayers;
     private boolean finalFrenzy;
@@ -35,6 +38,7 @@ public class GameLogic {
     private GrabController grabController;
     private Player firstPlayer;
     private int numOfRemainingActions;
+    private int numOfKillsDuringThisTurn;
 
     /**
      * Log strings
@@ -63,6 +67,7 @@ public class GameLogic {
         this.players = new ArrayList<>();
         this.numberOfPlayers = numberOfPlayers;
         this.numOfRemainingActions = -1;
+        this.numOfKillsDuringThisTurn = 0;
     }
 
     /**
@@ -401,5 +406,89 @@ public class GameLogic {
     public void endTurn() {
         this.board.refillWeapons(decks);
         this.board.getMap().refillAmmoTiles(decks);
+        this.numOfKillsDuringThisTurn = 0;
+    }
+
+    /**
+     * Looks for a player from its color.
+     * @param color it's the color of the player.
+     * @return the player with that color
+     * @throws IllegalArgumentException if no player with this color exists
+     */
+    private Player lookForPlayerFromColor(PlayerColor color) {
+        for(Player player : players)
+            if(player.getCharacter().getColor().equals(color))
+                return player;
+        throw new IllegalArgumentException(NO_PLAYER_WITH_THIS_COLOR);
+    }
+
+    /**
+     * Assigns the point corresponding to a player death
+     * @param user it's the user that is dying
+     */
+    private void assignPointFromUser(User user) {
+        Player player = lookForPlayerFromUser(user);
+        board.getMap().setPlayerPosition(player, null);
+        List<PlayerColor> damage = player.getPlayerBoard().getDamage();
+        List<Integer> points = player.getPlayerBoard().getMaxPoints();
+        Map<PlayerColor, Integer> pointsFromColor = new EnumMap<>(PlayerColor.class);
+        if(this.numOfKillsDuringThisTurn == 1) lookForPlayerFromColor(damage.get(DEATH_BLOW_PLACE_ON_THE_BOARD)).addPoints(1);
+        numOfKillsDuringThisTurn++;
+        for(PlayerColor color : damage) {
+            Integer oldPoints = pointsFromColor.get(color);
+            if(oldPoints == null) oldPoints = 1;
+            else oldPoints++;
+            pointsFromColor.put(color, oldPoints);
+        }
+        assignPointsFromDamage(damage, points, pointsFromColor);
+        lookForPlayerFromColor(damage.get(0)).addPoints(1);
+        int numOfBloodInTheSkullsTrack = 1;
+        if(damage.size() == MAX_SIZE_OF_THE_BOARD) {
+            lookForPlayerFromColor(damage.get(MAX_SIZE_OF_THE_BOARD - 1)).getPlayerBoard().addMarks(player.getCharacter().getColor(), 1);
+            numOfBloodInTheSkullsTrack = 2;
+        }
+        board.addBloodFrom(damage.get(DEATH_BLOW_PLACE_ON_THE_BOARD), numOfBloodInTheSkullsTrack);
+        player.getPlayerBoard().death();
+    }
+
+    /**
+     * Helper method to avoid cognitive complexity: assigns the points to the corresponding players.
+     * @param damage it's the list of damage that the dead player has taken.
+     * @param points it's the list of points that should be given.
+     * @param pointsFromColor it's the map containing the occurrences of colors in damages.
+     */
+    @SuppressWarnings("squid:S3776")
+    private void assignPointsFromDamage(List<PlayerColor> damage, List<Integer> points, Map<PlayerColor, Integer> pointsFromColor) {
+        while(!pointsFromColor.isEmpty()) {
+            List<PlayerColor> bests = new ArrayList<>();
+            int max = -1;
+            for(Map.Entry<PlayerColor, Integer> entry : pointsFromColor.entrySet())
+                if(entry.getValue() > max)
+                    max = entry.getValue();
+            for(Map.Entry<PlayerColor, Integer> entry : pointsFromColor.entrySet())
+                if(entry.getValue() == max)
+                    bests.add(entry.getKey());
+            PlayerColor bestColor;
+            if(bests.size() == 1) bestColor = bests.get(0);
+            else {
+                int firstOccurrence = damage.size() + 1;
+                for(PlayerColor color : bests)
+                    if(damage.indexOf(color) < firstOccurrence)
+                        firstOccurrence = damage.indexOf(color);
+                bestColor = damage.get(firstOccurrence);
+            }
+            Player bestPlayer = lookForPlayerFromColor(bestColor);
+            bestPlayer.addPoints(points.get(0));
+            if(points.size() > 1) points.remove(0);
+            pointsFromColor.remove(bestColor);
+        }
+    }
+
+    /**
+     * Public method that checks if a player is death after he has been shot.
+     * @param player it's the player to check.
+     */
+    public void checkDeath(Player player) {
+        if(player.isDead()) board.getMap().setPlayerPosition(player, null);
     }
 }

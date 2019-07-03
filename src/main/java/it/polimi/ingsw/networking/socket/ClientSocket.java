@@ -453,6 +453,11 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     }
 
     @Override
+    public void checkDeaths() {
+        //toDO
+    }
+
+    @Override
     public void turnEnded() {
         this.send(CommunicationMessage.from(userID, TURN_ENDED, gameID));
     }

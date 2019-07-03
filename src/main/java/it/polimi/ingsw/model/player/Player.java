@@ -146,6 +146,14 @@ public class Player implements Comparable<Player>{
     }
 
     /**
+     * Returns the state of life of the player.
+     * @return true if the player is death, false otherwise.
+     */
+    public boolean isDead() {
+        return playerBoard.getDamage().size() > 10;
+    }
+
+    /**
      * Overrode toString for debugging purposes
      * @return the nickname of the player
      */

@@ -26,6 +26,7 @@ public class AdrenalineCLI extends View {
     private PrintWriter out = new PrintWriter(System.out, true);
     private Scanner     in  = new Scanner(System.in);
     private String curSituation;
+    boolean locked;
 
     /**
      * Console prompt strings
@@ -677,6 +678,19 @@ public class AdrenalineCLI extends View {
         if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y"))
             this.willUsePowerup();
         out.println(TURN_ENDED);
+        locked = true;
+        this.client.checkDeaths();
+        while (locked) {
+            synchronized (this) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    AdrenalineLogger.error(e.toString());
+                    AdrenalineLogger.error(e.getMessage());
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
         this.client.turnEnded();
     }
 

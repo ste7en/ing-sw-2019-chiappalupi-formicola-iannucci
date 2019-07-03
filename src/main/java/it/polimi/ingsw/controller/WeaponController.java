@@ -174,12 +174,21 @@ public class WeaponController {
         Player target = damage.getTarget();
         if(damage.getPosition() != null) board.getMap().setPlayerPosition(target, damage.getPosition());
         if(damage.getDamage() != 0) target.getPlayerBoard().appendDamage(shooter, damage.getDamage());
-        if(damage.getMarks() != 0) {
-            ArrayList<PlayerColor> marks = new ArrayList<>();
-            for(int i = 0; i < damage.getMarks(); i++)
-                marks.add(shooter);
-            target.getPlayerBoard().setMarks(marks);
+        if(damage.getMarks() != 0) target.getPlayerBoard().addMarks(shooter, damage.getMarks());
+    }
+
+    /**
+     * This method is used to submit the marks after a shot has been made.
+     * @param target it's the target
+     * @param shooter it's the shooter
+     */
+    public void submitMarks(Player target, PlayerColor shooter) {
+        List<PlayerColor> marks = target.getPlayerBoard().getMarks();
+        while(marks.contains(shooter)) {
+            marks.remove(shooter);
+            target.getPlayerBoard().appendDamage(shooter, 1);
         }
+        target.getPlayerBoard().setMarks(marks);
     }
 
     /**

@@ -165,7 +165,7 @@ public abstract class View {
     /**
      * Called when the map configuration has been chosen by the player.
      */
-    public void didChooseGameMap(String configuration) {
+    protected void didChooseGameMap(String configuration) {
         client.choseGameMap(configuration);
     }
 
@@ -187,7 +187,7 @@ public abstract class View {
      * @param powerupChosenAsSpawnPoint it's the powerup that has been chosen from the player: it will be discarded and used to let him spawn.
      * @param otherPowerup it's the other powerup: it will be added to the hand of the player.
      */
-    public void didChooseSpawnPoint(String powerupChosenAsSpawnPoint, String otherPowerup) {
+    protected void didChooseSpawnPoint(String powerupChosenAsSpawnPoint, String otherPowerup) {
         client.choseSpawnPoint(powerupChosenAsSpawnPoint, otherPowerup);
     }
 
@@ -461,7 +461,7 @@ public abstract class View {
     /**
      * Starts the process of using a powerup.
      */
-    public void willUsePowerup() {
+    protected void willUsePowerup() {
         this.client.askForUsablePowerups();
     }
 

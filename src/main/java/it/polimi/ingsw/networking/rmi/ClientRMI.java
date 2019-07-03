@@ -401,6 +401,11 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     }
 
     @Override
+    public void checkDeaths() {
+        //toDO
+    }
+
+    @Override
     public void turnEnded() {
         submitRemoteMethodInvocation(executorService, () -> {
             this.server.turnEnded(userID, gameID);

@@ -1,8 +1,14 @@
 package it.polimi.ingsw.model.player;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.ingsw.model.cards.AmmoTile;
 import it.polimi.ingsw.model.utility.PlayerColor;
+import it.polimi.ingsw.utility.AdrenalineLogger;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,11 +19,19 @@ import java.util.List;
  */
 public class PlayerBoard {
 
-    private static final String COLOR_DAMAGE_MARKS_EXCEPTION = "An attempt to add the same color of the player to his damages or marks has been found. A player can't infer damages or marks to himself.";
-    private static final String INVALID_DAMAGES_NUMBER = "The number of damages should be greater than zero.";
-    private static final Integer MAX_ASSIGNABLE_POINTS = 8;
-    private static final Integer ADRENALINE_1_MIN = 3;
-    private static final Integer ADRENALINE_2_MIN = 6;
+    private static final String COLOR_DAMAGE_MARKS_EXCEPTION                = "An attempt to add the same color of the player to his damages or marks has been found. A player can't infer damages or marks to himself.";
+    private static final String INVALID_DAMAGES_NUMBER                      = "The number of damages should be greater than zero.";
+    private static final Integer NUM_OF_MAX_ASSIGNABLE_POINTS               = 6;
+    private static final Integer NUM_OF_MAX_ASSIGNABLE_POINTS_ADRENALINIC   = 4;
+    private static final Integer ADRENALINE_1_MIN                           = 3;
+    private static final Integer ADRENALINE_2_MIN                           = 6;
+
+    /**
+     * String that contains the path information to where the resources are located.
+     */
+    private static final String PATHNAME                 = "src" + File.separator + "main" + File.separator + "resources" + File.separator;
+    private static final String PATHNAME_NOT_ADRENALINIC = "max_points_list.json";
+    private static final String PATHNAME_ADRENALINIC     = "max_points_list_adrenalinic.json";
 
     /**
      * Color corresponding to the player and his character.
@@ -34,7 +48,7 @@ public class PlayerBoard {
     /**
      * The maximum number of points other players can get by killing a player.
      */
-    private Integer maxPoints;
+    private List<Integer> maxPoints;
 
     /**
      * It is the structure that keeps track of the player's marks
@@ -107,12 +121,60 @@ public class PlayerBoard {
         return numOfActions;
     }
 
-  /**
-   * Number of possible action setter.
-   * @param numOfActions the updated number of actions that the player can do in his turn.
-   */
-  public void setNumOfActions(int numOfActions) {
+    /**
+    * Number of possible action setter.
+    * @param numOfActions the updated number of actions that the player can do in his turn.
+    */
+    public void setNumOfActions(int numOfActions) {
         this.numOfActions = numOfActions;
+    }
+
+    /**
+     * Initializes the list of max points reading them from a json file.
+     * @param adrenaline it's a boolean containing the information about the phase of the game
+     */
+    private void initializeMaxPoints(boolean adrenaline) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        int numOfPoints = NUM_OF_MAX_ASSIGNABLE_POINTS;
+        String jsonName = PATHNAME_NOT_ADRENALINIC;
+        if(adrenaline) {
+            numOfPoints = NUM_OF_MAX_ASSIGNABLE_POINTS_ADRENALINIC;
+            jsonName = PATHNAME_ADRENALINIC;
+        }
+        Integer[] box = new Integer[numOfPoints];
+        try {
+            File json = new File(PATHNAME + jsonName);
+            box = objectMapper.readValue(json, Integer[].class);
+        } catch (IOException e) {
+            AdrenalineLogger.error(e.toString());
+        }
+        this.maxPoints = new ArrayList<>(Arrays.asList(box));
+    }
+
+    /**
+     * Updates the max points that can be taken from a player
+     */
+    public void updateMaxPoints() {
+        if(this.maxPoints.size() > 1) this.maxPoints.remove(0);
+    }
+
+    /**
+     * Sets the board to adrenaline mode.
+     * @param firstPlayer it's the boolean containing the information about the first player
+     */
+    public void becomeAdrenalinic(boolean firstPlayer) {
+        initializeMaxPoints(true);
+        if(firstPlayer) {
+            numOfActions = 1;
+            stepsOfMovement = 0;
+            stepsBeforeGrabbing = 3;
+            stepsBeforeShooting = 2;
+        } else {
+            numOfActions = 2;
+            stepsOfMovement = 4;
+            stepsBeforeGrabbing = 2;
+            stepsBeforeShooting = 1;
+        }
     }
 
     /**
@@ -123,7 +185,7 @@ public class PlayerBoard {
     public PlayerBoard(PlayerColor boardColor) {
         this.boardColor = boardColor;
         this.damage = new ArrayList<>();
-        this.maxPoints = MAX_ASSIGNABLE_POINTS;
+        initializeMaxPoints(false);
         this.marks = new ArrayList<>();
         this.stepsOfMovement = 3;
         this.stepsBeforeGrabbing = 1;
@@ -150,23 +212,22 @@ public class PlayerBoard {
      *         to the array or the number of damages is less than zero
      *
      */
-    public boolean appendDamage(PlayerColor color, Integer n) {
+    public void appendDamage(PlayerColor color, Integer n) {
         if (color == this.boardColor) { throw new IllegalArgumentException(COLOR_DAMAGE_MARKS_EXCEPTION); }
         if (n <= 0) { throw new IllegalArgumentException(INVALID_DAMAGES_NUMBER); }
 
-        ArrayList<PlayerColor> toAdd = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            toAdd.add(color);
+        while(n > 0 && damage.size() < 13) {
+            damage.add(color);
+            n--;
         }
-        return damage.addAll(toAdd);
     }
 
     /**
-     * Maximum number of points other players can get by killing a player
-     * @return an integer corresponding to the maximum number of points other players can get by killing a player
+     * Maximum number of points that other players can get by killing a player
+     * @return a list of Integer that corresponds to the list of maximum number of points other players can get by killing a player
      */
-    public Integer getMaxPoints() {
-        return maxPoints;
+    public List<Integer> getMaxPoints() {
+        return new ArrayList<>(maxPoints);
     }
 
     /**
@@ -191,21 +252,27 @@ public class PlayerBoard {
     }
 
     /**
+     * This method adds marks to the player board
+     * and checks the correctness of the addictions.
+     *
+     * @param color it's the color of the marks to add
+     * @param value it's the number of marks to add
+     */
+    public void addMarks(PlayerColor color, Integer value) {
+        if (color.equals(this.boardColor)) { throw new IllegalArgumentException(COLOR_DAMAGE_MARKS_EXCEPTION); }
+        while(value > 0 && this.marks.size() <= 3) {
+            marks.add(color);
+            value--;
+        }
+    }
+
+    /**
      * A method responsible for resetting the board, changing the
      * maximum number of points and wiping out damages or marks.
      */
     public void death() {
         flushDamage();
-        flushMarks();
-        decreaseMaxPoints();
-    }
-
-    /**
-     * It decreases the maximum number of points another player can get
-     * when the player who owns the board is dead.
-     */
-    private void decreaseMaxPoints() {
-        maxPoints = maxPoints <= 2 ? 1 : maxPoints - 2;
+        updateMaxPoints();
     }
 
     /**

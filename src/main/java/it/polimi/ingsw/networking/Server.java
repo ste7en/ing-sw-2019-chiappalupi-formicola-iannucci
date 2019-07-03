@@ -593,11 +593,20 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             }
         }
         if(applied) {
+            Set<Player> playerShot = new HashSet<>();
+            for(Damage d : damageToMake)
+                if(d.getTarget() != shooter && d.getDamage() > 0)
+                playerShot.add(d.getTarget());
+            List<Player> shotList = new ArrayList<>(playerShot);
+            for(Player target : shotList) {
+                gameControllers.get(gameID).getWeaponController().submitMarks(target, shooter.getCharacter().getColor());
+                gameControllers.get(gameID).checkDeath(target);
+            }
             this.didUseWeapon(weapon, userID, gameID);
             powerups = gameControllers.get(gameID).getPowerupController().getAfterShotPowerups(shooter);
             if(!powerups.isEmpty())
                 for(Damage d : damageToMake)
-                    if(!d.getTarget().equals(shooter))
+                    if(!d.getTarget().equals(shooter) && !d.getTarget().isDead() && d.getDamage() > 0)
                         gameControllers.get(gameID).getPowerupController().addPowerupTarget(d.getTarget());
         }
         return powerups;

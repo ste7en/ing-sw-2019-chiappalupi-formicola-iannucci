@@ -132,9 +132,9 @@ public class Board {
      */
     public void addBloodFrom(PlayerColor player, Integer count) {
         int i=0;
-        ArrayList<PlayerColor> playerColors = new ArrayList<>();
-        while (this.skullsTrack.get(i)!=null) i++;
-        for (int j=0; j<count; j++){
+        List<PlayerColor> playerColors = new ArrayList<>();
+        while (this.skullsTrack.get(i) != null) i++;
+        for (int j = 0; j < count; j++){
             playerColors.add(player);
         }
         skullsTrack.put(i, playerColors);
