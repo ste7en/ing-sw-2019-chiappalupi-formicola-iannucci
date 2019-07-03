@@ -442,7 +442,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public void afterAction() {
-        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+        timeoutOperation(3*clientOperationTimeoutInSeconds, () ->
                 submitRemoteMethodInvocation(executorService, () -> {
                     var curSituation = server.afterAction(userID, gameID);
                     if(curSituation != null) this.viewObserver.onEndTurn(curSituation);

@@ -222,7 +222,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.afterAction();
                         break;
                     case END_TURN:
-                        timeoutOperation(timeout, () -> this.viewObserver.onEndTurn(args.get(GameMap.gameMap_key)));
+                        timeoutOperation(3*timeout, () -> this.viewObserver.onEndTurn(args.get(GameMap.gameMap_key)));
                         break;
                     case UPDATE_SITUATION:
                         this.viewObserver.displayChange(args.get(GameMap.gameMap_key));
