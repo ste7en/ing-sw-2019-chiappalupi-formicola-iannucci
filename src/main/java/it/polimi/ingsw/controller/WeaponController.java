@@ -22,6 +22,7 @@ public class WeaponController {
     private List<Damage> forPotentiableWeapon;
     private List<Powerup> powerupUsedToPayCost;
     private Map<AmmoColor, Integer> effectsCost;
+    private Map<PlayerColor, Integer> marksThisTurn;
     private GameMap gameMapBox;
 
     /**
@@ -31,6 +32,7 @@ public class WeaponController {
         this.forPotentiableWeapon = new ArrayList<>();
         this.effectsCost = new EnumMap<> (AmmoColor.class);
         this.powerupUsedToPayCost = new ArrayList<>();
+        this.marksThisTurn = new EnumMap<>(PlayerColor.class);
     }
 
     /**
@@ -174,7 +176,11 @@ public class WeaponController {
         Player target = damage.getTarget();
         if(damage.getPosition() != null) board.getMap().setPlayerPosition(target, damage.getPosition());
         if(damage.getDamage() != 0) target.getPlayerBoard().appendDamage(shooter, damage.getDamage());
-        if(damage.getMarks() != 0) target.getPlayerBoard().addMarks(shooter, damage.getMarks());
+        if(damage.getMarks() != 0) {
+            target.getPlayerBoard().addMarks(shooter, damage.getMarks());
+            if(marksThisTurn.containsKey(damage.getTarget().getCharacter().getColor())) marksThisTurn.put(damage.getTarget().getCharacter().getColor(), marksThisTurn.get(damage.getTarget().getCharacter().getColor()) + damage.getMarks());
+            else marksThisTurn.put(damage.getTarget().getCharacter().getColor(), damage.getMarks());
+        }
     }
 
     /**
@@ -184,11 +190,24 @@ public class WeaponController {
      */
     public void submitMarks(Player target, PlayerColor shooter) {
         List<PlayerColor> marks = target.getPlayerBoard().getMarks();
-        while(marks.contains(shooter)) {
+        int numOfShooter = 0;
+        if(marksThisTurn.containsKey(shooter) && marksThisTurn.get(shooter) > 0) numOfShooter -= marksThisTurn.get(shooter);
+        for(PlayerColor color : marks)
+            if(color.equals(shooter))
+                numOfShooter++;
+        while(numOfShooter > 0) {
             marks.remove(shooter);
             target.getPlayerBoard().appendDamage(shooter, 1);
+            numOfShooter--;
         }
         target.getPlayerBoard().setMarks(marks);
+    }
+
+    /**
+     * Public method needed to clear the marksThisTurn map.
+     */
+    public void wipeMarksThisTurn() {
+        this.marksThisTurn.clear();
     }
 
     /**

@@ -681,8 +681,21 @@ public class AdrenalineCLI extends View {
         this.askReload();
         out.println(USE_ANY_OF_YOUR_POWERUP);
         String scanInput = in.nextLine();
-        if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y"))
+        if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y")) {
             this.willUsePowerup();
+            locked = true;
+            while (locked) {
+                synchronized (this) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        AdrenalineLogger.error(e.toString());
+                        AdrenalineLogger.error(e.getMessage());
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+        }
         out.println(TURN_ENDED);
         locked = true;
         this.client.checkDeaths();
