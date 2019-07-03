@@ -189,7 +189,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
                 submitRemoteMethodInvocation(executorService, () -> {
                     var possiblePicks = this.server.askPicks(userID, gameID, powerupToSell);
                     if(possiblePicks.isEmpty()) this.viewObserver.onGrabFailure();
-                    viewObserver.willChooseWhatToGrab(possiblePicks);
+                    else viewObserver.willChooseWhatToGrab(possiblePicks);
                     return null;
                 })
         );

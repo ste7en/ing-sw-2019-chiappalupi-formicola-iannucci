@@ -405,6 +405,9 @@ public class GameLogic {
      * Restores weapons and ammo tiles where they are missing
      */
     public void endTurn() {
+        this.weaponController.restore();
+        this.grabController.restore();
+        this.powerupController.clearPowerupTargets();
         this.board.refillWeapons(decks);
         this.board.getMap().refillAmmoTiles(decks);
         this.numOfKillsDuringThisTurn = 0;

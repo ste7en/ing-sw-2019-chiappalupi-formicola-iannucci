@@ -191,6 +191,11 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
+    public void onWeaponUsingFailure() {
+
+    }
+
+    @Override
     public void afterAction() {
 
     }

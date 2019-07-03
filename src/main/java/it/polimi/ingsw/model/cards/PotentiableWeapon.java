@@ -16,7 +16,7 @@ public class PotentiableWeapon extends Weapon {
     /**
      * String constant used in messages between client-server
      */
-    public final static String forPotentiableWeapon_key = "FOR_POTENTIABLE_WEAPON";
+    public static final String forPotentiableWeapon_key = "FOR_POTENTIABLE_WEAPON";
     private static final String HISTORY_NEEDED = "This effects needs the history of the damages made by the other effects to work!";
     private static final String HISTORY_EMPTY = "The history of damages made by the other effects can't be empty!";
 
@@ -183,12 +183,12 @@ public class PotentiableWeapon extends Weapon {
         if(moveMe) {
             ArrayList<ArrayList<Integer>> box = new ArrayList<>();
             for(ArrayList<Integer> combination : combinations)
-                box.add((ArrayList<Integer>)combination.clone());
+                box.add(new ArrayList<>(combination));
             ArrayList<ArrayList<Integer>> toRemove = new ArrayList<>();
             for(ArrayList<Integer> combination : box) {
                 if(!combination.contains(effectPosition)) toRemove.add(combination);
                 else {
-                    ArrayList<Integer> temp = (ArrayList<Integer>)combination.clone();
+                    List<Integer> temp = new ArrayList<>(combination);
                     temp.remove(effectPosition);
                     combination.clear();
                     combination.add(effectPosition);

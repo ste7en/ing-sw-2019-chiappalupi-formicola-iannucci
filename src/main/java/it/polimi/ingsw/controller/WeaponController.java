@@ -292,8 +292,18 @@ public class WeaponController {
      */
     public void restoreMap(GameMap map, List<Player> players) {
         for(Player player : players)
-            if(map.getPositionFromPlayer(player).compareTo(gameMapBox.getPositionFromPlayer(player)) != 0)
+            if(map.getPositionFromPlayer(player) != null && map.getPositionFromPlayer(player).compareTo(gameMapBox.getPositionFromPlayer(player)) != 0)
                 map.setPlayerPosition(player, gameMapBox.getPositionFromPlayer(player).getRow(), gameMapBox.getPositionFromPlayer(player).getColumn());
+    }
+
+    /**
+     * Restores the WeaponController.
+     */
+    void restore() {
+        forPotentiableWeapon.clear();
+        powerupUsedToPayCost.clear();
+        effectsCost.clear();
+        marksThisTurn.clear();
     }
 
 }

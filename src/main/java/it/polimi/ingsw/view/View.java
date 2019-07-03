@@ -403,6 +403,11 @@ public abstract class View {
     }
 
     /**
+     * Called when the process of using a weapon doesn't end well.
+     */
+    public abstract void onWeaponUsingFailure();
+
+    /**
      * Public method implemented by subclasses, called when the player has done an action.
      */
     public abstract void afterAction();

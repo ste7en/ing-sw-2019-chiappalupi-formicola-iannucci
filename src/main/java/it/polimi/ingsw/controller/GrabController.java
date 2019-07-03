@@ -325,4 +325,14 @@ public class GrabController {
         grabbingCell = null;
         powerupSold.clear();
     }
+
+    /**
+     * Restores the controller for a new action.
+     */
+    void restore() {
+        grabbingPowerup = null;
+        grabbingWeapon = null;
+        grabbingCell = null;
+        powerupSold.clear();
+    }
 }

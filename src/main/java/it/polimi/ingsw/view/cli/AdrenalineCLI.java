@@ -22,6 +22,7 @@ import java.util.*;
  * @author Elena Iannucci
  */
 public class AdrenalineCLI extends View {
+    private static final String NO_COMBO_FOUND = "No combinations of effects/costs found for your request.";
     @SuppressWarnings("squid:S106")
     private PrintWriter out = new PrintWriter(System.out, true);
     private Scanner     in  = new Scanner(System.in);
@@ -528,9 +529,7 @@ public class AdrenalineCLI extends View {
     public void willChoosePowerupSelling(Map<String, String> powerups) {
         out.println(ASK_POWERUP_TO_USE_EFFECTS);
         String weapon = powerups.get(Weapon.weapon_key);
-        String commMessage = powerups.get(CommunicationMessage.communication_message_key);
-        powerups.remove(weapon);
-        powerups.remove(commMessage);
+        powerups.remove(Weapon.weapon_key);
         List<String> availablePowerups = new ArrayList<>(powerups.values());
         List<String> choices = new ArrayList<>();
         String scanInput = in.nextLine();
@@ -560,11 +559,7 @@ public class AdrenalineCLI extends View {
                 choice = decisionHandlerFromList(availablePowerups);
             }
             choices.add(choice);
-            String toRemove = null;
-            for(String powerup : availablePowerups)
-                if(choice.equals(powerup))
-                    toRemove = powerup;
-            availablePowerups.remove(toRemove);
+            availablePowerups.remove(choice);
             if(availablePowerups.isEmpty()) cycleCounter = false;
             else {
                 out.println(MORE_POWERUP_SELLING);
@@ -579,9 +574,12 @@ public class AdrenalineCLI extends View {
     public void willChooseMode(Map<String, String> modalitiesToChoose) {
         String weapon = modalitiesToChoose.get(Weapon.weapon_key);
         modalitiesToChoose.remove(Weapon.weapon_key);
-        out.println(CHOOSE_MODALITY);
-        String modalitySelected = decisionHandlerFromMap(modalitiesToChoose);
-        this.didChooseMode(weapon, modalitySelected);
+        if(modalitiesToChoose.isEmpty()) this.onWeaponUsingFailure();
+        else {
+            out.println(CHOOSE_MODALITY);
+            String modalitySelected = decisionHandlerFromMap(modalitiesToChoose);
+            this.didChooseMode(weapon, modalitySelected);
+        }
     }
 
     /**
@@ -630,15 +628,18 @@ public class AdrenalineCLI extends View {
     public void willChooseEffects(Map<String, String> effectsToChoose) {
         String weapon = effectsToChoose.get(Weapon.weapon_key);
         effectsToChoose.remove(Weapon.weapon_key);
-        out.println(CHOOSE_EFFECT);
-        String effectsSelected = decisionHandlerFromMap(effectsToChoose);
-        while(effectsSelected == null) {
-            out.println(INCORRECT_CHOICE);
-            effectsSelected = decisionHandlerFromMap(effectsToChoose);
+        if(effectsToChoose.isEmpty()) this.onWeaponUsingFailure();
+        else {
+            out.println(CHOOSE_EFFECT);
+            String effectsSelected = decisionHandlerFromMap(effectsToChoose);
+            while(effectsSelected == null) {
+                out.println(INCORRECT_CHOICE);
+                effectsSelected = decisionHandlerFromMap(effectsToChoose);
+            }
+            String box = effectsSelected.replaceAll("[\\[\\]]", "");
+            List<String> effects = List.of(box.split(", "));
+            this.didChooseEffects(new ArrayList<>(effects), weapon);
         }
-        String box = effectsSelected.replaceAll("[\\[\\]]", "");
-        List<String> effects = List.of(box.split(", "));
-        this.didChooseEffects(new ArrayList<>(effects), weapon);
     }
 
     @Override
@@ -651,6 +652,12 @@ public class AdrenalineCLI extends View {
         }
         else out.println(WON_T_POWERUP_AFTER_SHOT);
         this.afterAction();
+    }
+
+    @Override
+    public void onWeaponUsingFailure() {
+        out.println(NO_COMBO_FOUND);
+        this.onChooseAction(curSituation);
     }
 
     @Override
