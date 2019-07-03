@@ -353,7 +353,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         if (availableCharacters.contains(characterName)) {
             var chosenCharacter = Character.getCharacterFromColor(PlayerColor.valueOf(Character.getColorFromToString(characterName)));
             if (gameController.addPlayer(new Player(user, chosenCharacter))) {
-                // Number of players reached - server's going to ask the firs
+                // Number of players reached - server's going to ask the first
                 // player (or the first one connected) for the choice of the game map
                 var firstPlayer = gameController.getFirstActivePlayer();
                 willChooseGameMap(firstPlayer.getUser(), gameID);

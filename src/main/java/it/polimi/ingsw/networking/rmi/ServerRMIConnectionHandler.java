@@ -8,13 +8,18 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 
-import static it.polimi.ingsw.networking.utility.ConnectionState.CLOSED;
-import static it.polimi.ingsw.networking.utility.ConnectionState.ONLINE;
+import static it.polimi.ingsw.networking.utility.ConnectionState.*;
 
-public class ServerRMIConnectionHandler extends ServerConnectionHandler {
+/**
+ * This class is responsible for handling a single client rmi connection,
+ * it runs into a single thread with multiple thread implementing message handling.
+ *
+ * @author Elena Iannucci
+ */
+public class ServerRMIConnectionHandler extends ServerConnectionHandler implements RMIAsyncHelper {
 
-    private static final String REMOTE_EXC   = "Remote exception :: ";
     private static final String PING_TIMEOUT = "Ping timeout. Closing RMI connection :: ";
 
     private ClientInterface clientRMI;
@@ -22,15 +27,15 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
     public ServerRMIConnectionHandler(Server server, ClientInterface clientRMI) {
         super.server = server;
         super.connectionState = ONLINE;
+        super.executorService = Executors.newCachedThreadPool();
         this.clientRMI = clientRMI;
     }
 
     public void gameDidStart(String gameID) {
-        try {
+        submitRemoteMethodInvocation(executorService, () -> {
             clientRMI.gameStarted(gameID);
-        } catch (RemoteException e){
-            logOnException(REMOTE_EXC, e);
-        }
+            return null;
+        });
     }
 
     public boolean isConnectionAvailable() {
@@ -39,11 +44,10 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
     @Override
     protected void willChooseCharacter(List<String> availableCharacters) {
-        try {
+        submitRemoteMethodInvocation(executorService, () -> {
             clientRMI.willChooseCharacter(availableCharacters);
-        } catch (Exception e){
-            logOnException(REMOTE_EXC, e);
-        }
+            return null;
+        });
     }
 
     @Override
@@ -53,38 +57,34 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
 
     @Override
     protected void willChooseGameMap(UUID gameID) {
-        try {
+        submitRemoteMethodInvocation(executorService, () -> {
             clientRMI.willChooseGameMap();
-        } catch (Exception e) {
-            logOnException(REMOTE_EXC, e);
-        }
+            return null;
+        });
     }
 
     @Override
     protected void startNewTurn(int userID) {
-        try {
+        submitRemoteMethodInvocation(executorService, () -> {
             clientRMI.willStartTurn();
-        } catch (RemoteException e) {
-            logOnException(REMOTE_EXC, e);
-        }
+            return null;
+        });
     }
 
     @Override
     protected void startNewTurnFromRespawn(int userID) {
-        try {
+        submitRemoteMethodInvocation(executorService, () -> {
             clientRMI.willStartFromRespawn();
-        } catch (RemoteException e) {
-            logOnException(REMOTE_EXC, e);
-        }
+            return null;
+        });
     }
 
     @Override
     protected void displayChanges(int userID, String newBoardSituation) {
-        try {
+        submitRemoteMethodInvocation(executorService, () -> {
             clientRMI.willDisplayUpdate(newBoardSituation);
-        } catch (RemoteException e) {
-            logOnException(REMOTE_EXC, e);
-        }
+            return null;
+        });
     }
 
     @Override
@@ -92,7 +92,7 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler {
         try {
             if (isConnectionAvailable() && clientRMI.ping()) Ping.getInstance().didPong(getConnectionHashCode());
         } catch (RemoteException e) {
-            logOnException(REMOTE_EXC+PING_TIMEOUT, e);
+            logOnException(RMI_EXCEPTION + PING_TIMEOUT, e);
             closeConnection();
         }
     }

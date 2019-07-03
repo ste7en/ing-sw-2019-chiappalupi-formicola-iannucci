@@ -17,6 +17,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
 
 import static it.polimi.ingsw.networking.utility.ConnectionState.*;
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
@@ -24,7 +25,8 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
 /**
  * This class is responsible for handling a single client socket connection,
- * it implements {@link Runnable} interface and runs into a single thread.
+ * it implements {@link Runnable} interface and runs into a single thread with
+ * multiple thread implementing message handling.
  *
  * @author Stefano Formicola
  */
@@ -61,6 +63,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         this.outBuf = new ConcurrentLinkedQueue<>();
         super.connectionState = ONLINE;
         super.server = server;
+        super.executorService = Executors.newCachedThreadPool();
     }
 
     /**
@@ -146,7 +149,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * @param message the message received
      */
     private void receive(String message) {
-        new Thread( () -> {
+        executorService.submit( () -> {
             var communicationMessage = CommunicationMessage.getCommunicationMessageFrom(message);
             var connectionID         = CommunicationMessage.getConnectionIDFrom(message);
             var args                 = CommunicationMessage.getMessageArgsFrom(message);
@@ -251,8 +254,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 default:
                     break;
             }
-
-        }).start();
+        });
     }
 
     /**

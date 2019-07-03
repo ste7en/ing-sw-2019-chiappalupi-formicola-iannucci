@@ -6,6 +6,7 @@ import it.polimi.ingsw.utility.Loggable;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Abstract superclass of Server's connectionHandlers for both
@@ -24,6 +25,11 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable {
      * The state of the connection
      */
     protected ConnectionState connectionState;
+
+    /**
+     * Executor to manage asynchronous tasks
+     */
+    protected ExecutorService executorService;
 
     /**
      * @return true if the connection is available
