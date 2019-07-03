@@ -106,7 +106,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         this.gameControllers  = new ConcurrentHashMap<>();
 
         // TODO: - The following is a test with test parameters, the real waiting room settings must be read from a file
-        this.waitingRoom = new WaitingRoom(1, 5, 2, this);
+        this.waitingRoom = new WaitingRoom(3, 5, 2, this);
 
         setupConnections();
     }

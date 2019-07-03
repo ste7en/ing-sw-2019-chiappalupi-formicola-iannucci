@@ -298,14 +298,26 @@ public class GUIHandler extends Application {
             ImageView imageView = imageViews.get(i);
             String character = availableCharacters.get(i);
             imageViews.get(i).setOnMouseClicked(e -> {
-                setText(textSelectedContainer, "You selected" + character);
-                button.setOnAction(event -> {try{adrenalineGUI.didChooseCharacter(character);} catch (Exception ex){ex.printStackTrace();}});
                 try {
-                    unclickedImage(imageViews, availableCharacters, "characters/" );
-                }catch (Exception e1){
-                    e1.printStackTrace();
+                    button.setOnAction(event -> {
+                        try {
+                            System.out.println("QUI1");
+                            System.out.println(character);
+                            adrenalineGUI.didChooseCharacter(character);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    //setText(textSelectedContainer, "You selected " + character);
+                    try {
+                        unclickedImage(imageViews, availableCharacters, "characters/");
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                    clickedImage(imageView, "characters/" + character);
+                }catch (Exception exe){
+                    exe.printStackTrace();
                 }
-                clickedImage(imageView, "characters/" + character);
             });
 
         }
@@ -316,9 +328,33 @@ public class GUIHandler extends Application {
         mainScene.setRoot(modesChoiceGrid);
     }
 
-    public void chooseGameMap(){
-        if(modesChoiceGrid!=null) clear(modesChoiceGrid);
-        else modesChoiceGrid = new GridPane();
+    public void onChooseCharacterSuccess() {
+        Platform.runLater(() -> {
+            try {
+                chooseCharacterSucces();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void chooseCharacterSucces(){
+        setText(textSelectedContainer, "You chose your character, the game will start soon!");
+    }
+
+    public void chooseGameMap() {
+        Platform.runLater(() -> {
+            try {
+                onChooseGameMap();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onChooseGameMap(){
+        System.out.println("Ci arriva");
+        clear(modesChoiceGrid);
 
         for(int i=0; i<2; i++){
             c = new ColumnConstraints();
@@ -378,9 +414,18 @@ public class GUIHandler extends Application {
         mainScene.setRoot(modesChoiceGrid);
     }
 
-    public void drawTwoPowerups(List<String> powerups){
-        if(modesChoiceGrid!=null) clear(modesChoiceGrid);
-        else modesChoiceGrid = new GridPane();
+    public void drawTwoPowerups(List<String> powerups) {
+        Platform.runLater(() -> {
+            try {
+                onDrawTwoPowerups(powerups);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onDrawTwoPowerups(List<String> powerups){
+        clear(modesChoiceGrid);
         modesChoiceGrid.setGridLinesVisible(true);
 
         for(int i=0; i<3; i++){

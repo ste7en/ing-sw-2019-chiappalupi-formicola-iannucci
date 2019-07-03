@@ -74,7 +74,7 @@ public class AdrenalineGUI extends View {
 
     @Override
     public void onChooseCharacterSuccess(String characterChosen) {
-
+        handlerGUI.onChooseCharacterSuccess();
     }
 
     @Override
@@ -84,20 +84,12 @@ public class AdrenalineGUI extends View {
 
     @Override
     public void willChooseGameMap() {
-       /* try {
             handlerGUI.chooseGameMap();
-        } catch (FileNotFoundException e){
-            System.err.println("ClientRMI exception: " + e.toString());
-        }*/
     }
 
     @Override
     public void onChooseSpawnPoint(List<String> powerups) {
-        try {
-            handlerGUI.chooseSpawnPoint(powerups);
-        } catch (FileNotFoundException e ){
-            System.err.println("ClientRMI exception: " + e.toString());
-        }
+            handlerGUI.drawTwoPowerups(powerups);
     }
 
     @Override
