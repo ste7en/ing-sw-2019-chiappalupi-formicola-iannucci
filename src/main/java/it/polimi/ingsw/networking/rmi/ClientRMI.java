@@ -47,11 +47,11 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
         });
     }
 
-    public void exportClient() throws RemoteException {
+    private void exportClient() throws RemoteException {
         clientStub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
     }
 
-    public int registerClient(String username) {
+    private int registerClient(String username) {
         try {
             return server.registerClient(clientStub, username);
         } catch (RemoteException e){

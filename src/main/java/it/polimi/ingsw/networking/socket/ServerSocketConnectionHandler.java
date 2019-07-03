@@ -362,9 +362,12 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      */
     private void grabSomething(int connectionID, UUID gameID, Map<String, String> args) {
         List<String> possiblePicks = server.askPicks(connectionID, gameID, new ArrayList<>(args.values()));
-        Map<String, String> responseArgs = new HashMap<>();
-        for(String pick : possiblePicks) responseArgs.put(Integer.toString(possiblePicks.indexOf(pick)), pick);
-        this.send(CommunicationMessage.from(connectionID, POSSIBLE_PICKS, responseArgs, gameID, clientOperationTimeoutInSeconds));
+        if(possiblePicks.isEmpty()) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE));
+        else {
+            Map<String, String> responseArgs = new HashMap<>();
+            for(String pick : possiblePicks) responseArgs.put(Integer.toString(possiblePicks.indexOf(pick)), pick);
+            this.send(CommunicationMessage.from(connectionID, POSSIBLE_PICKS, responseArgs, gameID, clientOperationTimeoutInSeconds));
+        }
     }
 
     /**

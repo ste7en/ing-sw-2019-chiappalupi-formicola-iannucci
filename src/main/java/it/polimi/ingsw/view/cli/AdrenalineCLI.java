@@ -419,9 +419,11 @@ public class AdrenalineCLI extends View {
             }
             powerupsSold.add(choice);
             powerups.remove(choice);
-            out.println(MORE_GRAB_POWERUP_SELLING);
-            String scanInput = in.nextLine();
-            keepGoing = scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y");
+            if(!powerups.isEmpty()) {
+                out.println(MORE_GRAB_POWERUP_SELLING);
+                String scanInput = in.nextLine();
+                keepGoing = scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y");
+            }
         }
         this.client.askPicks(powerupsSold);
     }
