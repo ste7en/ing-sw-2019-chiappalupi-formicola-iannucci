@@ -18,6 +18,7 @@ public class PlayerHand {
 
     private static final String INVALID_AMOUNT_EXC = "Invalid amount of ammos to increment or decrement.";
     private static final String MAX_POWERUPS_ALLOWED = "Player has already the maximum number of powerups allowed.";
+    private static final String NULL_POWERUP = "Powerup object references to null";
     /**
      * Keeps track of which weapons the player has.
      */
@@ -86,13 +87,13 @@ public class PlayerHand {
      * Adds a powerup to the player's deck of powerups
      * @param powerup the powerup to add to the player's list
      * @throws NullPointerException if a null pointer is passed as parameter
-     * @throws RuntimeException if there's already the maximum number of powerups allowed
+     * @throws IllegalStateException if there's already the maximum number of powerups allowed
      */
     public void addPowerup(Powerup powerup) {
         if (powerup == null) {
-            throw new NullPointerException("Powerup object references to null");
+            throw new NullPointerException(NULL_POWERUP);
         } else if (powerups.size() >= 3) {
-            throw new RuntimeException(MAX_POWERUPS_ALLOWED);
+            throw new IllegalStateException(MAX_POWERUPS_ALLOWED);
         } else powerups.add(powerup);
     }
 

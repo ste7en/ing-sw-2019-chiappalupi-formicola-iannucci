@@ -86,4 +86,11 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable {
      * @param newBoardSituation it's the updated situation of the board
      */
     protected abstract void displayChanges(int userID, String newBoardSituation);
+
+    /**
+     * Starts the process of spawning for a player that is dead.
+     * @param userID it's the ID of the user.
+     * @param powerupsToSpawn it's the list of powerups that can be used to spawn.
+     */
+    protected abstract void spawnAfterDeath(int userID, List<String> powerupsToSpawn);
 }

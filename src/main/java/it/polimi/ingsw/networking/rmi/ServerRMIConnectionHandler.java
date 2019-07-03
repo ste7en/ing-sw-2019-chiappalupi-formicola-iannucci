@@ -94,6 +94,14 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler implemen
     }
 
     @Override
+    protected void spawnAfterDeath(int userID, List<String> powerupsToSpawn) {
+        submitRemoteMethodInvocation(executorService, () -> {
+            clientRMI.willSpawnAfterDeath(powerupsToSpawn);
+            return null;
+        });
+    }
+
+    @Override
     public void ping() {
         try {
             if (isConnectionAvailable() && clientRMI.ping()) Ping.getInstance().didPong(getConnectionHashCode());

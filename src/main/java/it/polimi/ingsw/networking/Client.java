@@ -317,4 +317,15 @@ public abstract class Client implements Loggable {
      */
     public abstract void turnEnded();
 
+    /**
+     * Abstract method implemented by subclasses and called when a player has chosen where does he want to spawn after a death.
+     * @param powerupChosen it's the powerup that has been chosen.
+     */
+    public abstract void spawnAfterDeathChosen(String powerupChosen);
+
+    /**
+     * Abstract method implemented by subclasses and called when the View needs to know if it can go ahead after the deaths respawn.
+     */
+    public abstract void canContinueFromDeaths();
+
 }

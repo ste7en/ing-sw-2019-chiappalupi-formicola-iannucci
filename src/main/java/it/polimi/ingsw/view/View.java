@@ -506,4 +506,23 @@ public abstract class View {
      * @param change it's the updated Board::toStringFromPlayer
      */
     public abstract void displayChange(String change);
+
+    /**
+     * Called whenever a player has to spawn after its death.
+     * @param powerupsToSpawn it's the list of powerups that can be used to respawn.
+     */
+    public abstract void willSpawnAfterDeath(List<String> powerupsToSpawn);
+
+    /**
+     * Called when a player has chosen where does he want to spawn.
+     * @param powerupChosen it's the powerup that has been chosen.
+     */
+    protected void didChooseSpawnAfterDeath(String powerupChosen) {
+        this.client.spawnAfterDeathChosen(powerupChosen);
+    }
+
+    /**
+     * Called when the death spawns phase is over and the game can continue.
+     */
+    public abstract void canContinue();
 }

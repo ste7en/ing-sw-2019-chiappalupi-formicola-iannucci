@@ -250,5 +250,15 @@ public class AdrenalineGUI extends View {
 
     }
 
+    @Override
+    public void willSpawnAfterDeath(List<String> powerupsToSpawn) {
+
+    }
+
+    @Override
+    public void canContinue() {
+
+    }
+
 }
 

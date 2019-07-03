@@ -26,6 +26,7 @@ public class GameLogic {
     private static final int DEATH_BLOW_PLACE_ON_THE_BOARD = 10;
     private static final int MAX_SIZE_OF_THE_BOARD = 12;
     private static final String NO_PLAYER_WITH_THIS_COLOR = "No player in the game has this color.";
+    private static final String POWERUP_NOT_IN_HAND = "This powerup is not one that you have in your hand!";
 
     private int numberOfPlayers;
     private boolean finalFrenzy;
@@ -490,5 +491,50 @@ public class GameLogic {
      */
     public void checkDeath(Player player) {
         if(player.isDead()) board.getMap().setPlayerPosition(player, null);
+    }
+
+    /**
+     * Public method that returns the list of dead users to let them respawn.
+     * @return the list of user whose player is dead.
+     */
+    public List<User> deathList() {
+        List<User> dead = new ArrayList<>();
+        for(Player player : players)
+            if(player.isDead() || (board.getMap().getPlayersPosition().containsKey(player) && board.getMap().getPositionFromPlayer(player) == null))
+                dead.add(player.getUser());
+        for(User user : dead) assignPointFromUser(user);
+        return dead;
+    }
+
+    /**
+     * Public method that returns the list of Powerup::toString that can be used to respawn.
+     * @param user it's the user that should respawn.
+     * @return the list of Powerup::toString looked for.
+     */
+    public List<String> getPowerupToSpawn(User user) {
+        List<String> spawnPows = new ArrayList<>();
+        Player player = lookForPlayerFromUser(user);
+        player.getPlayerHand().addPowerup(decks.drawPowerup());
+        List<Powerup> pows = player.getPlayerHand().getPowerups();
+        for(Powerup pow : pows) spawnPows.add(pow.toString());
+        return spawnPows;
+    }
+
+    /**
+     * Public method that lets a player spawn.
+     * @param user it's the user of the player that should spawn.
+     * @param powerup it's the powerup chosen to spawn.
+     */
+    public void spawnAfterDeath(User user, String powerup) {
+        List<Powerup> powerupsInHand = lookForPlayerFromUser(user).getPlayerHand().getPowerups();
+        Powerup spawn = null;
+        for(Powerup pow : powerupsInHand)
+            if(pow.toString().equals(powerup))
+                spawn = pow;
+        if(spawn == null) throw new IllegalArgumentException(POWERUP_NOT_IN_HAND);
+        lookForPlayerFromUser(user).getPlayerHand().wastePowerup(spawn);
+        Cell spawnCell = board.getMap().getSpawnPoint(spawn.getColor());
+        board.getMap().setPlayerPosition(lookForPlayerFromUser(user), spawnCell);
+        decks.wastePowerup(spawn);
     }
 }

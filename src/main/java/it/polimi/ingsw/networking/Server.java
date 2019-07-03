@@ -794,7 +794,41 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         return situation;
     }
 
+    /**
+     * Method called before a turn finished: checks if any death has happened. If so, let the deads respawn.
+     * @param gameID it's the ID of the game.
+     */
+    @Override
+    public void checkDeathsBeforeEndTurn(UUID gameID) {
+        List<User> deads = gameControllers.get(gameID).deathList();
+        for(User deadUser : deads) {
+            users.get(deadUser).spawnAfterDeath(deadUser.hashCode(), gameControllers.get(gameID).getPowerupToSpawn(deadUser));
+        }
+    }
+
+    /**
+     * Method called to get the powerup that can be used to spawn after a death.
+     * @param userID it's the ID of the user.
+     * @param gameID it's the ID of the game.
+     * @return the list of Powerup::toString that can be used.
+     */
+    @Override
+    public List<String> getSpawnAfterDeathPowerup(int userID, UUID gameID) {
+        return gameControllers.get(gameID).getPowerupToSpawn(findUserFromID(userID));
+    }
+
   /**
+   * Method called when a player has decided where he wants to spawn.
+   * @param userID it's the ID of the user.
+   * @param gameID it's the ID of the game.
+   * @param powerup it's the powerup chosen.
+   */
+  @Override
+  public void spawnAfterDeath(int userID, UUID gameID, String powerup) {
+        gameControllers.get(gameID).spawnAfterDeath(findUserFromID(userID), powerup);
+    }
+
+    /**
    * Method called when the turn of a player is over.
    * @param userID it's the ID of the user.
    * @param gameID it's the ID of the game.
@@ -807,7 +841,12 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
       else users.get(nextUser).startNewTurnFromRespawn(nextUser.hashCode());
   }
 
-  private void printIngConti() {
+    @Override
+    public boolean canContinueAfterDeathsRespawn(int userID, UUID gameID) {
+        return gameControllers.get(gameID).deathList().isEmpty();
+    }
+
+    private void printIngConti() {
       System.out.println( "\u001B[32m................................................................................\n" +
                           ".............................................,,/(########(*....................\n" +
                           "..........................................,/##########%#%%%%#/*,,..............\n" +

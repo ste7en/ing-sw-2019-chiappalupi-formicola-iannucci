@@ -70,5 +70,13 @@ public interface ServerInterface extends Remote {
 
     String afterAction(int userID, UUID gameID) throws RemoteException;
 
+    void checkDeathsBeforeEndTurn(UUID gameID) throws RemoteException;
+
+    List<String> getSpawnAfterDeathPowerup(int userID, UUID gameID) throws RemoteException;
+
+    void spawnAfterDeath(int userID, UUID gameID, String powerup) throws RemoteException;
+
     void turnEnded(int userID, UUID gameID) throws RemoteException;
+
+    boolean canContinueAfterDeathsRespawn(int userID, UUID gameID) throws RemoteException;
 }

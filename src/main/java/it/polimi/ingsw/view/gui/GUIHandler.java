@@ -260,6 +260,8 @@ public class GUIHandler extends Application {
             modesChoiceGrid.getColumnConstraints().add(c);
         }
 
+        modesChoiceGrid.setGridLinesVisible(true);
+
         RowConstraints r0 = new RowConstraints();
         r0.setPercentHeight(8);
         RowConstraints r1 = new RowConstraints();

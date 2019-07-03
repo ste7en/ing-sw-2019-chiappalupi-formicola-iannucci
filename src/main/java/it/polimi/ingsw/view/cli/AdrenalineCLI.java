@@ -22,11 +22,13 @@ import java.util.*;
  * @author Elena Iannucci
  */
 public class AdrenalineCLI extends View {
+    private static final String SPAWN_AFTER_DEATH_DECISION = "You are dead. Choose where you want to respawn! Remember that the powerup you choose will be discarded.";
     @SuppressWarnings("squid:S106")
     private PrintWriter out = new PrintWriter(System.out, true);
     private Scanner     in  = new Scanner(System.in);
     private String curSituation;
-    boolean locked;
+    private boolean locked;
+    private boolean lockedOnPowerup;
 
     /**
      * Console prompt strings
@@ -531,6 +533,10 @@ public class AdrenalineCLI extends View {
     @Override
     public void onPowerupInHandFailure() {
         out.println(POWERUP_FAILURE);
+        locked = false;
+        synchronized (this) {
+            this.notifyAll();
+        }
     }
 
     @Override
@@ -684,6 +690,8 @@ public class AdrenalineCLI extends View {
             synchronized (this) {
                 try {
                     wait();
+                    this.client.canContinueFromDeaths();
+                    wait();
                 } catch (InterruptedException e) {
                     AdrenalineLogger.error(e.toString());
                     AdrenalineLogger.error(e.getMessage());
@@ -703,7 +711,13 @@ public class AdrenalineCLI extends View {
             out.println(WILL_RELOAD);
             this.askWastePowerupToReload();
         }
-        else out.println(WON_T_RELOAD);
+        else {
+            out.println(WON_T_RELOAD);
+            locked = false;
+            synchronized (this) {
+                this.notifyAll();
+            }
+        }
     }
 
     @Override
@@ -717,15 +731,31 @@ public class AdrenalineCLI extends View {
      */
     private void askWastePowerupToReload() {
         out.println(ASK_POWERUP_TO_RELOAD);
+        locked = true;
         String scanInput = in.nextLine();
         if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y"))
             this.client.askForPowerupsToReload();
         else this.client.askWeaponToReload();
+        while(locked) {
+            synchronized (this) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    AdrenalineLogger.error(e.toString());
+                    AdrenalineLogger.error(e.getMessage());
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
     }
 
     @Override
     public void onWeaponUnloadedFailure() {
         out.println(NO_WEAPON_UNLOADED);
+        locked = false;
+        synchronized (this) {
+            this.notifyAll();
+        }
     }
 
     @Override
@@ -747,6 +777,10 @@ public class AdrenalineCLI extends View {
     @Override
     public void onReloadSuccess() {
         out.println(RELOAD_SUCCESS);
+        locked = false;
+        synchronized (this) {
+            this.notifyAll();
+        }
     }
 
     @Override
@@ -758,12 +792,20 @@ public class AdrenalineCLI extends View {
     @Override
     public void onTurnPowerupFailure() {
         out.println(TURN_POWERUP_FAILURE);
+        locked = false;
+        synchronized (this) {
+            this.notifyAll();
+        }
     }
 
     @Override
     public void willChoosePowerup(List<String> availablePowerups) {
         if(availablePowerups.isEmpty()) {
             out.println(NO_POWERUPS_IN_HAND);
+            locked = false;
+            synchronized (this) {
+                this.notifyAll();
+            }
             return;
         }
         boolean powerupUsing = true;
@@ -775,6 +817,18 @@ public class AdrenalineCLI extends View {
                 choice = decisionHandlerFromList(availablePowerups);
             }
             this.didChoosePowerup(choice);
+            lockedOnPowerup = true;
+            while(lockedOnPowerup) {
+                synchronized (this) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        AdrenalineLogger.error(e.toString());
+                        AdrenalineLogger.error(e.getMessage());
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
             availablePowerups.remove(choice);
             if(availablePowerups.isEmpty()) powerupUsing = false;
             else {
@@ -787,6 +841,10 @@ public class AdrenalineCLI extends View {
                     powerupUsing = false;
                 }
             }
+        }
+        locked = false;
+        synchronized (this) {
+            notifyAll();
         }
     }
 
@@ -802,6 +860,10 @@ public class AdrenalineCLI extends View {
         }
         this.didChoosePowerupDamage(choice, powerup);
         out.println(POWERUP_USED);
+        lockedOnPowerup = false;
+        synchronized (this) {
+            this.notifyAll();
+        }
     }
 
     @Override
@@ -809,6 +871,33 @@ public class AdrenalineCLI extends View {
         out.println(MOVEMENT_MADE);
         out.println(change);
         out.println(WILL_PLAY_SOON);
+    }
+
+    @Override
+    public void willSpawnAfterDeath(List<String> powerupsToSpawn) {
+        out.println(SPAWN_AFTER_DEATH_DECISION);
+        String choice = decisionHandlerFromList(powerupsToSpawn);
+        while(choice == null) {
+            out.println(INCORRECT_CHOICE);
+            choice = decisionHandlerFromList(powerupsToSpawn);
+        }
+        this.didChooseSpawnAfterDeath(choice);
+    }
+
+    protected void didChooseSpawnAfterDeath(String powerupChosen) {
+        super.didChooseSpawnAfterDeath(powerupChosen);
+        locked = false;
+        synchronized (this) {
+            notifyAll();
+        }
+    }
+
+    @Override
+    public void canContinue() {
+        locked = false;
+        synchronized (this) {
+            this.notifyAll();
+        }
     }
 
 }

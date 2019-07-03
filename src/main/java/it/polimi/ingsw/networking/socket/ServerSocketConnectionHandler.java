@@ -252,6 +252,15 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case TURN_ENDED:
                     this.server.turnEnded(connectionID, gameID);
                     break;
+                case CHECK_DEATHS_AFTER_TURN:
+                    this.server.checkDeathsBeforeEndTurn(gameID);
+                    break;
+                case SPAWN_POINT_AFTER_DEATH_CHOSEN:
+                    this.server.spawnAfterDeath(connectionID, gameID, args.get(Powerup.powerup_key));
+                    break;
+                case ASK_CAN_CONTINUE:
+                    if(this.server.canContinueAfterDeathsRespawn(connectionID, gameID)) send(CommunicationMessage.from(connectionID, CAN_CONTINUE_TRUE));
+                    break;
                 default:
                     break;
             }
@@ -581,5 +590,12 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         Map<String, String> args = new HashMap<>();
         args.put(GameMap.gameMap_key, newBoardSituation);
         this.send(CommunicationMessage.from(userID, UPDATE_SITUATION, args));
+    }
+
+    @Override
+    protected void spawnAfterDeath(int userID, List<String> powerupsToSpawn) {
+        Map<String, String> args = new HashMap<>();
+        for(String powerup : powerupsToSpawn) args.put(Integer.toString(powerupsToSpawn.indexOf(powerup)), powerup);
+        this.send(CommunicationMessage.from(userID, SPAWN_AFTER_DEATH, args));
     }
 }

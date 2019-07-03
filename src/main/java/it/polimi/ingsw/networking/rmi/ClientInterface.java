@@ -44,4 +44,11 @@ public interface ClientInterface extends Remote {
      * @param timeout timeout in seconds
      */
     void setOperationTimeout(int timeout) throws RemoteException;
+
+    /**
+     * Starts the process of spawning after a death.
+     * @param powerupsInHand it's the list of powerup that the player has in his hand.
+     * @throws RemoteException RMI Exception.
+     */
+    void willSpawnAfterDeath(List<String> powerupsInHand) throws RemoteException;
 }

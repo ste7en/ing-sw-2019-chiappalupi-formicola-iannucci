@@ -61,8 +61,18 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     }
 
     @Override
-    public void setOperationTimeout(int timeout) throws RemoteException {
+    public void setOperationTimeout(int timeout) {
         clientOperationTimeoutInSeconds = timeout;
+    }
+
+    @Override
+    public void willSpawnAfterDeath(List<String> powerupsInHand) {
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    this.viewObserver.willSpawnAfterDeath(powerupsInHand);
+                    return null;
+                })
+        );
     }
 
     @Override
@@ -444,13 +454,33 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public void checkDeaths() {
-        //toDO
+        submitRemoteMethodInvocation(executorService, () -> {
+            this.server.checkDeathsBeforeEndTurn(gameID);
+            this.viewObserver.canContinue();
+            return null;
+        });
     }
 
     @Override
     public void turnEnded() {
         submitRemoteMethodInvocation(executorService, () -> {
             this.server.turnEnded(userID, gameID);
+            return null;
+        });
+    }
+
+    @Override
+    public void spawnAfterDeathChosen(String powerupChosen) {
+        submitRemoteMethodInvocation(executorService, () -> {
+            this.server.spawnAfterDeath(userID, gameID, powerupChosen);
+            return null;
+        });
+    }
+
+    @Override
+    public void canContinueFromDeaths() {
+        submitRemoteMethodInvocation(executorService, () -> {
+            if(this.server.canContinueAfterDeathsRespawn(userID, gameID)) this.viewObserver.canContinue();
             return null;
         });
     }

@@ -85,14 +85,19 @@ public enum CommunicationMessage {
      * ASK_FOR_SPAWN_POINT is sent from the client to the server to ask for the powerups that will lead to a spawn point decision (no arguments)
      * DRAWN_SPAWN_POINT is sent from the server to the client to provide the two powerup cards that will be used to choose the spawn point
      * SPAWN_POINT_CHOSEN is sent from the client to the server to notify that the spawn point has been chosen from the user
+     * SPAWN_AFTER_DEATH is sent from the server to the client to notify that the player is dead and should respawn,
+     * SPAWN_POINT_AFTER_DEATH_CHOSEN is sent from the client to the server to notify that the decision of spawn point has been made
      *
-     * Arguments: <Integer.toString(index), Powerup.toString> for DRAWN_SPAWN_POINT,
-     *            <Powerup.powerup_key/Powerup.spawnPowerup_key, Powerup::toString> for SPAWN_POINT_CHOSEN
+     * Arguments: <Integer.toString(index), Powerup.toString> for DRAWN_SPAWN_POINT, SPAWN_AFTER_DEATH
+     *            <Powerup.powerup_key/Powerup.spawnPowerup_key, Powerup::toString> for SPAWN_POINT_CHOSEN, SPAWN_POINT_AFTER_DEATH_CHOSEN
      */
     CHOOSE_SPAWN_POINT,
     ASK_FOR_SPAWN_POINT,
     DRAWN_SPAWN_POINT,
     SPAWN_POINT_CHOSEN,
+
+    SPAWN_AFTER_DEATH,
+    SPAWN_POINT_AFTER_DEATH_CHOSEN,
 
     /**
      * Skulls number decision message
@@ -346,7 +351,25 @@ public enum CommunicationMessage {
      *
      * Arguments: <GameMap.gameMap_key, Board::toStringFromPlayer>
      */
-    UPDATE_SITUATION;
+    UPDATE_SITUATION,
+
+    /**
+     * Check deaths message.
+     *
+     * CHECK_DEATHS_AFTER_TURN is sent from the server to the client to notify that the turn is about to finish and the dead players should respawn.
+     */
+    CHECK_DEATHS_AFTER_TURN,
+
+    /**
+     * Lock handling messages.
+     *
+     * ASK_CAN_CONTINUE is sent from the client to the server to ask if the game can continue and all the players have respawn.
+     * CAN_CONTINUE_TRUE is sent from the server to the client to notify that the game can continue.
+     *
+     * Arguments: none
+     */
+    ASK_CAN_CONTINUE,
+    CAN_CONTINUE_TRUE;
 
     /**
      * String constant used in messages between client-server
