@@ -20,7 +20,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     private ClientInterface clientStub;
     private ServerInterface server;
     private ExecutorService executorService;
-
+    private int clientOperationTimeoutInSeconds;
 
     public ClientRMI(String host, Integer port){
         super(host, port);
@@ -60,6 +60,10 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
         return -1;
     }
 
+    @Override
+    public void setOperationTimeout(int timeout) throws RemoteException {
+        clientOperationTimeoutInSeconds = timeout;
+    }
 
     @Override
     public void createUser(String username){
@@ -85,32 +89,38 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public void didChooseSkulls(String choice) {
-        submitRemoteMethodInvocation(executorService, () -> {
-            server.didChooseSkulls(choice, gameID);
-            viewObserver.willChooseSpawnPoint();
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                server.didChooseSkulls(choice, gameID);
+                viewObserver.willChooseSpawnPoint();
+                return null;
+                })
+        );
     }
 
     @Override
     public void newAction() {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var situation = server.startActions(userID, gameID);
-            this.viewObserver.onChooseAction(situation);
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var situation = server.startActions(userID, gameID);
+                    this.viewObserver.onChooseAction(situation);
+                    return null;
+                })
+        );
     }
 
     @Override
     public void choseCharacter(String characterColor) {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var availableCharacters = server.getAvailableCharacters(gameID);
-            if (!server.choseCharacter(gameID, userID, characterColor)) this.viewObserver.willChooseCharacter(availableCharacters);
-            else {
-                this.viewObserver.onChooseCharacterSuccess(server.getCharacterName(gameID, userID));
-            }
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var availableCharacters = server.getAvailableCharacters(gameID);
+                    if (!server.choseCharacter(gameID, userID, characterColor)) this.viewObserver.willChooseCharacter(availableCharacters);
+                    else {
+                        this.viewObserver.onChooseCharacterSuccess(server.getCharacterName(gameID, userID));
+                    }
+                    return null;
+                })
+        );
     }
 
     @Override
@@ -153,35 +163,41 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public void askForPossibleSpawnPoints() {
-        submitRemoteMethodInvocation(executorService, () -> {
-            List<String> powerups;
-            powerups = server.getSpawnPowerups(userID, gameID);
-            viewObserver.onChooseSpawnPoint(powerups);
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    List<String> powerups;
+                    powerups = server.getSpawnPowerups(userID, gameID);
+                    viewObserver.onChooseSpawnPoint(powerups);
+                    return null;
+                })
+        );
     }
 
     @Override
     public void askPicks(List<String> powerupToSell) {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var possiblePicks = this.server.askPicks(userID, gameID, powerupToSell);
-            if(possiblePicks.isEmpty()) this.viewObserver.onGrabFailure();
-            viewObserver.willChooseWhatToGrab(possiblePicks);
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var possiblePicks = this.server.askPicks(userID, gameID, powerupToSell);
+                    if(possiblePicks.isEmpty()) this.viewObserver.onGrabFailure();
+                    viewObserver.willChooseWhatToGrab(possiblePicks);
+                    return null;
+                })
+        );
     }
 
     @Override
     public void didChooseWhatToGrab(String pick) {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var ending = server.didChooseWhatToGrab(pick, userID, gameID);
-            if(ending.containsKey(Powerup.powerup_key)) {
-                this.viewObserver.onGrabFailurePowerup(new ArrayList<>(ending.values()));
-            } else if(ending.containsKey(Weapon.weapon_key)) {
-                this.viewObserver.onGrabFailureWeapon(new ArrayList<>(ending.values()));
-            } else viewObserver.onGrabSuccess();
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var ending = server.didChooseWhatToGrab(pick, userID, gameID);
+                    if(ending.containsKey(Powerup.powerup_key)) {
+                        this.viewObserver.onGrabFailurePowerup(new ArrayList<>(ending.values()));
+                    } else if(ending.containsKey(Weapon.weapon_key)) {
+                        this.viewObserver.onGrabFailureWeapon(new ArrayList<>(ending.values()));
+                    } else viewObserver.onGrabSuccess();
+                    return null;
+                })
+        );
     }
 
     @Override
@@ -204,11 +220,13 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public void powerupSellingToGrabWeapon() {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var powerups = server.getPowerupsInHand(userID, gameID);
-            this.viewObserver.sellPowerupToGrabWeapon(powerups);
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var powerups = server.getPowerupsInHand(userID, gameID);
+                    this.viewObserver.sellPowerupToGrabWeapon(powerups);
+                    return null;
+                })
+        );
     }
 
     @Override
@@ -239,116 +257,134 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public void askWeapons() {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var weapons = this.server.askWeapons(userID, gameID);
-            if(weapons.isEmpty()) this.viewObserver.onShootPeopleFailure();
-            else this.viewObserver.willChooseWeapon(this.server.askWeapons(userID, gameID));
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var weapons = this.server.askWeapons(userID, gameID);
+                    if(weapons.isEmpty()) this.viewObserver.onShootPeopleFailure();
+                    else this.viewObserver.willChooseWeapon(this.server.askWeapons(userID, gameID));
+                    return null;
+                })
+        );
     }
 
     @Override
     public void useWeapon(String weaponSelected) {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var weaponUsingProcess = this.server.useWeapon(userID, gameID, weaponSelected);
-            CommunicationMessage weaponProcess = CommunicationMessage.valueOf(weaponUsingProcess.get(CommunicationMessage.communication_message_key));
-            weaponUsingProcess.remove(CommunicationMessage.communication_message_key);
-            switch (weaponProcess) {
-                case DAMAGE_FAILURE:
-                    this.viewObserver.onDamageFailure();
-                    break;
-                case DAMAGE_LIST:
-                    this.viewObserver.willChooseDamage(weaponUsingProcess);
-                    break;
-                default:
-                    this.viewObserver.willChoosePowerupSelling(weaponUsingProcess);
-                    break;
-            }
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var weaponUsingProcess = this.server.useWeapon(userID, gameID, weaponSelected);
+                    CommunicationMessage weaponProcess = CommunicationMessage.valueOf(weaponUsingProcess.get(CommunicationMessage.communication_message_key));
+                    weaponUsingProcess.remove(CommunicationMessage.communication_message_key);
+                    switch (weaponProcess) {
+                        case DAMAGE_FAILURE:
+                            this.viewObserver.onDamageFailure();
+                            break;
+                        case DAMAGE_LIST:
+                            this.viewObserver.willChooseDamage(weaponUsingProcess);
+                            break;
+                        default:
+                            this.viewObserver.willChoosePowerupSelling(weaponUsingProcess);
+                            break;
+                    }
+                    return null;
+                })
+        );
     }
 
     @Override
     public void useWeaponAfterPowerupAsking(String weaponSelected, List<String> powerups) {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var weaponUsingContinued = this.server.useWeaponAfterPowerupSelling(userID, gameID, weaponSelected, powerups);
-            CommunicationMessage weaponProcess = CommunicationMessage.valueOf(weaponUsingContinued.get(CommunicationMessage.communication_message_key));
-            weaponUsingContinued.remove(CommunicationMessage.communication_message_key);
-            if(weaponProcess == CommunicationMessage.MODES_LIST) {
-                this.viewObserver.willChooseMode(weaponUsingContinued);
-            } else this.viewObserver.willChooseEffects(weaponUsingContinued);
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var weaponUsingContinued = this.server.useWeaponAfterPowerupSelling(userID, gameID, weaponSelected, powerups);
+                    CommunicationMessage weaponProcess = CommunicationMessage.valueOf(weaponUsingContinued.get(CommunicationMessage.communication_message_key));
+                    weaponUsingContinued.remove(CommunicationMessage.communication_message_key);
+                    if(weaponProcess == CommunicationMessage.MODES_LIST) {
+                        this.viewObserver.willChooseMode(weaponUsingContinued);
+                    } else this.viewObserver.willChooseEffects(weaponUsingContinued);
+                    return null;
+                })
+        );
     }
 
     @Override
     public void makeDamage(String weapon, String damage, String indexOfEffect, String forPotentiableWeapon) {
-        submitRemoteMethodInvocation(executorService, () -> {
-            boolean lastDamage = true;
-            if(forPotentiableWeapon != null) lastDamage = Boolean.parseBoolean(forPotentiableWeapon);
-            List<String> powerups = this.server.makeDamage(userID, forPotentiableWeapon, indexOfEffect, gameID, damage, weapon);
-            if(lastDamage) {
-                this.viewObserver.didUseWeapon(powerups);
-            }
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    boolean lastDamage = true;
+                    if(forPotentiableWeapon != null) lastDamage = Boolean.parseBoolean(forPotentiableWeapon);
+                    List<String> powerups = this.server.makeDamage(userID, forPotentiableWeapon, indexOfEffect, gameID, damage, weapon);
+                    if(lastDamage) {
+                        this.viewObserver.didUseWeapon(powerups);
+                    }
+                    return null;
+                })
+        );
     }
 
     @Override
     public void useMode(String weapon, String effect) {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var damageList = this.server.useEffect(userID, gameID, null, effect, weapon);
-            if(damageList.containsValue(Damage.no_damage)) this.viewObserver.onDamageFailure();
-            else this.viewObserver.willChooseDamage(damageList);
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var damageList = this.server.useEffect(userID, gameID, null, effect, weapon);
+                    if(damageList.containsValue(Damage.no_damage)) this.viewObserver.onDamageFailure();
+                    else this.viewObserver.willChooseDamage(damageList);
+                    return null;
+                })
+        );
     }
 
     @Override
     public void useEffect(String weapon, List<String> effectsToUse) {
-        submitRemoteMethodInvocation(executorService, () -> {
-            while (!effectsToUse.isEmpty()) {
-                boolean forPotentiableWeapon;
-                forPotentiableWeapon = effectsToUse.size() == 1;
-                String potentiableBoolean = Boolean.toString(forPotentiableWeapon);
-                String effect = effectsToUse.get(0);
-                Map<String, String> damageMap = this.server.useEffect(userID, gameID, potentiableBoolean, effect, weapon);
-                if(damageMap.containsValue(Damage.no_damage)) this.viewObserver.onDamageFailure();
-                else this.viewObserver.willChooseDamage(damageMap);
-                effectsToUse.remove(0);
-            }
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    while (!effectsToUse.isEmpty()) {
+                        boolean forPotentiableWeapon;
+                        forPotentiableWeapon = effectsToUse.size() == 1;
+                        String potentiableBoolean = Boolean.toString(forPotentiableWeapon);
+                        String effect = effectsToUse.get(0);
+                        Map<String, String> damageMap = this.server.useEffect(userID, gameID, potentiableBoolean, effect, weapon);
+                        if(damageMap.containsValue(Damage.no_damage)) this.viewObserver.onDamageFailure();
+                        else this.viewObserver.willChooseDamage(damageMap);
+                        effectsToUse.remove(0);
+                    }
+                    return null;
+                })
+        );
     }
 
     @Override
     public void askWeaponToReload() {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var weaponInHand = this.server.getUnloadedWeaponInHand(userID, gameID);
-            if(weaponInHand.isEmpty()) this.viewObserver.onWeaponUnloadedFailure();
-            else this.viewObserver.willReload(this.server.getUnloadedWeaponInHand(userID, gameID));
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var weaponInHand = this.server.getUnloadedWeaponInHand(userID, gameID);
+                    if(weaponInHand.isEmpty()) this.viewObserver.onWeaponUnloadedFailure();
+                    else this.viewObserver.willReload(this.server.getUnloadedWeaponInHand(userID, gameID));
+                    return null;
+                })
+        );
     }
 
     @Override
     public void reloadWeapons(List<String> weaponsToReload) {
-        submitRemoteMethodInvocation(executorService, () -> {
-            boolean didReload =  this.server.reload(weaponsToReload, userID, gameID);
-            if(didReload) this.viewObserver.onReloadSuccess();
-            else this.viewObserver.onReloadFailure();
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    boolean didReload =  this.server.reload(weaponsToReload, userID, gameID);
+                    if(didReload) this.viewObserver.onReloadSuccess();
+                    else this.viewObserver.onReloadFailure();
+                    return null;
+                })
+        );
     }
 
     @Override
     public void askForPowerupsToReload() {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var powerups = server.getPowerupsInHand(userID, gameID);
-            if(powerups.isEmpty()) this.viewObserver.onPowerupInHandFailure();
-            else this.viewObserver.willSellPowerupToReload(powerups);
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var powerups = server.getPowerupsInHand(userID, gameID);
+                    if(powerups.isEmpty()) this.viewObserver.onPowerupInHandFailure();
+                    else this.viewObserver.willSellPowerupToReload(powerups);
+                    return null;
+                })
+        );
     }
 
     @Override
@@ -362,24 +398,28 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public void askForUsablePowerups() {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var powerups = this.server.getUsablePowerups(userID, gameID);
-            if(powerups.isEmpty()) this.viewObserver.onTurnPowerupFailure();
-            else this.viewObserver.willChoosePowerup(powerups);
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var powerups = this.server.getUsablePowerups(userID, gameID);
+                    if(powerups.isEmpty()) this.viewObserver.onTurnPowerupFailure();
+                    else this.viewObserver.willChoosePowerup(powerups);
+                    return null;
+                })
+        );
     }
 
     @Override
     public void askPowerupDamages(String powerup) {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var possibleDamages = this.server.getPowerupDamages(userID, gameID, powerup);
-            Map<String, String> damagesMap = new HashMap<>();
-            for(String damage : possibleDamages) damagesMap.put(Integer.toString(possibleDamages.indexOf(damage)), damage);
-            damagesMap.put(Powerup.powerup_key, powerup);
-            this.viewObserver.willChoosePowerupDamage(damagesMap);
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var possibleDamages = this.server.getPowerupDamages(userID, gameID, powerup);
+                    Map<String, String> damagesMap = new HashMap<>();
+                    for(String damage : possibleDamages) damagesMap.put(Integer.toString(possibleDamages.indexOf(damage)), damage);
+                    damagesMap.put(Powerup.powerup_key, powerup);
+                    this.viewObserver.willChoosePowerupDamage(damagesMap);
+                    return null;
+                })
+        );
     }
 
     @Override
@@ -392,12 +432,14 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public void afterAction() {
-        submitRemoteMethodInvocation(executorService, () -> {
-            var curSituation = server.afterAction(userID, gameID);
-            if(curSituation != null) this.viewObserver.onEndTurn(curSituation);
-            else this.viewObserver.newAction();
-            return null;
-        });
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    var curSituation = server.afterAction(userID, gameID);
+                    if(curSituation != null) this.viewObserver.onEndTurn(curSituation);
+                    else this.viewObserver.newAction();
+                    return null;
+                })
+        );
     }
 
     @Override

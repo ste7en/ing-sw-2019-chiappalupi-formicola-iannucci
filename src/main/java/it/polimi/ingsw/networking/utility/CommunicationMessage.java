@@ -27,7 +27,7 @@ public enum CommunicationMessage {
     PONG,
 
     /**
-     * An operation's timeout associated to a user expired
+     * An operation's timeoutInSeconds associated to a user expired
      */
     TIMEOUT_DID_EXPIRE,
 
@@ -351,7 +351,7 @@ public enum CommunicationMessage {
     /**
      * String constant used in messages between client-server
      */
-    public final static String communication_message_key = "COMMUNICATION_MESSAGE";
+    public static final String communication_message_key = "COMMUNICATION_MESSAGE";
 
     /**
      * Log strings
@@ -367,11 +367,13 @@ public enum CommunicationMessage {
     /**
      * Private class used to create json messages
      */
+    @SuppressWarnings("all")
     protected static class Message {
         int connectionID;
         CommunicationMessage message;
         Map<String, String> arguments;
         UUID gameID;
+        int timeoutInSeconds;
 
         Message(int id, CommunicationMessage format, Map<String, String> arguments, UUID gameID) {
             this.connectionID = id;
@@ -380,14 +382,52 @@ public enum CommunicationMessage {
             this.gameID = gameID;
         }
 
-        Message() {}
-        @SuppressWarnings("all")
-        public int getConnectionID() { return connectionID; }
-        public UUID getGameID() { return gameID; }
-        public CommunicationMessage getMessage() { return message; }
-        @SuppressWarnings("all")
-        public Map<String, String> getArguments() { return arguments; }
+        Message(int id, CommunicationMessage format, Map<String, String> arguments) {
+            this.connectionID = id;
+            this.message = format;
+            this.arguments = arguments;
+        }
 
+        Message(int id, CommunicationMessage format, Map<String, String> arguments, int timeoutInSeconds) {
+            this.connectionID = id;
+            this.message = format;
+            this.arguments = arguments;
+        }
+
+        Message(int id, CommunicationMessage format, Map<String, String> arguments, UUID gameID, int timeoutInSeconds) {
+            this.connectionID = id;
+            this.message = format;
+            this.arguments = arguments;
+            this.gameID = gameID;
+            this.timeoutInSeconds = timeoutInSeconds;
+        }
+
+        Message(int id, CommunicationMessage format, int timeoutInSeconds) {
+            this.connectionID = id;
+            this.message = format;
+            this.timeoutInSeconds = timeoutInSeconds;
+        }
+
+        Message() {}
+
+        public int getConnectionID() { return connectionID; }
+        public Map<String, String> getArguments() { return arguments; }
+        public int getTimeoutInSeconds() { return timeoutInSeconds; }
+        public CommunicationMessage getMessage() { return message; }
+        public UUID getGameID() { return gameID; }
+
+    }
+
+    private static String toJson(Message message) {
+        var mapper = new ObjectMapper();
+        var jsonMessage = "";
+
+        try {
+            jsonMessage = mapper.writeValueAsString(message);
+        } catch (JsonProcessingException e) {
+            AdrenalineLogger.errorException(EXC_MESS_JSON, e);
+        }
+        return jsonMessage;
     }
 
     /**
@@ -397,7 +437,19 @@ public enum CommunicationMessage {
      * @return json message
      */
     public static String from(int id, CommunicationMessage format) {
-        return from(id, format, new HashMap<>());
+        return from(id, format, argsFactory());
+    }
+
+    /**
+     * Returns a json message from a connectionID and a CommunicationMessage identifier
+     * @param id connectionID
+     * @param format message identifier
+     * @param timeout timeout
+     * @return json message
+     */
+    public static String from(int id, CommunicationMessage format, int timeout) {
+        var message = new Message(id, format, timeout);
+        return toJson(message);
     }
 
     /**
@@ -408,16 +460,21 @@ public enum CommunicationMessage {
      * @return json message
      */
     public static String from(int id, CommunicationMessage format, Map<String, String> args) {
-        var message = new Message(id, format, args, UUID.randomUUID());
-        var mapper = new ObjectMapper();
-        var jsonMessage = "";
+        var message = new Message(id, format, args);
+        return toJson(message);
+    }
 
-        try {
-            jsonMessage = mapper.writeValueAsString(message);
-        } catch (JsonProcessingException e) {
-            AdrenalineLogger.errorException(EXC_MESS_JSON, e);
-        }
-        return jsonMessage;
+    /**
+     * Returns a json message from a connectionID, a CommunicationMessage identifier and some arguments
+     * @param id connectionID
+     * @param format message identifier
+     * @param args arguments
+     * @param timeout timeout
+     * @return json message
+     */
+    public static String from(int id, CommunicationMessage format, Map<String, String> args, int timeout) {
+        var message = new Message(id, format, args, timeout);
+        return toJson(message);
     }
 
     /**
@@ -430,15 +487,21 @@ public enum CommunicationMessage {
      */
     public static String from(int id, CommunicationMessage format, Map<String, String> args, UUID gameID) {
         var message = new Message(id, format, args, gameID);
-        var mapper = new ObjectMapper();
-        var jsonMessage = "";
+        return toJson(message);
+    }
 
-        try {
-            jsonMessage = mapper.writeValueAsString(message);
-        } catch (JsonProcessingException e) {
-            AdrenalineLogger.errorException(EXC_MESS_JSON, e);
-        }
-        return jsonMessage;
+    /**
+     * Returns a json message from a connectionID, a CommunicationMessage identifier and some arguments
+     * @param id connectionID
+     * @param format message identifier
+     * @param args arguments
+     * @param gameID game identifier
+     * @param timeout timeout
+     * @return json message
+     */
+    public static String from(int id, CommunicationMessage format, Map<String, String> args, UUID gameID, int timeout) {
+        var message = new Message(id, format, args, gameID, timeout);
+        return toJson(message);
     }
 
     /**
@@ -449,16 +512,8 @@ public enum CommunicationMessage {
      * @return json message
      */
     public static String from(int id, CommunicationMessage format, UUID gameID) {
-        var message = new Message(id, format, new HashMap<>(), gameID);
-        var mapper = new ObjectMapper();
-        var jsonMessage = "";
-
-        try {
-            jsonMessage = mapper.writeValueAsString(message);
-        } catch (JsonProcessingException e) {
-            AdrenalineLogger.errorException(EXC_MESS_JSON, e);
-        }
-        return jsonMessage;
+        var message = new Message(id, format, argsFactory(), gameID);
+        return toJson(message);
     }
 
 
@@ -536,4 +591,13 @@ public enum CommunicationMessage {
         return getMessageFrom(json).getGameID();
     }
 
+    /**
+     * Returns a timeoutInSeconds for timed operations
+     * @param json message
+     * @return timeoutInSeconds
+     */
+    public static int getTimeoutFrom(String json) {
+        var timeout = getMessageFrom(json).getTimeoutInSeconds();
+        return timeout == 0 ? Integer.MAX_VALUE : timeout;
+    }
 }

@@ -24,11 +24,17 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler implemen
 
     private ClientInterface clientRMI;
 
-    public ServerRMIConnectionHandler(Server server, ClientInterface clientRMI) {
+    public ServerRMIConnectionHandler(Server server, ClientInterface clientRMI, int clientOperationTimeoutInSeconds) {
         super.server = server;
         super.connectionState = ONLINE;
         super.executorService = Executors.newCachedThreadPool();
+        super.clientOperationTimeoutInSeconds = clientOperationTimeoutInSeconds;
         this.clientRMI = clientRMI;
+
+        submitRemoteMethodInvocation(executorService, () -> {
+            clientRMI.setOperationTimeout(clientOperationTimeoutInSeconds);
+            return null;
+        });
     }
 
     public void gameDidStart(String gameID) {

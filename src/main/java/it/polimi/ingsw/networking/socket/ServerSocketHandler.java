@@ -90,8 +90,8 @@ public final class ServerSocketHandler implements Runnable, Loggable {
             var socket = serverSocket.accept();
             socket.setSoTimeout(SOCKET_SO_TIMEOUT);
             logOnSuccess(SOCKET_SUCCESS + socket.toString());
-
-            var connection = new ServerSocketConnectionHandler(socket, server);
+            //todo: timeout
+            var connection = new ServerSocketConnectionHandler(socket, server, 10);
 
             var connectionThread = new Thread(connection);
             connectionThread.setDaemon(true);

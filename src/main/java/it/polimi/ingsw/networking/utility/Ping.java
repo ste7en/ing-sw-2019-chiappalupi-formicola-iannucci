@@ -105,6 +105,14 @@ public class Ping {
     }
 
     /**
+     * Convenience method used to remove a connection to the pingHandler collection
+     * @param connection the connection that has to be removed
+     */
+    public void removePing(Pingable connection) {
+        getPingHandler().remove(connection);
+    }
+
+    /**
      * Convenience method used to notify a PONG message
      * @param connectionID the hashCode of the connection
      */

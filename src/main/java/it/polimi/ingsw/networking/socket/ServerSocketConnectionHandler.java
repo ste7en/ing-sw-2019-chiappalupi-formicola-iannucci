@@ -58,12 +58,13 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * @param socket socket connection with the client
      * @param server the server instance
      */
-    ServerSocketConnectionHandler(Socket socket, Server server) {
+    ServerSocketConnectionHandler(Socket socket, Server server, int clientOperationTimeoutInSeconds) {
         this.socket = socket;
         this.outBuf = new ConcurrentLinkedQueue<>();
         super.connectionState = ONLINE;
         super.server = server;
         super.executorService = Executors.newCachedThreadPool();
+        super.clientOperationTimeoutInSeconds = clientOperationTimeoutInSeconds;
     }
 
     /**
@@ -265,7 +266,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      */
     private void skullsChosen(int connectionID, Map<String, String> args, UUID gameID) {
         this.server.didChooseSkulls(args.get(Board.skulls_key), gameID);
-        this.send(CommunicationMessage.from(connectionID, CHOOSE_SPAWN_POINT));
+        this.send(CommunicationMessage.from(connectionID, CHOOSE_SPAWN_POINT, clientOperationTimeoutInSeconds));
     }
 
     /**
@@ -278,7 +279,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         if(curSituation != null) {
             Map<String, String> responseArgs = new HashMap<>();
             responseArgs.put(GameMap.gameMap_key, curSituation);
-            this.send(CommunicationMessage.from(connectionID, END_TURN, responseArgs));
+            this.send(CommunicationMessage.from(connectionID, END_TURN, responseArgs, clientOperationTimeoutInSeconds));
         }
         else this.send(CommunicationMessage.from(connectionID, KEEP_ACTION));
     }
@@ -292,7 +293,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         String s = this.server.startActions(connectionID, gameID);
         Map<String, String> responseArgs = new HashMap<>();
         responseArgs.put(GameMap.gameMap_key, s);
-        this.send(CommunicationMessage.from(connectionID, CHOOSE_ACTION, responseArgs));
+        this.send(CommunicationMessage.from(connectionID, CHOOSE_ACTION, responseArgs, clientOperationTimeoutInSeconds));
     }
 
     /**
@@ -302,11 +303,11 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      */
     private void sellPowerupToGrab(int connectionID, UUID gameID) {
         List<String> powerups = server.getPowerupsInHand(connectionID, gameID);
-        if(powerups.isEmpty()) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE));
+        if(powerups.isEmpty()) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE, clientOperationTimeoutInSeconds));
         Map<String, String> responseArgs = new HashMap<>();
         for(String s : powerups)
             responseArgs.put(Integer.toString(powerups.indexOf(s)), s);
-        this.send(CommunicationMessage.from(connectionID, AVAILABLE_POWERUP_TO_SELL_TO_GRAB, responseArgs));
+        this.send(CommunicationMessage.from(connectionID, AVAILABLE_POWERUP_TO_SELL_TO_GRAB, responseArgs, clientOperationTimeoutInSeconds));
     }
 
     /**
@@ -339,8 +340,8 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      */
     private void choseWhatToGrab(int connectionID, Map<String, String> args, UUID gameID) {
         Map<String, String> responseArgs = this.server.didChooseWhatToGrab(args.get(AmmoTile.ammoTile_key), connectionID, gameID);
-        if(responseArgs.containsKey(Powerup.powerup_key)) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE_POWERUP, responseArgs));
-        else if(responseArgs.containsKey(Weapon.weapon_key)) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE_WEAPON, responseArgs));
+        if(responseArgs.containsKey(Powerup.powerup_key)) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE_POWERUP, responseArgs, clientOperationTimeoutInSeconds));
+        else if(responseArgs.containsKey(Weapon.weapon_key)) this.send(CommunicationMessage.from(connectionID, GRAB_FAILURE_WEAPON, responseArgs, clientOperationTimeoutInSeconds));
         else this.send(CommunicationMessage.from(connectionID, GRAB_SUCCESS));
     }
 
@@ -354,7 +355,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         List<String> possiblePicks = server.askPicks(connectionID, gameID, new ArrayList<>(args.values()));
         Map<String, String> responseArgs = new HashMap<>();
         for(String pick : possiblePicks) responseArgs.put(Integer.toString(possiblePicks.indexOf(pick)), pick);
-        this.send(CommunicationMessage.from(connectionID, POSSIBLE_PICKS, responseArgs, gameID));
+        this.send(CommunicationMessage.from(connectionID, POSSIBLE_PICKS, responseArgs, gameID, clientOperationTimeoutInSeconds));
     }
 
     /**
@@ -377,7 +378,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         List<String> spawnPowerups = this.server.getSpawnPowerups(connectionID, gameID);
         Map<String, String> responseArgs = new HashMap<>();
         for(int i = 0; i < spawnPowerups.size(); i++) responseArgs.put(Integer.toString(i), spawnPowerups.get(i));
-        this.send(CommunicationMessage.from(connectionID, DRAWN_SPAWN_POINT, responseArgs, gameID));
+        this.send(CommunicationMessage.from(connectionID, DRAWN_SPAWN_POINT, responseArgs, gameID, clientOperationTimeoutInSeconds));
     }
 
     /**
@@ -401,14 +402,15 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 connectionID,
                 CHOOSE_MOVEMENT,
                 argsFrom(GameLogic.available_moves, String.join(listDelimiter, server.getAvailableMoves(connectionID, gameID))),
-                gameID));
+                gameID,
+                clientOperationTimeoutInSeconds));
     }
 
     private void askPowerupToReload(int connectionID, UUID gameID) {
         List<String> powerups = server.getPowerupsInHand(connectionID, gameID);
         Map<String, String> responseArgs = new HashMap<>();
         for(String powerup : powerups) responseArgs.put(Integer.toString(powerups.indexOf(powerup)), powerup);
-        send(CommunicationMessage.from(connectionID, POWERUP_TO_RELOAD, responseArgs));
+        send(CommunicationMessage.from(connectionID, POWERUP_TO_RELOAD, responseArgs, clientOperationTimeoutInSeconds));
     }
 
     private void askPowerupDamages(int connectionID, Map<String, String> args, UUID gameID) {
@@ -416,18 +418,18 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         Map<String, String> responseArgs = new HashMap<>();
         responseArgs.put(Powerup.powerup_key, args.get(Powerup.powerup_key));
         for(String damage : possibleDamages) responseArgs.put(Integer.toString(possibleDamages.indexOf(damage)), damage);
-        send(CommunicationMessage.from(connectionID, POWERUP_DAMAGES_LIST, responseArgs));
+        send(CommunicationMessage.from(connectionID, POWERUP_DAMAGES_LIST, responseArgs, clientOperationTimeoutInSeconds));
     }
 
     private void askPowerups(int connectionID, UUID gameID) {
         List<String> usablePowerups = server.getUsablePowerups(connectionID, gameID);
         if(usablePowerups.isEmpty()) {
-            send(CommunicationMessage.from(connectionID, NO_TURN_POWERUP));
+            send(CommunicationMessage.from(connectionID, NO_TURN_POWERUP, clientOperationTimeoutInSeconds));
             return;
         }
         Map<String, String> responseArgs = new HashMap<>();
         for(String powerup: usablePowerups) responseArgs.put(Integer.toString(usablePowerups.indexOf(powerup)), powerup);
-        send(CommunicationMessage.from(connectionID, POWERUP_LIST, responseArgs));
+        send(CommunicationMessage.from(connectionID, POWERUP_LIST, responseArgs, clientOperationTimeoutInSeconds));
     }
 
     private void askUnloadedWeapons(int connectionID, UUID gameID) {
@@ -438,14 +440,14 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         }
         Map<String, String> responseArgs = new HashMap<>();
         for(String weapon : weaponsInHand) responseArgs.put(Integer.toString(weaponsInHand.indexOf(weapon)), weapon);
-        send(CommunicationMessage.from(connectionID, WEAPON_LIST, responseArgs));
+        send(CommunicationMessage.from(connectionID, WEAPON_LIST, responseArgs, clientOperationTimeoutInSeconds));
     }
 
     private void weaponToReload(int connectionID, Map<String, String> args, UUID gameID) {
         List<String> weaponsToReload = new ArrayList<>(args.values());
         boolean reloaded = server.reload(weaponsToReload, connectionID, gameID);
-        if(reloaded) send(CommunicationMessage.from(connectionID, RELOAD_WEAPON_OK));
-        else send(CommunicationMessage.from(connectionID, RELOAD_WEAPON_FAILED));
+        if(reloaded) send(CommunicationMessage.from(connectionID, RELOAD_WEAPON_OK, clientOperationTimeoutInSeconds));
+        else send(CommunicationMessage.from(connectionID, RELOAD_WEAPON_FAILED, clientOperationTimeoutInSeconds));
     }
 
     private void effectToUse(int connectionID, Map<String, String> args, UUID gameID) {
@@ -454,7 +456,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         String effectSelected = args.get(Effect.effect_key);
         String weaponSelected = args.get(Weapon.weapon_key);
         Map<String, String> responseArgs = server.useEffect(connectionID, gameID, forPotentiableWeapon, effectSelected, weaponSelected);
-        String responseMessage = CommunicationMessage.from(connectionID, DAMAGE_LIST, responseArgs, gameID);
+        String responseMessage = CommunicationMessage.from(connectionID, DAMAGE_LIST, responseArgs, gameID, clientOperationTimeoutInSeconds);
         send(responseMessage);
     }
 
@@ -468,7 +470,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
             Map<String, String> responseArgs = new HashMap<>();
             for(String pow : pows)
                 responseArgs.put(Integer.toString(pows.indexOf(pow)), pow);
-            send(CommunicationMessage.from(connectionID, LAST_DAMAGE_DONE, responseArgs));
+            send(CommunicationMessage.from(connectionID, LAST_DAMAGE_DONE, responseArgs, clientOperationTimeoutInSeconds));
         } else send(CommunicationMessage.from(connectionID, DAMAGE_DONE));
     }
 
@@ -480,7 +482,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         CommunicationMessage format = CommunicationMessage.valueOf(responseArgs.get(communication_message_key));
         responseArgs.remove(communication_message_key);
 
-        send(CommunicationMessage.from(connectionID, format, responseArgs, gameID));
+        send(CommunicationMessage.from(connectionID, format, responseArgs, gameID, clientOperationTimeoutInSeconds));
     }
 
     private void weaponToUse(int connectionID, Map<String, String> args, UUID gameID) {
@@ -488,7 +490,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         Map<String, String> responseArgs = server.useWeapon(connectionID, gameID, weaponSelected);
         CommunicationMessage format = CommunicationMessage.valueOf(responseArgs.get(CommunicationMessage.communication_message_key));
         responseArgs.remove(CommunicationMessage.communication_message_key);
-        String responseMessage = CommunicationMessage.from(connectionID, format, responseArgs, gameID);
+        String responseMessage = CommunicationMessage.from(connectionID, format, responseArgs, gameID, clientOperationTimeoutInSeconds);
         send(responseMessage);
     }
 
@@ -496,12 +498,12 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         List<String> weapons = this.server.askWeapons(connectionID, gameID);
         Map<String, String> responseArgs = new HashMap<>();
         if(weapons.isEmpty()) {
-            send(CommunicationMessage.from(connectionID, SHOOT_PEOPLE_FAILURE));
+            send(CommunicationMessage.from(connectionID, SHOOT_PEOPLE_FAILURE, clientOperationTimeoutInSeconds));
             return;
         }
         for(String weapon : weapons)
             responseArgs.put(Integer.toString(weapons.indexOf(weapon)), weapon);
-        send(CommunicationMessage.from(connectionID, SHOOT_PEOPLE, responseArgs, gameID));
+        send(CommunicationMessage.from(connectionID, SHOOT_PEOPLE, responseArgs, gameID, clientOperationTimeoutInSeconds));
     }
 
     /**
@@ -571,7 +573,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
 
     @Override
     protected void startNewTurnFromRespawn(int userID) {
-        this.send(CommunicationMessage.from(userID, CHOOSE_SPAWN_POINT));
+        this.send(CommunicationMessage.from(userID, CHOOSE_SPAWN_POINT, clientOperationTimeoutInSeconds));
     }
 
     @Override

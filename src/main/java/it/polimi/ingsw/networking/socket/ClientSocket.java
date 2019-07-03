@@ -81,8 +81,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         var task = new Thread(
             () -> {
                 var communicationMessage = CommunicationMessage.getCommunicationMessageFrom(message);
-                var id = CommunicationMessage.getConnectionIDFrom(message);
+                var id                   = CommunicationMessage.getConnectionIDFrom(message);
                 Map<String, String> args = CommunicationMessage.getMessageArgsFrom(message);
+                var timeout              = CommunicationMessage.getTimeoutFrom(message);
 
                 switch (communicationMessage) {
                     case PING:
@@ -107,7 +108,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         break;
                     case CHOOSE_CHARACTER:
                         var availableCharacters = Arrays.asList(args.get(Character.character_list).split(listDelimiter));
-                        timeoutOperation(10, () -> this.viewObserver.willChooseCharacter(availableCharacters));
+                        this.viewObserver.willChooseCharacter(availableCharacters);
                         break;
                     case CHARACTER_CHOSEN_OK:
                         this.viewObserver.onChooseCharacterSuccess(args.get(Character.character));
@@ -122,60 +123,62 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.willChooseSkulls();
                         break;
                     case CHOOSE_SPAWN_POINT:
-                        this.viewObserver.willChooseSpawnPoint();
+                        timeoutOperation(timeout, this.viewObserver::willChooseSpawnPoint);
                         break;
                     case DRAWN_SPAWN_POINT:
-                        this.viewObserver.onChooseSpawnPoint(new ArrayList<>(args.values()));
+                        timeoutOperation(timeout, () -> this.viewObserver.onChooseSpawnPoint(new ArrayList<>(args.values())));
                         break;
                     case KEEP_ACTION:
                         this.viewObserver.newAction();
                         break;
                     case CHOOSE_ACTION:
-                        this.viewObserver.onChooseAction(args.get(GameMap.gameMap_key));
+                        timeoutOperation(timeout, () -> this.viewObserver.onChooseAction(args.get(GameMap.gameMap_key)));
                         break;
                     case CHOOSE_MOVEMENT:
-                        this.viewObserver.willChooseMovement(Arrays.asList(args.get(GameLogic.available_moves).split(listDelimiter)));
+                        timeoutOperation(timeout, () -> this.viewObserver.willChooseMovement(Arrays.asList(args.get(GameLogic.available_moves).split(listDelimiter))));
                         break;
                     case AVAILABLE_POWERUP_TO_SELL_TO_GRAB:
-                        this.viewObserver.sellPowerupToGrabWeapon(new ArrayList<>(args.values()));
+                        timeoutOperation(timeout, () -> this.viewObserver.sellPowerupToGrabWeapon(new ArrayList<>(args.values())));
                         break;
                     case POSSIBLE_PICKS:
-                        this.viewObserver.willChooseWhatToGrab(new ArrayList<>(args.values()));
+                        timeoutOperation(timeout, () -> this.viewObserver.willChooseWhatToGrab(new ArrayList<>(args.values())));
                         break;
                     case GRAB_SUCCESS:
                         this.viewObserver.onGrabSuccess();
                         break;
                     case GRAB_FAILURE_POWERUP:
-                        this.viewObserver.onGrabFailurePowerup(new ArrayList<>(args.values()));
+                        timeoutOperation(timeout, () -> this.viewObserver.onGrabFailurePowerup(new ArrayList<>(args.values())));
                         break;
                     case GRAB_FAILURE_WEAPON:
-                        this.viewObserver.onGrabFailureWeapon(new ArrayList<>(args.values()));
+                        timeoutOperation(timeout, () -> this.viewObserver.onGrabFailureWeapon(new ArrayList<>(args.values())));
                         break;
                     case GRAB_FAILURE:
-                        this.viewObserver.onGrabFailure();
+                        timeoutOperation(timeout, this.viewObserver::onGrabFailure);
                         break;
                     case SHOOT_PEOPLE:
-                        this.viewObserver.willChooseWeapon(new ArrayList<>(args.values()));
+                        timeoutOperation(timeout, () -> this.viewObserver.willChooseWeapon(new ArrayList<>(args.values())));
                         break;
                     case SHOOT_PEOPLE_FAILURE:
-                        this.viewObserver.onShootPeopleFailure();
+                        timeoutOperation(timeout, this.viewObserver::onShootPeopleFailure);
                         break;
                     case EFFECT_TO_USE:
                     case EFFECTS_LIST:
-                        this.viewObserver.willChooseEffects(args);
+                        timeoutOperation(timeout, () -> this.viewObserver.willChooseEffects(args));
                         break;
                     case DAMAGE_FAILURE:
-                        this.viewObserver.onDamageFailure();
+                        timeoutOperation(timeout, this.viewObserver::onDamageFailure);
                         break;
                     case POWERUP_SELLING_LIST:
-                        this.viewObserver.willChoosePowerupSelling(args);
+                        timeoutOperation(timeout, () -> this.viewObserver.willChoosePowerupSelling(args));
                         break;
                     case DAMAGE_LIST:
-                        if(args.containsValue(Damage.no_damage)) this.viewObserver.onDamageFailure();
-                        else this.viewObserver.willChooseDamage(args);
+                        timeoutOperation(timeout, () -> {
+                            if(args.containsValue(Damage.no_damage)) this.viewObserver.onDamageFailure();
+                            else this.viewObserver.willChooseDamage(args);
+                        });
                         break;
                     case MODES_LIST:
-                        this.viewObserver.willChooseMode(args);
+                        timeoutOperation(timeout, () -> this.viewObserver.willChooseMode(args));
                         break;
                     case DAMAGE_DONE:
                         synchronized (this) {
@@ -186,38 +189,40 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         synchronized (this) {
                             this.notifyAll();
                         }
-                        this.viewObserver.didUseWeapon(new ArrayList<>(args.values()));
+                        timeoutOperation(timeout, () -> this.viewObserver.didUseWeapon(new ArrayList<>(args.values())));
                         break;
                     case NO_WEAPON_UNLOADED_IN_HAND:
                         this.viewObserver.onWeaponUnloadedFailure();
                         break;
                     case POWERUP_TO_RELOAD:
-                        if (args.values().isEmpty()) this.viewObserver.onPowerupInHandFailure();
-                        else this.viewObserver.willSellPowerupToReload(new ArrayList<>(args.values()));
+                        timeoutOperation(timeout, () -> {
+                            if (args.values().isEmpty()) this.viewObserver.onPowerupInHandFailure();
+                            else this.viewObserver.willSellPowerupToReload(new ArrayList<>(args.values()));
+                        });
                         break;
                     case WEAPON_LIST:
-                        this.viewObserver.willReload(new ArrayList<>(args.values()));
+                        timeoutOperation(timeout, () -> this.viewObserver.willReload(new ArrayList<>(args.values())));
                         break;
                     case RELOAD_WEAPON_FAILED:
-                        this.viewObserver.onReloadFailure();
+                        timeoutOperation(timeout, this.viewObserver::onReloadFailure);
                         break;
                     case RELOAD_WEAPON_OK:
-                        this.viewObserver.onReloadSuccess();
+                        timeoutOperation(timeout, this.viewObserver::onReloadSuccess);
                         break;
                     case NO_TURN_POWERUP:
-                        this.viewObserver.onTurnPowerupFailure();
+                        timeoutOperation(timeout, this.viewObserver::onTurnPowerupFailure);
                         break;
                     case POWERUP_LIST:
-                        this.viewObserver.willChoosePowerup(new ArrayList<>(args.values()));
+                        timeoutOperation(timeout, () -> this.viewObserver.willChoosePowerup(new ArrayList<>(args.values())));
                         break;
                     case POWERUP_DAMAGES_LIST:
-                        this.viewObserver.willChoosePowerupDamage(args);
+                        timeoutOperation(timeout, () -> this.viewObserver.willChoosePowerupDamage(args));
                         break;
                     case AFTER_ACTION:
                         this.viewObserver.afterAction();
                         break;
                     case END_TURN:
-                        this.viewObserver.onEndTurn(args.get(GameMap.gameMap_key));
+                        timeoutOperation(timeout, () -> this.viewObserver.onEndTurn(args.get(GameMap.gameMap_key)));
                         break;
                     case UPDATE_SITUATION:
                         this.viewObserver.displayChange(args.get(GameMap.gameMap_key));

@@ -133,8 +133,6 @@ public abstract class View {
      * When the client chooses a character
      */
     public void didChooseCharacter(String character) {
-        System.out.println("QUI");
-        System.out.println(character);
         client.choseCharacter(character);
     }
 

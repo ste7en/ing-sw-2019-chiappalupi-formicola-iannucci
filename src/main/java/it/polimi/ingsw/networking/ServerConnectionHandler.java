@@ -32,6 +32,11 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable {
     protected ExecutorService executorService;
 
     /**
+     * Timeout
+     */
+    protected int clientOperationTimeoutInSeconds;
+
+    /**
      * @return true if the connection is available
      */
     public abstract boolean isConnectionAvailable();

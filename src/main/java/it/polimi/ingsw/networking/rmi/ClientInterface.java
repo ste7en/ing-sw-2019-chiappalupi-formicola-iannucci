@@ -37,6 +37,11 @@ public interface ClientInterface extends Remote {
      * @param change it's the change that should be displayed
      * @throws RemoteException RMI Exception
      */
-    void willDisplayUpdate(String change) throws  RemoteException;
+    void willDisplayUpdate(String change) throws RemoteException;
 
+    /**
+     * Sets the operation timeout
+     * @param timeout timeout in seconds
+     */
+    void setOperationTimeout(int timeout) throws RemoteException;
 }
