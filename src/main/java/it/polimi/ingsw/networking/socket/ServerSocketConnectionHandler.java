@@ -1,6 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
+import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
@@ -170,6 +171,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case MAP_CHOSEN:
                     mapChosen(connectionID, args, gameID);
                     break;
+                case SKULLS_CHOSEN:
+                    skullsChosen(connectionID, args, gameID);
+                    break;
                 case NEW_ACTION:
                     newAction(connectionID, gameID);
                     break;
@@ -249,6 +253,17 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
             }
 
         }).start();
+    }
+
+    /**
+     * This method is called when the number of skulls has been chosen from the player.
+     * @param connectionID it's the ID of the user
+     * @param args it's the map containing the arguments needed to perform the action
+     * @param gameID it's the ID of the game
+     */
+    private void skullsChosen(int connectionID, Map<String, String> args, UUID gameID) {
+        this.server.didChooseSkulls(args.get(Board.skulls_key), gameID);
+        this.send(CommunicationMessage.from(connectionID, CHOOSE_SPAWN_POINT));
     }
 
     /**
@@ -371,7 +386,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      */
     private void mapChosen(int connectionID, Map<String, String> args, UUID gameID) {
         this.server.didChooseGameMap(gameID, args.get(GameMap.gameMap_key));
-        this.send(CommunicationMessage.from(connectionID, CHOOSE_SPAWN_POINT));
+        this.send(CommunicationMessage.from(connectionID, CHOOSE_SKULLS));
     }
 
     /**

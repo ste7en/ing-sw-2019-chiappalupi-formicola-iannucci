@@ -46,7 +46,7 @@ public abstract class Weapon {
     /**
      * String constant used in messages between client-server
      */
-    public final static String weapon_key = "WEAPON";
+    public static final String weapon_key = "WEAPON";
 
     /**
      * Weapon's name getter

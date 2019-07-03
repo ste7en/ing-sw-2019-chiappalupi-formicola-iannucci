@@ -1,6 +1,7 @@
 package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
+import it.polimi.ingsw.model.board.Board;
 import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
@@ -116,6 +117,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         break;
                     case CHOOSE_MAP:
                         this.viewObserver.willChooseGameMap();
+                        break;
+                    case CHOOSE_SKULLS:
+                        this.viewObserver.willChooseSkulls();
                         break;
                     case CHOOSE_SPAWN_POINT:
                         this.viewObserver.willChooseSpawnPoint();
@@ -245,6 +249,13 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     @Override
     public void joinWaitingRoom(String username) {
         this.send(CommunicationMessage.from(userID, USER_JOIN_WAITING_ROOM, argsFrom(User.username_key, username)));
+    }
+
+    @Override
+    public void didChooseSkulls(String choice) {
+        Map<String, String> args = new HashMap<>();
+        args.put(Board.skulls_key, choice);
+        this.send(CommunicationMessage.from(userID, SKULLS_CHOSEN, args, gameID));
     }
 
     @Override

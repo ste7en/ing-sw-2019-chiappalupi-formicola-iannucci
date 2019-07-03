@@ -125,7 +125,7 @@ public abstract class View {
     public abstract void didJoinWaitingRoom();
 
     /**
-     * When the client is asked to choose a character
+     * Public method implemented by subclasses when the client is asked to choose a character
      */
     public abstract void willChooseCharacter(List<String> availableCharacters);
 
@@ -134,6 +134,19 @@ public abstract class View {
      */
     public void didChooseCharacter(String character) {
         client.choseCharacter(character);
+    }
+
+    /**
+     * Public method implemented by subclasses when choosing the number of skulls in the game.
+     */
+    public abstract void willChooseSkulls();
+
+    /**
+     * Public method called when the number of skulls in the game has been decided.
+     * @param choice it's the number of skulls chosen.
+     */
+    protected void didChooseSkulls(String choice) {
+        this.client.didChooseSkulls(choice);
     }
 
     /**

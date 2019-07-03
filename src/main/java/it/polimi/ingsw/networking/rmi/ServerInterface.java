@@ -16,29 +16,15 @@ public interface ServerInterface extends Remote {
 
     int registerClient(ClientInterface clientInterface, String username) throws RemoteException;
 
-    /**
-     *
-     */
     void timeoutDidExpire(int userID) throws RemoteException;
 
-    /**
-     * When a client decides to join a game.
-     * This method also handles the case when a user disconnected from a game and reconnects.
-     * @param username username of the user who will play the game
-     */
     void joinWaitingRoom(String username) throws RemoteException;
 
     List<String> getAvailableCharacters(UUID gameID) throws RemoteException;
 
-    /**
-     * When the user chooses a character, the server is asked for its availability
-     * @param gameID a gameID
-     * @param userID a userID
-     * @param characterColor character's color
-     * @return true if the character is available, false otherwise
-     * @throws RemoteException RMI exception
-     */
     boolean choseCharacter(UUID gameID, int userID, String characterColor) throws RemoteException;
+
+    void didChooseSkulls(String skulls, UUID gameID) throws RemoteException;
 
     String startActions(int userID, UUID gameID) throws RemoteException;
 

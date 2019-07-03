@@ -95,6 +95,17 @@ public enum CommunicationMessage {
     SPAWN_POINT_CHOSEN,
 
     /**
+     * Skulls number decision message
+     *
+     * CHOOSE_SKULLS is sent from the server to the client to notify that the number of skulls should be chosen. (no arguments)
+     * SKULLS_CHOSEN is sent from the client to the server to notify that the number of skulls has been chosen.
+     *
+     * Arguments: <Board.skulls_key, Integer::toString>
+     */
+    CHOOSE_SKULLS,
+    SKULLS_CHOSEN,
+
+    /**
      * Actions handling messages
      *
      * NEW_ACTION is sent from the client to the server to notify the start of a new action or turn from a player (no arguments)

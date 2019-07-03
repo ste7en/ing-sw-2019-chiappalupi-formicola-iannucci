@@ -45,6 +45,8 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_SPAWN_POINT          = "Here are two powerup cards. Choose the one you want to discard: its color will be the color where you will spawn.\n" +
                                                               "You will keep the powerup that you don't discard.";
     private static final String GAME_SITUATION              = "Here is the situation of the game:\n";
+    private static final String CHOOSE_SKULLS_NUMBER        = "Choose the number of skulls of your game.";
+    private static final String SKULLS_CHOSEN               = "You have chosen to have this number of skulls: ";
     private static final String RUN_AROUND                  = "Run around";
     private static final String GRAB                        = "Grab something";
     private static final String SHOOT_PEOPLE                = "Shoot people";
@@ -104,12 +106,19 @@ public class AdrenalineCLI extends View {
     private static final String WILL_PLAY_SOON              = "Keep waiting: soon it will be your turn...";
 
     /**
+     * Game parameters
+     */
+    private static final int MINIMUM_NUMBER_OF_SKULLS       = 5;
+    private static final int MAXIMUM_NUMBER_OF_SKULLS       = 8;
+
+    /**
      * Log strings or exceptions
      */
     private static final String INCORRECT_HOSTNAME          = "Incorrect cli argument: hostname";
     private static final String INCORRECT_PORT              = "Incorrect cli argument: server port";
     private static final String INCORRECT_CONN_TYPE         = "Incorrect cli argument: connection type";
     private static final String MISSING_ARGUMENTS           = "Missing CLI arguments. Asking for user insertion.";
+    private static final String FLUSH_INPUT_EXCEPTION       = "Flush Input Exception";
 
     @Override
     public void timeoutHasExpired() {
@@ -254,13 +263,28 @@ public class AdrenalineCLI extends View {
         didChooseCharacter(availableCharacters.get(choice));
     }
 
+    @Override
+    public void willChooseSkulls() {
+        out.println(CHOOSE_SKULLS_NUMBER);
+        List<String> options = new ArrayList<>();
+        for(int i = MINIMUM_NUMBER_OF_SKULLS; i <= MAXIMUM_NUMBER_OF_SKULLS; i++)
+            options.add(Integer.toString(i));
+        String choice = decisionHandlerFromList(options);
+        while(choice == null) {
+            out.println(INCORRECT_CHOICE);
+            choice = decisionHandlerFromList(options);
+        }
+        out.println(SKULLS_CHOSEN + choice + ".");
+        this.didChooseSkulls(choice);
+    }
+
     private void flushInput() {
         try {
             while (System.in.available() != 0) {
                 System.in.readAllBytes();
             }
         } catch (IOException e) {
-            AdrenalineLogger.errorException("Flush Input exc", e);
+            AdrenalineLogger.errorException(FLUSH_INPUT_EXCEPTION, e);
         }
     }
 
@@ -272,7 +296,6 @@ public class AdrenalineCLI extends View {
             maps[i] = new GameMap(MapType.values()[i]);
             options.add(Integer.toString(i));
         }
-
 
         out.println(CHOOSE_MAP);
 

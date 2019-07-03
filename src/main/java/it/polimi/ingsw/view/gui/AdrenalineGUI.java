@@ -68,6 +68,11 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
+    public void willChooseSkulls() {
+
+    }
+
+    @Override
     public void willChooseGameMap() {
         try {
             handlerGUI.chooseGameMap();

@@ -19,12 +19,20 @@ public class Board {
     /**
      * String constants used in Board::toString
      */
-    private static final String WEAPON_IN_RESPAWN = "Here are the weapons in the spawn points:";
-    private static final String WEAPONS_IN_HAND = "Here are your weapons:";
-    private static final String NO_WEAPON_IN_HAND = "you haven't got any weapon in your hand.";
-    private static final String POWERUPS_IN_HAND = "Here are your powerups: ";
-    private static final String NO_POWERUP_IN_HAND = "You haven't got any powerup in your hand.";
-    private static final String AMMOS_IN_HAND = "Here are your ammos:";
+    private static final String WEAPON_IN_RESPAWN   = "Here are the weapons in the spawn points:";
+    private static final String WEAPONS_IN_HAND     = "Here are your weapons:";
+    private static final String NO_WEAPON_IN_HAND   = "you haven't got any weapon in your hand.";
+    private static final String POWERUPS_IN_HAND    = "Here are your powerups: ";
+    private static final String NO_POWERUP_IN_HAND  = "You haven't got any powerup in your hand.";
+    private static final String AMMOS_IN_HAND       = "Here are your ammos:";
+    private static final String SKULLS_REMAINING    = "Number of skulls remaining: ";
+    private static final String NEW_LINE            = "\n";
+    private static final String INDENT              = "\t";
+
+    /**
+     * String constant used in messages between client-server
+     */
+    public static final String skulls_key = "SKULLS";
 
     /**
      * Map of the board
@@ -159,49 +167,51 @@ public class Board {
     public String toStringFromPlayer(Player player) {
         StringBuilder board = new StringBuilder();
         board.append(this.getMap().toString());
-        board.append("\n").append(WEAPON_IN_RESPAWN).append("\n");
+
+        board.append(NEW_LINE).append(SKULLS_REMAINING).append(skullsLeft()).append(NEW_LINE);
+        board.append(NEW_LINE).append(WEAPON_IN_RESPAWN).append(NEW_LINE);
 
 
         for(AmmoColor color : AmmoColor.values()) {
-            board.append("\t").append(color.toString()).append(": ");
+            board.append(INDENT).append(color.toString()).append(": ");
             List<Weapon> weaponList = this.weapons.get(color);
             for(Weapon weapon : weaponList) {
                 if(weapon != null) board.append(weapon.getName()).append("; ");
             }
-            board.append("\n");
+            board.append(NEW_LINE);
         }
-        board.append("\n");
+        board.append(NEW_LINE);
 
         List<Weapon> weaponList = player.getPlayerHand().getWeapons();
         board.append(player.getNickname()).append(", ");
         if(weaponList.isEmpty()) {
-            board.append(NO_WEAPON_IN_HAND).append("\n");
+            board.append(NO_WEAPON_IN_HAND).append(NEW_LINE);
         }
         else {
-            board.append(WEAPONS_IN_HAND).append("\n");
+            board.append(WEAPONS_IN_HAND).append(NEW_LINE);
             for(Weapon weapon : weaponList) {
-                board.append("\t").append(weaponList.indexOf(weapon)).append(") ").append(weapon.getName()).append(";\n");
+                board.append(INDENT).append(weaponList.indexOf(weapon)).append(") ").append(weapon.getName()).append(";").append(NEW_LINE);
             }
         }
-        board.append("\n");
+        board.append(NEW_LINE);
 
         List<Powerup> powerupList = player.getPlayerHand().getPowerups();
         board.append(player.getNickname()).append(", ");
         if(powerupList.isEmpty()) {
-            board.append(NO_POWERUP_IN_HAND).append("\n");
+            board.append(NO_POWERUP_IN_HAND).append(NEW_LINE);
         }
         else {
-            board.append(POWERUPS_IN_HAND).append("\n");
+            board.append(POWERUPS_IN_HAND).append(NEW_LINE);
             for(Powerup powerup : powerupList) {
-                board.append("\t").append(powerupList.indexOf(powerup)).append(") ").append(powerup.toString()).append(";\n");
+                board.append(INDENT).append(powerupList.indexOf(powerup)).append(") ").append(powerup.toString()).append(";\n");
             }
         }
-        board.append("\n");
+        board.append(NEW_LINE);
 
-        board.append(AMMOS_IN_HAND).append("\n");
+        board.append(AMMOS_IN_HAND).append(NEW_LINE);
         for(AmmoColor color : AmmoColor.values())
-            board.append("\t").append(color.toString()).append(": ").append(player.getPlayerHand().getAmmosAmount((color))).append("\n");
-        board.append("\n");
+            board.append(INDENT).append(color.toString()).append(": ").append(player.getPlayerHand().getAmmosAmount((color))).append(NEW_LINE);
+        board.append(NEW_LINE);
 
         return board.toString();
     }

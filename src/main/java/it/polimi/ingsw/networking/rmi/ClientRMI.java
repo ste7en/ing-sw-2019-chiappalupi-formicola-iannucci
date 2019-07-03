@@ -119,6 +119,17 @@ public class ClientRMI extends Client implements ClientInterface {
     }
 
     @Override
+    public void didChooseSkulls(String choice) {
+        try {
+            server.didChooseSkulls(choice, gameID);
+        } catch (RemoteException e) {
+            AdrenalineLogger.error(CLIENT_RMI_EXCEPTION + e.toString());
+            AdrenalineLogger.error(e.getMessage());
+        }
+        viewObserver.willChooseSpawnPoint();
+    }
+
+    @Override
     public void newAction() {
         String situation = "";
         try {
@@ -174,8 +185,7 @@ public class ClientRMI extends Client implements ClientInterface {
             server.didChooseGameMap(gameID, configuration);
             return null;
         });
-
-        viewObserver.willChooseSpawnPoint();
+        viewObserver.willChooseSkulls();
     }
 
     @Override

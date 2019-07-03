@@ -107,7 +107,7 @@ public abstract class Client implements Loggable {
      * Called to notify both View and Controller that
      * an operation's timeout expired
      */
-    protected void timeoutHasExpired() {
+    private void timeoutHasExpired() {
         this.viewObserver.timeoutHasExpired();
         notifyServerTimeoutExpired();
     }
@@ -145,6 +145,12 @@ public abstract class Client implements Loggable {
      * @param username username
      */
     public abstract void joinWaitingRoom(String username);
+
+    /**
+     * Abstract method implemented by subclasses when the number of skulls has been decided.
+     * @param choice it's the number of skulls that have been chosen.
+     */
+    public abstract void didChooseSkulls(String choice);
 
     /**
      * Abstract method implemented by subclasses when a turn or an action of a player is starting.

@@ -71,16 +71,17 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private ConcurrentMap<User, ServerConnectionHandler> users;
 
     /**
-     * Log strings
+     * Log and exception strings
      */
-    private static final String EXC_SETUP          = "Error while setting up the server :: ";
-    private static final String DID_DISCONNECT     = "User disconnected: ";
-    private static final String START_NEW_GAME     = "New game started - ID: ";
-    private static final String RMI_EXCEPTION      = "ServerRMI exception: ";
-    private static final String SERVER_RMI_CONFIG  = "RMI Server configured on port ";
-    private static final String SERVER_RMI_SUCCESS = "RMI Server is running on ";
-    private static final String ASKING_CHARACTER   = "Asking which character to use...";
-    private static final String DAMAGE_DOESN_T_EXIST = "This damage doesn't exist!";
+    private static final String EXC_SETUP                   = "Error while setting up the server :: ";
+    private static final String DID_DISCONNECT              = "User disconnected: ";
+    private static final String START_NEW_GAME              = "New game started - ID: ";
+    private static final String RMI_EXCEPTION               = "ServerRMI exception: ";
+    private static final String SERVER_RMI_CONFIG           = "RMI Server configured on port ";
+    private static final String SERVER_RMI_SUCCESS          = "RMI Server is running on ";
+    private static final String ASKING_CHARACTER            = "Asking which character to use...";
+    private static final String DAMAGE_DOESN_T_EXIST        = "This damage doesn't exist!";
+    private static final String SKULLS_NUMBER_IS_NULL       = "Skulls number is null!";
 
 
     /**
@@ -284,6 +285,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         return createUser(username, connectionHandler);
     }
 
+    /**
+     * When a client decides to join a game.
+     * This method also handles the case when a user disconnected from a game and reconnects.
+     * @param username username of the user who will play the game
+     */
     @Override
     public void joinWaitingRoom(String username) {
         gameControllers.values()
@@ -322,6 +328,13 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         return gameControllers.get(gameID).getAvailableCharacters();
     }
 
+    /**
+     * When the user chooses a character, the server is asked for its availability
+     * @param gameID a gameID
+     * @param userID a userID
+     * @param characterColor character's color
+     * @return true if the character is available, false otherwise
+     */
     @Override
     public boolean choseCharacter(UUID gameID, int userID, String characterColor) {
         var gameController      = gameControllers.get(gameID);
@@ -342,6 +355,16 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         AdrenalineLogger.error("Game " + gameID + ": " + user.getUsername() + " chose " + characterColor);
         AdrenalineLogger.info(ASKING_CHARACTER);
         return false;
+    }
+
+    /**
+     * Method called when the number of skulls has been chosen from the player and should be setted in the game.
+     * @param skulls it's the Integer::toString of the number of skulls chosen
+     * @param gameID it's the ID of the game
+     */
+    @Override
+    public void didChooseSkulls(String skulls, UUID gameID) {
+        gameControllers.get(gameID).getBoard().setSkulls(Integer.parseInt(skulls));
     }
 
     @Override
