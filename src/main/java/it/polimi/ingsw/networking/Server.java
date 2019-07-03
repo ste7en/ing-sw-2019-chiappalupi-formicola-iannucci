@@ -25,6 +25,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 
@@ -92,13 +93,49 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     /**
      * Entry point of the server application
-     * @param args arguments
+     * @param args arguments passed as:
+     *             --socket=<socket-port-number>
+     *             --rmi=<rmi-port-number>
+     *             --waiting-room-timeout=<waiting-room-timeout-in-seconds>
+     *             --operation-timeout=<operation-timeout-in-seconds>
      */
     public static void main(String[] args) {
         var arguments = Arrays.asList(args);
+        int socketPortNumber, rmiPortNumber, waitingRoomTimeout, operationTimeout;
+        boolean socketSet = false, rmiSet = false, waitingRoomSet = false, operationTimeoutSet = false;
+
+        var validArguments = arguments.stream()
+                .filter(s -> s.matches("--\\w+=\\d+"))
+                .map(s -> s.substring(2))
+                .map(s -> Arrays.asList(s.split("=")))
+                .collect(Collectors.toList());
+
+        for(List<String> argument : validArguments) {
+            switch (argument.get(0)) {
+                case "socket":
+                    socketPortNumber = Integer.parseInt(argument.get(1));
+                    socketSet = true;
+                    break;
+                case "rmi":
+                    rmiPortNumber = Integer.parseInt(argument.get(1));
+                    rmiSet = true;
+                    break;
+                case "waiting-room-timeout":
+                    waitingRoomTimeout = Integer.parseInt(argument.get(1));
+                    waitingRoomSet = true;
+                    break;
+                case "operation-timeout":
+                    operationTimeout = Integer.parseInt(argument.get(1));
+                    operationTimeoutSet = true;
+                    break;
+                default:
+                    System.err.println("Unsupported CLI argument: " + "--" + argument.get(0) + "=" + argument.get(1));
+            }
+        }
+
         AdrenalineLogger.setDebugMode(true);
         AdrenalineLogger.setLogName("Server");
-        new Server(3334, 4444, 10);
+        new Server(3334, 4444, 30);
     }
 
     /**

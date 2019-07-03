@@ -24,7 +24,7 @@ public class Ping {
     /**
      * Period between a scheduled pings
      */
-    private static final long EXECUTION_PERIOD = 500;
+    private static final long EXECUTION_PERIOD = 1000;
 
     /**
      * Delay when executing a ping for the first time

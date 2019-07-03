@@ -127,6 +127,7 @@ public abstract class Client implements Loggable {
             this.timeoutHasExpired();
         } catch (ExecutionException e) {
             logOnException(EXECUTION_EXC+e.getCause(), e);
+            this.timeoutHasExpired();
         } catch (InterruptedException e) {
             logOnException(INTERRUPTED_EXC, e);
             Thread.currentThread().interrupt();
