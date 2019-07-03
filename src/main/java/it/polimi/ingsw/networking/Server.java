@@ -222,18 +222,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
     /**
      * Checks if a user with the same username already exists and is connected
-     * @param username String username to check
-     * @return true if the user doesn't exist or isn't connected, false otherwise
-     */
-    /*
-    @Override
-    public boolean checkUsernameAvailability(String username){
-        var user = new User(username);
-        return checkUserAvailability(user);
-    }*/
-
-    /**
-     * Checks if a user with the same username already exists and is connected
      * @param user User instance to check
      * @return true if the user doesn't exist or isn't connected, false otherwise
      */
@@ -257,25 +245,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             return user.hashCode();
         } else return -1;
     }
-
-
-    /*
-    @Override
-    public int createUserRMIHelper(String username, String address) throws RemoteException {
-        try {
-            remoteRegistry = LocateRegistry.getRegistry(address, portNumberRMI);
-            logDescription(registry);
-            ClientInterface clientRMI = (ClientInterface) remoteRegistry.lookup(username);
-            ServerConnectionHandler connectionHandler = new ServerRMIConnectionHandler(this, clientRMI);
-            Ping.getInstance().addPing(connectionHandler);
-            return createUser(username, connectionHandler);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logOnException(RMI_EXCEPTION, e);
-        }
-        return -1;
-    }
-    */
 
     @Override
     public int registerClient(ClientInterface clientInterface, String username){

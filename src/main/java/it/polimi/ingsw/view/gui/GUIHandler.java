@@ -7,6 +7,8 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -98,15 +100,20 @@ public class GUIHandler extends Application {
     public void chooseConnection() throws FileNotFoundException{
 
         firstRoot.getChildren().clear();
-        //root.setStyle("-fx-background-color: white");
+        BackgroundImage backgroundImage= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(1.0, 1.0, true, true, false, false));
+        background = new Background(backgroundImage);
+        firstRoot.setBackground(background);
+        /*root.setStyle("-fx-background-color: white");
         BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/adrenaline_background.jpg")),
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        firstRoot.setBackground(new Background(myBI));
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);*/
         firstRoot.setBottom(boxButton);
 
         CheckBox checkBoxRMI = new CheckBox("RMI");
         CheckBox checkBoxTCP = new CheckBox("TCP");
-        Label label = new Label("Select a connection");
+        checkBoxRMI.setStyle("-fx-fill: white;");
+        checkBoxRMI.setStyle("-fx-font-family: 'Andale Mono';");
+
         button.setOnAction(e -> handleConnectionOptions(checkBoxRMI, checkBoxTCP));
         checkBoxRMI.setOnAction(e -> handleOptionsRMI(checkBoxRMI, checkBoxTCP));
         checkBoxTCP.setOnAction(e -> handleOptionsTCP(checkBoxRMI, checkBoxTCP));
@@ -117,16 +124,14 @@ public class GUIHandler extends Application {
         HBox boxTCP = new HBox(checkBoxTCP);
         boxTCP.setAlignment(Pos.CENTER);
 
-        HBox boxLabel = new HBox(label);
-        boxLabel.setAlignment(Pos.CENTER);
-        boxLabel.setMargin(label, new Insets(50, 0, 0, 0));
 
         HBox center = new HBox(boxRMI, boxTCP);
         center.setAlignment(Pos.CENTER);
         center.setSpacing(150);
         firstRoot.setCenter(center);
         firstRoot.setBottom(boxButton);
-        firstRoot.setTop(boxLabel);
+        setText(textContainer, "Please, select a connection");
+        firstRoot.setTop(textContainer);
     }
 
     public void handleConnectionOptions(CheckBox rmi, CheckBox tcp){
@@ -167,7 +172,8 @@ public class GUIHandler extends Application {
             boxAddress.setMargin(addressText, new Insets(10, 0, 10, 50));
             boxAddress.setMargin(addressField, new Insets(10, 50, 10, 0));
             firstRoot.setCenter(generalBox);
-            firstRoot.setTop(boxText);
+            setText(textContainer, "Please provide an address and a port number");
+            firstRoot.setTop(textContainer);
             firstRoot.setBottom(boxButton);
 
             if (rmi.isSelected()) {
@@ -208,9 +214,6 @@ public class GUIHandler extends Application {
 
     public void login(){
         firstRoot.getChildren().clear();
-        Text text = new Text("Please provide a username");
-        HBox boxTextlogin = new HBox(text);
-        boxTextlogin.setAlignment(Pos.CENTER);
 
         Text usernameText = new Text("username: ");
         TextField usernameField = new TextField();
@@ -219,11 +222,11 @@ public class GUIHandler extends Application {
 
         button.setOnAction(e -> handleLoginOptions(usernameField));
 
-        boxTextlogin.setMargin(text, new Insets(50, 0, 0, 0));
         boxUsername.setMargin(usernameText,  new Insets(0, 0, 0, 50));
         boxUsername.setMargin(usernameField,  new Insets(0, 50, 0, 0));
         firstRoot.setCenter(boxUsername);
-        firstRoot.setTop(boxTextlogin);
+        setText(textContainer, "Please provide a username");
+        firstRoot.setTop(textContainer);
         firstRoot.setBottom(boxButton);
     }
 
@@ -271,16 +274,10 @@ public class GUIHandler extends Application {
         r5.setPercentHeight(8);
         modesChoiceGrid.getRowConstraints().addAll(r0, r1, r2,r3, r4, r5);
 
-        BackgroundImage backgroundImage= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(1.0, 1.0, true, true, false, false));
-        background = new Background(backgroundImage);
         modesChoiceGrid.setBackground(background);
 
-        //button.setOnAction(e -> setText(textSelectedContainer, "You have to select something to continue"));
-        Button bottoneFunzionante = new Button("continue");
-        boxButton.getChildren().clear();
-        boxButton.getChildren().add(bottoneFunzionante);
-        setText(textContainer,"Select a character");
+        button.setOnAction(e -> setText(textSelectedContainer, "You have to select something to continue"));
+        setText(textContainer,"Select a character, these are the ones that are not taken");
         modesChoiceGrid.add(boxButton, 0, 5,6,1);
         modesChoiceGrid.add(textErrorContainer, 0, 4, 6, 1);
         modesChoiceGrid.add(textContainer, 0,0,6,1);
@@ -291,11 +288,7 @@ public class GUIHandler extends Application {
             imageViews.add(new ImageView());
         }
 
-        try {
             unclickedImage(imageViews, availableCharacters, "characters/"  );
-        } catch (Exception e){
-            e.printStackTrace();
-        }
 
         List<StackPane> stackPanes = new ArrayList<>();
         for(int i=0; i<availableCharacters.size(); i++) {
@@ -307,26 +300,16 @@ public class GUIHandler extends Application {
             ImageView imageView = imageViews.get(i);
             String character = availableCharacters.get(i);
             imageViews.get(i).setOnMouseClicked(e -> {
-                try {
-                    bottoneFunzionante.setOnAction(event -> {
-                        try {
-                            System.out.println("QUI1");
-                            System.out.println(character);
-                            adrenalineGUI.didChooseCharacter(character);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    });
-                    setText(textErrorContainer, "You selected " + character);
-                    try {
+
                         unclickedImage(imageViews, availableCharacters, "characters/");
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
                     clickedImage(imageView, "characters/" + character);
-                }catch (Exception exe){
-                    exe.printStackTrace();
-                }
+                button.setOnAction( actionEvent -> {
+                    System.out.println("Hello World!");
+                    adrenalineGUI.didChooseCharacter(character);});
+
+                        setText(textSelectedContainer, "You selected " + character);
+
+
             });
 
         }
@@ -337,18 +320,27 @@ public class GUIHandler extends Application {
         mainScene.setRoot(modesChoiceGrid);
     }
 
+    public void handleCharactersOptions(String character){
+
+        button.setOnAction( e -> {
+                System.out.println("Hello World!");
+                adrenalineGUI.didChooseCharacter(character);}
+
+        );
+
+    }
+
     public void onChooseCharacterSuccess() {
         Platform.runLater(() -> {
-            try {
                 chooseCharacterSucces();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+
         });
     }
 
     public void chooseCharacterSucces(){
+        modesChoiceGrid.getChildren().clear();
         setText(textSelectedContainer, "You chose your character, the game will start soon!");
+        modesChoiceGrid.add(textSelectedContainer, 0,2,6,1);
     }
 
     public void chooseGameMap() {
@@ -882,7 +874,6 @@ public class GUIHandler extends Application {
     }
 
     public void setText(VBox textBox, String string){
-        try {
             textBox.getChildren().clear();
             Text text = new Text(string);
             //text.setFont(Font.font("Futura", FontWeight.LIGHT, 20));
@@ -894,9 +885,6 @@ public class GUIHandler extends Application {
             text.wrappingWidthProperty().bind(mainScene.widthProperty().subtract(100));
             textBox.getChildren().add(text);
             textBox.setMargin(text, new Insets(50, 50, 50, 50));
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     public void clickedImage(ImageView imageView, String image) {
@@ -908,9 +896,13 @@ public class GUIHandler extends Application {
         }
     }
 
-    public void unclickedImage(ArrayList<ImageView> imageViews, List<String> availableCharacters, String path) throws Exception{
-        for (int i=0; i<availableCharacters.size(); i++){
-            imageViews.get(i).setImage(new Image(new FileInputStream("src/main/resources/images/" + path + availableCharacters.get(i) + "_unclicked.png")));
+    public void unclickedImage(ArrayList<ImageView> imageViews, List<String> availableCharacters, String path) {
+        try {
+            for (int i = 0; i < availableCharacters.size(); i++) {
+                imageViews.get(i).setImage(new Image(new FileInputStream("src/main/resources/images/" + path + availableCharacters.get(i) + "_unclicked.png")));
+            }
+        } catch (FileNotFoundException e){
+            System.out.println(e.toString());
         }
     }
 

@@ -17,9 +17,10 @@ import java.util.concurrent.*;
 public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper {
 
     private Registry serverRegistry;
-    private Registry clientRegistry;
+    private ClientInterface clientStub;
     private ServerInterface server;
     private ExecutorService executorService;
+
 
     public ClientRMI(String host, Integer port){
         super(host, port);
@@ -32,6 +33,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
             serverRegistry = LocateRegistry.getRegistry(serverName, connectionPort);
             logDescription(serverRegistry);
             server = (ServerInterface) serverRegistry.lookup(ServerInterface.remoteReference);
+            exportClient();
         } catch (Exception e) {
             AdrenalineLogger.error(RMI_EXCEPTION + e.toString());
         }
@@ -45,16 +47,13 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
         });
     }
 
-    public void exportClient(String username) throws RemoteException {
-       clientRegistry = LocateRegistry.createRegistry(connectionPort);
-       ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
-       clientRegistry.rebind(username, stub);
+    public void exportClient() throws RemoteException {
+        clientStub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
     }
 
     public int registerClient(String username) {
         try {
-            ClientInterface stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
-            return server.registerClient(stub, username);
+            return server.registerClient(clientStub, username);
         } catch (RemoteException e){
             logOnException(RMI_EXCEPTION +e.getCause(), e);
         }
@@ -64,18 +63,9 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public void createUser(String username){
-       // try{
 
             var userID = registerClient(username);
-            /*
-            if(server.checkUsernameAvailability(username)==true){
-                try {
-                    userID = registerClient(username);
-                } catch (Exception e) {
-                    logOnException(RMI_EXCEPTION, e);
-                }
-            }
-            var userID = server.createUserRMIHelper(username,"localhost");*/
+
             if(userID == -1) {
                 viewObserver.onLoginFailure();
             }
@@ -83,11 +73,6 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
                 this.userID = userID;
                 viewObserver.onLoginSuccess(username);
             }
-            /*
-        } catch (RemoteException e){
-            AdrenalineLogger.error(RMI_EXCEPTION + e.toString());
-            AdrenalineLogger.error(e.getMessage());
-        }*/
     }
 
     @Override

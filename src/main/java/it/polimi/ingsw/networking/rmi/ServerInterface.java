@@ -10,10 +10,6 @@ public interface ServerInterface extends Remote {
 
     String remoteReference = "RMIInterface";
 
-    //boolean checkUsernameAvailability(String username) throws RemoteException;
-
-    //int createUserRMIHelper(String username, String address) throws RemoteException;
-
     int registerClient(ClientInterface clientInterface, String username) throws RemoteException;
 
     void timeoutDidExpire(int userID) throws RemoteException;
