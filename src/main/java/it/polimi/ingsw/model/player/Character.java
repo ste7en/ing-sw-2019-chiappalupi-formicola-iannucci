@@ -191,12 +191,11 @@ public class Character {
     }
 
     /**
-     * Returns the color of a character from its toString
-     * @param toString it's the String to analyze
+     * Returns the color of a character from its name
+     * @param toString it's the name to analyze
      * @return the color of the player, null if no player of this kind exists
      */
     public static String getColorFromToString(String toString) {
-        toString = toString.replaceAll("[^a-zA-Z\\-]", "").replaceAll("m", "");
         switch (toString) {
             case D_STRUCT_OR:
                 return PlayerColor.yellow.toString();

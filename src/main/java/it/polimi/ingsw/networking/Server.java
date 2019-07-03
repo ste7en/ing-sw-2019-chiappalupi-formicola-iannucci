@@ -106,7 +106,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         this.gameControllers  = new ConcurrentHashMap<>();
 
         // TODO: - The following is a test with test parameters, the real waiting room settings must be read from a file
-        this.waitingRoom = new WaitingRoom(3, 5, 5, this);
+        this.waitingRoom = new WaitingRoom(1, 5, 2, this);
 
         setupConnections();
     }
@@ -332,27 +332,36 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * When the user chooses a character, the server is asked for its availability
      * @param gameID a gameID
      * @param userID a userID
-     * @param characterColor character's color
+     * @param characterChosen character chosen
      * @return true if the character is available, false otherwise
      */
     @Override
-    public boolean choseCharacter(UUID gameID, int userID, String characterColor) {
+    public boolean choseCharacter(UUID gameID, int userID, String characterChosen) {
         var gameController      = gameControllers.get(gameID);
         var availableCharacters = gameController.getAvailableCharacters();
         var user                = findUserFromID(userID);
 
-        if (availableCharacters.contains(characterColor)) {
-            var chosenCharacter = Character.getCharacterFromColor(PlayerColor.valueOf(Character.getColorFromToString(characterColor)));
+        String characterName = characterChosen.replaceAll("[^a-zA-Z\\-]", "").replaceAll("m", "");
+        List<String> tempList = new ArrayList<>();
+        for(String character : availableCharacters) {
+            String temp = character.replaceAll("[^a-zA-Z\\-]", "").replaceAll("m", "");
+            tempList.add(temp);
+        }
+        availableCharacters.clear();
+        availableCharacters.addAll(tempList);
+
+        if (availableCharacters.contains(characterName)) {
+            var chosenCharacter = Character.getCharacterFromColor(PlayerColor.valueOf(Character.getColorFromToString(characterName)));
             if (gameController.addPlayer(new Player(user, chosenCharacter))) {
                 // Number of players reached - server's going to ask the firs
                 // player (or the first one connected) for the choice of the game map
                 var firstPlayer = gameController.getFirstActivePlayer();
                 willChooseGameMap(firstPlayer.getUser(), gameID);
             }
-            AdrenalineLogger.info("Game " + gameID + ": " + user.getUsername() + " chose " + characterColor);
+            AdrenalineLogger.info("Game " + gameID + ": " + user.getUsername() + " chose " + characterChosen);
             return true;
         }
-        AdrenalineLogger.error("Game " + gameID + ": " + user.getUsername() + " chose " + characterColor);
+        AdrenalineLogger.error("Game " + gameID + ": " + user.getUsername() + " chose " + characterChosen);
         AdrenalineLogger.info(ASKING_CHARACTER);
         return false;
     }

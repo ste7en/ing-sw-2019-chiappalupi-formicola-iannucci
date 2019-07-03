@@ -41,7 +41,7 @@ public class EffectTest {
         Weapon w = decks.drawWeapon();
         effectTester = w.getEffects().get(r.nextInt(w.getEffects().size()));
         name = effectTester.getName();
-        cost = effectTester.getCost();
+        //cost = effectTester.getCost();
         description = effectTester.getDescription();
     }
 

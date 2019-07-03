@@ -60,7 +60,12 @@ public class AdrenalineGUI extends View {
     @Override
     public void willChooseCharacter(List<String> availableCharacters) {
         try {
-            handlerGUI.onChooseCharacter(availableCharacters);
+            List<String> fixedCharacter = new ArrayList<>();
+            for(String character : availableCharacters) {
+                character = character.replaceAll("[^a-zA-Z\\-]", "").replaceAll("m", "");
+                fixedCharacter.add(character);
+            }
+            handlerGUI.onChooseCharacter(fixedCharacter);
         } catch (Exception e){
             System.err.println("ClientRMI exception: " + e.toString());
         }
@@ -79,11 +84,11 @@ public class AdrenalineGUI extends View {
 
     @Override
     public void willChooseGameMap() {
-        try {
+       /* try {
             handlerGUI.chooseGameMap();
         } catch (FileNotFoundException e){
             System.err.println("ClientRMI exception: " + e.toString());
-        }
+        }*/
     }
 
     @Override

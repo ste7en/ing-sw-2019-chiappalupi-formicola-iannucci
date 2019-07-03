@@ -1,8 +1,10 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,7 +21,6 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("Duplicates")
@@ -36,6 +37,10 @@ public class AlternativeBoard extends Application {
     private HBox boxButton;
     private BorderPane firstRoot;
     private GridPane modesChoiceGrid;
+    private Background background;
+    private VBox textContainer;
+    private ArrayList<String> prova2;
+    private DoubleProperty fontSize = new SimpleDoubleProperty(10);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -43,18 +48,27 @@ public class AlternativeBoard extends Application {
         //this.adrenalineGUI = new AdrenalineGUI(this);
         primaryStage.setTitle("Adrenaline");
 
+        textContainer = new VBox();
+        textContainer.setAlignment(Pos.CENTER);
         button = new Button("Continue");
         ArrayList<String> prova = new ArrayList<>();
-        for(PlayerColor color : Arrays.asList(PlayerColor.values())) prova.add(color.toString());
-        button.setOnAction(e -> {try{chooseGameMap();} catch (Exception ex){ex.printStackTrace();}});
+        prova2 = new ArrayList<>();
+        prova2.add("Newton - red");
+        prova2.add("Newton - blue");
+        prova.add("blue");
+        prova.add("yellow");
+        prova.add("purple");
+        prova.add("grey");
+        prova.add("green");
+        button.setOnAction(e -> {try{chooseCharacter(prova);} catch (Exception ex){ex.printStackTrace();}});
         boxButton = new HBox(button);
         boxButton.setAlignment(Pos.CENTER);
         boxButton.setMargin(button, new Insets(0, 0, 50, 0));
 
         firstRoot = new BorderPane();
-        BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/adrenaline.jpg")),
+        BackgroundImage backgroundImage = new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/adrenaline.jpg")),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(1.0, 1.0, true, true, false, false));
-        firstRoot.setBackground(new Background(myBI));
+        firstRoot.setBackground(new Background(backgroundImage));
         firstRoot.setBottom(boxButton);
 
         mainScene = new Scene(firstRoot, 1200,800);
@@ -77,9 +91,9 @@ public class AlternativeBoard extends Application {
         }
     }
 
-    public void unclickedImage(ArrayList<ImageView> imageViews, List<String> availableCharacters) throws Exception{
+    public void unclickedImage(ArrayList<ImageView> imageViews, List<String> availableCharacters, String path) throws Exception{
         for (int i=0; i<availableCharacters.size(); i++){
-            imageViews.get(i).setImage(new Image(new FileInputStream("src/main/resources/images/board/" + availableCharacters.get(i) + "_unclicked.png")));
+            imageViews.get(i).setImage(new Image(new FileInputStream("src/main/resources/images/" + path + availableCharacters.get(i) + "_unclicked.png")));
         }
     }
 
@@ -90,6 +104,7 @@ public class AlternativeBoard extends Application {
             c.setPercentWidth(16.66);
             modesChoiceGrid.getColumnConstraints().add(c);
         }
+
         RowConstraints r0 = new RowConstraints();
         r0.setPercentHeight(10);
         RowConstraints r1 = new RowConstraints();
@@ -102,194 +117,201 @@ public class AlternativeBoard extends Application {
         r4.setPercentHeight(10);
         modesChoiceGrid.getRowConstraints().addAll(r0, r1, r2,r3,r4);
 
-        BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
+        BackgroundImage backgroundImage= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(1.0, 1.0, true, true, false, false));
-        modesChoiceGrid.setBackground(new Background(myBI));
+        background = new Background(backgroundImage);
+        modesChoiceGrid.setBackground(background);
 
         ArrayList<ImageView> imageViews = new ArrayList<>();
-        ImageView ivChar1 = new ImageView();
-        imageViews.add(ivChar1);
-        ImageView ivChar2 = new ImageView();
-        imageViews.add(ivChar2);
-        ImageView ivChar3 = new ImageView();
-        imageViews.add(ivChar3);
-        ImageView ivChar4 = new ImageView();
-        imageViews.add(ivChar4);
-        ImageView ivChar5 = new ImageView();
-        imageViews.add(ivChar5);
+        for(int i=0; i<availableCharacters.size(); i++) {
+            imageViews.add(new ImageView());
+        }
 
         try {
-            unclickedImage(imageViews, availableCharacters);
+            unclickedImage(imageViews, availableCharacters, "characters/"  );
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        StackPane char1Container = new StackPane();
-        setUpProperties(char1Container, ivChar1);
-        modesChoiceGrid.add(char1Container, 0, 1, 2, 1);
-        ivChar1.setOnMouseClicked(e -> {
-            try {
-                unclickedImage(imageViews, availableCharacters);
-            }catch (Exception e1){
-                e1.printStackTrace();
-            }
-            clickedImage(ivChar1, "characters/" + availableCharacters.get(0));
-        });
+        List<StackPane> stackPanes = new ArrayList<>();
+        for(int i=0; i<availableCharacters.size(); i++) {
+            stackPanes.add(new StackPane());
+            setUpProperties(stackPanes.get(i), imageViews.get(i));
+            if(i<3) modesChoiceGrid.add(stackPanes.get(i),i*2, 1,2,1);
+            else modesChoiceGrid.add(stackPanes.get(i), ((i-3)*2)+1,2,2,1);
 
-        if (availableCharacters.size() > 1) {
-            StackPane char2Container = new StackPane();
-            setUpProperties(char2Container, ivChar2);
-            modesChoiceGrid.add(char2Container, 2, 1, 2, 1);
-            ivChar2.setOnMouseClicked(e -> {
+            ImageView imageView = imageViews.get(i);
+            String character = availableCharacters.get(i);
+            imageViews.get(i).setOnMouseClicked(e -> {
                 try {
-                    unclickedImage(imageViews, availableCharacters);
+                    unclickedImage(imageViews, availableCharacters, "characters/" );
                 }catch (Exception e1){
                     e1.printStackTrace();
                 }
-                clickedImage(ivChar2, "characters/" + availableCharacters.get(1));
+                clickedImage(imageView, "characters/" + character);
             });
         }
 
-        if (availableCharacters.size() > 2) {
-            StackPane char3Container = new StackPane();
-            setUpProperties(char3Container, ivChar3);
-            modesChoiceGrid.add(char3Container, 4, 1, 2, 1);
-            ivChar3.setOnMouseClicked(e -> {
-                try {
-                    unclickedImage(imageViews, availableCharacters);
-                }catch (Exception e1){
-                    e1.printStackTrace();
-                }
-                clickedImage(ivChar3, "characters/" + availableCharacters.get(2));
-            });
-        }
-
-        if (availableCharacters.size() > 3) {
-            StackPane char4Container = new StackPane();
-            setUpProperties(char4Container, ivChar4);
-            modesChoiceGrid.add(char4Container, 1, 2, 2, 1);
-            ivChar4.setOnMouseClicked(e -> {
-                try {
-                    unclickedImage(imageViews, availableCharacters);
-                }catch (Exception e1){
-                    e1.printStackTrace();
-                }
-                clickedImage(ivChar4, "characters/" + availableCharacters.get(3));
-            });
-        }
-
-        if (availableCharacters.size() > 4) {
-            StackPane char5Container = new StackPane();
-            setUpProperties(char5Container, ivChar5);
-            modesChoiceGrid.add(char5Container, 3, 2, 2, 1);
-            ivChar5.setOnMouseClicked(e -> {
-                try {
-                    unclickedImage(imageViews, availableCharacters);
-                }catch (Exception e1){
-                    e1.printStackTrace();
-                }
-                clickedImage(ivChar5, "characters/" + availableCharacters.get(4));
-            });
-        }
-
-        Text text = new Text("Choose a character");
-        text.setFont(Font.font("Futura", FontWeight.LIGHT, 30));
-        text.setFill(Color.WHITE);
         //text.setStyle("-fx-font: 40px Tahoma; -fx-fill: linear-gradient(from 0% 0% to 100% 200%, repeat, yellow 0%, white 50%);");
-        modesChoiceGrid.add(text,0,0,3,1);
         modesChoiceGrid.add(boxButton, 0, 4,6,1);
+        button.setOnAction(e -> {try{chooseGameMap();} catch (Exception ex){ex.printStackTrace();}});
+        setText("Select a character");
+        modesChoiceGrid.add(textContainer, 0,0,6,1);
 
         mainScene.setRoot(modesChoiceGrid);
     }
 
     public void chooseGameMap(){
-        modesChoiceGrid = new GridPane();
-        modesChoiceGrid.getRowConstraints().clear();
-        modesChoiceGrid.getColumnConstraints().clear();
-        modesChoiceGrid.getChildren().clear();
-        modesChoiceGrid.setGridLinesVisible(true);
+        if(modesChoiceGrid!=null) clear(modesChoiceGrid);
+        else modesChoiceGrid = new GridPane();
+
         for(int i=0; i<2; i++){
             c = new ColumnConstraints();
             c.setPercentWidth(50);
             modesChoiceGrid.getColumnConstraints().add(c);
         }
         RowConstraints r0 = new RowConstraints();
-        r0.setPercentHeight(40);
+        r0.setPercentHeight(10);
         RowConstraints r1 = new RowConstraints();
         r1.setPercentHeight(40);
         RowConstraints r2 = new RowConstraints();
-        r2.setPercentHeight(20);
-        modesChoiceGrid.getRowConstraints().addAll(r0,r1,r2);
+        r2.setPercentHeight(40);
+        RowConstraints r3 = new RowConstraints();
+        r3.setPercentHeight(10);
+        modesChoiceGrid.getRowConstraints().addAll(r0,r1,r2,r3);
+
+        modesChoiceGrid.setBackground(background);
 
         ArrayList<ImageView> imageViews = new ArrayList<>();
-        ImageView ivConf1 = new ImageView();
-        imageViews.add(ivConf1);
-        ImageView ivConf2 = new ImageView();
-        imageViews.add(ivConf2);
-        ImageView ivConf3 = new ImageView();
-        imageViews.add(ivConf3);
-        ImageView ivConf4 = new ImageView();
-        imageViews.add(ivConf4);
+        for(int i=0; i<4; i++){
+            imageViews.add(new ImageView());
+        }
+
         ArrayList<String> confs = new ArrayList<>();
-        confs.add("conf1");
-        confs.add("conf2");
-        confs.add("conf3");
-        confs.add("conf4");
+        for(int i=0; i<4; i++){
+            confs.add("conf"+(i+1));
+        }
 
         try {
-            unclickedImage(imageViews, confs);
+            unclickedImage(imageViews, confs, "board/");
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        StackPane conf1Container = new StackPane();
-        setUpProperties(conf1Container, ivConf1);
-        modesChoiceGrid.add(conf1Container, 0, 0, 1, 1);
-        ivConf1.setOnMouseClicked(e -> {
-            try {
-                unclickedImage(imageViews, confs);
-            }catch (Exception e1){
-                e1.printStackTrace();
-            }
-            clickedImage(ivConf1, "board/conf1");
-        });
+        List<StackPane> stackPanes = new ArrayList<>();
+        for(int i=0; i<4; i++) {
+            stackPanes.add(new StackPane());
+            setUpProperties(stackPanes.get(i), imageViews.get(i));
+            if(i<2) modesChoiceGrid.add(stackPanes.get(i),i, 1,1,1);
+            else modesChoiceGrid.add(stackPanes.get(i), i-2,2,1,1);
+            ImageView imageView = imageViews.get(i);
+            String configuration = confs.get(i);
+            imageViews.get(i).setOnMouseClicked(e -> {
+                try {
+                    unclickedImage(imageViews, confs, "board/" );
+                }catch (Exception e1){
+                    e1.printStackTrace();
+                }
+                clickedImage(imageView, "board/" + configuration + "_choice");
+            });
+        }
 
-        StackPane conf2Container = new StackPane();
-        setUpProperties(conf2Container, ivConf2);
-        modesChoiceGrid.add(conf2Container, 0, 1, 1, 1);
-        ivConf2.setOnMouseClicked(e -> {
-            try {
-                unclickedImage(imageViews, confs);
-            }catch (Exception e1){
-                e1.printStackTrace();
-            }
-            clickedImage(ivConf2, "board/conf2");
-        });
+        modesChoiceGrid.add(boxButton, 0, 3,2,1);
+        button.setOnAction(e -> {try{drawTwoPowerups(prova2);} catch (Exception ex){ex.printStackTrace();}});
+        setText("Choose a map configuration");
+        modesChoiceGrid.add(textContainer, 0,0,2,1);
+        mainScene.setRoot(modesChoiceGrid);
+    }
 
-        StackPane conf3Container = new StackPane();
-        setUpProperties(conf3Container, ivConf3);
-        modesChoiceGrid.add(conf3Container, 1, 0, 1, 1);
-        ivConf3.setOnMouseClicked(e -> {
-            try {
-                unclickedImage(imageViews, confs);
-            }catch (Exception e1){
-                e1.printStackTrace();
-            }
-            clickedImage(ivConf3, "board/conf3");
-        });
+    public void drawTwoPowerups(List<String> powerups){
+        if(modesChoiceGrid!=null) clear(modesChoiceGrid);
+        else modesChoiceGrid = new GridPane();
+        modesChoiceGrid.setGridLinesVisible(true);
 
-        StackPane conf4Container = new StackPane();
-        setUpProperties(conf4Container, ivConf4);
-        modesChoiceGrid.add(conf4Container, 1, 1, 1, 1);
-        ivConf4.setOnMouseClicked(e -> {
-            try {
-                unclickedImage(imageViews, confs);
-            }catch (Exception e1){
-                e1.printStackTrace();
-            }
-            clickedImage(ivConf4, "board/conf4");
-        });
-        modesChoiceGrid.add(boxButton, 0, 2,2,1);
+        for(int i=0; i<3; i++){
+            c = new ColumnConstraints();
+            if(i==1)c.setPercentWidth(17.5);
+            else c.setPercentWidth(41.25);
+            modesChoiceGrid.getColumnConstraints().add(c);
+        }
+
+        RowConstraints r0 = new RowConstraints();
+        r0.setPercentHeight(20);
+        RowConstraints r1 = new RowConstraints();
+        r1.setPercentHeight(60);
+        RowConstraints r2 = new RowConstraints();
+        r2.setPercentHeight(20);
+        modesChoiceGrid.getRowConstraints().addAll(r0,r1,r2);
+
+
+        StackPane stackPane = new StackPane();
+        ImageView imageView = new ImageView();
+        setUpProperties(stackPane, imageView);
+        modesChoiceGrid.add(stackPane,1,1 ,1,1);
+        clickedImage(imageView, "powerups/Back");
+
+
+        modesChoiceGrid.add(boxButton, 0, 2,3,1);
+        button.setText("Draw cards");
+        button.setOnAction(e -> {try{chooseSpawnPoint(powerups);} catch (Exception ex){ex.printStackTrace();}});
+        setText("Draw two powerups from the deck");
+        modesChoiceGrid.add(textContainer, 0,0,3,1);
+
+        mainScene.setRoot(modesChoiceGrid);
+    }
+
+    public void chooseSpawnPoint(List<String> powerups) throws FileNotFoundException {
+        if(modesChoiceGrid!=null) clear(modesChoiceGrid);
+        else modesChoiceGrid = new GridPane();
+        modesChoiceGrid.setGridLinesVisible(true);
+
+        for(int i=0; i<5; i++){
+            c = new ColumnConstraints();
+            if(i==2) c.setPercentWidth(30);
+            else c.setPercentWidth(17.5);
+            modesChoiceGrid.getColumnConstraints().add(c);
+        }
+
+        RowConstraints r0 = new RowConstraints();
+        r0.setPercentHeight(20);
+        RowConstraints r1 = new RowConstraints();
+        r1.setPercentHeight(60);
+        RowConstraints r2 = new RowConstraints();
+        r2.setPercentHeight(20);
+        modesChoiceGrid.getRowConstraints().addAll(r0,r1,r2);
+
+
+        ArrayList<ImageView> imageViews = new ArrayList<>();
+        for(int i=0; i<2; i++){
+            imageViews.add(new ImageView());
+        }
+        try {
+            unclickedImage(imageViews, powerups, "powerups/");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        List<StackPane> stackPanes = new ArrayList<>();
+        for(int i=0; i<2; i++){
+            stackPanes.add(new StackPane());
+            setUpProperties(stackPanes.get(i), imageViews.get(i));
+            modesChoiceGrid.add(stackPanes.get(i),(2*i)+1,1 ,1,1);
+            ImageView imageView = imageViews.get(i);
+            String powerup = powerups.get(i);
+            imageViews.get(i).setOnMouseClicked(e -> {
+                try {
+                    unclickedImage(imageViews, powerups, "powerups/" );
+                }catch (Exception e1){
+                    e1.printStackTrace();
+                }
+                clickedImage(imageView, "powerups/" + powerup + "_click");
+            });
+        }
+        modesChoiceGrid.add(boxButton, 0, 2,5,1);
+        button.setText("Continue");
+        button.setOnAction(e -> {try{createMap();} catch (Exception ex){ex.printStackTrace();}});
+        setText("Here are two powerup cards. Choose the one you want to discard: its color will be the color where you will spawn.");
+        modesChoiceGrid.add(textContainer, 0,0,5,1);
+
         mainScene.setRoot(modesChoiceGrid);
     }
 
@@ -493,21 +515,21 @@ public class AlternativeBoard extends Application {
         weaponsContainer.add(weapon3Container, 6,1,3,1);
 
         StackPane playerBoardContainer = new StackPane();
-        Image myBoard = new Image(new FileInputStream("src/main/resources/images/powerups/Newton - blue.png"));
+        Image myBoard = new Image(new FileInputStream("src/main/resources/images/powerups/Newton - blue_unclicked.png"));
         ImageView ivMyBoard = new ImageView();
         ivMyBoard.setImage(myBoard);
         setUpProperties(playerBoardContainer, ivMyBoard);
         weaponsContainer.add(playerBoardContainer, 9,1,3,1);
 
         StackPane playerBoardContainer2 = new StackPane();
-        Image myBoard2 = new Image(new FileInputStream("src/main/resources/images/powerups/TagbackGrenade - blue.png"));
+        Image myBoard2 = new Image(new FileInputStream("src/main/resources/images/powerups/TagbackGrenade - blue_unclicked.png"));
         ImageView ivMyBoard2 = new ImageView();
         ivMyBoard2.setImage(myBoard2);
         setUpProperties(playerBoardContainer2, ivMyBoard2);
         weaponsContainer.add(playerBoardContainer2, 12,1,3,1);
 
         StackPane playerBoardContainer3 = new StackPane();
-        Image myBoard3 = new Image(new FileInputStream("src/main/resources/images/powerups/Teleporter - red.png"));
+        Image myBoard3 = new Image(new FileInputStream("src/main/resources/images/powerups/Teleporter - red_unclicked.png"));
         ImageView ivMyBoard3 = new ImageView();
         ivMyBoard3.setImage(myBoard3);
         setUpProperties(playerBoardContainer3, ivMyBoard3);
@@ -517,6 +539,10 @@ public class AlternativeBoard extends Application {
         boardGrid.getChildren().remove(cardsContainer);
         cardsContainer = weaponsContainer;
         boardGrid.add(cardsContainer, 1,4, 1, 1);
+    }
+
+    public void chooseAction()throws FileNotFoundException{
+
     }
 
     public void addAmmos(ArrayList<String> ammoColor, GridPane ammosContainer) throws Exception{
@@ -638,6 +664,27 @@ public class AlternativeBoard extends Application {
             stackPane.setAlignment(Pos.CENTER);
             imageView.fitHeightProperty().bind(stackPane.heightProperty());
             imageView.fitWidthProperty().bind(stackPane.widthProperty());
-
         }
+
+        public void clear(GridPane gridPane){
+        gridPane.getChildren().clear();
+        gridPane.getRowConstraints().clear();
+        gridPane.getColumnConstraints().clear();
+        }
+
+        public void setText(String string){
+        textContainer.getChildren().clear();
+        Text text = new Text(string);
+        //text.setFont(Font.font("Futura", FontWeight.LIGHT, 20));
+        text.setFill(Color.WHITE);
+        text.setStyle("-fx-font-family: 'Andale Mono'");
+
+        fontSize.bind(mainScene.widthProperty().add(mainScene.heightProperty()).divide(100));
+        textContainer.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString(), ";"));
+        text.wrappingWidthProperty().bind(mainScene.widthProperty().subtract(100));
+        textContainer.getChildren().add(text);
+        textContainer.setMargin(text, new Insets(50, 50, 50, 50));
+
+    }
+
 }
