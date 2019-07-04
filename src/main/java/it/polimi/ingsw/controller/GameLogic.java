@@ -22,11 +22,12 @@ public class GameLogic {
     /**
      * Configuration parameters and string of exceptions,
      */
-    private static final int NUM_OF_WEAPONS_IN_SPAWNS = 3;
-    private static final int DEATH_BLOW_PLACE_ON_THE_BOARD = 10;
-    private static final int MAX_SIZE_OF_THE_BOARD = 12;
-    private static final String NO_PLAYER_WITH_THIS_COLOR = "No player in the game has this color.";
-    private static final String POWERUP_NOT_IN_HAND = "This powerup is not one that you have in your hand!";
+    private static final int NUM_OF_WEAPONS_IN_SPAWNS       = 3;
+    private static final int DEATH_BLOW_PLACE_ON_THE_BOARD  = 10;
+    private static final int MAX_SIZE_OF_THE_BOARD          = 12;
+    private static final int MIN_NUMBER_OF_PLAYERS          = 3;
+    private static final String NO_PLAYER_WITH_THIS_COLOR   = "No player in the game has this color.";
+    private static final String POWERUP_NOT_IN_HAND         = "This powerup is not one that you have in your hand!";
 
     private int numberOfPlayers;
     private boolean finalFrenzy;
@@ -107,6 +108,8 @@ public class GameLogic {
      */
     public void userDidDisconnect(User user) {
         Optional.of(lookForPlayerFromUser(user)).ifPresent(Player::disablePlayer);
+        //TODO: - End game and evaluate points
+        // if (numberOfActivePlayers() < MIN_NUMBER_OF_PLAYERS)
     }
 
     /**

@@ -93,7 +93,12 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private static final String SERVER_RMI_SUCCESS          = "RMI Server is running on ";
     private static final String ASKING_CHARACTER            = "Asking which character to use...";
     private static final String DAMAGE_DOESN_T_EXIST        = "This damage doesn't exist!";
+    private static final String GAME_MAP_SET                = "GameMap set.";
     private static final String SKULLS_NUMBER_IS_NULL       = "Skulls number is null!";
+    private static final String SKULLS_NUMBER_SET_TO        = "Skulls number set to ";
+    private static final String GAME_ID                     = "Game ID: ";
+    private static final String TURN_ENDED_USER             = "Turn ended for user ";
+    private static final String NEXT_TURN                   = "Next turn will be played by the user ";
 
 
     /**
@@ -103,6 +108,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      *             --rmi=<rmi-port-number>
      *             --waiting-room-timeout=<waiting-room-timeout-in-seconds>
      *             --operation-timeout=<operation-timeout-in-seconds>
+     *             [--debug] for debug purposes: sets waiting-room-timeout and operation-timeout to 10s
      */
     public static void main(String[] args) {
         AdrenalineLogger.setDebugMode(true);
@@ -161,6 +167,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         } catch (Exception e) {
             AdrenalineLogger.errorException(EXC_CONFIG_FILE, e);
         }
+
+        if (arguments.contains("--debug")) { waitingRoomTimeout = 10; operationTimeout = 10; }
 
         new Server(socketPortNumber, rmiPortNumber, waitingRoomTimeout, operationTimeout);
     }
@@ -429,6 +437,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public void didChooseSkulls(String skulls, UUID gameID) {
         gameControllers.get(gameID).getBoard().setSkulls(Integer.parseInt(skulls));
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + SKULLS_NUMBER_SET_TO + skulls);
     }
 
     @Override
@@ -454,6 +463,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     public void didChooseGameMap(UUID gameID, String configuration) {
         MapType mapType = MapType.valueOf(configuration);
         this.gameControllers.get(gameID).initializeMap(mapType);
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + GAME_MAP_SET);
     }
 
     @Override
@@ -500,7 +510,10 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public List<String> askPicks(int userID, UUID gameID, List<String> powerupToSell) {
         User user = findUserFromID(userID);
-        return gameControllers.get(gameID).getGrabController().getPicks(gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getBoard(), powerupToSell);
+        var gameController  = gameControllers.get(gameID);
+        var player          = gameController.lookForPlayerFromUser(user);
+        var grabController  = gameController.getGrabController();
+        return grabController.getPicks(player, gameController.getBoard(), powerupToSell);
     }
 
     /**
@@ -513,7 +526,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public Map<String, String> didChooseWhatToGrab(String pick, int userID, UUID gameID) {
         User user = findUserFromID(userID);
-        return gameControllers.get(gameID).getGrabController().didGrab(pick, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getDecks(), gameControllers.get(gameID).getBoard());
+        var gameController  = gameControllers.get(gameID);
+        var player          = gameController.lookForPlayerFromUser(user);
+        var grabController  = gameController.getGrabController();
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + user.getUsername() + " grabbed " + pick);
+        return grabController.didGrab(pick, player, gameController.getDecks(), gameController.getBoard());
     }
 
     /**
@@ -525,7 +542,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public void powerupToDiscard(int userID, UUID gameID, String powerup) {
         User user = findUserFromID(userID);
-        gameControllers.get(gameID).getGrabController().powerupToDiscard(powerup, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getDecks(), gameControllers.get(gameID).getBoard());
+        var gameController  = gameControllers.get(gameID);
+        var player          = gameController.lookForPlayerFromUser(user);
+        var grabController  = gameController.getGrabController();
+        grabController.powerupToDiscard(powerup, player, gameController.getDecks(), gameController.getBoard());
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + user.getUsername() + " discarded the powerup " + powerup);
     }
 
     /**
@@ -537,7 +558,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public void weaponToDiscard(int userID, UUID gameID, String weapon) {
         User user = findUserFromID(userID);
-        gameControllers.get(gameID).getGrabController().weaponToDiscard(weapon, gameControllers.get(gameID).lookForPlayerFromUser(user), gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getDecks());
+        var gameController  = gameControllers.get(gameID);
+        var player          = gameController.lookForPlayerFromUser(user);
+        var grabController  = gameController.getGrabController();
+        grabController.weaponToDiscard(weapon, player, gameController.getBoard(), gameController.getDecks());
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + user.getUsername() + " discarded the weapon " + weapon);
     }
 
     /**
@@ -548,7 +573,10 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public List<String> askWeapons(int userID, UUID gameID) {
-        return this.gameControllers.get(gameID).getWeaponController().lookForPlayerWeapons(gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)), gameControllers.get(gameID).getBoard().getMap());
+        var gameController  = gameControllers.get(gameID);
+        var user            = findUserFromID(userID);
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + user.getUsername() + " chose to shoot.");
+        return gameController.getWeaponController().lookForPlayerWeapons(gameController.lookForPlayerFromUser(user), gameController.getBoard().getMap());
     }
 
     /**
@@ -560,8 +588,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public Map<String, String> useWeapon(int userID, UUID gameID, String weaponSelected) {
-        Player player = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
-        Weapon weapon = gameControllers.get(gameID).getWeaponController().lookForWeapon(weaponSelected, player);;
+        var user = findUserFromID(userID);
+        var gameController  = gameControllers.get(gameID);
+
+        Player player = gameController.lookForPlayerFromUser(user);
+        Weapon weapon = gameController.getWeaponController().lookForWeapon(weaponSelected, player);;
         CommunicationMessage weaponMessage = weapon.communicationMessageGenerator();
         Map<String, String> weaponProcess = new HashMap<>();
         weaponProcess.put(Weapon.weapon_key, weaponSelected);
@@ -569,19 +600,20 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         switch (weaponMessage) {
             case DAMAGE_LIST: {
                 weaponProcess.put(Effect.effect_key, "0");
-                Player shooter = gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID));
-                ArrayList<ArrayList<Damage>> possibleDamages = gameControllers.get(gameID).getWeaponController().useEffect(weapon, weapon.getEffects().get(0), shooter, null, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).getPlayers());
+                Player shooter = gameController.lookForPlayerFromUser(user);
+                ArrayList<ArrayList<Damage>> possibleDamages = gameController.getWeaponController().useEffect(weapon, weapon.getEffects().get(0), shooter, null, gameController.getBoard(), gameController.getPlayers());
                 if(possibleDamages.isEmpty()) weaponProcess.put(communication_message_key, DAMAGE_FAILURE.toString());
                 else stringifyDamages(possibleDamages, weaponProcess);
                 break;
             }
             default: {
                 weaponProcess.put(communication_message_key, POWERUP_SELLING_LIST.toString());
-                Map<String, String> box = gameControllers.get(gameID).getPowerupController().getPowerupInHand(player);
+                Map<String, String> box = gameController.getPowerupController().getPowerupInHand(player);
                 weaponProcess.putAll(box);
                 break;
             }
         }
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + user.getUsername() + " selected " + weapon);
         return weaponProcess;
     }
 
@@ -615,6 +647,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             default:
                 break;
         }
+
         return weaponProcess;
     }
 
@@ -884,7 +917,8 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      */
     @Override
     public List<String> getSpawnAfterDeathPowerup(int userID, UUID gameID) {
-        return gameControllers.get(gameID).getPowerupToSpawn(findUserFromID(userID));
+        var user = findUserFromID(userID);
+        return gameControllers.get(gameID).getPowerupToSpawn(user);
     }
 
   /**
@@ -895,7 +929,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
    */
   @Override
   public void spawnAfterDeath(int userID, UUID gameID, String powerup) {
-        gameControllers.get(gameID).spawnAfterDeath(findUserFromID(userID), powerup);
+        var user = findUserFromID(userID);
+        gameControllers.get(gameID).spawnAfterDeath(user, powerup);
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + user.getUsername() + " spawned with the powerup " + powerup);
     }
 
     /**
@@ -905,10 +941,12 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
    */
   @Override
   public void turnEnded(int userID, UUID gameID) {
+      AdrenalineLogger.info(GAME_ID + gameID + " - " + TURN_ENDED_USER + findUserFromID(userID).getUsername());
       gameControllers.get(gameID).endTurn();
       User nextUser = gameControllers.get(gameID).getNextPlayer(findUserFromID(userID));
       if(gameControllers.get(gameID).isAlreadyInGame(nextUser)) users.get(nextUser).startNewTurn(nextUser.hashCode());
       else users.get(nextUser).startNewTurnFromRespawn(nextUser.hashCode());
+      AdrenalineLogger.info(GAME_ID + gameID + " - " + NEXT_TURN + nextUser.getUsername());
   }
 
     @Override

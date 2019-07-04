@@ -3,7 +3,6 @@ package it.polimi.ingsw.view.cli;
 import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.utility.MapType;
-import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.view.View;
@@ -12,7 +11,6 @@ import java.io.*;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * Command Line Interface version of the game.
@@ -42,7 +40,7 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_SERVER_ADDR          = "Insert the server host address: ";
     private static final String CHOOSE_USERNAME             = "Please, insert your username to log in: ";
     private static final String USER_NOT_AVAILABLE          = "The username you provided is not available. Try again, please";
-    private static final String ON_START                    = "Game started.";
+    private static final String ON_START                    = "Game started \uD83C\uDFAE\n";
     private static final String CHOOSE_CHARACTER            = "Choose a character who will represent you in the game. Insert the character number: ";
     private static final String CHOOSE_CHARACTER_NOT_OK     = "";
     private static final String HAVE_FUN_PT1                = "You have successfully chosen the character: ";
@@ -52,8 +50,8 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_SPAWN_POINT          = "Here are two powerup cards. Choose the one you want to discard: its color will be the color where you will spawn.\n" +
                                                               "You will keep the powerup that you don't discard.";
     private static final String GAME_SITUATION              = "Here is the situation of the game:\n";
-    private static final String CHOOSE_SKULLS_NUMBER        = "Choose the number of skulls of your game.";
-    private static final String SKULLS_CHOSEN               = "You have chosen to have this number of skulls: ";
+    private static final String CHOOSE_SKULLS_NUMBER        = "Choose the number of skulls of your game \uD83D\uDC80\n";
+    private static final String SKULLS_CHOSEN               = "You have chosen this number of \uD83D\uDC80: ";
     private static final String RUN_AROUND                  = "Run around";
     private static final String GRAB                        = "Grab something";
     private static final String SHOOT_PEOPLE                = "Shoot people";
@@ -64,7 +62,7 @@ public class AdrenalineCLI extends View {
     private static final String ASK_POWERUP_TO_GRAB_WEAPON  = "If you want to pick a weapon, do you want use any powerup to afford the cost of it? [Y/N]\n" +
                                                               ONE_SHOT +
                                                               "to pick a weapon where the color/s of the powerup/s that you select is/are involved.";
-    private static final String MORE_GRAB_POWERUP_SELLING   = "Do you want use another powerup to afford the cost of the weapon?";
+    private static final String MORE_GRAB_POWERUP_SELLING   = "Do you want use another powerup to afford the cost of the weapon? [Y/N]";
     private static final String PICK_CHOICES                = "Here is what you can grab:";
     private static final String GRAB_SUCCESS                = "Grabbing phase ended with success!";
     private static final String TOO_MUCH_POWERUP            = "You can't grab this powerup because you already have three of them in your hand. Choose which one would you like to discard.";
@@ -82,8 +80,8 @@ public class AdrenalineCLI extends View {
     private static final String CHOOSE_MODALITY             = "Which modality do you want to use?";
     private static final String CHOOSE_EFFECT               = "What effect/s do you want to use?";
     private static final String WEAPON_USED                 = "The weapon has been used with success.";
-    private static final String ASK_POWERUP_AFTER_SHOT      = "Do you want to use any powerup to make additional damage after this shot?";
-    private static final String WILL_POWERUP_AFTER_SHOT     = "You selected that you want to use any powerup to make additional damage after this shot\n";
+    private static final String ASK_POWERUP_AFTER_SHOT      = "Do you want to use any powerup to make additional damage after this shot? [Y/N]";
+    private static final String WILL_POWERUP_AFTER_SHOT     = "You selected that you want to use any powerup to make additional damage after this shot.\n";
     private static final String WON_T_POWERUP_AFTER_SHOT    = "No powerups will be used after this shot.";
     private static final String CHOOSE_WEAPONS_TO_RELOAD    = "What weapon do you want to reload? You will have the possibility to choose as much weapons as you wish.";
     private static final String MORE_WEAPONS_TO_RELOAD      = "What other weapons do you want to reload?";
@@ -292,7 +290,7 @@ public class AdrenalineCLI extends View {
             out.println(INCORRECT_CHOICE);
             choice = decisionHandlerFromList(options);
         }
-        out.println(SKULLS_CHOSEN + choice + ".");
+        out.println(SKULLS_CHOSEN + choice);
         this.didChooseSkulls(choice);
     }
 

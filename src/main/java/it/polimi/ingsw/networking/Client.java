@@ -110,6 +110,7 @@ public abstract class Client implements Loggable {
     private void timeoutHasExpired() {
         this.viewObserver.timeoutHasExpired();
         notifyServerTimeoutExpired();
+        closeClientConnection();
     }
 
     /**
@@ -132,6 +133,14 @@ public abstract class Client implements Loggable {
             logOnException(INTERRUPTED_EXC, e);
             Thread.currentThread().interrupt();
         }
+    }
+
+    /**
+     * Called when a timeout expires, this method will close any incoming
+     * connection to the client.
+     */
+    protected void closeClientConnection() {
+        System.exit(2);
     }
 
     /**
