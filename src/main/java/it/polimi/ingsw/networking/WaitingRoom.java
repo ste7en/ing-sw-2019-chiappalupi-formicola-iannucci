@@ -22,7 +22,7 @@ public class WaitingRoom {
     /**
      * Log strings
      */
-    private static final String WAITING_ROOM_CREATED = "Waiting Room created";
+    private static final String WAITING_ROOM_CREATED = "Waiting Room created with a timeout of ";
     private static final String USER_JOINED          = "User joined the waiting room :: ";
     private static final String CURR_NUMBER_OF_USER  = " – number of users waiting: ";
     private static final String USER_REMOVED         = "User removed from the waiting room :: ";
@@ -95,7 +95,7 @@ public class WaitingRoom {
         userQueue = new ConcurrentLinkedQueue<>();
         userWaitingList = new LinkedList<>();
 
-        AdrenalineLogger.config(WAITING_ROOM_CREATED);
+        AdrenalineLogger.config(WAITING_ROOM_CREATED + timeout + " seconds.");
     }
 
     /**

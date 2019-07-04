@@ -142,11 +142,12 @@ public class AdrenalineCLI extends View {
         this.willCreateUser();
     }
 
+    @SuppressWarnings("all")
     private AdrenalineCLI(String connectionType, String hostname, String port) {
         try {
             var connection = ConnectionType.parse(connectionType);
             var serverPort  = Integer.parseInt(port);
-            Inet4Address.getByName(hostname); //used to verify the hostname
+            Inet4Address.getByName(hostname);
             this.didChooseConnection(connection, serverPort, hostname);
         } catch (NumberFormatException e) {
             AdrenalineLogger.errorException(INCORRECT_PORT, e);
@@ -163,11 +164,12 @@ public class AdrenalineCLI extends View {
 
     /**
      * Main method
-     * @param args CLI arguments: <socket/rmi> <serverAddress> <serverPort> [--debug]
+     * @param args CLI arguments: <--socket|--rmi> <serverAddress> <serverPort> [--debug]
      */
     public static void main(String[] args) {
         var arguments = Arrays.asList(args);
         if (arguments.contains("--debug")) AdrenalineLogger.setDebugMode(true);
+
         AdrenalineLogger.setLogName("CLI");
         if (arguments.size() < 3) {
             AdrenalineLogger.warning(MISSING_ARGUMENTS);

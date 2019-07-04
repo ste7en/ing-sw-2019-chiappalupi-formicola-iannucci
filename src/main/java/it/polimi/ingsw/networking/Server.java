@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
@@ -17,6 +18,7 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
 
+import java.io.*;
 import java.net.Inet4Address;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -81,6 +83,9 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      * Log and exception strings
      */
     private static final String EXC_SETUP                   = "Error while setting up the server :: ";
+    private static final String EXC_CONFIG_FILE             = "Error while reading the configuration file :: ";
+    private static final String OVERR_CONFIG_FILE           = "Configuration parameters overridden, reading from ./configuration.json";
+    private static final String OP_TIMEOUT_CONF             = "Remote client operations timeout set to ";
     private static final String DID_DISCONNECT              = "User disconnected: ";
     private static final String START_NEW_GAME              = "New game started - ID: ";
     private static final String RMI_EXCEPTION               = "ServerRMI exception: ";
@@ -100,8 +105,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
      *             --operation-timeout=<operation-timeout-in-seconds>
      */
     public static void main(String[] args) {
+        AdrenalineLogger.setDebugMode(true);
+        AdrenalineLogger.setLogName("Server");
+
         var arguments = Arrays.asList(args);
-        int socketPortNumber, rmiPortNumber, waitingRoomTimeout, operationTimeout;
+        int socketPortNumber = 0, rmiPortNumber = 0, waitingRoomTimeout = 0, operationTimeout = 0;
         boolean socketSet = false, rmiSet = false, waitingRoomSet = false, operationTimeoutSet = false;
 
         var validArguments = arguments.stream()
@@ -133,26 +141,50 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
             }
         }
 
-        AdrenalineLogger.setDebugMode(true);
-        AdrenalineLogger.setLogName("Server");
-        new Server(3334, 4444, 30);
+        try {
+            var overrConfFile = new File("./configuration.json");
+            var configurationFile = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "server-config.json");
+            var mapper = new ObjectMapper();
+
+            Map map;
+
+            if (overrConfFile.exists()) {
+                AdrenalineLogger.info(OVERR_CONFIG_FILE);
+                map = mapper.readValue(overrConfFile, Map.class);
+            }
+            else map = mapper.readValue(configurationFile, Map.class);
+
+            if (!socketSet) socketPortNumber = (int)map.get("socketPortNumber");
+            if (!rmiSet) rmiPortNumber = (int)map.get("rmiPortNumber");
+            if (!waitingRoomSet) waitingRoomTimeout = (int)map.get("waitingRoomTimeout");
+            if (!operationTimeoutSet) operationTimeout = (int)map.get("operationTimeout");
+        } catch (Exception e) {
+            AdrenalineLogger.errorException(EXC_CONFIG_FILE, e);
+        }
+
+        new Server(socketPortNumber, rmiPortNumber, waitingRoomTimeout, operationTimeout);
     }
 
     /**
      * Server constructor responsible for setting up networking parameters and creates
      * the game and its controller.
+     * @param portNumberSocket Socket port number
+     * @param portNumberRMI RMI port number
+     * @param waitingRoomTimeout timeout of the waiting room
+     * @param clientOperationTimeoutInSeconds timeout of remote client operations
      */
-    private Server(Integer portNumberSocket, Integer portNumberRMI, int clientOperationTimeoutInSeconds) {
+    private Server(Integer portNumberSocket, Integer portNumberRMI, int waitingRoomTimeout, int clientOperationTimeoutInSeconds) {
         this.portNumberSocket = portNumberSocket;
         this.portNumberRMI    = portNumberRMI;
         this.users            = new ConcurrentHashMap<>();
         this.gameControllers  = new ConcurrentHashMap<>();
         this.clientOperationTimeoutInSeconds = clientOperationTimeoutInSeconds;
 
-        // TODO: - The following is a test with test parameters, the real waiting room settings must be read from a file
-        this.waitingRoom = new WaitingRoom(3, 5, 5, this);
+        this.waitingRoom = new WaitingRoom(3, 5, waitingRoomTimeout, this);
 
         setupConnections();
+
+        AdrenalineLogger.info(OP_TIMEOUT_CONF + clientOperationTimeoutInSeconds + " seconds.");
     }
 
     /**
