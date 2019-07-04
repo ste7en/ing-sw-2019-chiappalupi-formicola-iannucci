@@ -8,11 +8,11 @@ import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.view.View;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Command Line Interface version of the game.
@@ -128,7 +128,6 @@ public class AdrenalineCLI extends View {
     private static final String INCORRECT_PORT              = "Incorrect cli argument: server port";
     private static final String INCORRECT_CONN_TYPE         = "Incorrect cli argument: connection type";
     private static final String MISSING_ARGUMENTS           = "Missing CLI arguments. Asking for user insertion.";
-    private static final String FLUSH_INPUT_EXCEPTION       = "Flush Input Exception";
 
     @Override
     public void timeoutHasExpired() {
@@ -167,15 +166,16 @@ public class AdrenalineCLI extends View {
      * @param args CLI arguments: <socket/rmi> <serverAddress> <serverPort> [--debug]
      */
     public static void main(String[] args) {
-        if (args.length < 3) {
+        var arguments = Arrays.asList(args);
+        if (arguments.contains("--debug")) AdrenalineLogger.setDebugMode(true);
+        AdrenalineLogger.setLogName("CLI");
+        if (arguments.size() < 3) {
             AdrenalineLogger.warning(MISSING_ARGUMENTS);
             new AdrenalineCLI();
         } else {
-            var connectionType = args[0];
-            var serverName     = args[1];
-            var serverPort     = args[2];
-            if (Arrays.asList(args).contains("--debug")) AdrenalineLogger.setDebugMode(true);
-            AdrenalineLogger.setLogName("CLI");
+            var connectionType = arguments.get(0);
+            var serverName     = arguments.get(1);
+            var serverPort     = arguments.get(2);
             new AdrenalineCLI(connectionType, serverName, serverPort);
         }
     }
@@ -254,6 +254,7 @@ public class AdrenalineCLI extends View {
     @Override
     public void onStart() {
         out.println(ON_START);
+        AdrenalineLogger.info(ON_START);
         super.onStart();
     }
 
@@ -264,13 +265,13 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void willChooseCharacter(List<String> availableCharacters) {
-        int choice;
-        do { out.println(CHOOSE_CHARACTER);
-            var li = availableCharacters.listIterator();
-            while (li.hasNext()) out.println(li.nextIndex()+") "+li.next());
-            choice = in.nextInt();
-        } while (choice > availableCharacters.size() || choice < 0);
-        didChooseCharacter(availableCharacters.get(choice));
+        var choice = "";
+        do {
+            out.println(CHOOSE_CHARACTER);
+            choice = decisionHandlerFromList(availableCharacters);
+            if (choice == null) out.println(INCORRECT_CHOICE);
+        } while (choice == null || choice.equals(""));
+        didChooseCharacter(choice);
     }
 
     @Override
@@ -293,16 +294,6 @@ public class AdrenalineCLI extends View {
         this.didChooseSkulls(choice);
     }
 
-    private void flushInput() {
-        try {
-            while (System.in.available() != 0) {
-                System.in.readAllBytes();
-            }
-        } catch (IOException e) {
-            AdrenalineLogger.errorException(FLUSH_INPUT_EXCEPTION, e);
-        }
-    }
-
     @Override
     public void willChooseGameMap() {
         List<String> options = new ArrayList<>();
@@ -319,8 +310,6 @@ public class AdrenalineCLI extends View {
             out.println(maps[i].toString());
         }
 
-        flushInput();
-
         String choice = null;
         while(choice == null) {
             var scanInput = in.nextLine();
@@ -335,7 +324,6 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void onChooseSpawnPoint(List<String> powerups) {
-        flushInput();
         out.println(CHOOSE_SPAWN_POINT);
         String spawnPoint = decisionHandlerFromList(powerups);
         while(spawnPoint == null) {
@@ -712,7 +700,6 @@ public class AdrenalineCLI extends View {
     @Override
     public void askReload() {
         out.println(ASK_RELOAD);
-        flushInput();
         String scanInput = in.nextLine();
         if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y")) {
             out.println(WILL_RELOAD);
