@@ -22,7 +22,7 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler implemen
 
     private static final String PING_TIMEOUT = "Ping timeout. Closing RMI connection :: ";
 
-    private ClientInterface clientRMI;
+    private transient ClientInterface clientRMI;
 
     public ServerRMIConnectionHandler(Server server, ClientInterface clientRMI, int clientOperationTimeoutInSeconds) {
         super.server = server;

@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.CellColor;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -19,7 +20,7 @@ import java.util.*;
  * @author Daniele Chiappalupi
  */
 @SuppressWarnings("squid:S3776")
-public class GrabController {
+public class GrabController implements Serializable {
 
     /**
      * Constant String used in exceptions

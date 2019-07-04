@@ -1,11 +1,13 @@
 package it.polimi.ingsw.model.player;
 
+import java.io.Serializable;
+
 /**
  * The User class describes a single user of the network
  * @author Daniele Chiappalupi
  * @author Stefano Formicola
  */
-public class User {
+public class User implements Serializable {
 
     /**
      * Username of the user

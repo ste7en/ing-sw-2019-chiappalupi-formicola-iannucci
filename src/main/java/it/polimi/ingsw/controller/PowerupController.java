@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.player.Player;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -13,7 +14,7 @@ import java.util.*;
  *
  * @author Daniele Chiappalupi
  */
-public class PowerupController {
+public class PowerupController implements Serializable {
 
     /**
      * It's the set of targets that can be shot through a powerup that can be used after a weapon.

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.board;
 
+import java.io.Serializable;
 import java.util.*;
 
 import it.polimi.ingsw.controller.*;
@@ -14,7 +15,7 @@ import it.polimi.ingsw.model.utility.PlayerColor;
  * @author Elena Iannucci
  */
 
-public class Board {
+public class Board implements Serializable {
 
     /**
      * String constants used in Board::toString

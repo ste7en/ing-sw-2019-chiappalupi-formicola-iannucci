@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.UUID;
  * @author Stefano Formicola
  * @author Daniele Chiappalupi
  */
-public enum CommunicationMessage {
+public enum CommunicationMessage implements Serializable {
     /**
      * Ping and Pong messages used to check client connectivity.
      * PING is sent by the server, PONG is the reply to the PING message and is sent by the client

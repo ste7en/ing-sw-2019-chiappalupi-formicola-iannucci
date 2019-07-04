@@ -9,13 +9,14 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * @author Daniele Chiappalupi
  * @author Elena Iannucci
  */
-public class GameMap implements Cloneable{
+public class GameMap implements Cloneable, Serializable {
 
     /**
      * String constants used in messages between client-server

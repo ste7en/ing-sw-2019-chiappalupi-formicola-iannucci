@@ -5,6 +5,8 @@ import it.polimi.ingsw.model.utility.CellColor;
 import it.polimi.ingsw.model.cards.AmmoTile;
 import it.polimi.ingsw.model.utility.Border;
 import it.polimi.ingsw.model.utility.Direction;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,7 @@ import java.util.List;
  * @author Elena Iannucci
  */
 
-public class Cell implements Comparable<Cell> {
+public class Cell implements Comparable<Cell>, Serializable {
 
     private static final String ANSI_RESET = "\u001B[0m";
 

@@ -3,6 +3,7 @@ package it.polimi.ingsw.networking;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Stefano Formicola
  */
-public class WaitingRoom {
+public class WaitingRoom implements Serializable {
 
     /**
      * Log strings
@@ -63,7 +64,7 @@ public class WaitingRoom {
     /**
      * The executor service that will schedule a game starting timeout
      */
-    private ScheduledExecutorService executorService;
+    private transient ScheduledExecutorService executorService;
 
     /**
      * A helper collection of users needed to create one game

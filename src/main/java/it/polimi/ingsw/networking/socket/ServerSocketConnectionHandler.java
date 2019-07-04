@@ -36,7 +36,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * The socket instance, the object that represents a connection
      * between client and server.
      */
-    private Socket socket;
+    private transient Socket socket;
 
     /**
      * A buffered outbox for messages

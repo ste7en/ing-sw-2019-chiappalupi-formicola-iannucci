@@ -4,6 +4,7 @@ import it.polimi.ingsw.networking.utility.ConnectionState;
 import it.polimi.ingsw.networking.utility.Pingable;
 import it.polimi.ingsw.utility.Loggable;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -15,7 +16,7 @@ import java.util.concurrent.ExecutorService;
  * @author Stefano Formicola
  */
 
-public abstract class ServerConnectionHandler implements Loggable, Pingable {
+public abstract class ServerConnectionHandler implements Loggable, Pingable, Serializable {
     /**
      * The server instance which exposes communication methods
      */
@@ -24,12 +25,12 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable {
     /**
      * The state of the connection
      */
-    protected ConnectionState connectionState;
+    protected transient ConnectionState connectionState = ConnectionState.CLOSED;
 
     /**
      * Executor to manage asynchronous tasks
      */
-    protected ExecutorService executorService;
+    protected transient ExecutorService executorService;
 
     /**
      * Timeout

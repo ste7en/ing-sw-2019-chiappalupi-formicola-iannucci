@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.utility.AmmoColor;
 
+import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Map;
  *
  * @author Daniele Chiappalupi
  */
-public class Effect {
+public class Effect implements Serializable {
 
     /**
      * Name of the effect
