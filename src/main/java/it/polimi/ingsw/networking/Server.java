@@ -90,7 +90,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
     /**
      * Maximum number of players
      */
-    private int MAX_NUMBER_OF_PLAYERS = 3;
+    private int MAX_NUMBER_OF_PLAYERS = 5;
 
     /**
      * Log and exception strings
