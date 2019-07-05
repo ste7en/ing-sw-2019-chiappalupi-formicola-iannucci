@@ -16,11 +16,13 @@ import java.util.*;
  */
 public class PowerupController implements Serializable {
 
+    private static final String POWERUP_NOT_IN_HAND = "This powerup is not in the hand of this player!";
     /**
      * It's the set of targets that can be shot through a powerup that can be used after a weapon.
      * Set because no duplicates must be in it.
      */
     private Set<Player> targets;
+    private Player tagback;
 
     /**
      * Class constructor: initializes the attributes.
@@ -78,12 +80,13 @@ public class PowerupController implements Serializable {
      * @return the list of possible damages that the powerup can make.
      */
     public List<Damage> getPowerupDamages(String powerup, Player player, GameMap map, List<Player> players) {
+        if(player == null) player = this.tagback;
         List<Powerup> powerups = player.getPlayerHand().getPowerups();
         Powerup selectedPowerup = null;
         for(Powerup p : powerups)
             if(p.toString().equalsIgnoreCase(powerup))
                 selectedPowerup = p;
-        if(selectedPowerup == null) throw new NullPointerException("This powerup is not in the hand of this player!");
+        if(selectedPowerup == null) throw new NullPointerException(POWERUP_NOT_IN_HAND);
         if(selectedPowerup.isUsableAfterDamageMade()) return selectedPowerup.use(player, map, new ArrayList<>(targets));
         return selectedPowerup.use(player, map, players);
     }
@@ -115,5 +118,13 @@ public class PowerupController implements Serializable {
      */
     public void clearPowerupTargets() {
         this.targets.clear();
+    }
+
+    public List<String> getPowerupAfterGetDamage(Player target) {
+        List<String> pows = new ArrayList<>();
+        for(Powerup pow : target.getPlayerHand().getPowerups())
+            if(pow.isUsableAfterDamageTaken())
+                pows.add(pow.toString());
+        return pows;
     }
 }

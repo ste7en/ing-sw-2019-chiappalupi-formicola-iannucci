@@ -83,4 +83,6 @@ public interface ServerInterface extends Remote {
     List<String> movementsBeforeShot(int userID, UUID gameID) throws RemoteException;
 
     void movesBefore(String movement, int userID, UUID gameID) throws RemoteException;
+
+    void tagback(String powerup, int userID, UUID gameID) throws RemoteException;
 }

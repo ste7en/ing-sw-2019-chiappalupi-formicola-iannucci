@@ -348,5 +348,9 @@ public abstract class Client implements Loggable {
      */
     public abstract void movesBeforeShoot(String movement);
 
+    /**
+     * Abstract method implemented by subclasses called when the player has decided the tagback powerup he wants to use.
+     */
+    public abstract void tagback(String tagback);
 
 }

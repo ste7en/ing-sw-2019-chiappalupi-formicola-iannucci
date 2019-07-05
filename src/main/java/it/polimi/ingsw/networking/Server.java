@@ -505,9 +505,22 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
         Map<String, List<String>> mapUpdate = new HashMap<>();
         List<String> mapConf = new ArrayList<>();
         mapConf.add(configuration);
+        Map<String, List<String>> playersUpdate = new HashMap<>();
+        List<String> playerColors = new ArrayList<>();
         mapUpdate.put(GameMap.gameMap_key, mapConf);
         List<User> otherUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
-        for(User user : otherUsers) users.get(user).updateView(user.hashCode(), mapUpdate);
+        otherUsers.add(0, findUserFromID(userID));
+
+        for(User user : otherUsers) {
+            playersUpdate.clear();
+            playerColors = new ArrayList<>();
+            List<User> moreUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
+            for(User u : moreUsers) playerColors.add(gameControllers.get(gameID).lookForPlayerFromUser(u).getCharacter().getColor().toString());
+            playerColors.add(0, gameControllers.get(gameID).lookForPlayerFromUser(user).getCharacter().getColor().toString());
+            playersUpdate.put(Player.playerKey_players, playerColors);
+            users.get(user).updateView(user.hashCode(), mapUpdate);
+            users.get(user).updateView(user.hashCode(), playersUpdate);
+        }
 
         AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + GAME_MAP_SET);
     }
@@ -759,6 +772,10 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
             for(Player target : shotList) {
                 gameControllers.get(gameID).getWeaponController().submitMarks(target, shooter.getCharacter().getColor());
                 gameControllers.get(gameID).checkDeath(target);
+                if(!gameControllers.get(gameID).getPowerupController().getPowerupAfterGetDamage(target).isEmpty() && gameControllers.get(gameID).playerCanSeeOther(target, shooter)) {
+                    List<String> usablePowerups = gameControllers.get(gameID).getPowerupController().getPowerupAfterGetDamage(target);
+                    users.get(target.getUser()).useVenom(userID, usablePowerups, shooter.getNickname());
+                }
             }
             gameControllers.get(gameID).getWeaponController().wipeMarksThisTurn();
             this.didUseWeapon(weapon, userID, gameID);
@@ -1047,6 +1064,12 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
     @Override
     public void movesBefore(String movement, int userID, UUID gameID) {
         gameControllers.get(gameID).getWeaponController().moveBefore(movement, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)));
+    }
+
+    @Override
+    public void tagback(String powerup, int userID, UUID gameID) {
+        List<Damage> tagbackDamage = gameControllers.get(gameID).getPowerupController().getPowerupDamages(powerup, null, gameControllers.get(gameID).getBoard().getMap(), gameControllers.get(gameID).getPlayers());
+        gameControllers.get(gameID).getWeaponController().applyDamage(tagbackDamage.get(0), gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)).getCharacter().getColor(), gameControllers.get(gameID).getBoard());
     }
 
     private void printIngConti() {

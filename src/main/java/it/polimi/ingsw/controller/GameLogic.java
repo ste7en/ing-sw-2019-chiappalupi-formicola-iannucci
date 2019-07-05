@@ -32,6 +32,10 @@ public class GameLogic implements Externalizable {
     private static final String WINNER = "The winner is: ";
     private static final String CONGRATULATIONS = "! Congratulations!\n";
     private static final String POSITION = "Position ";
+    private static final String REMAINING_SKULLS = "Remaining skulls on the skulls track: ";
+    private static final String NONE = "none";
+    private static final String PLAYERS_BLOOD = "Players Blood:";
+    private static final String NUMBER_OF_REMAINING_ACTIONS = "Number of remaining actions: ";
 
     private int numberOfPlayers;
     private boolean finalFrenzy;
@@ -352,7 +356,7 @@ public class GameLogic implements Externalizable {
      * @return a String containing the situation of the user
      */
     private String situation(User user) {
-        return toStringFromPlayers(user) + "\n" + "Number of remaining actions: " + numOfRemainingActions + "\n";
+        return toStringFromPlayers(user) + "\n" + NUMBER_OF_REMAINING_ACTIONS + numOfRemainingActions + "\n";
     }
 
     /**
@@ -362,13 +366,17 @@ public class GameLogic implements Externalizable {
      */
     public String toStringFromPlayers(User user) {
         StringBuilder stringBuilder = new StringBuilder(board.toStringFromPlayer(lookForPlayerFromUser(user)));
-        stringBuilder.append("Players Blood:").append("\n");
+        stringBuilder.append(PLAYERS_BLOOD).append("\n");
         for(Player player : players) {
             List<PlayerColor> blood = player.getPlayerBoard().getDamage();
-            String bloodString = "none";
+            List<PlayerColor> marks = player.getPlayerBoard().getMarks();
+            String bloodString = NONE;
             if(!blood.isEmpty()) bloodString = blood.toString();
-            stringBuilder.append("\t").append(player.getNickname()).append(": ").append(" blood -> ").append(bloodString).append("; maxPoints -> ").append(player.getPlayerBoard().getMaxPoints()).append(";\n");
+            String markString = NONE;
+            if(!blood.isEmpty()) markString = marks.toString();
+            stringBuilder.append("\t").append(player.getNickname()).append(": ").append(" blood -> ").append(bloodString).append("; maxPoints -> ").append(player.getPlayerBoard().getMaxPoints()).append("; marks -> ").append(markString).append(";\n");
         }
+        stringBuilder.append(REMAINING_SKULLS).append(board.skullsLeft()).append(";\n");
         return stringBuilder.toString();
     }
 
@@ -600,7 +608,6 @@ public class GameLogic implements Externalizable {
         for(Player player : players)
             assignPointFromUser(player.getUser());
         this.board.assignBlood();
-        //toDO: Test this
         int points = -1;
         StringBuilder scoreBoardBuilder = new StringBuilder();
         List<Player> playerLeaderboard = new ArrayList<>();
@@ -654,7 +661,19 @@ public class GameLogic implements Externalizable {
         for(AmmoColor color : AmmoColor.values()) {
             updateString = new ArrayList<>();
             updateString.add(Integer.toString(player.getPlayerHand().getAmmosAmount(color)));
-            updates.put(color.toString(), updateString);
+            String key = "";
+            switch(color) {
+                case red:
+                    key = AmmoColor.ammoColorKey_red;
+                    break;
+                case yellow:
+                    key = AmmoColor.ammoColorKey_yellow;
+                    break;
+                case blue:
+                    key = AmmoColor.ammoColorKey_blue;
+                    break;
+            }
+            updates.put(key, updateString);
 
             updateString = new ArrayList<>();
             List<Weapon> weaponsInRespawn = board.showWeapons(color);
@@ -667,24 +686,44 @@ public class GameLogic implements Externalizable {
         for(PlayerColor color : damageInHand) updateString.add(color.toString());
         updates.put(Damage.damage_key, updateString);
 
+        for(Player p : players) {
+            if(p != player) {
+                updateString = new ArrayList<>();
+                damageInHand = p.getPlayerBoard().getDamage();
+                for(PlayerColor color : damageInHand) updateString.add(color.toString());
+                updates.put(p.keyDamage(), updateString);
+            }
+        }
+
         updateString = new ArrayList<>();
         List<PlayerColor> marksOnBoard = player.getPlayerBoard().getMarks();
         for(PlayerColor color : marksOnBoard) updateString.add(color.toString());
         updates.put(Damage.mark_key, updateString);
 
+        for(Player p : players) {
+            if(p != player) {
+                updateString = new ArrayList<>();
+                marksOnBoard = player.getPlayerBoard().getMarks();
+                for(PlayerColor color : marksOnBoard) updateString.add(color.toString());
+                updates.put(p.keyMark(), updateString);
+            }
+        }
+
         for(int i = 0; i < 3; i++) {
             updateString = new ArrayList<>();
             List<AmmoTile> tilesInARow = board.getMap().tilesInARow(i);
-            for(AmmoTile tile : tilesInARow) updateString.add(tile.toString());
+            for(AmmoTile tile : tilesInARow) updateString.add(tile.guiString());
             String key = GameMap.ROW_1;
             if(i == 1) key = GameMap.ROW_2;
             else if(i == 2) key = GameMap.ROW_3;
             updates.put(key, updateString);
         }
-        for(PlayerColor color : marksOnBoard) updateString.add(color.toString());
-        updates.put(Damage.mark_key, updateString);
 
         return updates;
+    }
+
+    public boolean playerCanSeeOther(Player player, Player target) {
+        return board.getMap().getSeenTargets(player).contains(target);
     }
 
     @Override

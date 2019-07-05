@@ -127,6 +127,11 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler implemen
     }
 
     @Override
+    protected void useVenom(int userID, List<String> availablePowerups, String username) {
+        //toDO
+    }
+
+    @Override
     public void ping() {
         try {
             if (isConnectionAvailable() && clientRMI.ping()) Ping.getInstance().didPong(getConnectionHashCode());
