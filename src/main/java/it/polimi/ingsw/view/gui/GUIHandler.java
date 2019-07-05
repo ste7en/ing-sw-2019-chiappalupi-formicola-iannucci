@@ -98,7 +98,7 @@ public class GUIHandler extends Application {
         textContainer.setAlignment(Pos.CENTER);
         button = new Button("Continue");
         ArrayList<String> prova = new ArrayList<>();
-        button.setOnAction(e -> {try{onCreateGameMap("conf_3");} catch (Exception ex){ex.printStackTrace();}});
+        button.setOnAction(e -> {try{chooseConnection();} catch (Exception ex){ex.printStackTrace();}});
         //button.setOnAction(e -> {try{createGameMap("conf_2");} catch (Exception ex){ex.printStackTrace();}});
         //button.setOnAction(e -> {try{createGameMap("conf_3");} catch (Exception ex){ex.printStackTrace();}});
         //button.setOnAction(e -> {try{createGameMap("conf_4");} catch (Exception ex){ex.printStackTrace();}});
@@ -835,36 +835,6 @@ public class GUIHandler extends Application {
             rightDeck.add(deckRight.get(f), 1, f+1,1,1);
         }
 
-
-        updateYellowAmmos(3);
-        updateBlueAmmos(3);
-        updateRedAmmos(3);
-        updateRedAmmos(1);
-        ArrayList<String> powerups = new ArrayList<String>();
-        powerups.add("Newton - blue");
-        updatePowerups(powerups);
-        ArrayList<String> weapons = new ArrayList<String>();
-        weapons.add("Furnace");
-        weapons.add("Hellion");
-        updateWeaponsCards(weapons);
-        updateDeckAbove(weapons);
-        updateDeckRight(weapons);
-        updateDeckLeft(weapons);
-        ArrayList<String> ammotiles = new ArrayList<String>();
-        ammotiles.add("powerup, blue, blue");
-        ammotiles.add("red, yellow, yellow");
-        updateThirdRow(ammotiles);
-        ammotiles.add("powerup, blue, blue");
-        updateFirstRow(ammotiles);
-        updateSecondRow(ammotiles);
-        ArrayList<String> players = new ArrayList<String>();
-        players.add("blue");
-        players.add("yellow");
-        addPlayerBoards(players);
-
-
-
-
         //Setting background
         BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
@@ -1208,14 +1178,6 @@ public class GUIHandler extends Application {
                 damagesGrid.get(playerColors.get(i)).add(killedPointsTruck.get(playerColors.get(i)).get(n), n+3, 2);
             }
         }
-        ArrayList<String>dam= new ArrayList<String>();
-        dam.add("blue");
-        dam.add("yellow");
-        dam.add("green");
-        dam.add("green");
-        onUpdateDamages("blue", dam);
-        updateDamages("yellow", dam);
-        updateMarks("yellow", dam);
     }
 
     public void updateDamages(String color, List<String> damages) {
@@ -1261,6 +1223,7 @@ public class GUIHandler extends Application {
             clickedImage(imageViews.get(i), "characters/" + marks.get(i)+"_blood");
         }
     }
+
 
     public void displayMessage(String message) {
         Platform.runLater(() -> {
