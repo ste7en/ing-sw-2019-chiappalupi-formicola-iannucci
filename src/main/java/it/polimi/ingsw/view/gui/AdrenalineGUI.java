@@ -106,6 +106,20 @@ public class AdrenalineGUI extends View {
         }
     }
 
+    public void didChooseAction(String action) {
+        switch (action){
+            case "move":
+                client.getAvailableMoves();
+                break;
+            case "grab":
+                grabSomething();
+                break;
+            case "shoot":
+                shootPeople();
+                break;
+        }
+    }
+
     @Override
     public void willChooseMovement(List<String> moves) {
 
