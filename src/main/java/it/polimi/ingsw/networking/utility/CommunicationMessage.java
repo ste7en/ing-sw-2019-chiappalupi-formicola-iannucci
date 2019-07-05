@@ -372,7 +372,16 @@ public enum CommunicationMessage implements Serializable {
      * Arguments: none
      */
     ASK_CAN_CONTINUE,
-    CAN_CONTINUE_TRUE;
+    CAN_CONTINUE_TRUE,
+
+    /**
+     * Signals the end of the game.
+     *
+     * GAME_ENDED is sent from the server to the client.
+     *
+     * Arguments: <GameMap.gameMap_key, Leaderboard>
+     */
+    GAME_ENDED;
 
     /**
      * String constant used in messages between client-server

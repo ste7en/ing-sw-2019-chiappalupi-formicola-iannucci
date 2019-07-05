@@ -1,14 +1,18 @@
 package it.polimi.ingsw.model.board;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.controller.*;
 import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.PlayerColor;
+import it.polimi.ingsw.utility.AdrenalineLogger;
 
 /**
  *
@@ -31,6 +35,17 @@ public class Board implements Serializable {
     private static final String INDENT              = "\t";
 
     /**
+     * String that contains the path information to where the resources are located.
+     */
+    private static final String PATHNAME            = "src" + File.separator + "main" + File.separator + "resources" + File.separator;
+    private static final String PATHNAME_POINTS     = "max_points_list.json";
+
+    /**
+     * Parameter for the jsno deparse
+     */
+    private static final Integer NUM_OF_MAX_ASSIGNABLE_POINTS               = 6;
+
+    /**
      * String constant used in messages between client-server
      */
     public static final String skulls_key = "SKULLS";
@@ -51,6 +66,11 @@ public class Board implements Serializable {
     private Map<Integer, List<PlayerColor>> skullsTrack;
 
     /**
+     * List of points that can be done through the skulls
+     */
+    private List<Integer> pointsFromSkulls;
+
+    /**
      * Boolean that saves if the game is in final frenzy mode
      */
     private boolean finalFrenzy;
@@ -66,6 +86,23 @@ public class Board implements Serializable {
         this.map = map;
         this.weapons.putAll(weapons);
         this.finalFrenzy = false;
+        this.initializePointsFromSkulls();
+    }
+
+    /**
+     * Initializes the list of points obtainable from the skullstrack  reading them from a json file.
+     */
+    private void initializePointsFromSkulls() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonName = PATHNAME_POINTS;
+        Integer[] box = new Integer[NUM_OF_MAX_ASSIGNABLE_POINTS];
+        try {
+            File json = new File(PATHNAME + jsonName);
+            box = objectMapper.readValue(json, Integer[].class);
+        } catch (IOException e) {
+            AdrenalineLogger.error(e.toString());
+        }
+        this.pointsFromSkulls = new ArrayList<>(Arrays.asList(box));
     }
 
     /**
@@ -172,6 +209,49 @@ public class Board implements Serializable {
      */
     public GameMap getMap() {
         return map;
+    }
+
+    /**
+     * This method assigns the points of the skull track at the end of the game
+     */
+    @SuppressWarnings("Duplicates")
+    public void assignBlood() {
+        List<Integer> points = new ArrayList<>(this.pointsFromSkulls);
+        Map<PlayerColor, Integer> bloodFrom = new EnumMap<>(PlayerColor.class);
+        for(PlayerColor color : PlayerColor.values()) bloodFrom.put(color, 0);
+        for(List<PlayerColor> damage : skullsTrack.values())
+            if(damage != null)
+                bloodFrom.put(damage.get(0), damage.size());
+        while(!bloodFrom.isEmpty()) {
+            List<PlayerColor> bests = new ArrayList<>();
+            int max = -1;
+            for(Map.Entry<PlayerColor, Integer> entry : bloodFrom.entrySet())
+                if(entry.getValue() > max)
+                    max = entry.getValue();
+            for(Map.Entry<PlayerColor, Integer> entry : bloodFrom.entrySet())
+                if(entry.getValue() == max)
+                    bests.add(entry.getKey());
+            PlayerColor bestColor;
+            List<PlayerColor> damage = new ArrayList<>();
+            for(Map.Entry<Integer, List<PlayerColor>> entry : skullsTrack.entrySet())
+                if(entry.getValue() != null)
+                    damage.add(entry.getValue().get(0));
+            if(bests.size() == 1) bestColor = bests.get(0);
+            else {
+                int firstOccurrence = damage.size() + 1;
+                for(PlayerColor color : bests)
+                    if(damage.indexOf(color) < firstOccurrence)
+                        firstOccurrence = damage.indexOf(color);
+                bestColor = damage.get(firstOccurrence);
+            }
+            Player bestPlayer = null;
+            for(Player player : this.map.getPlayersPosition().keySet())
+                if(player.getCharacter().getColor().equals(bestColor))
+                    bestPlayer = player;
+            if(bestPlayer != null) bestPlayer.addPoints(points.get(0));
+            if(points.size() > 1) points.remove(0);
+            bloodFrom.remove(bestColor);
+        }
     }
 
     /**

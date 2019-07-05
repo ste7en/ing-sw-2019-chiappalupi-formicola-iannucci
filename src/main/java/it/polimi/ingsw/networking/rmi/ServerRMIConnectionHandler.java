@@ -110,6 +110,14 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler implemen
     }
 
     @Override
+    protected void endOfTheGame(int userID, String scoreBoard) {
+        submitRemoteMethodInvocation(executorService, () -> {
+            clientRMI.endOfTheGame(scoreBoard);
+            return null;
+        });
+    }
+
+    @Override
     public void ping() {
         try {
             if (isConnectionAvailable() && clientRMI.ping()) Ping.getInstance().didPong(getConnectionHashCode());

@@ -91,27 +91,11 @@ public class PlayerBoard implements Serializable {
     }
 
     /**
-     * Steps before shooting setter.
-     * @param stepsBeforeShooting it's the new parameter to set.
-     */
-    public void setStepsBeforeShooting(int stepsBeforeShooting) {
-        this.stepsBeforeShooting = stepsBeforeShooting;
-    }
-
-    /**
      * Steps before grabbing getter.
      * @return the steps that the player can do before the pick.
      */
     public int getStepsBeforeGrabbing() {
         return stepsBeforeGrabbing;
-    }
-
-    /**
-     * Steps before grabbing setter.
-     * @param stepsBeforeGrabbing it's the new parameter to set.
-     */
-    public void setStepsBeforeGrabbing(int stepsBeforeGrabbing) {
-        this.stepsBeforeGrabbing = stepsBeforeGrabbing;
     }
 
     /**

@@ -57,4 +57,10 @@ public interface ClientInterface extends Remote {
      * @throws RemoteException RMI Exception
      */
     void finalFrenzy() throws RemoteException;
+
+    /**
+     * Displays the end of the game and the leaderboard.
+     * @throws RemoteException RMI Exception
+     */
+    void endOfTheGame(String scoreBoard) throws RemoteException;
 }

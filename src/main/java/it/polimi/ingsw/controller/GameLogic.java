@@ -29,6 +29,9 @@ public class GameLogic implements Serializable {
     private static final int MIN_NUMBER_OF_PLAYERS          = 3;
     private static final String NO_PLAYER_WITH_THIS_COLOR   = "No player in the game has this color.";
     private static final String POWERUP_NOT_IN_HAND         = "This powerup is not one that you have in your hand!";
+    private static final String WINNER = "The winner is: ";
+    private static final String CONGRATULATIONS = "! Congratulations!\n";
+    private static final String POSITION = "Position ";
 
     private int numberOfPlayers;
     private boolean finalFrenzy;
@@ -456,23 +459,16 @@ public class GameLogic implements Serializable {
         board.getMap().setPlayerPosition(player, null);
         List<PlayerColor> damage = player.getPlayerBoard().getDamage();
         List<Integer> points = player.getPlayerBoard().getMaxPoints();
-        Map<PlayerColor, Integer> pointsFromColor = new EnumMap<>(PlayerColor.class);
         if(this.numOfKillsDuringThisTurn == 1) lookForPlayerFromColor(damage.get(DEATH_BLOW_PLACE_ON_THE_BOARD)).addPoints(1);
         numOfKillsDuringThisTurn++;
-        for(PlayerColor color : damage) {
-            Integer oldPoints = pointsFromColor.get(color);
-            if(oldPoints == null) oldPoints = 1;
-            else oldPoints++;
-            pointsFromColor.put(color, oldPoints);
-        }
-        assignPointsFromDamage(damage, points, pointsFromColor);
+        assignPointsFromDamage(damage, points);
         if(!finalFrenzy) lookForPlayerFromColor(damage.get(0)).addPoints(1);
         int numOfBloodInTheSkullsTrack = 1;
         if(damage.size() == MAX_SIZE_OF_THE_BOARD) {
             lookForPlayerFromColor(damage.get(MAX_SIZE_OF_THE_BOARD - 1)).getPlayerBoard().addMarks(player.getCharacter().getColor(), 1);
             numOfBloodInTheSkullsTrack = 2;
         }
-        board.addBloodFrom(damage.get(DEATH_BLOW_PLACE_ON_THE_BOARD), numOfBloodInTheSkullsTrack);
+        if(!finalFrenzy) board.addBloodFrom(damage.get(DEATH_BLOW_PLACE_ON_THE_BOARD), numOfBloodInTheSkullsTrack);
         player.getPlayerBoard().death(finalFrenzy);
     }
 
@@ -480,10 +476,16 @@ public class GameLogic implements Serializable {
      * Helper method to avoid cognitive complexity: assigns the points to the corresponding players.
      * @param damage it's the list of damage that the dead player has taken.
      * @param points it's the list of points that should be given.
-     * @param pointsFromColor it's the map containing the occurrences of colors in damages.
      */
-    @SuppressWarnings("squid:S3776")
-    private void assignPointsFromDamage(List<PlayerColor> damage, List<Integer> points, Map<PlayerColor, Integer> pointsFromColor) {
+    @SuppressWarnings({"squid:S3776", "Duplicates"})
+    private void assignPointsFromDamage(List<PlayerColor> damage, List<Integer> points) {
+        Map<PlayerColor, Integer> pointsFromColor = new EnumMap<>(PlayerColor.class);
+        for(PlayerColor color : damage) {
+            Integer oldPoints = pointsFromColor.get(color);
+            if(oldPoints == null) oldPoints = 1;
+            else oldPoints++;
+            pointsFromColor.put(color, oldPoints);
+        }
         while(!pointsFromColor.isEmpty()) {
             List<PlayerColor> bests = new ArrayList<>();
             int max = -1;
@@ -580,5 +582,33 @@ public class GameLogic implements Serializable {
      */
     public boolean isFinalFrenzy() {
         return finalFrenzy;
+    }
+
+    public String endOfTheGame() {
+        for(Player player : players)
+            assignPointFromUser(player.getUser());
+        this.board.assignBlood();
+        //toDO: Test this
+        int points = -1;
+        StringBuilder scoreBoardBuilder = new StringBuilder();
+        List<Player> playerLeaderboard = new ArrayList<>();
+        List<Player> playersBox = new ArrayList<>(players);
+        while(playerLeaderboard.size() != players.size()) {
+            int box = -1;
+            for(Player player : playersBox)
+                if(player.getPoints() > box) box = player.getPoints();
+            List<Player> toRemove = new ArrayList<>();
+            for(Player player : playersBox)
+                if(player.getPoints() == box) {
+                    playerLeaderboard.add(player);
+                    toRemove.add(player);
+                }
+            playersBox.removeAll(toRemove);
+        }
+        scoreBoardBuilder.append(WINNER).append(playerLeaderboard.get(0).getNickname()).append(CONGRATULATIONS);
+        for(int i = 1; i < playerLeaderboard.size(); i++) {
+            scoreBoardBuilder.append(POSITION).append(i+1).append(": ").append(playerLeaderboard.get(i).getNickname()).append(";\n");
+        }
+        return scoreBoardBuilder.toString();
     }
 }

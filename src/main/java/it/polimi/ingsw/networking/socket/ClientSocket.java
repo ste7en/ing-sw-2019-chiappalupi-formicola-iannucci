@@ -236,6 +236,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case DISPLAY_FINAL_FRENZY:
                         this.viewObserver.displayFinalFrenzy();
                         break;
+                    case GAME_ENDED:
+                        this.viewObserver.endOfTheGame(args.get(GameMap.gameMap_key));
+                        break;
                     default:
                         logOnFailure(UNKNOWN_COMMUNICATION_MESSAGE+communicationMessage);
                         break;

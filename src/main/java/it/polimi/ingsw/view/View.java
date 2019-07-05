@@ -535,4 +535,10 @@ public abstract class View {
      * Displays that the final frenzy mode has arrived.
      */
     public abstract void displayFinalFrenzy();
+
+    /**
+     * Displays the final scoreboard of the game.
+     * @param scoreboard it's a string containing the leaderboard.
+     */
+    public abstract void endOfTheGame(String scoreboard);
 }

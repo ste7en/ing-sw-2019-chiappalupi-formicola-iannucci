@@ -99,4 +99,9 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable, Ser
      * Notifies that the final frenzy has begun!
      */
     protected abstract void displayFinalFrenzy(int userID);
+
+    /**
+     * Notifies that the game has ended.
+     */
+    protected abstract void endOfTheGame(int userID, String scoreBoard);
 }

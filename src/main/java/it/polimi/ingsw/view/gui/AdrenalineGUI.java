@@ -270,5 +270,10 @@ public class AdrenalineGUI extends View {
 
     }
 
+    @Override
+    public void endOfTheGame(String scoreboard) {
+
+    }
+
 }
 

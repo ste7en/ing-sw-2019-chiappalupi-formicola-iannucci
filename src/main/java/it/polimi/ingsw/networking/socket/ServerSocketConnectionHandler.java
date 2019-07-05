@@ -606,4 +606,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     protected void displayFinalFrenzy(int userID) {
         this.send(CommunicationMessage.from(userID, DISPLAY_FINAL_FRENZY));
     }
+
+    @Override
+    protected void endOfTheGame(int userID, String scoreboard) {
+        this.send(CommunicationMessage.from(userID, GAME_ENDED, argsFrom(GameMap.gameMap_key, scoreboard)));
+    }
 }

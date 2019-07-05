@@ -983,6 +983,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
               users.get(user).displayFinalFrenzy(user.hashCode());
           }
       }
+      if(gameControllers.get(gameID).isThisTheEnd(findUserFromID(userID), nextUser)) {
+          String scoreboard = gameControllers.get(gameID).endOfTheGame();
+          for(User user : users.keySet())
+              users.get(user).endOfTheGame(userID, scoreboard);
+      }
       if(gameControllers.get(gameID).isAlreadyInGame(nextUser)) users.get(nextUser).startNewTurn(nextUser.hashCode());
       else users.get(nextUser).startNewTurnFromRespawn(nextUser.hashCode());
       AdrenalineLogger.info(GAME_ID + gameID + " - " + NEXT_TURN + nextUser.getUsername());
