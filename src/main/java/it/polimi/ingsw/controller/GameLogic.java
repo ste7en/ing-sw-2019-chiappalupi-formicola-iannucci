@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.utility.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author Daniele Chiappalupi
  */
 @SuppressWarnings("squid:S00115")
-public class GameLogic implements Serializable {
+public class GameLogic implements Externalizable {
 
     /**
      * Configuration parameters and string of exceptions,
@@ -48,6 +48,12 @@ public class GameLogic implements Serializable {
     private int numOfKillsDuringThisTurn;
 
     /**
+     * Instance variable used to distinguish the (temporary) absence
+     * of connected users, after a GameLogic deserialization
+     */
+    private boolean _gameLoadedFromAPreviousSavedState;
+
+    /**
      * Log strings
      */
     private static final String RECONNECTED     = " reconnected and resumed the game.";
@@ -75,7 +81,14 @@ public class GameLogic implements Serializable {
         this.numberOfPlayers = numberOfPlayers;
         this.numOfRemainingActions = -1;
         this.numOfKillsDuringThisTurn = 0;
+
+        this._gameLoadedFromAPreviousSavedState = false;
     }
+
+    /**
+     * Private constructor for deserialization
+     */
+    public GameLogic() {}
 
     /**
      * Starts the process of actions of a player
@@ -113,8 +126,6 @@ public class GameLogic implements Serializable {
      */
     public void userDidDisconnect(User user) {
         Optional.of(lookForPlayerFromUser(user)).ifPresent(Player::disablePlayer);
-        //TODO: - End game and evaluate points
-        // if (numberOfActivePlayers() < MIN_NUMBER_OF_PLAYERS)
     }
 
     /**
@@ -366,7 +377,7 @@ public class GameLogic implements Serializable {
      * @param user it's the user who is playing right now
      * @return the next user
      */
-    public User getNextPlayer(User user) {
+    public synchronized User getNextPlayer(User user) {
         Player actualPlayer = lookForPlayerFromUser(user);
         int index = players.indexOf(actualPlayer);
         Player nextPlayer = null;
@@ -391,14 +402,15 @@ public class GameLogic implements Serializable {
      * This method is used to know if this was the last turn;
      */
     public boolean isThisTheEnd(User user, User nextUser) {
+        if (numberOfActivePlayers() < MIN_NUMBER_OF_PLAYERS) return true;
         Player actualPlayer = lookForPlayerFromUser(user);
         Player nextPlayer = lookForPlayerFromUser(nextUser);
-        if(nextPlayer.equals(finalPlayer)) return true;
+        if (nextPlayer.equals(finalPlayer)) return true;
         int indexOfActualPlayer = players.indexOf(actualPlayer);
         int indexOfNextPlayer = players.indexOf(nextPlayer);
         int indexOfLastPlayer = players.indexOf(finalPlayer);
-        if(indexOfNextPlayer > indexOfLastPlayer && indexOfActualPlayer < indexOfLastPlayer) return true;
-        return indexOfNextPlayer < indexOfActualPlayer && indexOfActualPlayer < indexOfLastPlayer;
+        if (indexOfNextPlayer > indexOfLastPlayer && indexOfActualPlayer < indexOfLastPlayer) return true;
+        return (indexOfNextPlayer < indexOfActualPlayer && indexOfActualPlayer < indexOfLastPlayer);
     }
 
     /**
@@ -459,16 +471,16 @@ public class GameLogic implements Serializable {
         board.getMap().setPlayerPosition(player, null);
         List<PlayerColor> damage = player.getPlayerBoard().getDamage();
         List<Integer> points = player.getPlayerBoard().getMaxPoints();
-        if(this.numOfKillsDuringThisTurn == 1) lookForPlayerFromColor(damage.get(DEATH_BLOW_PLACE_ON_THE_BOARD)).addPoints(1);
+        if(this.numOfKillsDuringThisTurn == 1 && !damage.isEmpty()) lookForPlayerFromColor(damage.get(DEATH_BLOW_PLACE_ON_THE_BOARD)).addPoints(1);
         numOfKillsDuringThisTurn++;
         assignPointsFromDamage(damage, points);
-        if(!finalFrenzy) lookForPlayerFromColor(damage.get(0)).addPoints(1);
+        if(!finalFrenzy && !damage.isEmpty()) Optional.of(damage.get(0)).ifPresent(playerColor -> lookForPlayerFromColor(playerColor).addPoints(1));
         int numOfBloodInTheSkullsTrack = 1;
         if(damage.size() == MAX_SIZE_OF_THE_BOARD) {
             lookForPlayerFromColor(damage.get(MAX_SIZE_OF_THE_BOARD - 1)).getPlayerBoard().addMarks(player.getCharacter().getColor(), 1);
             numOfBloodInTheSkullsTrack = 2;
         }
-        if(!finalFrenzy) board.addBloodFrom(damage.get(DEATH_BLOW_PLACE_ON_THE_BOARD), numOfBloodInTheSkullsTrack);
+        if(!finalFrenzy && !damage.isEmpty()) board.addBloodFrom(damage.get(DEATH_BLOW_PLACE_ON_THE_BOARD), numOfBloodInTheSkullsTrack);
         player.getPlayerBoard().death(finalFrenzy);
     }
 
@@ -610,5 +622,45 @@ public class GameLogic implements Serializable {
             scoreBoardBuilder.append(POSITION).append(i+1).append(": ").append(playerLeaderboard.get(i).getNickname()).append(";\n");
         }
         return scoreBoardBuilder.toString();
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeBoolean(true);
+        out.writeInt(numberOfPlayers);
+        out.writeBoolean(finalFrenzy);
+        out.writeObject(players);
+        out.writeObject(board);
+        out.writeObject(gameID);
+        out.writeObject(decks);
+        out.writeObject(weaponController);
+        out.writeObject(powerupController);
+        out.writeObject(grabController);
+        out.writeObject(firstPlayer);
+        out.writeObject(finalPlayer);
+        out.writeInt(numOfRemainingActions);
+        out.writeInt(numOfKillsDuringThisTurn);
+
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        _gameLoadedFromAPreviousSavedState  = in.readBoolean();
+        numberOfPlayers                     = in.readInt();
+        finalFrenzy                         = in.readBoolean();
+        players                             = (List<Player>) in.readObject();
+        board                               = (Board) in.readObject();
+        gameID                              = (UUID) in.readObject();
+        decks                               = (DecksHandler) in.readObject();
+        weaponController                    = (WeaponController) in.readObject();
+        powerupController                   = (PowerupController) in.readObject();
+        grabController                      = (GrabController) in.readObject();
+        firstPlayer                         = (Player) in.readObject();
+        finalPlayer                         = (Player) in.readObject();
+        numOfRemainingActions               = in.readInt();
+        numOfKillsDuringThisTurn            = in.readInt();
+
+        this.players.forEach(Player::disablePlayer);
     }
 }

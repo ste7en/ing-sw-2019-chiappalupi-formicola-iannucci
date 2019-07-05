@@ -19,7 +19,7 @@ public class Ping {
     /**
      * Log strings
      */
-    private static final String RUNTIME_EXC_PING = "A runtime exception has been thrown during ping.";
+    private static final String RUNTIME_EXC_PING = "A runtime exception has been thrown during ping: ";
 
     /**
      * Period between a scheduled pings

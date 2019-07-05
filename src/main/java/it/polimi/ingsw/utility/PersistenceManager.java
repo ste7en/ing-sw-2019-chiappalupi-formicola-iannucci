@@ -15,6 +15,7 @@ public class PersistenceManager implements Loggable {
     private static final String OBJ_OUTPUT_STREAM_EXC = "An exception has occurred while trying to save application state: ";
     private static final String OBJ_INPUT_STREAM_EXC  = "An exception has occurred while trying to load application state: ";
     private static final String CLASS_NOT_FOUND_EXC   = "Exception while trying to load application state: Object class not found. ";
+    private static final String SNAPSHOT_SAVED_SUCC   = "Application state saved successfully.";
 
     private static final String FILE_NAME             = "Adrenaline_saved_state.bin";
 
@@ -41,6 +42,7 @@ public class PersistenceManager implements Loggable {
         } catch (IOException e) {
             logOnException(OBJ_OUTPUT_STREAM_EXC, e);
         }
+        logOnSuccess(SNAPSHOT_SAVED_SUCC);
     }
 
     public synchronized Server loadServerSnapshot() {

@@ -398,8 +398,12 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
                             users.forEach(          // notify him that the game has started (in this case, resumed)
                                     (user, conn) -> {
                                         if (user.getUsername().equals(username)) {
-                                            conn.gameDidStart(gameLogic.getGameID().toString());
                                             gameLogic.userDidConnect(user);
+                                            conn.gameDidStart(gameLogic.getGameID().toString());
+                                            if (gameLogic.numberOfActivePlayers() == MIN_NUMBER_OF_PLAYERS) {
+                                                var activeUser = gameLogic.getFirstActivePlayer().getUser();
+                                                users.get(activeUser).startNewTurn(activeUser.hashCode());
+                                            }
                                         }
                                     }
                             );
@@ -469,7 +473,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
      */
     @Override
     public void didChooseSkulls(String skulls, UUID gameID) {
-        gameControllers.get(gameID).getBoard().setSkulls(Integer.parseInt(skulls));
+        gameControllers.get(gameID).setSkulls(Integer.parseInt(skulls));
         AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + SKULLS_NUMBER_SET_TO + skulls);
     }
 
@@ -974,21 +978,29 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
    */
   @Override
   public void turnEnded(int userID, UUID gameID) {
-      AdrenalineLogger.info(GAME_ID + gameID + SPACE + TURN_ENDED_USER + findUserFromID(userID).getUsername());
-      User nextUser = gameControllers.get(gameID).getNextPlayer(findUserFromID(userID));
-      gameControllers.get(gameID).endTurn(nextUser);
-      if(gameControllers.get(gameID).isFinalFrenzy()) {
+      User user = findUserFromID(userID);
+      GameLogic gameLogic = gameControllers.get(gameID);
+      User nextUser = gameLogic.getNextPlayer(user);
+      AdrenalineLogger.info(GAME_ID + gameID + SPACE + TURN_ENDED_USER + user.getUsername());
+
+      gameLogic.endTurn(nextUser);
+
+      var activeGameUsers = gameLogic.getPlayers().stream().filter(Player::isActive).map(Player::getUser).collect(Collectors.toList());
+
+      if (gameLogic.isFinalFrenzy()) {
           AdrenalineLogger.info(GAME_ID + gameID + SPACE + FINAL_FRENZY);
-          for(User user : users.keySet()) {
-              users.get(user).displayFinalFrenzy(user.hashCode());
-          }
+
+          activeGameUsers.forEach(activeGameUser -> users.get(activeGameUser).displayFinalFrenzy(activeGameUser.hashCode()));
       }
-      if(gameControllers.get(gameID).isThisTheEnd(findUserFromID(userID), nextUser)) {
-          String scoreboard = gameControllers.get(gameID).endOfTheGame();
-          for(User user : users.keySet())
-              users.get(user).endOfTheGame(userID, scoreboard);
-      }
-      if(gameControllers.get(gameID).isAlreadyInGame(nextUser)) users.get(nextUser).startNewTurn(nextUser.hashCode());
+
+      if (gameLogic.isThisTheEnd(user, nextUser)) {
+          // This also handles the case when less than MIN_NUM_OF_PLAYERS players are connected
+          String scoreboard = gameLogic.endOfTheGame();
+
+          activeGameUsers.forEach(activeGameUser -> users.get(activeGameUser).endOfTheGame(activeGameUser.hashCode(), scoreboard));
+
+          gameControllers.remove(gameLogic);
+      } else if (gameLogic.isAlreadyInGame(nextUser)) users.get(nextUser).startNewTurn(nextUser.hashCode());
       else users.get(nextUser).startNewTurnFromRespawn(nextUser.hashCode());
       AdrenalineLogger.info(GAME_ID + gameID + " - " + NEXT_TURN + nextUser.getUsername());
 
