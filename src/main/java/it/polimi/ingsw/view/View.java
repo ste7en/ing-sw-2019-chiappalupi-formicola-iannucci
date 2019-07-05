@@ -34,6 +34,11 @@ public abstract class View {
     private   static final String DID_CHOOSE_EFFECTS            = "Effects chosen.";
     private   static final String DID_SELECT_WEAPONS_TO_RELOAD  = "Weapons selected to reload: ";
     private   static final String DID_USE_WEAPON                = "Weapon used with success.";
+    protected static final String GRAB_SOMETHING                = "You have chosen to grab something!";
+    protected static final String ONE_SHOT                     = "Please note that if you select [Y], you will only have the possibility ";
+    protected static final String ASK_POWERUP_TO_GRAB_WEAPON    = "If you want to pick a weapon, do you want use any powerup to afford the cost of it? [Y/N]\n" +
+                                                                    ONE_SHOT +
+                                                                "to pick a weapon where the color/s of the powerup/s that you select is/are involved.";
 
     /**
      * Failure messages

@@ -62,11 +62,6 @@ public class AdrenalineCLI extends View {
     private static final String SHOOT_PEOPLE                = "Shoot people";
     private static final String NO_POWERUPS_IN_HAND         = "You haven't any powerup that you can use right now.";
     private static final String CHOOSE_ACTION               = "Choose your next move between the following:\n";
-    private static final String GRAB_SOMETHING              = "You have chosen to grab something!";
-    private static final String ONE_SHOT                    = "Please note that if you select [Y], you will only have the possibility ";
-    private static final String ASK_POWERUP_TO_GRAB_WEAPON  = "If you want to pick a weapon, do you want use any powerup to afford the cost of it? [Y/N]\n" +
-                                                              ONE_SHOT +
-                                                              "to pick a weapon where the color/s of the powerup/s that you select is/are involved.";
     private static final String MORE_GRAB_POWERUP_SELLING   = "Do you want use another powerup to afford the cost of the weapon? [Y/N]";
     private static final String PICK_CHOICES                = "Here is what you can grab:";
     private static final String GRAB_SUCCESS                = "Grabbing phase ended with success!";

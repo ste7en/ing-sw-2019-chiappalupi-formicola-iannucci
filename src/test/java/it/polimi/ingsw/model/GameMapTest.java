@@ -302,18 +302,22 @@ public class GameMapTest {
      */
     @Test
     public void testInitializeMapFromJson() {
+        System.out.println(MapType.conf_1.toString());
         GameMap map1 = new GameMap(MapType.conf_1);
         assertNotNull(map1);
         System.out.println(map1.toString());
 
+        System.out.println(MapType.conf_2.toString());
         GameMap map2 = new GameMap(MapType.conf_2);
         assertNotNull(map2);
         System.out.println(map2.toString());
 
+        System.out.println(MapType.conf_3.toString());
         GameMap map3 = new GameMap(MapType.conf_3);
         assertNotNull(map3);
         System.out.println(map3.toString());
 
+        System.out.println(MapType.conf_1.toString());
         GameMap map4 = new GameMap(MapType.conf_4);
         assertNotNull(map4);
         System.out.println(map4.toString());
