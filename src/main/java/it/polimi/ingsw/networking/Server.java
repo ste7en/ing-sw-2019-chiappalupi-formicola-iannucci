@@ -508,6 +508,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
         mapUpdate.put(GameMap.gameMap_key, mapConf);
         List<User> otherUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
         for(User user : otherUsers) users.get(user).updateView(user.hashCode(), mapUpdate);
+
         AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + GAME_MAP_SET);
     }
 

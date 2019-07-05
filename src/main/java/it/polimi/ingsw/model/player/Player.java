@@ -16,6 +16,15 @@ public class Player implements Comparable<Player>, Serializable {
      */
     private static final String NEGATIVE_POINTS_EXC = "Cannot add negative points to player's points.";
 
+    public static final String playerKey_yellow     = "PLAYER-YELLOW";
+    public static final String playerKey_blue       = "PLAYER-BLUE";
+    public static final String playerKey_green      = "PLAYER-GREEN";
+    public static final String playerKey_grey       = "PLAYER-GREY";
+    public static final String playerKey_purple     = "PLAYER-PURPLE";
+    public static final String playerKey_players    = "PLAYERS-IN-GAME";
+
+    private static final String KEY_DOES_NOT_EXISTS = "Player key does not exists.";
+
     /**
      * It is the board used to keep track of a player's
      * points, damages, marks during the game.
@@ -162,6 +171,22 @@ public class Player implements Comparable<Player>, Serializable {
     @Override
     public String toString() {
         return nickname;
+    }
+
+    public String key() {
+        switch(character.getColor()) {
+            case yellow:
+                return playerKey_yellow;
+            case blue:
+                return playerKey_blue;
+            case purple:
+                return playerKey_purple;
+            case grey:
+                return playerKey_grey;
+            case green:
+                return playerKey_green;
+        }
+        throw new NullPointerException(KEY_DOES_NOT_EXISTS);
     }
 
 }
