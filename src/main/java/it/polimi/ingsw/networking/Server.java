@@ -174,7 +174,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
             }
         }
 
-        if(arguments.isEmpty()) {
+        if(arguments.isEmpty() || (arguments.size() == 1 && arguments.contains("--debug"))) {
             try {
                 var configurationFile = Thread.currentThread().getContextClassLoader().getResource("server-config.json");
                 var overrConfFile = new File("./configuration.json");
