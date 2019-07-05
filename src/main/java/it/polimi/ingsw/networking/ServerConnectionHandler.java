@@ -112,4 +112,10 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable, Ser
      * @param updates it's a map containing the changes.
      */
     protected abstract void updateView(int userID, Map<String, List<String>> updates);
+
+    /**
+     * Display the changes in the view.
+     * @param userID it's the ID of the user
+     */
+    protected abstract void useVenom(int userID, List<String> availablePowerups);
 }

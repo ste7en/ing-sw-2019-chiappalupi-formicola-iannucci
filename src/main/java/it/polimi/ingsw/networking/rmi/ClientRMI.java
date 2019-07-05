@@ -523,6 +523,11 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     }
 
     @Override
+    public void tagback(String tagback) {
+        //toDO
+    }
+
+    @Override
     public void gameStarted(String gameID){
         this.gameID = UUID.fromString(gameID);
         viewObserver.onStart();

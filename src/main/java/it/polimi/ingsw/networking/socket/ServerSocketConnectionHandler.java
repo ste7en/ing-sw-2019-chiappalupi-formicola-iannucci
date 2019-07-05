@@ -639,4 +639,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
 
         this.send(CommunicationMessage.from(userID, UPDATE_ALL, args));
     }
+
+    @Override
+    protected void useVenom(int userID, List<String> availablePowerups) {
+        //toDO
+    }
 }

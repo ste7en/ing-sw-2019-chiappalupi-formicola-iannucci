@@ -24,6 +24,8 @@ public class AdrenalineCLI extends View {
     private static final String FINAL_FRENZY = "Final frenzy has begun! Kill as much people as you can, because everyone will get only one turn more.";
     private static final String GAME_ENDED = "The game has ended!";
     private static final String SHOOTING_POSITION = "Choose the position where you want to shoot from.";
+    private static final String SHOT = "You have been shot from ";
+    private static final String MARK_HIM = "! Do you want to use a tagback grenade to mark him?";
     @SuppressWarnings("squid:S106")
     private PrintWriter out = new PrintWriter(System.out, true);
     private Scanner     in  = new Scanner(System.in);
@@ -243,7 +245,7 @@ public class AdrenalineCLI extends View {
     @Override
     public void update(Map<String, List<String>> update) {
         out.println("\nCHECK OUT THIS!");
-        out.println();
+        out.println(update);
         out.println("");
     }
 
@@ -873,6 +875,17 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void displayChange(String change) {
+        while(locked) {
+            synchronized (this) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    AdrenalineLogger.error(e.toString());
+                    AdrenalineLogger.error(e.getMessage());
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
         out.println(MOVEMENT_MADE);
         out.println(change);
         out.println(WILL_PLAY_SOON);
@@ -926,6 +939,28 @@ public class AdrenalineCLI extends View {
             choice = decisionHandlerFromList(movements);
         }
         this.didChooseMovementBeforeShot(choice);
+    }
+
+    @Override
+    public void tagback(List<String> availablePowerup, String nickname) {
+        out.println(SHOT + nickname + MARK_HIM);
+        String scanInput = in.nextLine();
+        if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y")) {
+            locked = true;
+            out.println(CHOOSE_POWERUP);
+            String choice = decisionHandlerFromList(availablePowerup);
+            while(choice == null) {
+                out.println(INCORRECT_CHOICE);
+                choice = decisionHandlerFromList(availablePowerup);
+            }
+            this.didChooseTagback(choice);
+        } else {
+            locked = false;
+            synchronized (this) {
+                this.notifyAll();
+            }
+        }
+
     }
 
 }

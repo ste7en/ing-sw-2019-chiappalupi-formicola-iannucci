@@ -523,4 +523,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         this.send(CommunicationMessage.from(userID, MOVE_CHOSEN_BEFORE_SHOT, argsFrom(Cell.cell_key, movement)));
         this.askWeapons();
     }
+
+    @Override
+    public void tagback(String tagback) {
+        //toDO
+    }
 }

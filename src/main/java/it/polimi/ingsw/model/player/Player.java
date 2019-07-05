@@ -16,12 +16,17 @@ public class Player implements Comparable<Player>, Serializable {
      */
     private static final String NEGATIVE_POINTS_EXC = "Cannot add negative points to player's points.";
 
-    public static final String playerKey_yellow     = "PLAYER-YELLOW";
-    public static final String playerKey_blue       = "PLAYER-BLUE";
-    public static final String playerKey_green      = "PLAYER-GREEN";
-    public static final String playerKey_grey       = "PLAYER-GREY";
-    public static final String playerKey_purple     = "PLAYER-PURPLE";
-    public static final String playerKey_players    = "PLAYERS-IN-GAME";
+    public static final String playerKey_damages_yellow    = "DAMAGES-PLAYER-YELLOW";
+    public static final String playerKey_damages_blue      = "DAMAGES-PLAYER-BLUE";
+    public static final String playerKey_damages_green     = "DAMAGES-PLAYER-GREEN";
+    public static final String playerKey_damages_grey      = "DAMAGES-PLAYER-GREY";
+    public static final String playerKey_damages_purple    = "DAMAGES-PLAYER-PURPLE";
+    public static final String playerKey_marks_yellow      = "DAMAGES-MARKS-YELLOW";
+    public static final String playerKey_marks_blue        = "DAMAGES-MARKS-BLUE";
+    public static final String playerKey_marks_green       = "DAMAGES-MARKS-GREEN";
+    public static final String playerKey_marks_grey        = "DAMAGES-MARKS-GREY";
+    public static final String playerKey_marks_purple      = "DAMAGES-MARKS-PURPLE";
+    public static final String playerKey_players            = "PLAYERS-IN-GAME";
 
     private static final String KEY_DOES_NOT_EXISTS = "Player key does not exists.";
 
@@ -173,18 +178,26 @@ public class Player implements Comparable<Player>, Serializable {
         return nickname;
     }
 
-    public String key() {
+    public String keyDamage() {
+        return getString(playerKey_damages_yellow, playerKey_damages_blue, playerKey_damages_purple, playerKey_damages_grey, playerKey_damages_green);
+    }
+
+    public String keyMark() {
+        return getString(playerKey_marks_yellow, playerKey_marks_blue, playerKey_marks_purple, playerKey_marks_grey, playerKey_marks_green);
+    }
+
+    private String getString(String yellowKey, String blueKey, String purpleKey, String greyKey, String greenKey) {
         switch(character.getColor()) {
             case yellow:
-                return playerKey_yellow;
+                return playerKey_marks_yellow;
             case blue:
-                return playerKey_blue;
+                return playerKey_marks_blue;
             case purple:
-                return playerKey_purple;
+                return playerKey_marks_purple;
             case grey:
-                return playerKey_grey;
+                return playerKey_marks_grey;
             case green:
-                return playerKey_green;
+                return playerKey_marks_green;
         }
         throw new NullPointerException(KEY_DOES_NOT_EXISTS);
     }

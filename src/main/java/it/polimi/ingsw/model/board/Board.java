@@ -49,9 +49,9 @@ public class Board implements Serializable {
      * String constant used in messages between client-server
      */
     public static final String skulls_key = "SKULLS";
-    public static String weaponsKey_red = "RED_WEAPON";
-    public static String weaponsKey_yellow = "YELLOW_WEAPON";
-    public static String weaponsKey_blue = "BLUE_WEAPON";
+    public static final String weaponsKey_red = "RED_WEAPON";
+    public static final String weaponsKey_yellow = "YELLOW_WEAPON";
+    public static final String weaponsKey_blue = "BLUE_WEAPON";
 
     /**
      * Map of the board

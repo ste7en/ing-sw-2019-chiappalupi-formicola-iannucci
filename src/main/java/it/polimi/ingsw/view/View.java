@@ -548,4 +548,10 @@ public abstract class View {
     protected void didChooseMovementBeforeShot(String movement) {
         this.client.movesBeforeShoot(movement);
     }
+
+    public abstract void tagback(List<String> availablePowerup, String nickname);
+
+    protected void didChooseTagback(String choice) {
+        this.client.tagback(choice);
+    }
 }
