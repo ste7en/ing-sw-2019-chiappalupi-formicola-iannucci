@@ -167,7 +167,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     @Override
     public void willStartTurn() {
         submitRemoteMethodInvocation(executorService, () -> {
-            this.viewObserver.newAction();
+            timeoutOperation(clientOperationTimeoutInSeconds, viewObserver::newAction);
             return null;
         });
     }
@@ -274,7 +274,8 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     @Override
     public void getAvailableMoves() {
         submitRemoteMethodInvocation(executorService, () -> {
-            viewObserver.willChooseMovement(server.getAvailableMoves(userID, gameID));
+            var availableMoves = server.getAvailableMoves(userID, gameID);
+            timeoutOperation(clientOperationTimeoutInSeconds, () -> viewObserver.willChooseMovement(availableMoves));
             return null;
         });
     }
@@ -465,7 +466,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public void afterAction() {
-        timeoutOperation(3*clientOperationTimeoutInSeconds, () ->
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
                 submitRemoteMethodInvocation(executorService, () -> {
                     var curSituation = server.afterAction(userID, gameID);
                     if(curSituation != null) this.viewObserver.onEndTurn(curSituation);
