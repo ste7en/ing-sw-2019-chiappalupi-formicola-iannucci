@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.utility.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
  * @author Daniele Chiappalupi
  */
 @SuppressWarnings("squid:S00115")
-public class GameLogic {
+public class GameLogic implements Serializable {
 
     /**
      * Configuration parameters and string of exceptions,

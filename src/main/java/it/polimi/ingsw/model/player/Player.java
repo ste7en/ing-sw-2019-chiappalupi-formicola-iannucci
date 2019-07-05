@@ -2,13 +2,15 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.utility.PlayerColor;
 
+import java.io.Serializable;
+
 /**
  * A class containing attributes that identify a single player
  * and methods used to keep track of user's progress in the game.
  *
  * @author Stefano Formicola
  */
-public class Player implements Comparable<Player>{
+public class Player implements Comparable<Player>, Serializable {
     /**
      * String passed as message of IllegalArgumentException when is asked to add a value to player's points.
      */

@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.PlayerColor;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -17,7 +18,7 @@ import java.util.*;
  *
  * @author Daniele Chiappalupi
  */
-public class WeaponController {
+public class WeaponController implements Serializable {
 
     private List<Damage> forPotentiableWeapon;
     private List<Powerup> powerupUsedToPayCost;

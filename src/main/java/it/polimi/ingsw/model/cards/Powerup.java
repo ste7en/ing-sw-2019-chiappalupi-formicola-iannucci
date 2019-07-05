@@ -4,13 +4,14 @@ import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utility.AmmoColor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author Daniele Chiappalupi
  */
-public abstract class Powerup {
+public abstract class Powerup implements Serializable {
 
     /**
      * String constants used in messages between client-server

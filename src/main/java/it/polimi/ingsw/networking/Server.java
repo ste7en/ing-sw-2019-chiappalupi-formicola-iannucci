@@ -17,6 +17,7 @@ import it.polimi.ingsw.networking.utility.Ping;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 import it.polimi.ingsw.utility.Loggable;
+import it.polimi.ingsw.utility.PersistenceManager;
 
 import java.io.*;
 import java.net.Inet4Address;
@@ -42,7 +43,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  * @author Elena Iannucci
  */
 @SuppressWarnings("all")
-public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
+public class Server implements Loggable, WaitingRoomObserver, ServerInterface, Serializable {
 
     private static final String FINAL_FRENZY = "Final Frenzy mode has begun!";
     private static final String SPACE = " - ";
@@ -82,8 +83,20 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     private int clientOperationTimeoutInSeconds;
 
     /**
+     * Minimum number of players
+     */
+    private int MIN_NUMBER_OF_PLAYERS = 3;
+
+    /**
+     * Maximum number of players
+     */
+    private int MAX_NUMBER_OF_PLAYERS = 3;
+
+    /**
      * Log and exception strings
      */
+    private static final String APPLICATION_LOADED          = "Server instance correctly loaded from a previous state";
+    private static final String PREVIOUS_STATE_EXISTE       = "A previous Adrenaline Game Server exists. Do you want to restore it? [Y/N] ";
     private static final String EXC_SETUP                   = "Error while setting up the server :: ";
     private static final String EXC_CONFIG_FILE             = "Error while reading the configuration file :: ";
     private static final String OVERR_CONFIG_FILE           = "Configuration parameters overridden, reading from ./configuration.json";
@@ -106,10 +119,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     /**
      * Entry point of the server application
      * @param args arguments passed as:
-     *             --socket=<socket-port-number>
-     *             --rmi=<rmi-port-number>
-     *             --waiting-room-timeout=<waiting-room-timeout-in-seconds>
-     *             --operation-timeout=<operation-timeout-in-seconds>
+     *             [--run-saved-state] to restore a previously saved application state (WARNING! This will override other CLI arguments)
+     *             [--socket=<socket-port-number>]
+     *             [--rmi=<rmi-port-number>]
+     *             [--waiting-room-timeout=<waiting-room-timeout-in-seconds>]
+     *             [--operation-timeout=<operation-timeout-in-seconds>]
      *             [--debug] for debug purposes: sets waiting-room-timeout and operation-timeout to 10s
      */
     public static void main(String[] args) {
@@ -117,6 +131,16 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         AdrenalineLogger.setLogName("Server");
 
         var arguments = Arrays.asList(args);
+
+        if (arguments.contains("--run-saved-state")) { new Server(); return; }
+        if (PersistenceManager.getInstance().isSnapshotAvailable()) {
+            System.out.println(PREVIOUS_STATE_EXISTE);
+            if (new Scanner(System.in).nextLine().equalsIgnoreCase("y")) {
+                new Server();
+                return;
+            }
+        }
+
         int socketPortNumber = 0, rmiPortNumber = 0, waitingRoomTimeout = 0, operationTimeout = 0;
         boolean socketSet = false, rmiSet = false, waitingRoomSet = false, operationTimeoutSet = false;
 
@@ -145,7 +169,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                     operationTimeoutSet = true;
                     break;
                 default:
-                    System.err.println("Unsupported CLI argument: " + "--" + argument.get(0) + "=" + argument.get(1));
+                    AdrenalineLogger.error("Unsupported CLI argument: " + "--" + argument.get(0) + "=" + argument.get(1));
             }
         }
 
@@ -190,11 +214,18 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         this.gameControllers  = new ConcurrentHashMap<>();
         this.clientOperationTimeoutInSeconds = clientOperationTimeoutInSeconds;
 
-        this.waitingRoom = new WaitingRoom(3, 5, waitingRoomTimeout, this);
+        this.waitingRoom = new WaitingRoom(MIN_NUMBER_OF_PLAYERS, MAX_NUMBER_OF_PLAYERS, waitingRoomTimeout, this);
 
         setupConnections();
 
         AdrenalineLogger.info(OP_TIMEOUT_CONF + clientOperationTimeoutInSeconds + " seconds.");
+    }
+
+    /**
+     * The following convenience method is used to load a saved state of the application
+     */
+    private Server() {
+        PersistenceManager.getInstance().loadServerSnapshot().setupConnections();
     }
 
     /**
@@ -954,7 +985,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
       }
       if(gameControllers.get(gameID).isAlreadyInGame(nextUser)) users.get(nextUser).startNewTurn(nextUser.hashCode());
       else users.get(nextUser).startNewTurnFromRespawn(nextUser.hashCode());
-      AdrenalineLogger.info(GAME_ID + gameID + SPACE + NEXT_TURN + nextUser.getUsername());
+      AdrenalineLogger.info(GAME_ID + gameID + " - " + NEXT_TURN + nextUser.getUsername());
+
+      synchronized (this) {
+          PersistenceManager.getInstance().saveSnapshot(this);
+      }
   }
 
     @Override

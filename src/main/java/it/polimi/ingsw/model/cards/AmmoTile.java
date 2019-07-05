@@ -2,13 +2,14 @@ package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.utility.AmmoColor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author Daniele Chiappalupi
  */
-public class AmmoTile {
+public class AmmoTile implements Serializable {
 
     /**
      * String constant used in messages between client-server

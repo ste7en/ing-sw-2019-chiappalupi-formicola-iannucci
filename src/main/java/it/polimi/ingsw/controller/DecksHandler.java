@@ -6,6 +6,7 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,7 +16,7 @@ import java.util.List;
  *
  * @author Daniele Chiappalupi
  */
-public class DecksHandler {
+public class DecksHandler implements Serializable {
 
     /**
      * String passed as message of RuntimeException when it is asked to draw from an empty deck.

@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.utility.AmmoColor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @author Stefano Formicola
  */
-public class PlayerHand {
+public class PlayerHand implements Serializable {
 
     private static final String INVALID_AMOUNT_EXC = "Invalid amount of ammos to increment or decrement.";
     private static final String MAX_POWERUPS_ALLOWED = "Player has already the maximum number of powerups allowed.";

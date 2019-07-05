@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.utility.Direction;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 
+import java.io.Serializable;
 import java.util.*;
 import static java.lang.Math.pow;
 
@@ -14,7 +15,7 @@ import static java.lang.Math.pow;
  *
  * @author Daniele Chiappalupi
  */
-public abstract class Weapon {
+public abstract class Weapon implements Serializable {
 
     protected boolean constraintOrder = false;
 

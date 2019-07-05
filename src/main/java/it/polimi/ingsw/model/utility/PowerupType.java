@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.utility;
 
-public enum PowerupType {
+import java.io.Serializable;
+
+public enum PowerupType implements Serializable {
     TargetingScope,
     Newton,
     TagbackGrenade,

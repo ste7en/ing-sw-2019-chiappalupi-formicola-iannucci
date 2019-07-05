@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.utility;
 
-public enum CellColor {
+import java.io.Serializable;
+
+public enum CellColor implements Serializable {
     red,
     yellow,
     white,

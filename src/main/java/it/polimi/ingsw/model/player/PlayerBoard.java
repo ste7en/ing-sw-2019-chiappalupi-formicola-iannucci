@@ -6,6 +6,7 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * @author Stefano Formicola
  */
-public class PlayerBoard {
+public class PlayerBoard implements Serializable {
 
     private static final String COLOR_DAMAGE_MARKS_EXCEPTION                = "An attempt to add the same color of the player to his damages or marks has been found. A player can't infer damages or marks to himself.";
     private static final String INVALID_DAMAGES_NUMBER                      = "The number of damages should be greater than zero.";

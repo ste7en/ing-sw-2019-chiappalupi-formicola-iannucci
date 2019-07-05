@@ -6,6 +6,7 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @author Stefano Formicola
  */
-public class Character {
+public class Character implements Serializable {
 
     /**
      * String passed as message of IllegalArgumentException when an empty string

@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.board.Cell;
 import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.player.Player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

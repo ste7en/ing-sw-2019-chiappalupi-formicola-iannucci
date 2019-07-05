@@ -3,7 +3,9 @@ package it.polimi.ingsw.model.cards;
 import it.polimi.ingsw.model.board.Cell;
 import it.polimi.ingsw.model.player.Player;
 
-public class Damage implements Comparable<Damage> {
+import java.io.Serializable;
+
+public class Damage implements Comparable<Damage>, Serializable {
 
     private Player target;
     private Cell position;
