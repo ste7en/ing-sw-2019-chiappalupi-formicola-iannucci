@@ -973,7 +973,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
                 singleChange.put(key, guiChanges.get(key));
                 users.get(user).updateView(user.hashCode(), singleChange);
             }
-
         }
         return situation;
     }
@@ -983,7 +982,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
      * @param gameID it's the ID of the game.
      */
     @Override
-    public void checkDeathsBeforeEndTurn(UUID gameID) {
+    public void checkDeathsBeforeEndTurn(int userID, UUID gameID) {
         List<User> deads = gameControllers.get(gameID).deathList();
         for(User deadUser : deads) {
             users.get(deadUser).spawnAfterDeath(deadUser.hashCode(), gameControllers.get(gameID).getPowerupToSpawn(deadUser));
@@ -1013,6 +1012,12 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
         var user = findUserFromID(userID);
         gameControllers.get(gameID).spawnAfterDeath(user, powerup);
         AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + user.getUsername() + " spawned with the powerup " + powerup);
+        if(gameControllers.get(gameID).deathList().isEmpty()) {
+            User currentUser = gameControllers.get(gameID).getCurrentUser();
+            User nextUser = gameControllers.get(gameID).getNextPlayer(currentUser);
+            users.get(nextUser).startNewTurn(nextUser.hashCode());
+            AdrenalineLogger.info(GAME_ID + gameID + " - " + NEXT_TURN + nextUser.getUsername());
+        }
     }
 
     /**
@@ -1044,9 +1049,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
           activeGameUsers.forEach(activeGameUser -> users.get(activeGameUser).endOfTheGame(activeGameUser.hashCode(), scoreboard));
 
           gameControllers.remove(gameLogic);
-      } else if (gameLogic.isAlreadyInGame(nextUser)) users.get(nextUser).startNewTurn(nextUser.hashCode());
-      else users.get(nextUser).startNewTurnFromRespawn(nextUser.hashCode());
-      AdrenalineLogger.info(GAME_ID + gameID + " - " + NEXT_TURN + nextUser.getUsername());
+      } else if(gameLogic.deathList().isEmpty()) {
+          if (gameLogic.isAlreadyInGame(nextUser)) users.get(nextUser).startNewTurn(nextUser.hashCode());
+          else users.get(nextUser).startNewTurnFromRespawn(nextUser.hashCode());
+          AdrenalineLogger.info(GAME_ID + gameID + " - " + NEXT_TURN + nextUser.getUsername());
+      }
 
       synchronized (this) {
           PersistenceManager.getInstance().saveSnapshot(this);

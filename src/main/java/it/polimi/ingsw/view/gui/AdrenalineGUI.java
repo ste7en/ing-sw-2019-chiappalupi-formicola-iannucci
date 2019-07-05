@@ -365,11 +365,6 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void canContinue() {
-
-    }
-
-    @Override
     public void displayFinalFrenzy() {
 
     }

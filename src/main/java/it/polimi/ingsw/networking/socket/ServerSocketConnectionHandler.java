@@ -256,13 +256,10 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     this.server.turnEnded(connectionID, gameID);
                     break;
                 case CHECK_DEATHS_AFTER_TURN:
-                    this.server.checkDeathsBeforeEndTurn(gameID);
+                    this.server.checkDeathsBeforeEndTurn(connectionID, gameID);
                     break;
                 case SPAWN_POINT_AFTER_DEATH_CHOSEN:
                     this.server.spawnAfterDeath(connectionID, gameID, args.get(Powerup.powerup_key));
-                    break;
-                case ASK_CAN_CONTINUE:
-                    if(this.server.canContinueAfterDeathsRespawn(connectionID, gameID)) send(CommunicationMessage.from(connectionID, CAN_CONTINUE_TRUE));
                     break;
                 case GET_MOVES_BEFORE_SHOOT:
                     movesBeforeTheShot(connectionID, gameID);
@@ -641,7 +638,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         List<String> values = new ArrayList<>(updates.get(keys.get(0)));
         if(!values.isEmpty()) args.put(keys.get(0), values.get(0));
         else args.put(keys.get(0), EMPTY);
-        for(int i = 1; i < values.size(); i++) args.put(keys.get(0), values.get(i));
+        for(int i = 1; i < values.size(); i++) args.put(Integer.toString(i), values.get(i));
         this.send(CommunicationMessage.from(userID, UPDATE_ALL, args));
     }
 

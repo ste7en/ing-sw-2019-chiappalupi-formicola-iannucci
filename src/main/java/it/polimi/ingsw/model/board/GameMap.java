@@ -771,7 +771,7 @@ public class GameMap implements Cloneable, Serializable {
     public List<AmmoTile> tilesInARow(int i) {
         List<AmmoTile> tiles = new ArrayList<>();
         for(int j = 0; j < COLUMNS; j++) {
-                if(map[i][j] != null) tiles.add(map[i][j].getAmmoCard());
+                if(map[i][j] != null && !map[i][j].isRespawn() && map[i][j].getAmmoCard() != null) tiles.add(map[i][j].getAmmoCard());
             }
         return tiles;
     }

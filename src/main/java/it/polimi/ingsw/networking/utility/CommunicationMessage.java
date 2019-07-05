@@ -385,17 +385,6 @@ public enum CommunicationMessage implements Serializable {
     CHECK_DEATHS_AFTER_TURN,
 
     /**
-     * Lock handling messages.
-     *
-     * ASK_CAN_CONTINUE is sent from the client to the server to ask if the game can continue and all the players have respawn.
-     * CAN_CONTINUE_TRUE is sent from the server to the client to notify that the game can continue.
-     *
-     * Arguments: none
-     */
-    ASK_CAN_CONTINUE,
-    CAN_CONTINUE_TRUE,
-
-    /**
      * Signals the end of the game.
      *
      * GAME_ENDED is sent from the server to the client.

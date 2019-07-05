@@ -244,9 +244,6 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void update(Map<String, List<String>> update) {
-        out.println("\nCHECK OUT THIS!");
-        out.println(update);
-        out.println("");
     }
 
     @Override
@@ -688,19 +685,6 @@ public class AdrenalineCLI extends View {
         out.println(TURN_ENDED);
         locked = true;
         this.client.checkDeaths();
-        while (locked) {
-            synchronized (this) {
-                try {
-                    wait();
-                    this.client.canContinueFromDeaths();
-                    wait();
-                } catch (InterruptedException e) {
-                    AdrenalineLogger.error(e.toString());
-                    AdrenalineLogger.error(e.getMessage());
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
         this.client.turnEnded();
     }
 
@@ -878,9 +862,11 @@ public class AdrenalineCLI extends View {
         out.println(MOVEMENT_MADE);
         out.println(change);
         out.println(WILL_PLAY_SOON);
-        locked = false;
-        synchronized (this) {
-            this.notifyAll();
+        if(locked) {
+            locked = false;
+            synchronized (this) {
+                this.notifyAll();
+            }
         }
     }
 
@@ -898,18 +884,6 @@ public class AdrenalineCLI extends View {
     @Override
     protected void didChooseSpawnAfterDeath(String powerupChosen) {
         super.didChooseSpawnAfterDeath(powerupChosen);
-        locked = false;
-        synchronized (this) {
-            notifyAll();
-        }
-    }
-
-    @Override
-    public void canContinue() {
-        locked = false;
-        synchronized (this) {
-            this.notifyAll();
-        }
     }
 
     @Override

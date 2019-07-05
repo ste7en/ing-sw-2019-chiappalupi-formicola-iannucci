@@ -233,9 +233,6 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case SPAWN_AFTER_DEATH:
                         this.viewObserver.willSpawnAfterDeath(new ArrayList<>(args.values()));
                         break;
-                    case CAN_CONTINUE_TRUE:
-                        this.viewObserver.canContinue();
-                        break;
                     case DISPLAY_FINAL_FRENZY:
                         this.viewObserver.displayFinalFrenzy();
                         break;
@@ -517,7 +514,6 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     @Override
     public void checkDeaths() {
         this.send(CommunicationMessage.from(userID, CHECK_DEATHS_AFTER_TURN, gameID));
-        this.viewObserver.canContinue();
     }
 
     @Override
@@ -528,11 +524,6 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     @Override
     public void spawnAfterDeathChosen(String powerupChosen) {
         this.send(CommunicationMessage.from(userID, SPAWN_POINT_AFTER_DEATH_CHOSEN, argsFrom(Powerup.powerup_key, powerupChosen), gameID));
-    }
-
-    @Override
-    public void canContinueFromDeaths() {
-        this.send(CommunicationMessage.from(userID, ASK_CAN_CONTINUE, gameID));
     }
 
     @Override

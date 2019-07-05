@@ -334,11 +334,6 @@ public abstract class Client implements Loggable {
     public abstract void spawnAfterDeathChosen(String powerupChosen);
 
     /**
-     * Abstract method implemented by subclasses and called when the View needs to know if it can go ahead after the deaths respawn.
-     */
-    public abstract void canContinueFromDeaths();
-
-    /**
      * Abstract method implemented to ask if the player wants to move.
      */
     public abstract void canMoveBeforeShoot();

@@ -478,8 +478,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     @Override
     public void checkDeaths() {
         submitRemoteMethodInvocation(executorService, () -> {
-            this.server.checkDeathsBeforeEndTurn(gameID);
-            this.viewObserver.canContinue();
+            this.server.checkDeathsBeforeEndTurn(userID, gameID);
             return null;
         });
     }
@@ -496,14 +495,6 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     public void spawnAfterDeathChosen(String powerupChosen) {
         submitRemoteMethodInvocation(executorService, () -> {
             this.server.spawnAfterDeath(userID, gameID, powerupChosen);
-            return null;
-        });
-    }
-
-    @Override
-    public void canContinueFromDeaths() {
-        submitRemoteMethodInvocation(executorService, () -> {
-            if(this.server.canContinueAfterDeathsRespawn(userID, gameID)) this.viewObserver.canContinue();
             return null;
         });
     }

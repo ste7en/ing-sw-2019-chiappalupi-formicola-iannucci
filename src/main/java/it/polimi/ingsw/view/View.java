@@ -527,11 +527,6 @@ public abstract class View {
     }
 
     /**
-     * Called when the death spawns phase is over and the game can continue.
-     */
-    public abstract void canContinue();
-
-    /**
      * Displays that the final frenzy mode has arrived.
      */
     public abstract void displayFinalFrenzy();

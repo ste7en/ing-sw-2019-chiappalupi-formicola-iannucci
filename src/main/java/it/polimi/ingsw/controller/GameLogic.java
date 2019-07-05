@@ -564,6 +564,15 @@ public class GameLogic implements Externalizable {
         return dead;
     }
 
+    public boolean isEveryoneAlive() {
+        List<Player> deads = new ArrayList<>();
+        for(Player player : players) {
+            if(player.isDead() || ((board.getMap().getPlayersPosition().containsKey(player) && board.getMap().getPositionFromPlayer(player) == null)))
+                deads.add(player);
+        }
+        return deads.isEmpty();
+    }
+
     /**
      * Public method that returns the list of Powerup::toString that can be used to respawn.
      * @param user it's the user that should respawn.
@@ -689,7 +698,9 @@ public class GameLogic implements Externalizable {
 
             updateString = new ArrayList<>();
             List<Weapon> weaponsInRespawn = board.showWeapons(color);
-            for(Weapon weapon : weaponsInRespawn) updateString.add(weapon.getName());
+            for(Weapon weapon : weaponsInRespawn)
+                if(weapon != null)
+                    updateString.add(weapon.getName());
             updates.put(board.getWeaponKeyFromColor(color), updateString);
         }
 
@@ -736,6 +747,10 @@ public class GameLogic implements Externalizable {
 
     public boolean playerCanSeeOther(Player player, Player target) {
         return board.getMap().getSeenTargets(player).contains(target);
+    }
+
+    public User getCurrentUser() {
+        return currentPlayer.getUser();
     }
 
     @Override
