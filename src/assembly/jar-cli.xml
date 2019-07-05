@@ -24,6 +24,7 @@
                 <exclude>*jfx*</exclude>
                 <exclude>images/**</exclude>
                 <exclude>org/**</exclude>
+                <exclude>**.log**</exclude>
             </excludes>
         </fileSet>
     </fileSets>
