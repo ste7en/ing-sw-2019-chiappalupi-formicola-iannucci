@@ -554,4 +554,8 @@ public abstract class View {
     protected void didChooseTagback(String choice) {
         this.client.tagback(choice);
     }
+
+    protected void didNotUseTagback() {
+        this.client.didNotUseTagback();
+    }
 }

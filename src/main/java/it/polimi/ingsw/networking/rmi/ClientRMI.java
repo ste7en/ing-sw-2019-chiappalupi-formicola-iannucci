@@ -529,6 +529,14 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     }
 
     @Override
+    public void didNotUseTagback() {
+        submitRemoteMethodInvocation(executorService, () -> {
+            server.afterTagback(gameID);
+            return null;
+        });
+    }
+
+    @Override
     public void gameStarted(String gameID){
         this.gameID = UUID.fromString(gameID);
         viewObserver.onStart();

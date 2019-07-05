@@ -770,6 +770,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
             }
         }
         if(applied) {
+            gameControllers.get(gameID).getPowerupController().setTagback(shooter);
             Set<Player> playerShot = new HashSet<>();
             for(Damage d : damageToMake)
                 if(d.getTarget() != shooter && d.getDamage() > 0)
@@ -781,6 +782,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
                 if(!gameControllers.get(gameID).getPowerupController().getPowerupAfterGetDamage(target).isEmpty() && gameControllers.get(gameID).playerCanSeeOther(target, shooter)) {
                     List<String> usablePowerups = gameControllers.get(gameID).getPowerupController().getPowerupAfterGetDamage(target);
                     users.get(target.getUser()).useVenom(userID, usablePowerups, shooter.getNickname());
+                    gameControllers.get(gameID).setUsingPowerup(true);
                 }
             }
             gameControllers.get(gameID).getWeaponController().wipeMarksThisTurn();
@@ -1053,7 +1055,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
           activeGameUsers.forEach(activeGameUser -> users.get(activeGameUser).endOfTheGame(activeGameUser.hashCode(), scoreboard));
 
           gameControllers.remove(gameLogic);
-      } else if(gameLogic.deathList().isEmpty()) {
+      } else if(gameLogic.deathList().isEmpty() && !gameControllers.get(gameID).isUsingPowerup()) {
           if (gameLogic.isAlreadyInGame(nextUser)) users.get(nextUser).startNewTurn(nextUser.hashCode());
           else users.get(nextUser).startNewTurnFromRespawn(nextUser.hashCode());
           AdrenalineLogger.info(GAME_ID + gameID + " - " + NEXT_TURN + nextUser.getUsername());
@@ -1083,6 +1085,17 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
     public void tagback(String powerup, int userID, UUID gameID) {
         List<Damage> tagbackDamage = gameControllers.get(gameID).getPowerupController().getPowerupDamages(powerup, null, gameControllers.get(gameID).getBoard().getMap(), gameControllers.get(gameID).getPlayers());
         gameControllers.get(gameID).getWeaponController().applyDamage(tagbackDamage.get(0), gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)).getCharacter().getColor(), gameControllers.get(gameID).getBoard());
+        this.afterTagback(gameID);
+    }
+
+    @Override
+    public void afterTagback(UUID gameID) {
+        GameLogic gameLogic = gameControllers.get(gameID);
+        User currentUser = gameLogic.getCurrentUser();
+        gameLogic.setUsingPowerup(false);
+        User nextUser = gameLogic.getNextPlayer(currentUser);
+        if (gameLogic.isAlreadyInGame(nextUser)) users.get(nextUser).startNewTurn(nextUser.hashCode());
+        else users.get(nextUser).startNewTurnFromRespawn(nextUser.hashCode());
     }
 
     private void printIngConti() {

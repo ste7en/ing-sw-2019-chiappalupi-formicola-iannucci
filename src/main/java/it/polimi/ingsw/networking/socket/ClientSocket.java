@@ -541,4 +541,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     public void tagback(String tagback) {
         this.send(CommunicationMessage.from(userID, TAGBACK_CHOSEN, argsFrom(Powerup.powerup_key, tagback), gameID));
     }
+
+    @Override
+    public void didNotUseTagback() {
+        this.send(CommunicationMessage.from(userID, WONT_USE_TAGBACK, gameID));
+    }
 }

@@ -928,6 +928,7 @@ public class AdrenalineCLI extends View {
             }
             this.didChooseTagback(choice);
         }
+        else this.didNotUseTagback();
     }
 
 }

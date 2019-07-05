@@ -348,4 +348,6 @@ public abstract class Client implements Loggable {
      */
     public abstract void tagback(String tagback);
 
+    public abstract void didNotUseTagback();
+
 }

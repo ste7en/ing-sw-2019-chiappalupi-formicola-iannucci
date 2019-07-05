@@ -127,4 +127,8 @@ public class PowerupController implements Serializable {
                 pows.add(pow.toString());
         return pows;
     }
+
+    public void setTagback(Player tagback) {
+        this.tagback = tagback;
+    }
 }

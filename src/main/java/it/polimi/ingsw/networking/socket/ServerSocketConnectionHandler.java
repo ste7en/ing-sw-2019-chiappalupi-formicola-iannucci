@@ -270,6 +270,8 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case MOVE_CHOSEN_BEFORE_SHOT:
                     this.server.movesBefore(args.get(Cell.cell_key), connectionID, gameID);
                     break;
+                case WONT_USE_TAGBACK:
+                    this.server.afterTagback(gameID);
                 default:
                     break;
             }

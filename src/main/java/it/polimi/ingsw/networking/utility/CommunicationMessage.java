@@ -358,11 +358,13 @@ public enum CommunicationMessage implements Serializable {
      *
      * TAGBACK_CHOSEN is sent from the client to the server to notify the selection of a powerup.
      * WILL_CHOOSE_TAGBACK is sent from the server to the client to notify the possibility of tagging back.
+     * WONT_USE_TAGBACK is sent from the client to the server to notify that no tagging back will happen.
      *
      * Arguments: <Powerup.powerup_key, Powerup::toString> for CHOSEN, <indexOf(Powerup), Powerup::toString, <Player.player_key, Player.nickname> for WILL_CHOOSE
      */
     TAGBACK_CHOSEN,
     WILL_CHOOSE_TAGBACK,
+    WONT_USE_TAGBACK,
 
     /**
      * View update messages.
