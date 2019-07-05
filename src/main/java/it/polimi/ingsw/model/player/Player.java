@@ -26,7 +26,8 @@ public class Player implements Comparable<Player>, Serializable {
     public static final String playerKey_marks_green       = "DAMAGES-MARKS-GREEN";
     public static final String playerKey_marks_grey        = "DAMAGES-MARKS-GREY";
     public static final String playerKey_marks_purple      = "DAMAGES-MARKS-PURPLE";
-    public static final String playerKey_players            = "PLAYERS-IN-GAME";
+    public static final String playerKey_players           = "PLAYERS-IN-GAME";
+    public static final String playerKey_player            = "PLAYER";
 
     private static final String KEY_DOES_NOT_EXISTS = "Player key does not exists.";
 

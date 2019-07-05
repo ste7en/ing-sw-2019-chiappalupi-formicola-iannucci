@@ -66,4 +66,6 @@ public interface ClientInterface extends Remote {
     void endOfTheGame(String scoreBoard) throws RemoteException;
 
     void update(Map<String, List<String>> updates) throws RemoteException;
+
+    void willUseTagback(List<String> powerups, String nickname) throws RemoteException;
 }

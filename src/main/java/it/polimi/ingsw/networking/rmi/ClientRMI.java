@@ -1,6 +1,5 @@
 package it.polimi.ingsw.networking.rmi;
 
-import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.cards.Weapon;
@@ -89,6 +88,16 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     @Override
     public void update(Map<String, List<String>> updates) {
         this.viewObserver.update(updates);
+    }
+
+    @Override
+    public void willUseTagback(List<String> powerups, String nickname) {
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    this.viewObserver.tagback(powerups, nickname);
+                    return null;
+                })
+        );
     }
 
     @Override
@@ -524,7 +533,10 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public void tagback(String tagback) {
-        //toDO
+        submitRemoteMethodInvocation(executorService, () -> {
+            server.tagback(tagback, userID, gameID);
+            return null;
+        });
     }
 
     @Override

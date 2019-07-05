@@ -712,7 +712,7 @@ public class GameLogic implements Externalizable {
         for(int i = 0; i < 3; i++) {
             updateString = new ArrayList<>();
             List<AmmoTile> tilesInARow = board.getMap().tilesInARow(i);
-            for(AmmoTile tile : tilesInARow) updateString.add(tile.toString());
+            for(AmmoTile tile : tilesInARow) updateString.add(tile.guiString());
             String key = GameMap.ROW_1;
             if(i == 1) key = GameMap.ROW_2;
             else if(i == 2) key = GameMap.ROW_3;

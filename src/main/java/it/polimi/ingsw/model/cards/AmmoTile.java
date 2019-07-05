@@ -64,4 +64,8 @@ public class AmmoTile implements Serializable {
         return s.toString();
     }
 
+    public String guiString() {
+        return toString();
+    }
+
 }

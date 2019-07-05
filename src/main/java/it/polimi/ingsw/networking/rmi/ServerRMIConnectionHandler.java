@@ -127,7 +127,7 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler implemen
     }
 
     @Override
-    protected void useVenom(int userID, List<String> availablePowerups) {
+    protected void useVenom(int userID, List<String> availablePowerups, String username) {
         //toDO
     }
 

@@ -83,5 +83,13 @@ public class CellTest {
         assertNotNull(cellTest.getAmmoCard());
         assertEquals(ammoTile, cellTest.getAmmoCard());
     }
+
+    @Test
+    public void test1() {
+        String s = cellTest.getAmmoCard().toString();
+        s = s.replaceAll("Ammo Card: ", "").replaceAll(" ammo", "").replaceAll(";", "");
+        System.out.println(cellTest.getAmmoCard().toString());
+        System.out.println(s);
+    }
 }
 

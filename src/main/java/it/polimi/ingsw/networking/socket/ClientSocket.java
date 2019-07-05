@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.board.Cell;
 import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.ConnectionHandlerReceiverDelegate;
@@ -248,19 +249,10 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         this.viewObserver.moveBeforeShot(new ArrayList<>(args.values()));
                         break;
                     case UPDATE_ALL:
-                        List<String> updates = new ArrayList<>(args.values());
-                        String key = "";
-                        for(String s : args.keySet()) {
-                            try {
-                                Integer.parseInt(s);
-                            } catch (NumberFormatException e) {
-                                key = s;
-                            }
-                        }
-                        Map<String, List<String>> updateMap = new HashMap<>();
-                        if(updates.size() != 1 || !updates.get(0).equals(EMPTY)) updateMap.put(key, updates);
-                        else updateMap.put(key, new ArrayList<>());
-                        this.viewObserver.update(updateMap);
+                        updateAll(args);
+                        break;
+                    case WILL_CHOOSE_TAGBACK:
+                        willChooseTagback(args);
                         break;
                     default:
                         logOnFailure(UNKNOWN_COMMUNICATION_MESSAGE+communicationMessage);
@@ -271,6 +263,36 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
         task.setDaemon(false);
         task.setPriority(Thread.MAX_PRIORITY);
         task.start();
+    }
+
+    /**
+     * Used when the player should choose if using a tagback or not
+     * @param args it's the map sent by the server
+     */
+    private void willChooseTagback(Map<String, String> args) {
+        String nickname = args.get(Player.playerKey_player);
+        args.remove(Player.playerKey_player);
+        this.viewObserver.tagback(new ArrayList<>(args.values()), nickname);
+    }
+
+    /**
+     * sends all the updates to the view.
+     * @param args it's a map containing the update.
+     */
+    private void updateAll(Map<String, String> args) {
+        List<String> updates = new ArrayList<>(args.values());
+        String key = "";
+        for(String s : args.keySet()) {
+            try {
+                Integer.parseInt(s);
+            } catch (NumberFormatException e) {
+                key = s;
+            }
+        }
+        Map<String, List<String>> updateMap = new HashMap<>();
+        if(updates.size() != 1 || !updates.get(0).equals(EMPTY)) updateMap.put(key, updates);
+        else updateMap.put(key, new ArrayList<>());
+        this.viewObserver.update(updateMap);
     }
 
     /**
@@ -526,6 +548,6 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
 
     @Override
     public void tagback(String tagback) {
-        //toDO
+        this.send(CommunicationMessage.from(userID, TAGBACK_CHOSEN, argsFrom(Powerup.powerup_key, tagback), gameID));
     }
 }

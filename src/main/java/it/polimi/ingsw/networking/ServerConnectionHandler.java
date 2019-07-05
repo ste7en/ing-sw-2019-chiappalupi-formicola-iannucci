@@ -116,6 +116,7 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable, Ser
     /**
      * Display the changes in the view.
      * @param userID it's the ID of the user
+     * @param username
      */
-    protected abstract void useVenom(int userID, List<String> availablePowerups);
+    protected abstract void useVenom(int userID, List<String> availablePowerups, String username);
 }

@@ -354,6 +354,17 @@ public enum CommunicationMessage implements Serializable {
     POWERUP_DAMAGE_TO_MAKE,
 
     /**
+     * Tagback powerup using messages.
+     *
+     * TAGBACK_CHOSEN is sent from the client to the server to notify the selection of a powerup.
+     * WILL_CHOOSE_TAGBACK is sent from the server to the client to notify the possibility of tagging back.
+     *
+     * Arguments: <Powerup.powerup_key, Powerup::toString> for CHOSEN, <indexOf(Powerup), Powerup::toString, <Player.player_key, Player.nickname> for WILL_CHOOSE
+     */
+    TAGBACK_CHOSEN,
+    WILL_CHOOSE_TAGBACK,
+
+    /**
      * View update messages.
      *
      * UPDATE_SITUATION is sent from the server to the client to notify that some other player has done something in his turn.

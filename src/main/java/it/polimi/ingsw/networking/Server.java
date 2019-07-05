@@ -774,7 +774,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
                 gameControllers.get(gameID).checkDeath(target);
                 if(!gameControllers.get(gameID).getPowerupController().getPowerupAfterGetDamage(target).isEmpty() && gameControllers.get(gameID).playerCanSeeOther(target, shooter)) {
                     List<String> usablePowerups = gameControllers.get(gameID).getPowerupController().getPowerupAfterGetDamage(target);
-                    users.get(target.getUser()).useVenom(userID, usablePowerups);
+                    users.get(target.getUser()).useVenom(userID, usablePowerups, shooter.getNickname());
                 }
             }
             gameControllers.get(gameID).getWeaponController().wipeMarksThisTurn();
@@ -1067,7 +1067,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
     }
 
     @Override
-    public void tagback(String powerup, int userID, UUID gameID) throws RemoteException {
+    public void tagback(String powerup, int userID, UUID gameID) {
         List<Damage> tagbackDamage = gameControllers.get(gameID).getPowerupController().getPowerupDamages(powerup, null, gameControllers.get(gameID).getBoard().getMap(), gameControllers.get(gameID).getPlayers());
         gameControllers.get(gameID).getWeaponController().applyDamage(tagbackDamage.get(0), gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)).getCharacter().getColor(), gameControllers.get(gameID).getBoard());
     }
