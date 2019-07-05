@@ -97,11 +97,7 @@ public class GUIHandler extends Application {
         buildMessageGrid();
         textContainer.setAlignment(Pos.CENTER);
         button = new Button("Continue");
-        ArrayList<String> prova = new ArrayList<>();
         button.setOnAction(e -> {try{chooseConnection();} catch (Exception ex){ex.printStackTrace();}});
-        //button.setOnAction(e -> {try{createGameMap("conf_2");} catch (Exception ex){ex.printStackTrace();}});
-        //button.setOnAction(e -> {try{createGameMap("conf_3");} catch (Exception ex){ex.printStackTrace();}});
-        //button.setOnAction(e -> {try{createGameMap("conf_4");} catch (Exception ex){ex.printStackTrace();}});
         boxButton = new HBox(button);
         boxButton.setAlignment(Pos.CENTER);
         boxButton.setMargin(button, new Insets(0, 0, 50, 0));
