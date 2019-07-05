@@ -1,47 +1,45 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.networking.Client;
+import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.view.View;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Observable;
-import java.util.UUID;
+import java.io.FileNotFoundException;
+import java.util.*;
 
 public class AdrenalineGUI extends View {
 
-    private GUIHandler GUIHandler;
+    private GUIHandler handlerGUI;
 
-    public AdrenalineGUI(GUIHandler GUIHandler){
-        this.GUIHandler = GUIHandler;
+    public AdrenalineGUI(GUIHandler handlerGUI){
+        this.handlerGUI = handlerGUI;
+    }
+
+    @Override
+    public void onStart(){
+    }
+
+    @Override
+    public void timeoutHasExpired() {
+
     }
 
     @Override
     protected void willChooseConnection() {
+        try {
+            handlerGUI.chooseConnection();
+        } catch (FileNotFoundException e){
 
+        }
     }
 
     @Override
-    protected void createUser() {
+    protected void willCreateUser() {
     }
 
     @Override
-    public void onLoginFailure() {
-    }
-
-    @Override
-    public void onViewUpdate() {
-
-    }
-
-    @Override
-    public void onFailure() {
-
-    }
-
-    @Override
-    public void onStart(UUID gameID) {
-
+    public void onLoginFailure(){
+        AdrenalineLogger.error(ONLOGIN_FAILURE);
+        handlerGUI.handleLoginFailure();
     }
 
     @Override
@@ -50,66 +48,130 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void willChooseCharacter() {
+    public void onViewUpdate() {
 
     }
 
     @Override
-    public void didChooseCharacter() {
+    public void onFailure(String message) {
 
     }
 
     @Override
-    public void willChooseGameSettings() {
+    public void willChooseCharacter(List<String> availableCharacters) {
+        try {
+            List<String> fixedCharacter = new ArrayList<>();
+            for(String character : availableCharacters) {
+                character = character.replaceAll("[^a-zA-Z\\-]", "").replaceAll("m", "");
+                fixedCharacter.add(character);
+            }
+            handlerGUI.onChooseCharacter(fixedCharacter);
+        } catch (Exception e){
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
 
     }
 
     @Override
-    public void didChooseGameSettings() {
+    public void onChooseCharacterSuccess(String characterChosen) {
+        handlerGUI.onChooseCharacterSuccess();
+    }
+
+    @Override
+    public void willChooseSkulls() {
 
     }
 
     @Override
-    public void willChooseSpawnPoint() {
+    public void willChooseGameMap() {
+            handlerGUI.chooseGameMap();
+    }
+
+    @Override
+    public void onChooseSpawnPoint(List<String> powerups) {
+            handlerGUI.drawTwoPowerups(powerups);
+    }
+
+    @Override
+    public void newAction() {
 
     }
 
     @Override
-    public void didChooseSpawnPoint() {
+    public void onChooseAction(String map) {
+        try {
+            handlerGUI.chooseAction();
+        } catch (FileNotFoundException e){
+            System.err.println("ClientRMI exception: " + e.toString());
+        }
+    }
+
+    @Override
+    public void willChooseMovement(List<String> moves) {
 
     }
 
     @Override
-    public void onMove() {
+    public void grabSomething() {
 
     }
 
     @Override
-    public void willChooseMovement() {
+    public void sellPowerupToGrabWeapon(List<String> powerups) {
 
     }
 
     @Override
-    public void didChooseMovement() {
+    public void willChooseWhatToGrab(List<String> possiblePicks) {
 
     }
 
     @Override
-    public void willChooseWhatToGrab() {
+    public void onGrabSuccess() {
 
     }
 
     @Override
-    public void didChooseWhatToGrab() {
+    public void onGrabFailure() {
 
     }
 
     @Override
-    public void willChooseWeapon(ArrayList<String> weapons) {
+    public void onGrabFailurePowerup(List<String> powerup) {
+
+    }
+
+    @Override
+    public void onGrabFailureWeapon(List<String> weapon) {
+
+    }
+
+    @Override
+    public void onShootPeopleFailure() {
+
+    }
+
+    @Override
+    public void willChooseWeapon(List<String> weapons) {
+    }
+
+    @Override
+    public void onDamageFailure() {
+
     }
 
     @Override
     public void willChooseDamage(Map<String, String> damagesToChoose) {
+
+    }
+
+    @Override
+    public void onPowerupInHandFailure() {
+
+    }
+
+    @Override
+    public void willChoosePowerupSelling(Map<String, String> powerups) {
 
     }
 
@@ -124,57 +186,83 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onEndTurn() {
+    public void askPowerupAfterShot(List<String> powerups) {
 
     }
 
     @Override
-    public void willReload() {
+    public void onWeaponUsingFailure() {
 
     }
 
     @Override
-    public void didReload() {
+    public void afterAction() {
 
     }
 
     @Override
-    public void willUsePowerup() {
+    public void onEndTurn(String curSituation) {
 
     }
 
     @Override
-    public void didUsePowerup() {
+    public void askReload() {
 
     }
 
     @Override
-    public void willChoosePowerup() {
+    public void willSellPowerupToReload(List<String> powerups) {
 
     }
 
     @Override
-    public void didChoosePowerup() {
+    public void onWeaponUnloadedFailure() {
 
     }
 
     @Override
-    public void willChoosePowerupEffect() {
+    public void willReload(List<String> weapons) {
 
     }
 
     @Override
-    public void didChoosePowerupEffect() {
+    public void onReloadSuccess() {
 
     }
 
     @Override
-    public void update(Observable o, Object arg) {
+    public void onReloadFailure() {
 
     }
 
-    Client getClient(){
-        return this.client;
+    @Override
+    public void onTurnPowerupFailure() {
+
+    }
+
+    @Override
+    public void willChoosePowerup(List<String> availablePowerups) {
+
+    }
+
+    @Override
+    public void willChoosePowerupDamage(Map<String, String> possibleDamages) {
+
+    }
+
+    @Override
+    public void displayChange(String change) {
+
+    }
+
+    @Override
+    public void willSpawnAfterDeath(List<String> powerupsToSpawn) {
+
+    }
+
+    @Override
+    public void canContinue() {
+
     }
 
 }

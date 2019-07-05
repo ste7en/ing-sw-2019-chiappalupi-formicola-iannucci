@@ -46,7 +46,7 @@ public class DecksHandlerTest {
      */
     @Test
     public void testDrawWeapon() {
-        ArrayList<Weapon> weapons = decksTest.initializeWeapons();
+        List<Weapon> weapons = decksTest.initializeWeapons();
         int i = 0;
         while(!decksTest.weaponsOver()) {
             Weapon w1 = decksTest.drawWeapon();
@@ -82,7 +82,7 @@ public class DecksHandlerTest {
      */
     @Test
     public void testDrawAmmoTile() {
-        ArrayList<AmmoTile> ammoTiles = decksTest.initializeAmmoTiles();
+        List<AmmoTile> ammoTiles = decksTest.initializeAmmoTiles();
         int i = 0;
         while(i < 36) {
             AmmoTile a1 = decksTest.drawAmmoTile();
@@ -101,7 +101,7 @@ public class DecksHandlerTest {
      */
     @Test
     public void testDrawPowerup() {
-        ArrayList<Powerup> ammoTiles = decksTest.initializePowerups();
+        List<Powerup> ammoTiles = decksTest.initializePowerups();
         int i = 0;
         while(i < 24) {
             Powerup p1 = decksTest.drawPowerup();

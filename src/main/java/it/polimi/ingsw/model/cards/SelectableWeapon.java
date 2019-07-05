@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -22,7 +23,7 @@ public class SelectableWeapon extends Weapon {
      * @return an ArrayList containing all of the possible solutions of damages
      */
     @Override
-    public ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, ArrayList<Damage> forPotentiableWeapons, GameMap map, ArrayList<Player> players) {
+    public ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, List<Damage> forPotentiableWeapons, GameMap map, List<Player> players) {
         if (effect.getProperties().containsKey(EffectProperty.CanMoveBefore))
             return computeDamageCanMoveBefore(effect, shooter, null, map, players);
         if(effect.getProperties().containsKey(EffectProperty.Hard))
@@ -52,7 +53,7 @@ public class SelectableWeapon extends Weapon {
             if(map.getTargetsFromDirection(shooter, direction).size() > 0) {
                 ArrayList<Damage> arrayD = new ArrayList<>();
                 damages.add(arrayD);
-                ArrayList<Player> targetsInDirection = map.getTargetsFromDirection(shooter, direction);
+                List<Player> targetsInDirection = map.getTargetsFromDirection(shooter, direction);
                 targetsInDirection.removeAll(map.getTargetsInMyCell(shooter));
                 for(Player player : targetsInDirection) {
                     Damage damage = new Damage();

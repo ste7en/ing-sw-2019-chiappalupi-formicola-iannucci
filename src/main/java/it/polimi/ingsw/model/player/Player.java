@@ -2,13 +2,15 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.utility.PlayerColor;
 
+import java.io.Serializable;
+
 /**
  * A class containing attributes that identify a single player
  * and methods used to keep track of user's progress in the game.
  *
  * @author Stefano Formicola
  */
-public class Player implements Comparable<Player>{
+public class Player implements Comparable<Player>, Serializable {
     /**
      * String passed as message of IllegalArgumentException when is asked to add a value to player's points.
      */
@@ -48,6 +50,33 @@ public class Player implements Comparable<Player>{
      */
     private Integer points = 0;
 
+    /**
+     * checks if the user is connected
+     */
+    private boolean _isActive = true;
+
+    /**
+     * Called when a user disconnects
+     */
+    public void disablePlayer() {
+        _isActive = true;
+    }
+
+    /**
+     * Called when a user reconnects
+     * @param user new user instance
+     */
+    public void reEnablePlayer(User user) {
+        this.user = user;
+        _isActive = true;
+    }
+
+    /**
+     * @return true if the user is connected to the server, false otherwise
+     */
+    public boolean isActive() {
+        return user != null;
+    }
 
     /**
      * Constructor: creates a new Player based on given user and character.
@@ -72,14 +101,14 @@ public class Player implements Comparable<Player>{
     }
 
     /**
-     * @return
+     * @return player's playerHand
      */
     public PlayerHand getPlayerHand() {
         return playerHand;
     }
 
     /**
-     * @return
+     * @return player's character
      */
     public Character getCharacter() {
         return character;
@@ -99,6 +128,9 @@ public class Player implements Comparable<Player>{
         return points;
     }
 
+    /**
+     * @return the user associated to the Player
+     */
     public User getUser() { return user; }
 
     /**
@@ -113,6 +145,14 @@ public class Player implements Comparable<Player>{
     @Override
     public int compareTo(Player anotherPlayer) {
         return this.nickname.compareToIgnoreCase(anotherPlayer.getNickname());
+    }
+
+    /**
+     * Returns the state of life of the player.
+     * @return true if the player is death, false otherwise.
+     */
+    public boolean isDead() {
+        return playerBoard.getDamage().size() > 10;
     }
 
     /**

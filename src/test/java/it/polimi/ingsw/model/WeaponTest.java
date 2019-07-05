@@ -68,7 +68,7 @@ public class WeaponTest {
     /**
      * Tests the generateTargetsCombination method in some real cases
      *
-     * @see Weapon#generateTargetsCombinations(Effect, ArrayList, Player, GameMap)
+     * @see Weapon#generateTargetsCombinations(Effect, List, Player, GameMap)
      */
     @Test
     public void testGenerateTargetsCombination() {
@@ -117,12 +117,12 @@ public class WeaponTest {
     /**
      * Tests the numberCombination method
      *
-     * @see Weapon#generateTargetsCombinations(Effect, ArrayList, Player, GameMap)
+     * @see Weapon#generateTargetsCombinations(Effect, List, Player, GameMap)
      */
     @Test
     public void testCombinationsWithLowerValues() {
-        HashMap<Integer, ArrayList<Integer>> box = weaponTester.combinationsWithLowerValues(4, 2);
-        HashMap<Integer, ArrayList<Integer>> tester = new HashMap<>();
+        Map<Integer, ArrayList<Integer>> box = weaponTester.combinationsWithLowerValues(4, 2);
+        Map<Integer, ArrayList<Integer>> tester = new HashMap<>();
         for (int i = 0; i < 10; i++) tester.put(i, new ArrayList<>());
         tester.get(0).add(1);
         tester.get(1).add(2);
@@ -180,7 +180,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Whisper weapon in different situations
      *
-     * @see Weapon#generateTargetsCombinations(Effect, ArrayList, Player, GameMap)
+     * @see Weapon#generateTargetsCombinations(Effect, List, Player, GameMap)
      */
     @Test
     public void testWeaponWhisper() {
@@ -224,7 +224,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Heatseeker weapon in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponHeatseeker() {
@@ -260,7 +260,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Electroscythe weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponElectroscythe() {
@@ -352,7 +352,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Tractor Beam weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponTractorBeam() {
@@ -435,7 +435,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Furnace weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponFurnace() {
@@ -524,7 +524,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Furnace weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponHellion() {
@@ -634,7 +634,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Flamethrower weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponFlamethrower() {
@@ -741,7 +741,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Railgun weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponRailgun() {
@@ -840,7 +840,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the ZX-2 weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponZX2() {
@@ -928,7 +928,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Shotgun weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponShotgun() {
@@ -1017,7 +1017,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Power Glove weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponPowerGlove() {
@@ -1130,7 +1130,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Shockwave weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponShockwave() {
@@ -1226,7 +1226,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Sledgehammer weapon, in both the modalities and in different situations
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponSledgehammer() {
@@ -1318,7 +1318,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Lock Rifle weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponLockRifle() {
@@ -1387,7 +1387,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Machine Gun weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponMachineGun() {
@@ -1489,7 +1489,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the Machine Gun weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = NullPointerException.class)
     public void testMachineGunNullPointerExceptionEffect1() {
@@ -1499,7 +1499,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the Machine Gun weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = RuntimeException.class)
     public void testMachineGunRuntimeExceptionEffect1() {
@@ -1510,7 +1510,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the Machine Gun weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = NullPointerException.class)
     public void testMachineGunNullPointerExceptionEffect2() {
@@ -1520,7 +1520,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the Machine Gun weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = RuntimeException.class)
     public void testMachineGunRuntimeExceptionEffect2() {
@@ -1532,7 +1532,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the T.H.O.R. weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponTHOR() {
@@ -1646,7 +1646,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the T.H.O.R. weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = NullPointerException.class)
     public void testTHORNullPointerExceptionEffect1() {
@@ -1656,7 +1656,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the T.H.O.R. weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = RuntimeException.class)
     public void testTHORRuntimeExceptionEffect1() {
@@ -1667,7 +1667,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the T.H.O.R. weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = NullPointerException.class)
     public void testTHORNullPointerExceptionEffect2() {
@@ -1677,7 +1677,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the T.H.O.R. weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = RuntimeException.class)
     public void testTHORRuntimeExceptionEffect2() {
@@ -1689,7 +1689,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Plasma Gun weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponPlasmaGun() {
@@ -1809,7 +1809,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the Plasma Gun weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = NullPointerException.class)
     public void testPlasmaGunNullPointerException() {
@@ -1819,7 +1819,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the Plasma Gun weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = RuntimeException.class)
     public void testPlasmaGunRuntimeException() {
@@ -1831,7 +1831,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Vortex Cannon weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponVortexCannon() {
@@ -1919,7 +1919,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Grenade Launcher weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponGrenadeLauncher() {
@@ -2041,7 +2041,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Rocket Launcher weapon and all of its effects, except the "with rocket jump" one, as it is the same as the "with phase glide" effect of the "Plasma Gun" weapon
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponRocketLauncher() {
@@ -2127,7 +2127,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the Rocket Launcher weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = NullPointerException.class)
     public void testRocketLauncherNullPointerException() {
@@ -2137,7 +2137,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the Rocket Launcher weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = RuntimeException.class)
     public void testRocketLauncherRuntimeException() {
@@ -2149,7 +2149,7 @@ public class WeaponTest {
     /**
      * Tests the usage of the Cyberblade weapon and all of its effects
      *
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test
     public void testWeaponCyberblade() {
@@ -2253,7 +2253,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the Cyberblade weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = NullPointerException.class)
     public void testCyberbladeNullPointerException() {
@@ -2263,7 +2263,7 @@ public class WeaponTest {
 
     /**
      * Tests an exception when the Cyberblade weapon's optional effects are used in a wrong way
-     * @see Weapon#useEffect(Player, Effect, ArrayList, GameMap, ArrayList)
+     * @see Weapon#useEffect(Player, Effect, List, GameMap, List)
      */
     @Test (expected = RuntimeException.class)
     public void testCyberbladeRuntimeException() {

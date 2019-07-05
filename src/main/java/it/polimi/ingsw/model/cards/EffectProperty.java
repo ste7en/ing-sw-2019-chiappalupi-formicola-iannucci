@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model.cards;
 
+import java.io.Serializable;
+
 /**
  * enumeration to save the effect properties
  */
-public enum EffectProperty {
+public enum EffectProperty implements Serializable {
     /**
      * Minimum distance from where a weapon can shoot; (-1) if the weapon can be used only against targets who can't be seen, (-2) if the weapon can be used only against targets who are in different rooms
      */

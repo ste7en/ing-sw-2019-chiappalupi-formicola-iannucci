@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.utility;
 
-public enum MapType {
+import java.io.Serializable;
+
+public enum MapType implements Serializable {
     conf_1,
     conf_2,
     conf_3,

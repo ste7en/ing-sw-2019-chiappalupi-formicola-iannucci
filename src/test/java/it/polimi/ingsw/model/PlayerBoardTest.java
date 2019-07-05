@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -86,22 +87,24 @@ public class PlayerBoardTest {
         playerBoard.appendDamage(PlayerColor.purple, 2);
         playerBoard.appendDamage(PlayerColor.green, 1);
 
-        assertTrue(playerBoard.getDamage().equals(testPlayerColorArray));
+        assertEquals(playerBoard.getDamage(), testPlayerColorArray);
     }
 
     /**
      * Tests how marks are handled
-     * @see PlayerBoard#setMarks(ArrayList)
+     * @see PlayerBoard#setMarks(List)
      */
     @Test
     public void testSetMarks() {
-        ArrayList<PlayerColor> toAdd = playerBoard.getMarks();
-        toAdd.add(testColor);
+        List<PlayerColor> toAdd = playerBoard.getMarks();
         toAdd.add(PlayerColor.green);
         toAdd.add(PlayerColor.blue);
         try {
             playerBoard.setMarks(toAdd);
-        } catch (IllegalArgumentException e) {}
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        assertTrue(playerBoard.getMarks().containsAll(toAdd));
     }
 
     /**
@@ -110,17 +113,40 @@ public class PlayerBoardTest {
      */
     @Test
     public void testMaxPointsLogic() {
-        assertEquals(playerBoard.getMaxPoints(), (Integer) 8);
-        playerBoard.death();
-        assertEquals(playerBoard.getMaxPoints(), (Integer) 6);
-        playerBoard.death();
-        assertEquals(playerBoard.getMaxPoints(), (Integer) 4);
-        playerBoard.death();
-        assertEquals(playerBoard.getMaxPoints(), (Integer) 2);
-        playerBoard.death();
-        assertEquals(playerBoard.getMaxPoints(), (Integer) 1);
-        playerBoard.death();
-        assertEquals(playerBoard.getMaxPoints(), (Integer) 1);
+        List<Integer> box = new ArrayList<>();
+        box.add(8);
+        box.add(6);
+        box.add(4);
+        box.add(2);
+        box.add(1);
+        box.add(1);
+        for(int i = 0; i < box.size(); i++)
+            assertEquals(playerBoard.getMaxPoints().get(i), box.get(i));
+    }
+
+    /**
+     * Tests how max points are handled
+     * @see PlayerBoard#getMaxPoints()
+     */
+    @Test
+    public void testMaxPointsAdrenalinic() {
+        playerBoard.becomeAdrenalinic(true);
+        List<Integer> box = new ArrayList<>();
+        box.add(2);
+        box.add(1);
+        box.add(1);
+        box.add(1);
+        for(int i = 0; i < box.size(); i++)
+            assertEquals(playerBoard.getMaxPoints().get(i), box.get(i));
+        assertEquals(3, playerBoard.getStepsBeforeGrabbing());
+        assertEquals(2, playerBoard.getStepsBeforeShooting());
+        assertEquals(0, playerBoard.getStepsOfMovement());
+        playerBoard.becomeAdrenalinic(false);
+        for(int i = 0; i < box.size(); i++)
+            assertEquals(playerBoard.getMaxPoints().get(i), box.get(i));
+        assertEquals(2, playerBoard.getStepsBeforeGrabbing());
+        assertEquals(1, playerBoard.getStepsBeforeShooting());
+        assertEquals(4, playerBoard.getStepsOfMovement());
     }
 
     /**
@@ -130,9 +156,10 @@ public class PlayerBoardTest {
     public void testDeath() {
         playerBoard.appendDamage(PlayerColor.blue, 10);
         playerBoard.setMarks(testPlayerColorArray);
+        List<PlayerColor> box = playerBoard.getMarks();
         playerBoard.death();
         assertEquals(playerBoard.getDamage(), emptyPlayerColorArray);
-        assertEquals(playerBoard.getMarks(), emptyPlayerColorArray);
+        assertEquals(playerBoard.getMarks(), box);
     }
 
     /**

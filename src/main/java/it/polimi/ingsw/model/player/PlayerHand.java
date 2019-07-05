@@ -4,8 +4,10 @@ import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.cards.Weapon;
 import it.polimi.ingsw.model.utility.AmmoColor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 
 /**
  * This class provides methods and attributes to manage every card the player
@@ -13,16 +15,15 @@ import java.util.EnumMap;
  *
  * @author Stefano Formicola
  */
-public class PlayerHand {
+public class PlayerHand implements Serializable {
 
     private static final String INVALID_AMOUNT_EXC = "Invalid amount of ammos to increment or decrement.";
-    private static final String MAX_CUBES_ALLOWED = "Player has already the maximum number of cubes allowed.";
     private static final String MAX_POWERUPS_ALLOWED = "Player has already the maximum number of powerups allowed.";
-    private static final String NO_COLOR_EXCEPTION = "Invalid color added";
+    private static final String NULL_POWERUP = "Powerup object references to null";
     /**
      * Keeps track of which weapons the player has.
      */
-    private ArrayList<Weapon> weapons;
+    private List<Weapon> weapons;
 
     /**
      * Keeps track of how many cubes (called ammos) the player has,
@@ -50,17 +51,15 @@ public class PlayerHand {
      * Returns the structure containing player's weapons
      * @return the structure containing player's weapons
      */
-    public ArrayList<Weapon> getWeapons() {
-        return (ArrayList<Weapon>)weapons.clone();
+    public List<Weapon> getWeapons() {
+        return new ArrayList<>(weapons);
     }
 
     /**
      * Returns the structure containing player's powerups
      * @return the structure containing player's powerups
      */
-    public ArrayList<Powerup> getPowerups() {
-        return (ArrayList<Powerup>)powerups.clone();
-    }
+    public List<Powerup> getPowerups() { return new ArrayList<>(powerups); }
 
     /**
      * Returns the amount of cubes of the specified color
@@ -77,7 +76,7 @@ public class PlayerHand {
      * @param weapons the list of weapons to update
      * @throws NullPointerException if a null pointer is passed as parameter
      */
-    public void setWeapons(ArrayList<Weapon> weapons) {
+    public void setWeapons(List<Weapon> weapons) {
         if (weapons != null) {
             this.weapons = weapons;
         } else {
@@ -89,13 +88,13 @@ public class PlayerHand {
      * Adds a powerup to the player's deck of powerups
      * @param powerup the powerup to add to the player's list
      * @throws NullPointerException if a null pointer is passed as parameter
-     * @throws RuntimeException if there's already the maximum number of powerups allowed
+     * @throws IllegalStateException if there's already the maximum number of powerups allowed
      */
     public void addPowerup(Powerup powerup) {
         if (powerup == null) {
-            throw new NullPointerException("Powerup object references to null");
+            throw new NullPointerException(NULL_POWERUP);
         } else if (powerups.size() >= 3) {
-            throw new RuntimeException(MAX_POWERUPS_ALLOWED);
+            throw new IllegalStateException(MAX_POWERUPS_ALLOWED);
         } else powerups.add(powerup);
     }
 
@@ -105,15 +104,19 @@ public class PlayerHand {
      * @param amount the amount of cubes to increment or decrement
      * @throws IllegalArgumentException if the total number of ammos is less than zero or
      *          the ammoColor parameter is none
-     * @throws RuntimeException if there's already the maximum number of cubes (ammos) allowed
      */
     public void updateAmmos(AmmoColor ammoColor, Integer amount) {
-        if (ammoColor == AmmoColor.none) { throw new IllegalArgumentException(NO_COLOR_EXCEPTION); }
-
-        if (getAmmosAmount(ammoColor) == 3) throw new RuntimeException(MAX_CUBES_ALLOWED);
-        else if (getAmmosAmount(ammoColor) + amount < 0 || getAmmosAmount(ammoColor) + amount > 3)
+        if (amount < 0 || amount > 3)
             throw new IllegalArgumentException(INVALID_AMOUNT_EXC);
-        else ammos.put(ammoColor, getAmmosAmount(ammoColor) + amount);
+        else ammos.put(ammoColor, amount);
+    }
+
+    /**
+     * This method deletes a powerup from the hand of the player. It is called after that it has been used or wasted.
+     * @param powerup it's the powerup to remove.
+     */
+    public void wastePowerup(Powerup powerup) {
+        this.powerups.remove(powerup);
     }
 
 }

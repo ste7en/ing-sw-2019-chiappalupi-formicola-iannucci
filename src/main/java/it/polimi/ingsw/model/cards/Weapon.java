@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.utility.Direction;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.networking.utility.CommunicationMessage;
 
+import java.io.Serializable;
 import java.util.*;
 import static java.lang.Math.pow;
 
@@ -14,7 +15,7 @@ import static java.lang.Math.pow;
  *
  * @author Daniele Chiappalupi
  */
-public abstract class Weapon {
+public abstract class Weapon implements Serializable {
 
     protected boolean constraintOrder = false;
 
@@ -46,7 +47,7 @@ public abstract class Weapon {
     /**
      * String constant used in messages between client-server
      */
-    public final static String weapon_key = "WEAPON";
+    public static final String weapon_key = "WEAPON";
 
     /**
      * Weapon's name getter
@@ -60,8 +61,8 @@ public abstract class Weapon {
      * Weapon's cost getter
      * @return the cost of the weapon
      */
-    public ArrayList<AmmoColor> getCost() {
-        return (ArrayList<AmmoColor>)cost.clone();
+    public List<AmmoColor> getCost() {
+        return new ArrayList<>(cost);
     }
 
     /**
@@ -99,7 +100,7 @@ public abstract class Weapon {
      * @return the ArrayList of Effects of the weapon
      */
     public ArrayList<Effect> getEffects() {
-        return (ArrayList<Effect>)effects.clone();
+        return new ArrayList<>(effects);
     }
 
     /**
@@ -108,7 +109,9 @@ public abstract class Weapon {
      */
     @Override
     public String toString() {
-        return "Name: " + name + ";\nCost: " + cost.toString() + ";\nNotes: " + notes;
+        String load = "loaded";
+        if(!loaded) load = "unloaded";
+        return name + " - " + load + ";\n";
     }
 
     public void setConstraintOrder(boolean constraintOrder) {
@@ -124,7 +127,7 @@ public abstract class Weapon {
      * @param players it's an ArrayList containing all of the Players in game
      * @return an ArrayList containing all of the different alternatives of damages that can be done
      */
-    public abstract ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, ArrayList<Damage> forPotentiableWeapons, GameMap map, ArrayList<Player> players);
+    public abstract ArrayList<ArrayList<Damage>> useEffect(Player shooter, Effect effect, List<Damage> forPotentiableWeapons, GameMap map, List<Player> players);
 
     /**
      * This method computes the possible movements of a target when shot by a weapon that can move the target
@@ -159,21 +162,7 @@ public abstract class Weapon {
             if(effect.getProperties().get(EffectProperty.CanMoveAfter) > 0) recursiveMovementsEverywhere(possibleMovements, effect.getProperties().get(EffectProperty.CanMoveAfter), target, box);
             else {
                 int distance = effect.getProperties().get(EffectProperty.CanMoveAfter) * (-1);
-                for(Direction direction : Direction.values()) {
-                    GameMap clone = (GameMap)map.clone();
-                    ArrayList<Cell> movementsInDirection = new ArrayList<>();
-                    int distanceBox = distance;
-                    while(distanceBox > 0) {
-                        if(clone.isAOneStepValidMove(target, clone.getCellFromDirection(clone.getCellFromPlayer(target), direction))) {
-                            Cell cell = clone.getCellFromDirection(clone.getCellFromPlayer(target), direction);
-                            movementsInDirection.add(cell);
-                            clone.setPlayerPosition(target, cell);
-                            distanceBox--;
-                        } else distanceBox = -1;
-                    }
-                    possibleMovements.addAll(movementsInDirection);
-                    possibleMovements.add(box.getCellFromPlayer(target));
-                }
+                getMovementsFromDirections(target, box, possibleMovements, distance);
             }
         }
         Set<Cell> set = new HashSet<>(possibleMovements);
@@ -184,13 +173,39 @@ public abstract class Weapon {
     }
 
     /**
+     * Helper method to compute the possible movements of a target when the effect can move it through a direction.
+     * Static because it is used also in the Newton powerup using process.
+     * @param target it's the target that can be moved.
+     * @param box it's a clone of the original map.
+     * @param possibleMovements it's the arrayList where the possibleMovements are stored.
+     * @param distance it's the maximum distance at where the movement can be done.
+     */
+    public static void getMovementsFromDirections(Player target, GameMap box, List<Cell> possibleMovements, int distance) {
+        for(Direction direction : Direction.values()) {
+            GameMap clone = (GameMap)box.clone();
+            ArrayList<Cell> movementsInDirection = new ArrayList<>();
+            int distanceBox = distance;
+            while(distanceBox > 0) {
+                if(clone.isAOneStepValidMove(target, clone.getCellFromDirection(clone.getCellFromPlayer(target), direction))) {
+                    Cell cell = clone.getCellFromDirection(clone.getCellFromPlayer(target), direction);
+                    movementsInDirection.add(cell);
+                    clone.setPlayerPosition(target, cell);
+                    distanceBox--;
+                } else distanceBox = -1;
+            }
+            possibleMovements.addAll(movementsInDirection);
+            possibleMovements.add(box.getCellFromPlayer(target));
+        }
+    }
+
+    /**
      * This method computes the possible movements of a target made by a weapon that has the ability to move players after the shot
      * @param movements it's the ArrayList where the possible movements are stored
      * @param distance it's the recursive counter
      * @param target it's the Player who is being shot
      * @param map it's a map (not the game one) used for the recursion
      */
-    protected void recursiveMovementsEverywhere(ArrayList<Cell> movements, Integer distance, Player target, GameMap map) {
+    protected void recursiveMovementsEverywhere(List<Cell> movements, Integer distance, Player target, GameMap map) {
         if(distance == 0) {
             movements.add(map.getCellFromPlayer(target));
             return;
@@ -216,7 +231,7 @@ public abstract class Weapon {
      * @param map it's a map (not the game one) used for the recursion
      * @param MaxDistance it's the MaxDistance that can be done through the movement
      */
-    private void recursiveMovementsInCell(ArrayList<Cell> movements, Integer distance, Player shooter, Player target, GameMap map, Integer MaxDistance) {
+    private void recursiveMovementsInCell(List<Cell> movements, Integer distance, Player shooter, Player target, GameMap map, Integer MaxDistance) {
         if(distance == 0) {
             if(map.getTargetsAtMaxDistance(shooter, MaxDistance).contains(target))
                 movements.add(map.getCellFromPlayer(target));
@@ -232,7 +247,6 @@ public abstract class Weapon {
                 recursiveMovementsInCell(movements, distance-1, shooter, target, box, MaxDistance);
             }
         }
-        return;
     }
 
     /**
@@ -243,7 +257,7 @@ public abstract class Weapon {
      * @param target it's the Player who is being shot
      * @param map it's a map (not the game one) used for the recursion
      */
-    private void recursiveMovementsCanSee(ArrayList<Cell> movements, Integer distance, Player shooter, Player target, GameMap map) {
+    private void recursiveMovementsCanSee(List<Cell> movements, Integer distance, Player shooter, Player target, GameMap map) {
         if(distance == 0) {
             if(map.getSeenTargets(shooter).contains(target))
                 movements.add(map.getCellFromPlayer(target));
@@ -270,7 +284,7 @@ public abstract class Weapon {
      * @param players it's an ArrayList containing all of the players in game
      * @return an ArrayList containing all of the possible solutions of damages
      */
-    protected ArrayList<ArrayList<Damage>> computeDamages(Effect effect, Player shooter, ArrayList<Player> forAdditionalEffects, GameMap map, ArrayList<Player> players) {
+    protected ArrayList<ArrayList<Damage>> computeDamages(Effect effect, Player shooter, List<Player> forAdditionalEffects, GameMap map, List<Player> players) {
         ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
         ArrayList<Player> targets = generateTargetsFromDistances(effect, shooter, map, players);
         if(effect.getProperties().keySet().contains(EffectProperty.AdditionalTarget) && effect.getProperties().get(EffectProperty.AdditionalTarget) > 0)
@@ -294,7 +308,7 @@ public abstract class Weapon {
                     if(marks < 0 && k == 0) {
                         int positiveMarks = (-1) * marks;
                         d.setMarks(positiveMarks);
-                        ArrayList<Player> markedPlayers = map.getTargetsInMyCell(d.getTarget());
+                        List<Player> markedPlayers = map.getTargetsInMyCell(d.getTarget());
                         for(Player p : markedPlayers) {
                             arrayD.add(new Damage());
                             arrayD.get(arrayD.size() - 1).setTarget(p);
@@ -370,7 +384,7 @@ public abstract class Weapon {
      * @param players it's an ArrayList containing all of the players in game
      * @return an ArrayList containing all of the possible solutions of damages
      */
-    protected ArrayList<ArrayList<Damage>> computeDamageCanMoveBefore(Effect effect, Player shooter, ArrayList<Damage> forAdditionalEffects, GameMap map, ArrayList<Player> players) {
+    protected ArrayList<ArrayList<Damage>> computeDamageCanMoveBefore(Effect effect, Player shooter, List<Damage> forAdditionalEffects, GameMap map, List<Player> players) {
         ArrayList<ArrayList<Damage>> solutions = new ArrayList<>();
         ArrayList<Player> targets = new ArrayList<>();
         boolean optionalEffect = effect.getProperties().get(EffectProperty.CanMoveBefore) != -1 && forAdditionalEffects != null;
@@ -403,7 +417,7 @@ public abstract class Weapon {
      * @param players it's an ArrayList containing all of the players in game
      * @return the list of possible targets
      */
-    private ArrayList<Player> generateTargetsFromDistances(Effect e, Player p, GameMap m, ArrayList<Player> players) {
+    private ArrayList<Player> generateTargetsFromDistances(Effect e, Player p, GameMap m, List<Player> players) {
         ArrayList<Player> targets = new ArrayList<>();
         ArrayList<Player> targetsFromMin = new ArrayList<>();
         ArrayList<Player> targetsFromMax = new ArrayList<>();
@@ -458,7 +472,7 @@ public abstract class Weapon {
      * @param map it's the GameMap
      * @return an ArrayList with all the combinations
      */
-    public ArrayList<ArrayList<Player>> generateTargetsCombinations(Effect e, ArrayList<Player> p, Player shooter, GameMap map) {
+    public ArrayList<ArrayList<Player>> generateTargetsCombinations(Effect e, List<Player> p, Player shooter, GameMap map) {
         if(e.getProperties().containsKey(EffectProperty.MultipleCell)) {
             Integer multipleCell = e.getProperties().get(EffectProperty.MultipleCell);
             switch (multipleCell) {
@@ -483,7 +497,7 @@ public abstract class Weapon {
                     ArrayList<ArrayList<Player>> solutions = new ArrayList<>();
                     for (Player player : p) {
                         int exists = 0;
-                        ArrayList<Cell> room = map.getRoomFromCell(map.getCellFromPlayer(player));
+                        List<Cell> room = map.getRoomFromCell(map.getCellFromPlayer(player));
                         for (ArrayList<Player> solution : solutions)
                             if (map.getRoomFromCell(map.getCellFromPlayer(solution.get(0))).equals(room)) {
                                 solution.add(player);
@@ -530,15 +544,16 @@ public abstract class Weapon {
      * @param p it's the list of players on who the effect can be used
      * @return an ArratList containing all of the possible combinations of those targets
      */
-    private ArrayList<ArrayList<Player>> combinationsFromMaxPlayer(Effect e, ArrayList<Player> p) {
+    private ArrayList<ArrayList<Player>> combinationsFromMaxPlayer(Effect e, List<Player> p) {
         HashMap<Integer, ArrayList<Player>> combinations = new HashMap<>();
         if (!e.getProperties().containsKey(EffectProperty.MaxPlayer)) throw new NullPointerException("Effect doesn't have MaxPlayer property");
         if(e.getProperties().get(EffectProperty.MaxPlayer) == -1) {
             ArrayList<ArrayList<Player>> allPlayers = new ArrayList<>();
-            allPlayers.add((ArrayList<Player>)p.clone());
+            ArrayList<Player> playersClone = new ArrayList<>(p);
+            allPlayers.add(playersClone);
             return allPlayers;
         }
-        HashMap<Integer, ArrayList<Integer>> comb = combinationsWithLowerValues(p.size(), e.getProperties().get(EffectProperty.MaxPlayer));
+        Map<Integer, ArrayList<Integer>> comb = combinationsWithLowerValues(p.size(), e.getProperties().get(EffectProperty.MaxPlayer));
         for(int i = 0; i < comb.keySet().size(); i++) {
             combinations.put(i, new ArrayList<>());
             for(int k = 0; k < comb.get(i).size(); k++)
@@ -556,10 +571,10 @@ public abstract class Weapon {
      * @param r size of the biggest combinations to generate
      * @return a HashMap containing the combinations and their indexes
      */
-    public HashMap<Integer, ArrayList<Integer>> combinationsWithLowerValues(int size, int r){
+    public Map<Integer, ArrayList<Integer>> combinationsWithLowerValues(int size, int r){
         HashMap<Integer, ArrayList<Integer>> combinations = new HashMap<>();
         for(int i = 1; i <= r; i ++) {
-            HashMap<Integer, ArrayList<Integer>> box = combinations(size, i);
+            Map<Integer, ArrayList<Integer>> box = combinations(size, i);
             int k = 0;
             for(Integer j : combinations.keySet()) if(j > k) k = j;
             if(k != 0) k++;
@@ -574,7 +589,7 @@ public abstract class Weapon {
      * @param r size of the combinations to generate
      * @return a HashMap containing the combinations and their indexes
      */
-    private HashMap<Integer, ArrayList<Integer>> combinations(int size, int r) {
+    private Map<Integer, ArrayList<Integer>> combinations(int size, int r) {
         int[] i = new int[size];
         ArrayList<Integer> param = new ArrayList<>();
         for(int k=0; k < size; k++) i[k] = k+1;
@@ -611,7 +626,7 @@ public abstract class Weapon {
      * @param index saves the state of the computation (needed because of recursion)
      * @param r saves the size of the combinations
      */
-    private void recursiveCombinations(ArrayList<Integer> box, int[] arr, int[] data, int start,
+    private void recursiveCombinations(List<Integer> box, int[] arr, int[] data, int start,
                                        int end, int index, int r) {
         if (index == r)
         {
@@ -634,7 +649,7 @@ public abstract class Weapon {
      */
     public ArrayList<ArrayList<Integer>> effectsCombinations() {
         throw new RuntimeException("This is not a Potentiable Weapon!");
-    };
+    }
 
     /**
      * Used to ask the message to return when using the weapon of the weapon.

@@ -1,6 +1,4 @@
 package it.polimi.ingsw.view;
-import it.polimi.ingsw.model.player.User;
-import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.networking.Client;
 import it.polimi.ingsw.networking.socket.ClientSocket;
 import it.polimi.ingsw.networking.rmi.ClientRMI;
@@ -17,39 +15,47 @@ import java.util.*;
  * @author Stefano Formicola
  * @author Elena Iannucci
  */
-public abstract class View implements Observer{
+public abstract class View {
 
     protected Client client;
-    protected UUID gameID;
-    protected PlayerColor playerColor;
 
     /**
      * Log strings
      */
-    protected static final String APPLICATION_STARTED   = "Adrenaline application started. View instance created.";
-    protected static final String DID_ASK_CONNECTION    = "Connection parameters chosen: ";
-    protected static final String ONLOGIN_FAILURE       = "Username creation failed.";
-    protected static final String ONLOGIN_SUCCESS       = "User createUser completed.";
-    protected static final String JOIN_WAITING_ROOM     = "Joining the waiting room...";
-    protected static final String DID_JOIN_WAITING_ROOM = "";
-    protected static final String DID_CHOOSE_WEAPON     = "Weapon chosen: ";
-    protected static final String DID_CHOOSE_DAMAGE     = "Damage chosen.";
-    protected static final String DID_CHOOSE_MODALITY   = "Modality chosen: ";
-    protected static final String DID_CHOOSE_EFFECTS     = "Effects chosen.";
+    protected static final String APPLICATION_STARTED           = "Adrenaline application started. View instance created.";
+    private   static final String DID_ASK_CONNECTION            = "Connection parameters chosen: ";
+    protected static final String ONLOGIN_FAILURE               = "Username creation failed.";
+    private   static final String ONLOGIN_SUCCESS               = "User createUser completed.";
+    private   static final String JOIN_WAITING_ROOM             = "Joining the waiting room...";
+    protected static final String DID_JOIN_WAITING_ROOM         = "You joined a waiting room. Waiting for other players, the game will start soon...";
+    private   static final String DID_CHOOSE_WEAPON             = "Weapon chosen: ";
+    private   static final String DID_CHOOSE_DAMAGE             = "Damage chosen.";
+    private   static final String DID_CHOOSE_MODALITY           = "Modality chosen: ";
+    private   static final String DID_CHOOSE_EFFECTS            = "Effects chosen.";
+    private   static final String DID_SELECT_WEAPONS_TO_RELOAD  = "Weapons selected to reload: ";
+    private   static final String DID_USE_WEAPON                = "Weapon used with success.";
 
+    /**
+     * Failure messages
+     */
+    public static final String CHARACTER_NOT_AVAILABLE          = "The character you chose isn't available.";
+    protected static final String TIMEOUT_EXPIRED               = "\n\n\u001B[31mTimeout has expired. Server kicked you out, please reconnect to resume the game.\u001B[0m";
 
     public abstract void onViewUpdate();
 
-    public abstract void onFailure();
+    public abstract void onFailure(String message);
+
+    /**
+     * Called by the client when the timeout expires and the user is kicked out.
+     */
+    public abstract void timeoutHasExpired();
 
     /**
      * Method implemented by subclasses when a new game starts.
      * This super method should be called in order to set View's
      * gameID attribute.
-     * @param gameID the game identifier used by tbe server
      */
-    public void onStart(UUID gameID) {
-        this.gameID = gameID;
+    public void onStart() {
     }
 
     /**
@@ -74,17 +80,24 @@ public abstract class View implements Observer{
     }
 
     /**
+     * Abstract method implemented by subclasses and used to ask for username to clients
+     */
+    protected abstract void willCreateUser();
+
+    /**
      * Abstract method implemented by subclasses and used to create a new user
      * logged to the server.
      */
-    protected abstract void createUser();
+    public void createUser(String username){
+        client.createUser(username);
+    }
 
     /**
      * Called to notify a createUser failure
      */
     public void onLoginFailure() {
         AdrenalineLogger.error(ONLOGIN_FAILURE);
-        createUser();
+        willCreateUser();
     }
 
     /**
@@ -102,8 +115,6 @@ public abstract class View implements Observer{
      */
     private void joinWaitingRoom(String username) {
         AdrenalineLogger.info(JOIN_WAITING_ROOM);
-        var args = new HashMap<String, String>();
-        args.put(User.username_key, username);
         client.joinWaitingRoom(username);
     }
 
@@ -114,59 +125,168 @@ public abstract class View implements Observer{
     public abstract void didJoinWaitingRoom();
 
     /**
-     * Ele
+     * Public method implemented by subclasses when the client is asked to choose a character
      */
-    public abstract void willChooseCharacter();
+    public abstract void willChooseCharacter(List<String> availableCharacters);
 
     /**
-     * Ele
+     * When the client chooses a character
      */
-    public abstract void didChooseCharacter();
+    public void didChooseCharacter(String character) {
+        client.choseCharacter(character);
+    }
 
     /**
-     * Ele
+     * When the client has successfully selected a character
      */
-    public abstract void willChooseGameSettings();
+    public abstract void onChooseCharacterSuccess(String characterChosen);
 
     /**
-     * Ele
+     * Public method implemented by subclasses when choosing the number of skulls in the game.
      */
-    public abstract void didChooseGameSettings();
+    public abstract void willChooseSkulls();
 
     /**
-     * Ele
+     * Public method called when the number of skulls in the game has been decided.
+     * @param choice it's the number of skulls chosen.
      */
-    public abstract void willChooseSpawnPoint();
+    protected void didChooseSkulls(String choice) {
+        this.client.didChooseSkulls(choice);
+    }
 
     /**
-     * Ele
+     * Public method implemented by subclasses when choosing a map configuration.
+     * The user will be prompted to choose which map configuration does he wants to pick.
      */
-    public abstract void didChooseSpawnPoint();
+    public abstract void willChooseGameMap();
 
     /**
-     * Ele
+     * Called when the map configuration has been chosen by the player.
      */
-    public abstract void onMove();
+    protected void didChooseGameMap(String configuration) {
+        client.choseGameMap(configuration);
+    }
 
     /**
-     * Ele
+     * Called to begin the process of choosing a spawn point.
      */
-    public abstract void willChooseMovement();
+    public void willChooseSpawnPoint() {
+        client.askForPossibleSpawnPoints();
+    }
 
     /**
-     * Ele
+     * Called when the server has sent the two powerups that will be used to choose the spawn point.
+     * @param powerups it's the array of powerup that will be used to choose the spawn point.
      */
-    public abstract void didChooseMovement();
+    public abstract void onChooseSpawnPoint(List<String> powerups);
 
     /**
-     * Ele
+     * Public method implemented by subclasses when choosing a weapon.
+     * @param powerupChosenAsSpawnPoint it's the powerup that has been chosen from the player: it will be discarded and used to let him spawn.
+     * @param otherPowerup it's the other powerup: it will be added to the hand of the player.
      */
-    public abstract void willChooseWhatToGrab();
+    protected void didChooseSpawnPoint(String powerupChosenAsSpawnPoint, String otherPowerup) {
+        client.choseSpawnPoint(powerupChosenAsSpawnPoint, otherPowerup);
+    }
 
     /**
-     * Ele
+     * Public method implemented by subclasses when a new turn or a new action is starting.
      */
-    public abstract void didChooseWhatToGrab();
+    public abstract void newAction();
+
+    /**
+     * Public method implemented by subclasses when choosing an action.
+     * @param map it's the map to be displayed.
+     */
+    public abstract void onChooseAction(String map);
+
+    /**
+     * Public method implemented by subclasses when choosing a movement
+     * @param moves list of moves a player can choose
+     */
+    public abstract void willChooseMovement(List<String> moves);
+
+    /**
+     * When the client chooses where to move
+     * @param movement the chosen movement
+     */
+    protected void didChooseMovement(String movement) {
+        client.move(movement);
+    }
+
+    /**
+     * Public method implemented by subclasses and called to start the process of the player to pick something on the board.
+     */
+    public abstract void grabSomething();
+
+    /**
+     * Public method implemented by subclasses when the player wants to sell powerups to afford the cost of a weapon.
+     */
+    public abstract void sellPowerupToGrabWeapon(List<String> powerups);
+
+    /**
+     * Public method implemented by subclasses when the player has to decide what does he wants to grab.
+     * @param possiblePicks it's a list containing the possible picks of the player.
+     */
+    public abstract void willChooseWhatToGrab(List<String> possiblePicks);
+
+    /**
+     * Protected method called when the player has decided what he wants to pick.
+     * @param pick it's the card that the player wants to pick.
+     */
+    protected void didChooseWhatToGrab(String pick) {
+        this.client.didChooseWhatToGrab(pick);
+    }
+
+    /**
+     * Public method called when the process of grabbing has ended with success.
+     */
+    public abstract void onGrabSuccess();
+
+    /**
+     * Public method called when the process of grabbing has ended with Failure.
+     */
+    public abstract void onGrabFailure();
+
+    /**
+     * Public method called when the player wants to grab a powerup, but he already has three of them in his hand.
+     * @param powerup it's the powerup that the player should grab.
+     */
+    public abstract void onGrabFailurePowerup(List<String> powerup);
+
+    /**
+     * Protected method called when the player has decided which powerup does he want to discard.
+     * @param powerup it's the Powerup::toString that will be discarded.
+     */
+    protected void onGrabFailurePowerupToDiscard(String powerup) {
+        this.client.powerupGrabToDiscard(powerup);
+    }
+
+    /**
+     * Public method called when the player wants to grab a weapon, but he already has three of them in his hand.
+     * @param weapon it's the weapon that the player should grab.
+     */
+    public abstract void onGrabFailureWeapon(List<String> weapon);
+
+    /**
+     * Protected method called when the player has decided which weapon does he want to discard.
+     * @param weapon it's the Weapon::getName that will be discarded.
+     */
+    protected void onGrabFailureWeaponToDiscard(String weapon) {
+        this.client.weaponGrabToDiscard(weapon);
+    }
+
+    /**
+     * Public method used to start the process of using weapons.
+     */
+    protected void shootPeople() {
+        this.client.askWeapons();
+    }
+
+    /**
+     * Public method implemented by subclasses when the player doesn't have any weapon in his hand but has started the process of using them.
+     */
+    public abstract void onShootPeopleFailure();
 
     /**
      * Public method implemented by subclasses when choosing a weapon.
@@ -174,7 +294,7 @@ public abstract class View implements Observer{
      *
      * @param weapons it's an ArrayList containing all of the weapons that the player can use.
      */
-    public abstract void willChooseWeapon(ArrayList<String> weapons);
+    public abstract void willChooseWeapon(List<String> weapons);
 
     /**
      * Called when the Weapon to be used is chosen.
@@ -187,11 +307,38 @@ public abstract class View implements Observer{
     }
 
     /**
+     * Public method implemented by subclasses and called when no possible damage can be done with the weapon and the effect selected.
+     */
+    public abstract void onDamageFailure();
+
+    /**
      * Public method implemented by subclasses when choosing the damages to make.
      *
      * @param damagesToChoose it's a map containing all of the possible damages that can be made and the weapon used to make them.
      */
     public abstract void willChooseDamage(Map<String, String> damagesToChoose);
+
+    /**
+     * Public method implemented by subclasses and called when a player has selected to use powerups but hasn't got any of them.
+     */
+    public abstract void onPowerupInHandFailure();
+
+    /**
+     * Public method implemented by subclasses when choosing if using a powerup to get its ammo or not.
+     *
+     * @param powerups it's a map containing the powerups that the player has in his hand and the next thing to do after the powerups choosing.
+     */
+    public abstract void willChoosePowerupSelling(Map<String, String> powerups);
+
+    /**
+     * Called when the player has decided if he wants to use any powerup to afford the cost of the weapon.
+     *
+     * @param weapon it's the weapon that is being used.
+     * @param powerup it's a list containing the powerups chosen by the player, empty if none has been chosen.
+     */
+    protected void didChoosePowerupSelling(String weapon, List<String> powerup) {
+        this.client.useWeaponAfterPowerupAsking(weapon, powerup);
+    }
 
     /**
      * Called when the damages to be done have been chosen by the player.
@@ -240,47 +387,147 @@ public abstract class View implements Observer{
     }
 
     /**
-     * Ste
+     * Called when the player has to decide if use a powerup to make additional damage after the shoot.
+     * @param powerups it's a list containing the powerup that can be used.
      */
-    public abstract void onEndTurn();
+    public abstract void askPowerupAfterShot(List<String> powerups);
 
     /**
-     * Dani
+     * Called when the process of using a weapon has ended.
+     * @param powerups they are the powerups that the player has in his hand.
      */
-    public abstract void willReload();
+    public void didUseWeapon(List<String> powerups) {
+        AdrenalineLogger.info(DID_USE_WEAPON);
+        if(powerups.isEmpty()) this.afterAction();
+        else this.askPowerupAfterShot(powerups);
+    }
 
     /**
-     * Dani
+     * Called when the process of using a weapon doesn't end well.
      */
-    public abstract void didReload();
+    public abstract void onWeaponUsingFailure();
 
     /**
-     * Dani
+     * Public method implemented by subclasses, called when the player has done an action.
      */
-    public abstract void willUsePowerup();
+    public abstract void afterAction();
 
     /**
-     * Dani
+     * Public method implemented by subclasses, called when the player has to finish his turn.
+     * @param curSituation it's the String containing the situation of the board.
      */
-    public abstract void didUsePowerup();
+    public abstract void onEndTurn(String curSituation);
 
     /**
-     * Dani
+     * Public method implemented by subclasses when the player has to decide whether he wants to reload his weapons or not.
      */
-    public abstract void willChoosePowerup();
+    public abstract void askReload();
 
     /**
-     * Dani
+     * Public method called when the player has decided which powerup does he want to sell to reload his weapons.
+     * @param powerups it's the list of powerups that has been chosen by the player.
      */
-    public abstract void didChoosePowerup();
+    public abstract void willSellPowerupToReload(List<String> powerups);
 
     /**
-     * Dani
+     * Public method implemented by subclasses and called when the player has no weapons unloaded in his hand but has chosen to reload them.
      */
-    public abstract void willChoosePowerupEffect();
+    public abstract void onWeaponUnloadedFailure();
 
     /**
-     * Dani
+     * Public method implemented by subclasses when the player has to decide what weapon does he want to reload.
+     *
+     * @param weapons it's the list of names of the weapons that the player has in his hand and that are not loaded.
      */
-    public abstract void didChoosePowerupEffect();
+    public abstract void willReload(List<String> weapons);
+
+    /**
+     * Called when the weapons to be reloaded have been chosen by the player.
+     *
+     * @param weaponsToReload it's the list of names of the weapons that the player want to reload.
+     */
+    protected void didChooseWeaponsToReload(List<String> weaponsToReload) {
+        AdrenalineLogger.info(DID_SELECT_WEAPONS_TO_RELOAD);
+        this.client.reloadWeapons(weaponsToReload);
+    }
+
+    /**
+     * Public method implemented by subclasses, called when the reload process has ended with success.
+     */
+    public abstract void onReloadSuccess();
+
+    /**
+     * Public method implemented by subclasses, called when the reload process has ended with failure.
+     */
+    public abstract void onReloadFailure();
+
+    /**
+     * Starts the process of using a powerup.
+     */
+    protected void willUsePowerup() {
+        this.client.askForUsablePowerups();
+    }
+
+    /**
+     * Public method implemented by subclasses, called when a player has no powerup that can be used during his turn in his hand but has selected that he wants to use them.
+     */
+    public abstract void onTurnPowerupFailure();
+
+    /**
+     * Public method implemented by subclasses, called when the player has to decide which powerup does he wants to use.
+     *
+     * @param availablePowerups it's the list of powerups owned by the player.
+     */
+    public abstract void willChoosePowerup(List<String> availablePowerups);
+
+    /**
+     * Called when the powerup to be used has been chosen by the player.
+     *
+     * @param powerup it's the powerup that has been chosen.
+     */
+    protected void didChoosePowerup(String powerup) {
+        this.client.askPowerupDamages(powerup);
+    }
+
+    /**
+     * Public method implemented by subclasses, called when the player has to decide what damage does he want to do with the powerup he is using.
+     *
+     * @param possibleDamages it's a map containing both the possible damages and the powerup used to do them.
+     */
+    public abstract void willChoosePowerupDamage(Map<String, String> possibleDamages);
+
+    /**
+     * Called when the damage to be done with the powerup has been chosen from the player.
+     *
+     * @param choice it's the damage chosen by the player.
+     * @param powerup it's the Powerup::toString of the powerup that has been chosen.
+     */
+    protected void didChoosePowerupDamage(String choice, String powerup) {
+        this.client.usePowerup(powerup, choice);
+    }
+
+    /**
+     * Called whenever any other player finishes an action.
+     * @param change it's the updated Board::toStringFromPlayer
+     */
+    public abstract void displayChange(String change);
+
+    /**
+     * Called whenever a player has to spawn after its death.
+     * @param powerupsToSpawn it's the list of powerups that can be used to respawn.
+     */
+    public abstract void willSpawnAfterDeath(List<String> powerupsToSpawn);
+
+    /**
+     * Called when a player has chosen where does he want to spawn.
+     * @param powerupChosen it's the powerup that has been chosen.
+     */
+    protected void didChooseSpawnAfterDeath(String powerupChosen) {
+        this.client.spawnAfterDeathChosen(powerupChosen);
+    }
+
+    /**
+     * Called when the death spawns phase is over and the game can continue.
+     */
+    public abstract void canContinue();
 }

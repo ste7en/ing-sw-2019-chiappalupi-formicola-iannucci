@@ -1,42 +1,33 @@
 package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.board.GameMap;
-import it.polimi.ingsw.model.utility.AmmoColor;
-import it.polimi.ingsw.model.utility.PlayerColor;
-import it.polimi.ingsw.model.utility.PowerupType;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.player.PlayerBoard;
+import it.polimi.ingsw.model.utility.AmmoColor;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  *
  * @author Daniele Chiappalupi
  */
-public class Powerup {
+public abstract class Powerup implements Serializable {
 
     /**
-     * Type of the powerup
+     * String constants used in messages between client-server
      */
-    private PowerupType type;
+    public static final String powerup_key      = "POWERUP";
+    public static final String spawnPowerup_key = "SPAWN_POWERUP";
 
     /**
      * Description of the powerup
      */
-    private String description;
+    protected String description;
 
     /**
      * Color of the powerup
      */
-    private AmmoColor color;
-
-    /**
-     * Powerup's type getter
-     * @return the type of the powerup
-     */
-    public PowerupType getType() {
-        return type;
-    }
+    protected AmmoColor color;
 
     /**
      * Powerup's description getter
@@ -54,76 +45,31 @@ public class Powerup {
         return color;
     }
 
-    /*All of the methods below need the view to be implemented, so they will be partially written and not tested*/
+    /**
+     * Public method implemented by subclasses to know when a powerup can be used.
+     * @return TRUE if the powerup can be used during the turn, FALSE if it must be used after other actions.
+     */
+    public abstract boolean isUsableDuringTurn();
 
     /**
-     * Method that handles the effect of the powerup
-     * @param user the player who is using the powerup
-     * @param target the player who is the target of the powerup (null if PowerupType is Teleporter)
-     * @param gameMap necessary to manage the effects (null if PowerupType is TargetingScope)
-     * @throws NullPointerException if user is null
-     * @throws RuntimeException if user and target are the same player
+     * Public method implemented by subclasses to know when a powerup can be used.
+     * @return TRUE if the powerup can be used after the player have made damage, FALSE otherwise.
      */
-    public void use(Player user, Player target, GameMap gameMap) {
-        if(user == null) throw new NullPointerException("user can't be null");
-        if(user == target) throw new RuntimeException("user and target can't be the same player");
-        switch (type) {
-            case Newton: {
-                newton(user, target, gameMap);
-                return;
-            }
-            case TagbackGrenade: {
-                tagbackGrenade(user.getCharacter().getColor(), target.getPlayerBoard(), gameMap);
-                return;
-            }
-            case TargetingScope: {
-                targetingScope(user.getCharacter().getColor(), target.getPlayerBoard());
-                return;
-            }
-            case Teleporter: {
-                teleporter(user, gameMap);
-            }
-        }
-    }
+    public abstract boolean isUsableAfterDamageMade();
 
     /**
-     * Private method that handles the effect of the Targeting Scope powerup
-     * @param shooter the one who shoots
-     * @param shot the one who gets shot
+     * Public method implemented by subclasses to know when a powerup can be used.
+     * @return TRUE if the powerup can be used after the player have taken damage, FALSE otherwise.
      */
-    private void targetingScope(PlayerColor shooter, PlayerBoard shot) {
-        shot.appendDamage(shooter, 1);
-    }
+    public abstract boolean isUsableAfterDamageTaken();
 
     /**
-     * Private method that handles the effect of the Newton powerup
-     * @param user player to be moved
-     * @param gameMap necessary to move the player
+     * Public method implemented by subclasses, used when a powerup is being used.
+     * @param player it's the player who is using the powerup.
+     * @param map it's the map of the game.
+     * @param players it's the list of players in game.
+     * @return the possible damages that a powerup can make.
      */
-    private void newton(Player user, Player target, GameMap gameMap) {
-        //toDo
-    }
-
-    /**
-     * Private method that handles the effect of the TagbackGrenade powerup
-     * @param shooter the one who give the mark
-     * @param shot the one who gets the mark
-     * @param gameMap necessary to verify if the shooter can see the shot
-     */
-    private void tagbackGrenade(PlayerColor shooter, PlayerBoard shot, GameMap gameMap) {
-        //if(gameMap.canSee(shooter, shot)
-        ArrayList<PlayerColor>marks = new ArrayList<>();
-        marks.add(shooter);
-        shot.setMarks(marks);
-    }
-
-    /**
-     * Private method that handles the effect of the Teleporter powerup
-     * @param player the player that is using the Teleporter
-     * @param gameMap necessary to teleport
-     */
-    private void teleporter(Player player, GameMap gameMap) {
-        //toDo
-    }
+    public abstract List<Damage> use(Player player, GameMap map, List<Player> players);
 
 }

@@ -26,7 +26,7 @@ public class BoardTest {
     private Board boardTest;
     private static GameMap gameMap;
     private static LinkedHashMap<Player, Cell> playersPosition = new LinkedHashMap<>();
-    private static HashMap<AmmoColor, ArrayList<Weapon>> weaponsDecks = new HashMap<>();
+    private static Map<AmmoColor, List<Weapon>> weaponsDecks = new HashMap<>();
     private static ArrayList<Weapon> deck1 = new ArrayList<>();
     private static ArrayList<Weapon> deck2 = new ArrayList<>();
     private static ArrayList<Weapon> deck3 = new ArrayList<>();
@@ -73,10 +73,6 @@ public class BoardTest {
             deck3.add(decksHandler.drawWeapon());
         }
         weaponsDecks.put(AmmoColor.yellow, deck3);
-
-        for (int i=0; i<8; i++){
-            skullsTrack.put(i, null);
-        }
     }
 
     /**
@@ -84,7 +80,8 @@ public class BoardTest {
      */
     @Before
     public void setUp() {
-        boardTest = new Board(gameMap, weaponsDecks, skullsTrack);
+        boardTest = new Board(gameMap, weaponsDecks);
+        boardTest.setSkulls(8);
     }
 
     /**
@@ -166,7 +163,5 @@ public class BoardTest {
         boardTest.addBloodFrom(playerTest.getCharacter().getColor(), 2);
         boardTest.addBloodFrom(playerTest2.getCharacter().getColor(), 1);
         assertEquals(6, boardTest.skullsLeft());
-        assertEquals(blood, boardTest.getBlood(0));
-        assertEquals(blood2, boardTest.getBlood(1));
     }
 }

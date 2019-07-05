@@ -3,7 +3,6 @@ package it.polimi.ingsw.utility;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.*;
-import java.util.logging.Level;
 
 /**
  * A logger class useful for both deployment and production debugging.
@@ -19,7 +18,7 @@ public class AdrenalineLogger {
     private static final String APP_NAME = "Adrenaline";
     private static final String SEPARATOR = "_";
     private static final String EXTENSION = ".log";
-    public static String LOG_TYPE = "LOG";
+    private static String LOG_TYPE = "LOG";
 
     /**
      * Error string for logging
@@ -29,33 +28,40 @@ public class AdrenalineLogger {
     /**
      * Private logger
      */
-    private static final Logger logger = getLogger();
+    private static Logger logger;
+
+    private static boolean debug = false;
 
     /**
      * Setter to change the default log name basing on the user (client/server)
      */
     public static void setLogName(String n) {
         LOG_TYPE = n;
+        logger = getLogger();
+    }
+    //todo
+    public static void setDebugMode(boolean flag) {
+        debug = flag;
     }
 
     /**
      * @return a string used to save the log in a file
      */
     private static String getLogName() {
-        return APP_NAME +SEPARATOR+ LOG_TYPE +EXTENSION;
+        return APP_NAME + SEPARATOR + LOG_TYPE + EXTENSION;
     }
 
     /**
      * Logger factor method
      * @return a specific logger for the app
      */
-    private static Logger getLogger() {
+    private static synchronized Logger getLogger() {
         if (logger != null) return logger;
-        var logger = Logger.getLogger(APP_NAME);
+        logger = Logger.getLogger(APP_NAME);
         // Removing default console handler
         logger.setUseParentHandlers(false);
         // Adding a custom console handler
-        logger.addHandler(getConsoleHandler());
+        if (debug) logger.addHandler(getConsoleHandler());
         // Adding a custom file handler
         Optional<FileHandler> fH = getFileHandler();
         fH.ifPresent(logger::addHandler);
@@ -100,36 +106,36 @@ public class AdrenalineLogger {
      * Log a CONFIG message.
      * @param s config message
      */
-    public static void config(String s) { logger.config(s); }
+    public static void config(String s) { getLogger().config(s); }
 
     /**
      * Log a FINE message used for operations ended with success.
      * @param s message
      */
-    public static void success(String s) { logger.fine(s); }
+    public static void success(String s) { getLogger().fine(s); }
 
     /**
      * Log an INFO message.
      * @param s info message
      */
-    public static void info(String s) { logger.info(s); }
+    public static void info(String s) { getLogger().info(s); }
 
     /**
      * Log a WARNING message.
      * @param s warning message
      */
-    public static void warning(String s) { logger.warning(s); }
+    public static void warning(String s) { getLogger().warning(s); }
 
     /**
      * Log an ERROR message.
      * @param s error message
      */
-    public static void error(String s) { logger.log(Level.SEVERE, s); }
+    public static void error(String s) { getLogger().log(Level.SEVERE, s); }
 
     /**
      * Log a message, with associated Throwable information.
      * @param s message
      * @param t Throwable information
      */
-    public static void errorException(String s, Throwable t) { logger.log(Level.SEVERE, s, t); }
+    public static void errorException(String s, Throwable t) { getLogger().log(Level.SEVERE, s+t.getMessage(), t); }
 }

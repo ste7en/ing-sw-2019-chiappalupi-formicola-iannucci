@@ -41,7 +41,7 @@ public class PlayerTest {
 
     /**
      * Tests the constructor of the {@link Player} class
-     * @see Player#Player(User, java.lang.Character)
+     * @see Player#Player(User, Character)
      */
     @Test
     public void testConstructor() {

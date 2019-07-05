@@ -41,16 +41,25 @@ public final class ServerSocketHandler implements Runnable, Loggable {
      */
     private Integer portNumber;
 
+    /**
+     * Server name
+     */
     private Server server;
+
+    /**
+     * Operation timeout
+     */
+    private int timeout;
 
     /**
      * Class constructor
      * @param portNumber port number on which the connection has to be opened
      */
-    public ServerSocketHandler(Integer portNumber, Server server) {
+    public ServerSocketHandler(Integer portNumber, Server server, int timeout) {
         if (portNumber > 65535 || portNumber < 1024) throw new IllegalPortNumber();
         this.portNumber = portNumber;
         this.server = server;
+        this.timeout = timeout;
     }
 
     /**
@@ -91,11 +100,11 @@ public final class ServerSocketHandler implements Runnable, Loggable {
             socket.setSoTimeout(SOCKET_SO_TIMEOUT);
             logOnSuccess(SOCKET_SUCCESS + socket.toString());
 
-            var connection = new ServerSocketConnectionHandler(socket, server);
+            var connection = new ServerSocketConnectionHandler(socket, server, timeout);
 
             var connectionThread = new Thread(connection);
             connectionThread.setDaemon(true);
-            connectionThread.setPriority(Thread.MIN_PRIORITY);
+            connectionThread.setPriority(Thread.NORM_PRIORITY);
             connectionThread.start();
         } catch (IOException e) {
             logOnException(EXC_ON_CLIENT_CONNECTION, e);

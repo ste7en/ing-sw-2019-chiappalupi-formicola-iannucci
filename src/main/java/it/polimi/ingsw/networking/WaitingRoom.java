@@ -3,6 +3,7 @@ package it.polimi.ingsw.networking;
 import it.polimi.ingsw.model.player.User;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -17,13 +18,15 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Stefano Formicola
  */
-public class WaitingRoom {
+public class WaitingRoom implements Serializable {
 
     /**
      * Log strings
      */
-    private static final String WAITING_ROOM_CREATED = "Waiting Room created";
+    private static final String WAITING_ROOM_CREATED = "Waiting Room created with a timeout of ";
     private static final String USER_JOINED          = "User joined the waiting room :: ";
+    private static final String CURR_NUMBER_OF_USER  = " – number of users waiting: ";
+    private static final String USER_REMOVED         = "User removed from the waiting room :: ";
     private static final String MIN_NUM_REACHED      = "Minimum number of users for a game reached";
     private static final String MAX_NUM_REACHED      = "Maximum number of users for a game reached. Next users will be added for a new game.";
     private static final String COUNTDOWN_STARTED    = "A new game is going to be created. Countdown started...";
@@ -61,7 +64,7 @@ public class WaitingRoom {
     /**
      * The executor service that will schedule a game starting timeout
      */
-    private ScheduledExecutorService executorService;
+    private transient ScheduledExecutorService executorService;
 
     /**
      * A helper collection of users needed to create one game
@@ -93,7 +96,7 @@ public class WaitingRoom {
         userQueue = new ConcurrentLinkedQueue<>();
         userWaitingList = new LinkedList<>();
 
-        AdrenalineLogger.config(WAITING_ROOM_CREATED);
+        AdrenalineLogger.config(WAITING_ROOM_CREATED + timeout + " seconds.");
     }
 
     /**
@@ -106,7 +109,7 @@ public class WaitingRoom {
         if (userQueue.contains(user) || userWaitingList.contains(user)) throw new RuntimeException(USER_ALREADY_ADDED_EXC + user.toString());
         if (userQueue.size() < maximumNumberOfPlayers) {
             userQueue.add(user);
-            AdrenalineLogger.info(USER_JOINED + user.getUsername());
+            AdrenalineLogger.info(USER_JOINED + user.getUsername() + CURR_NUMBER_OF_USER + userQueue.size());
             didAddUser();
             return true;
         } else {
@@ -122,7 +125,8 @@ public class WaitingRoom {
      */
     public void removeUser(User user) {
         if (userQueue.remove(user)) didRemoveUser();
-        else userWaitingList.remove(user);
+        else if (!userWaitingList.remove(user)) return;
+        AdrenalineLogger.info(USER_REMOVED+user.getUsername());
     }
 
     /**
@@ -152,7 +156,8 @@ public class WaitingRoom {
      */
     private void didRemoveUser() {
         if (userQueue.size() < minimumNumberOfPlayers && isRunning) {
-            executorService.shutdown();
+            executorService.shutdownNow();
+            isRunning = false;
             executorService = Executors.newSingleThreadScheduledExecutor();
         }
     }
@@ -163,9 +168,8 @@ public class WaitingRoom {
      * creating a new game with the selected users.
      */
     private void didReachMinimumNumberOfPlayers() {
-        //TODO: - Stop the timer if the number of players becomes less than 3
         AdrenalineLogger.info(COUNTDOWN_STARTED);
-        AdrenalineLogger.success(NEXT_GAME_CREATION + timeout + "ms");
+        AdrenalineLogger.success(NEXT_GAME_CREATION + timeout + "s");
         isRunning = true;
         executorService.schedule(
                 () -> {

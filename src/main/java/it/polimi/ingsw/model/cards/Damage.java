@@ -3,7 +3,9 @@ package it.polimi.ingsw.model.cards;
 import it.polimi.ingsw.model.board.Cell;
 import it.polimi.ingsw.model.player.Player;
 
-public class Damage implements Comparable<Damage> {
+import java.io.Serializable;
+
+public class Damage implements Comparable<Damage>, Serializable {
 
     private Player target;
     private Cell position;
@@ -11,9 +13,10 @@ public class Damage implements Comparable<Damage> {
     private int marks;
 
     /**
-     * String constant used in messages between client-server
+     * String constants used in messages between client-server
      */
     public final static String damage_key = "DAMAGE";
+    public final static String no_damage = "NO_DAMAGE";
 
     public Damage() {
         target = null;

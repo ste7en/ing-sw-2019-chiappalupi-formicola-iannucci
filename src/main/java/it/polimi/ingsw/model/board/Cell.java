@@ -1,23 +1,37 @@
 package it.polimi.ingsw.model.board;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.utility.CellColor;
 import it.polimi.ingsw.model.cards.AmmoTile;
 import it.polimi.ingsw.model.utility.Border;
 import it.polimi.ingsw.model.utility.Direction;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Elena Iannucci
  */
 
-public class Cell implements Comparable<Cell> {
+public class Cell implements Comparable<Cell>, Serializable {
+
+    private static final String ANSI_RESET = "\u001B[0m";
+
+    private static final String ANSI_RED_BACKGROUND = "\u001B[41m";
+    private static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
+    private static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
+    private static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
+    private static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
+    private static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
+
 
     /**
      * borders' types of the cell
      */
-    private ArrayList<Border> borders;
+    @JsonProperty("borders")
+    private List<Border> borders;
 
     /**
      * Cell's color
@@ -25,21 +39,29 @@ public class Cell implements Comparable<Cell> {
     private CellColor color;
 
     /**
-     * Boolean that is true only if the cell contains a spawnpoint
+     * Boolean that is true only if the cell contains a spawnPoint
      */
+    @JsonProperty("respawner")
     private boolean respawner;
 
     /**
-     * Ammo tile positioned on the cell; it is null if the cell contains spawnpoints
+     * Ammo tile positioned on the cell; it is null if the cell contains spawnPoints
      */
     private AmmoTile ammoCard;
 
-    //added for weapons testing purposes
-    private final int row;
-    private final int column;
-
+    /**
+     * Position of the cell in the matrix.
+     */
+    private int row;
+    private int column;
 
     /**
+     * Default constructor: added to let Jackson deserialize the map.
+     */
+    public Cell() {}
+
+    /**
+     * N.B.: this constructor acts only for testing purposes, as all the cell of the game maps are deserialized from json through the default constructor;
      * Constructor: creates a new Cell based on its borders, color, ammo tile, position on the map and whether it is a respawner cell
      * @param b1 northern border of the cell, defined as a Border Enum value
      * @param b2 eastern border of the cell, defined as a Border Enum value
@@ -90,6 +112,28 @@ public class Cell implements Comparable<Cell> {
     public CellColor getColor() { return color; }
 
     /**
+     * Cell's ansi color getter (needed to print it in the CLI).
+     * @return the ANSI string color of the cell.
+     */
+    public String getANSIColor() {
+        switch (color) {
+            case red:
+                return ANSI_RED_BACKGROUND;
+            case yellow:
+                return ANSI_YELLOW_BACKGROUND;
+            case white:
+                return ANSI_WHITE_BACKGROUND;
+            case blue:
+                return ANSI_BLUE_BACKGROUND;
+            case pink:
+                return ANSI_PURPLE_BACKGROUND;
+            case green:
+                return ANSI_GREEN_BACKGROUND;
+        }
+        return ANSI_RESET;
+    }
+
+    /**
      * Method that shows whether the cell contains a spwanpoint
      * @return a boolean that is true if the cell contains a spawnpoint, false otherwise
      */
@@ -101,6 +145,12 @@ public class Cell implements Comparable<Cell> {
      */
     public AmmoTile getAmmoCard() { return ammoCard; }
 
+    /**
+     * Cell's ammo tile setter
+     * @param ammoCard the new ammo tile to be positioned on the cell
+     */
+    public void setAmmoCard(AmmoTile ammoCard) { this.ammoCard = ammoCard; }
+
     @Override
     public int compareTo(Cell anotherCell) {
         return this.toString().compareToIgnoreCase(anotherCell.toString());
@@ -111,4 +161,35 @@ public class Cell implements Comparable<Cell> {
         return ("Row: " + row + "; Column: " + column);
     }
 
+    /**
+     * Used in the CLI when the ammo card in the Cell should be displayed.
+     * @return the string containing the ammo card in the cell and the position
+     */
+    public String toStringAmmos() {
+        return ammoCard.toString() + " " + toStringCondensed();
+    }
+
+    /**
+     * This method returns a String containing the condensed frame of a cell.
+     * @return the string containing the cell information.
+     */
+    public String toStringCondensed() {
+        return "[Cell -> (" + row + ", " + column + ")]\n";
+    }
+
+    /**
+     * Row getter.
+     * @return the row of the cell.
+     */
+    public int getRow() {
+        return row;
+    }
+
+    /**
+     * Column getter.
+     * @return the column of the cell.
+     */
+    public int getColumn() {
+        return column;
+    }
 }

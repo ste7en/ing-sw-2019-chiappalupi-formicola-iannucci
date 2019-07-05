@@ -130,15 +130,6 @@ public class PlayerHandTest {
     /**
      * Tests the impossibility of adding more ammos than the allowed number
      */
-    @Test (expected = RuntimeException.class)
-    public void testMaximumNumberOfCubes() {
-        playerHand.updateAmmos(testColor, testAmount);
-        playerHand.updateAmmos(testColor, testAmount);
-    }
-
-    /**
-     * Tests the impossibility of adding more ammos than the allowed number
-     */
     @Test (expected = IllegalArgumentException.class)
     public void testInvalidAmountOfCubesToIncrement() {
         playerHand.updateAmmos(AmmoColor.red, 5);
@@ -150,13 +141,5 @@ public class PlayerHandTest {
     @Test (expected = IllegalArgumentException.class)
     public void testInvalidAmountOfCubesToDecrement() {
         playerHand.updateAmmos(testColor, -2);
-    }
-
-    /**
-     * Tests the correctness of arguments when adding cubes of a certain color
-     */
-    @Test (expected = IllegalArgumentException.class)
-    public void testInvalidColorException() {
-        playerHand.updateAmmos(AmmoColor.none, 2);
     }
 }

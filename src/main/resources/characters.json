@@ -1,0 +1,27 @@
+[
+    {
+      "name" : "D-Struct-Or",
+      "color" : "yellow",
+      "description" : "His beloved pet is a cordless drill, he drinks 5W-30 and plays tennis, bowling and origami. His favorite board game? Robo Rally!"
+    },
+    {
+      "name" : "Banshee",
+      "color" : "blue",
+      "description" : "Has 900 sisters, all the same age. His guilty pleasure is karaoke and loves walking by the ocean."
+    },
+    {
+      "name" : "Dozer",
+      "color" : "grey",
+      "description" : "With a very high testosterone level, his speciality is hurting people and he loves breaking stuff."
+    },
+    {
+      "name" : "Violet",
+      "color" : "purple",
+      "description" : "She's a shooting instructor with an always perfect nail polish and she loves chips and salsa."
+    },
+    {
+      "name" : "Sprog",
+      "color" : "green",
+      "description" : "A reptile with a Texan accent, he likes crickets, flat rocks and heat lamps."
+    }
+]

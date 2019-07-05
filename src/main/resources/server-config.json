@@ -1,0 +1,6 @@
+{
+  "socketPortNumber" : 3334,
+  "rmiPortNumber" : 4444,
+  "waitingRoomTimeout" : 30,
+  "operationTimeout" : 60
+}

@@ -1,10 +1,12 @@
 package it.polimi.ingsw.model.board;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.io.Serializable;
+import java.util.*;
+
 import it.polimi.ingsw.controller.*;
+import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.cards.Weapon;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.model.utility.PlayerColor;
 
@@ -13,7 +15,25 @@ import it.polimi.ingsw.model.utility.PlayerColor;
  * @author Elena Iannucci
  */
 
-public class Board {
+public class Board implements Serializable {
+
+    /**
+     * String constants used in Board::toString
+     */
+    private static final String WEAPON_IN_RESPAWN   = "Here are the weapons in the spawn points:";
+    private static final String WEAPONS_IN_HAND     = "Here are your weapons:";
+    private static final String NO_WEAPON_IN_HAND   = "you haven't got any weapon in your hand.";
+    private static final String POWERUPS_IN_HAND    = "Here are your powerups: ";
+    private static final String NO_POWERUP_IN_HAND  = "You haven't got any powerup in your hand.";
+    private static final String AMMOS_IN_HAND       = "Here are your ammos:";
+    private static final String SKULLS_REMAINING    = "Number of skulls remaining: ";
+    private static final String NEW_LINE            = "\n";
+    private static final String INDENT              = "\t";
+
+    /**
+     * String constant used in messages between client-server
+     */
+    public static final String skulls_key = "SKULLS";
 
     /**
      * Map of the board
@@ -23,25 +43,31 @@ public class Board {
     /**
      * Three collections of three Weapons placed on the board near the spawpoints divided by colors
      */
-    private HashMap<AmmoColor, ArrayList<Weapon>> weapons;
+    private Map<AmmoColor, List<Weapon>> weapons;
 
     /**
      * Killshot track on the board that takes into account the deaths occured during the game
      */
-    private LinkedHashMap<Integer, ArrayList<PlayerColor>> skullsTrack;
+    private Map<Integer, List<PlayerColor>> skullsTrack;
 
     /**
      * Constructor: creates a new board based on its map, its killshot track and weapons positioned near its spawnpoint
      * @param map the map of the board
      * @param weapons a collection of three boards placed next to the spawpoints defined by a color and that contain three weapons each
-     * @param skullsTrack the killshot track that will be placed on the board to keep track of the deaths occured
      * */
-    public Board(GameMap map, HashMap<AmmoColor, ArrayList<Weapon>> weapons, LinkedHashMap<Integer, ArrayList<PlayerColor>> skullsTrack){
-        this.weapons = new HashMap<>();
+    public Board(GameMap map, Map<AmmoColor, List<Weapon>> weapons){
+        this.weapons = new EnumMap<>(AmmoColor.class);
         this.skullsTrack = new LinkedHashMap<>();
-        this.map=map;
+        this.map = map;
         this.weapons.putAll(weapons);
-        this.skullsTrack.putAll(skullsTrack);
+    }
+
+    /**
+     * Sets the number of skulls of the game.
+     * @param skulls it's the number of skulls that the game will have.
+     */
+    public void setSkulls(int skulls) {
+        for(int i = 0; i < skulls; i++) skullsTrack.put(i, null);
     }
 
     /**
@@ -53,7 +79,7 @@ public class Board {
         for (AmmoColor ammoColor : weapons.keySet()){
             for (Weapon weapon : weapons.get(ammoColor)){
                 if (weapon == chosenWeapon) {
-                    index=weapons.get(ammoColor).indexOf(weapon);
+                    index = weapons.get(ammoColor).indexOf(weapon);
                     weapons.get(ammoColor).set(index, null);
                 }
             }
@@ -75,14 +101,12 @@ public class Board {
     }
 
     /**
-     * Method that shows the three weapons placed next to a certain spawnpoint
-     * @param color the color of the spawnpoint next to the weapons that have to be shawn, defined as a AmmoColor Enum type
-     * @return
+     * Method that shows the three weapons placed next to a certain spawn point
+     * @param color the color of the spawn point next to the weapons that have to be shawn, defined as a AmmoColor Enum type
+     * @return a list containing the weapons in the spawn point of the color provided
      */
-    public ArrayList<Weapon> showWeapons(AmmoColor color) {
-        ArrayList<Weapon> decksweapons = new ArrayList<>();
-        decksweapons.addAll(weapons.get(color));
-        return decksweapons;
+    public List<Weapon> showWeapons(AmmoColor color) {
+        return new ArrayList<>(weapons.get(color));
     }
 
     /**
@@ -109,9 +133,9 @@ public class Board {
      */
     public void addBloodFrom(PlayerColor player, Integer count) {
         int i=0;
-        ArrayList<PlayerColor> playerColors = new ArrayList<>();
-        while (this.skullsTrack.get(i)!=null) i++;
-        for (int j=0; j<count; j++){
+        List<PlayerColor> playerColors = new ArrayList<>();
+        while (this.skullsTrack.get(i) != null) i++;
+        for (int j = 0; j < count; j++){
             playerColors.add(player);
         }
         skullsTrack.put(i, playerColors);
@@ -134,6 +158,63 @@ public class Board {
      */
     public GameMap getMap() {
         return map;
+    }
+
+    /**
+     * Saves the situation of the board in a string
+     * @param player it's the player that is playing right now
+     * @return the String with the game situation
+     */
+    public String toStringFromPlayer(Player player) {
+        StringBuilder board = new StringBuilder();
+        board.append(this.getMap().toString());
+
+        board.append(NEW_LINE).append(SKULLS_REMAINING).append(skullsLeft()).append(NEW_LINE);
+        board.append(NEW_LINE).append(WEAPON_IN_RESPAWN).append(NEW_LINE);
+
+
+        for(AmmoColor color : AmmoColor.values()) {
+            board.append(INDENT).append(color.toString()).append(": ");
+            List<Weapon> weaponList = this.weapons.get(color);
+            for(Weapon weapon : weaponList) {
+                if(weapon != null) board.append(weapon.getName()).append("; ");
+            }
+            board.append(NEW_LINE);
+        }
+        board.append(NEW_LINE);
+
+        List<Weapon> weaponList = player.getPlayerHand().getWeapons();
+        board.append(player.getNickname()).append(", ");
+        if(weaponList.isEmpty()) {
+            board.append(NO_WEAPON_IN_HAND).append(NEW_LINE);
+        }
+        else {
+            board.append(WEAPONS_IN_HAND).append(NEW_LINE);
+            for(Weapon weapon : weaponList) {
+                board.append(INDENT).append(weaponList.indexOf(weapon)).append(") ").append(weapon.getName()).append(";").append(NEW_LINE);
+            }
+        }
+        board.append(NEW_LINE);
+
+        List<Powerup> powerupList = player.getPlayerHand().getPowerups();
+        board.append(player.getNickname()).append(", ");
+        if(powerupList.isEmpty()) {
+            board.append(NO_POWERUP_IN_HAND).append(NEW_LINE);
+        }
+        else {
+            board.append(POWERUPS_IN_HAND).append(NEW_LINE);
+            for(Powerup powerup : powerupList) {
+                board.append(INDENT).append(powerupList.indexOf(powerup)).append(") ").append(powerup.toString()).append(";\n");
+            }
+        }
+        board.append(NEW_LINE);
+
+        board.append(AMMOS_IN_HAND).append(NEW_LINE);
+        for(AmmoColor color : AmmoColor.values())
+            board.append(INDENT).append(color.toString()).append(": ").append(player.getPlayerHand().getAmmosAmount((color))).append(NEW_LINE);
+        board.append(NEW_LINE);
+
+        return board.toString();
     }
 
 }

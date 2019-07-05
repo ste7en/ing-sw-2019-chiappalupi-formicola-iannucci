@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.*;
 
 import static it.polimi.ingsw.networking.utility.ConnectionState.*;
 
@@ -71,7 +71,7 @@ public class ClientSocketConnectionHandler implements ConnectionHandlerSenderDel
     /**
      * Socket timeout
      */
-    private static final int SOCKET_SO_TIMEOUT_MILLIS = 1000;
+    private static final int SOCKET_SO_TIMEOUT_MILLIS = 500;
 
     /**
      * Public constructor of the socket connection between client and server
@@ -89,7 +89,7 @@ public class ClientSocketConnectionHandler implements ConnectionHandlerSenderDel
         try {
             this.socket = new Socket(serverName, portNumber);
             var clientSocketConnectionHandlerThread = new Thread(this);
-            clientSocketConnectionHandlerThread.setPriority(Thread.NORM_PRIORITY);
+            clientSocketConnectionHandlerThread.setPriority(Thread.MAX_PRIORITY);
             clientSocketConnectionHandlerThread.start();
         } catch (UnknownHostException e) {
             logOnException(INIT_EXCEPTION+UNKNOWN_HOST, e);
@@ -121,7 +121,6 @@ public class ClientSocketConnectionHandler implements ConnectionHandlerSenderDel
             this.socket.setSoTimeout(SOCKET_SO_TIMEOUT_MILLIS);
 
             while(connectionState == ONLINE) {
-
                 if (inStr.available() != 0) {
                     var received = inScanner.nextLine();
                     receiverDelegate.receive(received, this);
@@ -130,7 +129,6 @@ public class ClientSocketConnectionHandler implements ConnectionHandlerSenderDel
                 outBuf.clear();
                 Thread.sleep(100);
             }
-
             if (connectionState == CLOSED) socket.close();
             AdrenalineLogger.info(CONN_CLOSED+socket.toString());
         } catch (IOException e) {
@@ -147,6 +145,7 @@ public class ClientSocketConnectionHandler implements ConnectionHandlerSenderDel
      */
     private void close() {
         try {
+            connectionState = CLOSED;
             socket.close();
         } catch (IOException e) {
             logOnException(IO_EXC_CLOSING, e);

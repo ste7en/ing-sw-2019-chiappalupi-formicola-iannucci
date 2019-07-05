@@ -2,13 +2,16 @@ package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.utility.AmmoColor;
 
+import java.io.Serializable;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author Daniele Chiappalupi
  */
-public class Effect {
+public class Effect implements Serializable {
 
     /**
      * Name of the effect
@@ -28,12 +31,12 @@ public class Effect {
     /**
      * HashMap to save the properties of the effect, needed to the GameLogic function that returns the applicability of a Weapon
      */
-    private HashMap<EffectProperty, Integer> properties;
+    private Map<EffectProperty, Integer> properties;
 
     /**
      * String constant used in messages between client-server
      */
-    public final static String effect_key = "EFFECT";
+    public static final String effect_key = "EFFECT";
 
 
     public String getName() {
@@ -44,7 +47,7 @@ public class Effect {
      * Effect's cost getter
      * @return the cost of the effect
      */
-    public HashMap<AmmoColor, Integer> getCost() {
+    public Map<AmmoColor, Integer> getCost() {
         return cost;
     }
 
@@ -60,14 +63,14 @@ public class Effect {
      * Effect's properties getter (returns a clone to preserve the rep invariant)
      * @return a clone of the properties
      */
-    public HashMap<EffectProperty, Integer> getProperties() {
-        return (HashMap<EffectProperty, Integer>) properties.clone();
+    public Map<EffectProperty, Integer> getProperties() {
+        return new EnumMap<>(properties);
     }
 
     /**
      * Effect's properties setter (needed for the creation of artificial effects)
      */
-    public void setProperties(HashMap<EffectProperty, Integer> properties) {
+    void setProperties(Map<EffectProperty, Integer> properties) {
         this.properties = properties;
     }
 

@@ -43,8 +43,6 @@ public class GameMapTest {
         userTest2 = new User(username2);
         characterTest2 = new Character("CharacterTestName2", PlayerColor.blue, "Character user for tests.");
         playerTest2 = new Player(userTest2, characterTest2);
-        playersPosition.put(playerTest, null);
-        playersPosition.put(playerTest2, null);
     }
 
     /**
@@ -52,7 +50,10 @@ public class GameMapTest {
      */
     @Before
     public void setUp() {
-        gameMapTest = new GameMap(MapType.conf_4, playersPosition);
+        gameMapTest = new GameMap(MapType.conf_4);
+        for(Player p: playersPosition.keySet()) {
+            gameMapTest.setPlayerPosition(p, gameMapTest.getCell(1, 2));
+        }
     }
 
     /**
@@ -111,12 +112,32 @@ public class GameMapTest {
      * @see GameMap#getTargetsInMyCell(Player)
      */
     @Test
-    public void testGetTargetsInMyCell (){
+    public void testGetTargetsInMyCell(){
         ArrayList<Player> playersInThatCell = new ArrayList<>();
         gameMapTest.setPlayerPosition(playerTest,1,2);
         gameMapTest.setPlayerPosition(playerTest2, 1,2);
         playersInThatCell.add(playerTest2);
         assertEquals(playersInThatCell, gameMapTest.getTargetsInMyCell(playerTest));
+    }
+
+    /**
+     * Tests the getCellsAtMaxDistance method
+     * @see GameMap#getCellsAtMaxDistance(Player, int)
+     */
+    @Test
+    public void testGetCellsAtMaxDistance(){
+        ArrayList<Cell> cells = new ArrayList<>();
+        assertEquals(cells, gameMapTest.getCellsAtMaxDistance(playerTest, 0));
+
+        cells.add(gameMapTest.getCell(0,0));
+        cells.add(gameMapTest.getCell(1,0));
+        cells.add(gameMapTest.getCell(1,1));
+        cells.add(gameMapTest.getCell(2,2));
+        cells.add(gameMapTest.getCell(2,1));
+
+        gameMapTest.setPlayerPosition(playerTest, 2,0);
+
+        assertEquals(cells, gameMapTest.getCellsAtMaxDistance(playerTest, 2));
     }
 
     /**
@@ -171,16 +192,16 @@ public class GameMapTest {
     }
 
     /**
-     * Tests the getAdiancentTargets method
-     * @see GameMap#getAdiacentTargets(Cell)
+     * Tests the getAdjancentTargets method
+     * @see GameMap#getAdjacentTargets(Cell)
      */
     @Test
-    public void testGetAdiacentTargets (){
+    public void testGetAdjacentTargets(){
         ArrayList<Player> targets = new ArrayList<>();
         gameMapTest.setPlayerPosition(playerTest,1,0);
         gameMapTest.setPlayerPosition(playerTest2,0,0);
         targets.add(playerTest2);
-        assertEquals(targets, gameMapTest.getAdiacentTargets(gameMapTest.getCellFromPlayer(playerTest)));
+        assertEquals(targets, gameMapTest.getAdjacentTargets(gameMapTest.getCellFromPlayer(playerTest)));
     }
 
     /**
@@ -265,4 +286,36 @@ public class GameMapTest {
         assertEquals(positionCell, gameMapTest.getPositionFromPlayer(playerTest));
     }
 
+    /**
+     * Tests the toString method, asserting that the string is not null.
+     * @see GameMap#toString()
+     */
+    @Test
+    public void testToString() {
+        String map = gameMapTest.toString();
+        assertNotNull(map);
+    }
+
+    /**
+     * Tests the deserialization of the map from the json.
+     * @see GameMap#GameMap(MapType)
+     */
+    @Test
+    public void testInitializeMapFromJson() {
+        GameMap map1 = new GameMap(MapType.conf_1);
+        assertNotNull(map1);
+        System.out.println(map1.toString());
+
+        GameMap map2 = new GameMap(MapType.conf_2);
+        assertNotNull(map2);
+        System.out.println(map2.toString());
+
+        GameMap map3 = new GameMap(MapType.conf_3);
+        assertNotNull(map3);
+        System.out.println(map3.toString());
+
+        GameMap map4 = new GameMap(MapType.conf_4);
+        assertNotNull(map4);
+        System.out.println(map4.toString());
+    }
 }

@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.utility.AmmoColor;
 import org.junit.*;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import static org.junit.Assert.*;
 import it.polimi.ingsw.controller.*;
@@ -21,7 +22,7 @@ public class EffectTest {
     private static DecksHandler decks;
     private static String name;
     private static String description;
-    private static HashMap<AmmoColor, Integer> cost;
+    private static Map<AmmoColor, Integer> cost;
 
     /**
      * Randomly initializes the attributes for the test class
@@ -40,7 +41,7 @@ public class EffectTest {
         Weapon w = decks.drawWeapon();
         effectTester = w.getEffects().get(r.nextInt(w.getEffects().size()));
         name = effectTester.getName();
-        cost = effectTester.getCost();
+        //cost = effectTester.getCost();
         description = effectTester.getDescription();
     }
 
