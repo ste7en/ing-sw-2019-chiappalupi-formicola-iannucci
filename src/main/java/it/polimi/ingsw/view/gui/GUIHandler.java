@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.model.cards.AmmoTile;
 import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -9,57 +8,84 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import javax.management.monitor.StringMonitor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 @SuppressWarnings("Duplicates")
 public class GUIHandler extends Application {
 
+    //main attributes
     private AdrenalineGUI adrenalineGUI;
     private Stage primaryStage;
     private Scene mainScene;
+    private Background background;
+    private String conf;
+
+    //game map
     private GridPane boardGrid;
+    private GridPane mapGrid;
     private GridPane cardsContainer;
+    private GridPane leftDeck;
+    private GridPane upperDeck;
+    private GridPane rightDeck;
+    List<List<StackPane>> cellsContainers;
+    List<List<Button>> cellsButtons;
+    List<StackPane> yellowAmmos;
+    List<StackPane> redAmmos;
+    List<StackPane> blueAmmos;
+    List<StackPane> weapons;
+    List<StackPane> powerups;
+    List<StackPane> deckLeft;
+    List<StackPane> deckRight;
+    List<StackPane> deckAbove;
+
+    //playerboard
+    HashMap<String ,StackPane> playerBoards;
+    HashMap<String, GridPane> damagesGrid;
+    HashMap<String, List <StackPane>> bloodTruck;
+    HashMap<String, List <StackPane>> marksTruck;
+    HashMap<String, List<StackPane>> killedPointsTruck;
+
     private ColumnConstraints c;
     private RowConstraints r;
+
     private Button button;
     private HBox boxButton;
-    private BorderPane firstRoot;
-    private GridPane modesChoiceGrid;
-    private Background background;
     private VBox textContainer;
     private VBox textSelectedContainer;
+    private BorderPane firstRoot;
+    private GridPane modesChoiceGrid;
+    private GridPane messageGrid;
+
     private ArrayList<String> prova2;
     private DoubleProperty fontSize = new SimpleDoubleProperty(10);
     private ConnectionType connectionType;
-    private GridPane messageGrid;
+    private Scene secondScene;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         this.adrenalineGUI = new AdrenalineGUI(this);
         primaryStage.setTitle("Adrenaline");
-
         textContainer = new VBox();
         textContainer.setAlignment(Pos.CENTER);
         textSelectedContainer = new VBox();
@@ -68,21 +94,14 @@ public class GUIHandler extends Application {
         BackgroundImage backgroundImageAfter= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(1.0, 1.0, true, true, false, false));
         background = new Background(backgroundImageAfter);
-
         buildMessageGrid();
-
         textContainer.setAlignment(Pos.CENTER);
         button = new Button("Continue");
         ArrayList<String> prova = new ArrayList<>();
-        prova2 = new ArrayList<>();
-        prova2.add("Newton - red");
-        prova2.add("Newton - blue");
-        prova.add("blue");
-        prova.add("yellow");
-        prova.add("purple");
-        prova.add("grey");
-        prova.add("green");
-        button.setOnAction(e -> {try{chooseConnection();} catch (Exception ex){ex.printStackTrace();}});
+        button.setOnAction(e -> {try{onCreateGameMap("conf_3");} catch (Exception ex){ex.printStackTrace();}});
+        //button.setOnAction(e -> {try{createGameMap("conf_2");} catch (Exception ex){ex.printStackTrace();}});
+        //button.setOnAction(e -> {try{createGameMap("conf_3");} catch (Exception ex){ex.printStackTrace();}});
+        //button.setOnAction(e -> {try{createGameMap("conf_4");} catch (Exception ex){ex.printStackTrace();}});
         boxButton = new HBox(button);
         boxButton.setAlignment(Pos.CENTER);
         boxButton.setMargin(button, new Insets(0, 0, 50, 0));
@@ -346,12 +365,12 @@ public class GUIHandler extends Application {
 
     public void onChooseCharacterSuccess() {
         Platform.runLater(() -> {
-                chooseCharacterSucces();
+                chooseCharacterSuccess();
 
         });
     }
 
-    public void chooseCharacterSucces(){
+    public void chooseCharacterSuccess(){
         System.out.println(primaryStage.getHeight());
         modesChoiceGrid.getChildren().clear();
         setText(textSelectedContainer, "You chose your character, the game will start soon!");
@@ -617,7 +636,7 @@ public class GUIHandler extends Application {
 
     void onCreateGameMap(String conf) throws Exception{
 
-
+        this.conf = conf;
         //Main modesChoiceGrid creation
         boardGrid = new GridPane();
         ColumnConstraints column0 = new ColumnConstraints();
@@ -625,17 +644,19 @@ public class GUIHandler extends Application {
         ColumnConstraints column1 = new ColumnConstraints();
         column1.setPercentWidth(60);
         boardGrid.getColumnConstraints().addAll(column0, column1);
+        RowConstraints rowtext = new RowConstraints();
+        rowtext.setPercentHeight(9);
         RowConstraints row0 = new RowConstraints();
-        row0.setPercentHeight(15);
+        row0.setPercentHeight(14);
         RowConstraints row1 = new RowConstraints();
-        row1.setPercentHeight(15);
+        row1.setPercentHeight(14);
         RowConstraints row2 = new RowConstraints();
-        row2.setPercentHeight(15);
+        row2.setPercentHeight(14);
         RowConstraints row3 = new RowConstraints();
-        row3.setPercentHeight(15);
+        row3.setPercentHeight(14);
         RowConstraints row4 = new RowConstraints();
-        row4.setPercentHeight(40);
-        boardGrid.getRowConstraints().addAll(row0, row1, row2, row3, row4);
+        row4.setPercentHeight(35);
+        boardGrid.getRowConstraints().addAll(rowtext, row0, row1, row2, row3, row4);
         boardGrid.setGridLinesVisible(true);
 
         //Map creation
@@ -650,10 +671,10 @@ public class GUIHandler extends Application {
         mapContainer.setMinHeight(0.0);
         mapContainer.setMinWidth(0.0);
         mapContainer.setAlignment(Pos.CENTER);
-        boardGrid.add(mapContainer, 1,0, 1, 4);
+        boardGrid.add(mapContainer, 1,1, 1, 4);
 
         //Map's modesChoiceGrid creation
-        GridPane mapGrid = new GridPane();
+        mapGrid = new GridPane();
         mapGrid.maxWidthProperty().bind(mapContainer.heightProperty().multiply(1.32));
         mapGrid.maxHeightProperty().bind(mapContainer.widthProperty().divide(1.32));
         for(int j=0; j<6; j++){
@@ -675,35 +696,33 @@ public class GUIHandler extends Application {
         mapGrid.setGridLinesVisible(true);
         mapContainer.getChildren().add(mapGrid);
         mapGrid.setAlignment(Pos.CENTER);
-        //mapGrid.setGridLinesVisible(true);
-        //mapGrid.setStyle("-fx-background-color: cornsilk;");
+        mapGrid.setGridLinesVisible(true);
 
 
-        List<List<StackPane>> stackPanes = new ArrayList<>();
-        List<List<ImageView>> ammoTiles = new ArrayList<>();
-        List<List<Button>> cells = new ArrayList<>();
+        cellsContainers = new ArrayList<>();
+        cellsButtons = new ArrayList<>();
         for(int i=0; i<3; i++){
-            cells.add(new ArrayList<Button>());
-            stackPanes.add(new ArrayList<StackPane>());
-            ammoTiles.add(new ArrayList<ImageView>());
+            cellsButtons.add(new ArrayList<Button>());
+            cellsContainers.add(new ArrayList<StackPane>());
             for(int j=0; j<4; j++){
                 int row = i;
                 int column = j;
-                stackPanes.get(i).add(new StackPane());
+                cellsContainers.get(i).add(new StackPane());
+                cellsButtons.get(i).add(new Button("Move here"));
+                if(!(conf=="conf_1"&&i==0&&j==3 || conf=="conf_3"&&i==2&&j==0 || conf=="conf_2"&&(i==0&&j==3 || i==2&&j==0) || i==1&&j==0 || i==0&&j==2 || i==2&&j==3)) {
 
-                ammoTiles.get(i).add(new ImageView());
-                clickedImage(ammoTiles.get(i).get(j),"ammotiles/Back");
-                setUpPropertiesModified(stackPanes.get(i).get(j), ammoTiles.get(i).get(j));
+                    cellsButtons.get(i).get(j).setStyle("-fx-background-color: transparent");
+                    cellsButtons.get(i).get(j).setPrefHeight(Integer.MAX_VALUE);
+                    cellsButtons.get(i).get(j).setOnAction(e -> choseCell(row, column));
+                    cellsContainers.get(i).get(j).getChildren().add(cellsButtons.get(i).get(j));
 
-                cells.get(i).add(new Button("Move here"));
-                cells.get(i).get(j).setStyle("-fx-background-color: transparent");
-                cells.get(i).get(j).setPrefHeight(Integer.MAX_VALUE);
-                cells.get(i).get(j).setOnAction(e -> choseCell(row, column));
-                stackPanes.get(i).get(j).getChildren().add(cells.get(i).get(j));
-
-                mapGrid.add(stackPanes.get(i).get(j), j+1, i+1);
+                    mapGrid.add(cellsContainers.get(i).get(j), j + 1, i + 1);
+                }
             }
         }
+
+
+
 
         //Cards' container creation
         cardsContainer = new GridPane();
@@ -717,44 +736,143 @@ public class GUIHandler extends Application {
         RowConstraints r1 = new RowConstraints();
         r1.setPercentHeight(80);
         cardsContainer.getRowConstraints().addAll(r0, r1);
+        redAmmos = new ArrayList<>();
+        yellowAmmos = new ArrayList<>();
+        blueAmmos = new ArrayList<>();
+        for(int a=0; a<3; a++){
+            redAmmos.add(new StackPane());
+            yellowAmmos.add(new StackPane());
+            blueAmmos.add(new StackPane());
+            cardsContainer.add(redAmmos.get(a), a*2,0,2,1);
+            cardsContainer.add(yellowAmmos.get(a), a*2+6,0,2,1);
+            cardsContainer.add(blueAmmos.get(a), a*2+12,0,2,1);
+        }
+        weapons = new ArrayList<>();
+        powerups = new ArrayList<>();
+        for(int b=0; b<3; b++) {
+            weapons.add(new StackPane());
+            powerups.add(new StackPane());
+            cardsContainer.add(weapons.get(b), (b*3),1,3,1);
+            cardsContainer.add(powerups.get(b), (b * 3) + 9, 1, 3, 1);
+
+        }
+        boardGrid.add(cardsContainer, 1,5, 1, 1);
+
+
+
+        //decks handlers creation
+        leftDeck = new GridPane();
+        RowConstraints r00 = new RowConstraints();
+        r00.setPercentHeight(35);
+        RowConstraints r01 = new RowConstraints();
+        r01.setPercentHeight(14);
+        RowConstraints r02 = new RowConstraints();
+        r02.setPercentHeight(14);
+        RowConstraints r03 = new RowConstraints();
+        r03.setPercentHeight(14);
+        RowConstraints r04 = new RowConstraints();
+        r04.setPercentHeight(23);
+        leftDeck.getRowConstraints().addAll(r00, r01, r02, r03, r04);
+        ColumnConstraints c00 = new ColumnConstraints();
+        c00.setPercentWidth(90);
+        ColumnConstraints c01 = new ColumnConstraints();
+        c01.setPercentWidth(10);
+        leftDeck.getColumnConstraints().addAll(c00, c01);
+        mapGrid.add(leftDeck, 0, 0, 1, 5);
+        leftDeck.setGridLinesVisible(true);
+        deckLeft = new ArrayList<>();
+        for(int e=0; e<3; e++){
+            deckLeft.add(new StackPane());
+            leftDeck.add(deckLeft.get(e), 0, e+1,1,1);
+        }
+
+        upperDeck = new GridPane();
+        ColumnConstraints co00 = new ColumnConstraints();
+        co00.setPercentWidth(51);
+        ColumnConstraints co01 = new ColumnConstraints();
+        co01.setPercentWidth(11);
+        ColumnConstraints co02 = new ColumnConstraints();
+        co02.setPercentWidth(11);
+        ColumnConstraints co03 = new ColumnConstraints();
+        co03.setPercentWidth(11);
+        ColumnConstraints co04 = new ColumnConstraints();
+        co04.setPercentWidth(16);
+        upperDeck.getColumnConstraints().addAll(co00,co01,co02,co03,co04);
+        RowConstraints ro00 = new RowConstraints();
+        ro00.setPercentHeight(80);
+        RowConstraints ro01 = new RowConstraints();
+        ro01.setPercentHeight(20);
+        upperDeck.getRowConstraints().addAll(ro00,ro01);
+        mapGrid.add(upperDeck, 0, 0, 6, 1);
+        upperDeck.setGridLinesVisible(true);
+        deckAbove = new ArrayList<>();
+        for(int d=0; d<3; d++){
+            deckAbove.add(new StackPane());
+            upperDeck.add(deckAbove.get(d), d+1, 0,1,1);
+        }
+
+
+        rightDeck = new GridPane();
+        RowConstraints r000 = new RowConstraints();
+        r000.setPercentHeight(58);
+        RowConstraints r001 = new RowConstraints();
+        r001.setPercentHeight(14);
+        RowConstraints r002 = new RowConstraints();
+        r002.setPercentHeight(14);
+        RowConstraints r003 = new RowConstraints();
+        r003.setPercentHeight(14);
+        rightDeck.getRowConstraints().addAll(r000, r001, r002, r003);
+        ColumnConstraints c000 = new ColumnConstraints();
+        c000.setPercentWidth(10);
+        ColumnConstraints c001 = new ColumnConstraints();
+        c001.setPercentWidth(90);
+        rightDeck.getColumnConstraints().addAll(c000, c001);
+        mapGrid.add(rightDeck, 5, 0, 1, 5);
+        rightDeck.setGridLinesVisible(true);
+        deckRight = new ArrayList<>();
+        for(int f=0; f<3; f++){
+            deckRight.add(new StackPane());
+            rightDeck.add(deckRight.get(f), 1, f+1,1,1);
+        }
+
+
+        updateYellowAmmos(3);
+        updateBlueAmmos(3);
+        updateRedAmmos(3);
+        updateRedAmmos(1);
+        ArrayList<String> powerups = new ArrayList<String>();
+        powerups.add("Newton - blue");
+        updatePowerups(powerups);
+        ArrayList<String> weapons = new ArrayList<String>();
+        weapons.add("Furnace");
+        weapons.add("Hellion");
+        updateWeaponsCards(weapons);
+        updateDeckAbove(weapons);
+        updateDeckRight(weapons);
+        updateDeckLeft(weapons);
+        ArrayList<String> ammotiles = new ArrayList<String>();
+        ammotiles.add("powerup, blue, blue");
+        ammotiles.add("red, yellow, yellow");
+        updateThirdRow(ammotiles);
+        ammotiles.add("powerup, blue, blue");
+        updateFirstRow(ammotiles);
+        updateSecondRow(ammotiles);
+        ArrayList<String> players = new ArrayList<String>();
+        players.add("blue");
+        players.add("yellow");
+        addPlayerBoards(players);
+
+
 
 
         //Setting background
         BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
         boardGrid.setBackground(new Background(myBI));
-        //boardGrid.setStyle("-fx-background-color: black");
-
-        //Testing
-        ArrayList<String> prova = new ArrayList<>();
-        prova.add("blue");
-        prova.add("yellow");
-        prova.add("green");
-        prova.add("purple");
-        prova.add("grey");
-        try {
-            addPlayerBoards(prova);
-            prova.clear();
-            prova.add("yellow");
-            prova.add("yellow");
-            prova.add("yellow");
-            prova.add("blue");
-            prova.add("blue");
-            prova.add("blue");
-            prova.add("red");
-            prova.add("red");
-            prova.add("red");
-            addWeaponsCards(null, cardsContainer);
-            addAmmos(prova, cardsContainer);
-            addPowerups(null, cardsContainer);
-
-        } catch (Exception e){
-            e.printStackTrace();
-        }
 
         //Showing
-        Scene scene = new Scene(boardGrid, 1200, 675);
-        primaryStage.setScene(scene);
+        secondScene = new Scene(boardGrid, 1200, 675);
+        primaryStage.setScene(secondScene);
         primaryStage.setFullScreen(true);
     }
 
@@ -762,81 +880,417 @@ public class GUIHandler extends Application {
         System.out.println("You selected the position /n row:" + row + " column:" + column);
     }
 
-    public void addWeaponsCards(ArrayList<String> weapons, GridPane weaponsContainer) throws Exception{
 
-        List<StackPane> stackPanes = new ArrayList<>();
-        List<ImageView> imageViews = new ArrayList<>();
-
-        for(int i = 0; i < 2; i++){
-            stackPanes.add(new StackPane());
-            imageViews.add(new ImageView());
-            clickedImage(imageViews.get(i), "weapons/AD_weapons_IT_026");
-            setUpProperties(stackPanes.get(i), imageViews.get(i));
-            weaponsContainer.add(stackPanes.get(i), (i*3),1,3,1);
-        }
-
-        boardGrid.getChildren().remove(cardsContainer);
-        cardsContainer = weaponsContainer;
-        boardGrid.add(cardsContainer, 1,4, 1, 1);
+    public void updateWeaponsCards(List<String> givenWeapons) {
+        Platform.runLater(() -> {
+            try {
+                onUpdateWeaponsCards(givenWeapons);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 
-    public void addPowerups(ArrayList<String> powerups, GridPane powerupsContainer) throws Exception{
+    public void onUpdateWeaponsCards(List<String> givenWeapons) throws Exception{
 
-        List<StackPane> stackPanes = new ArrayList<>();
-        List<ImageView> imageViews = new ArrayList<>();
+        ArrayList<ImageView> weaponsIV = new ArrayList<>();
+        for(StackPane stackPane: weapons){
+            stackPane.getChildren().clear();
+        }
+        for(int i = 0; i < givenWeapons.size(); i++){
+            weaponsIV.add(new ImageView());
+            clickedImage(weaponsIV.get(i), "weapons/" + givenWeapons.get(i));
+            setUpProperties(weapons.get(i), weaponsIV.get(i));
+        }
+    }
 
-        for(int i = 0; i < 3; i++){
-            stackPanes.add(new StackPane());
-            imageViews.add(new ImageView());
-            clickedImage(imageViews.get(i), "weapons/AD_weapons_IT_026");
-            setUpProperties(stackPanes.get(i), imageViews.get(i));
-            powerupsContainer.add(stackPanes.get(i), (i*3)+9,1,3,1);
+    public void updatePowerups(List<String> givenPowerups) {
+        Platform.runLater(() -> {
+            try {
+                onUpdatePowerups(givenPowerups);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onUpdatePowerups(List<String> givenPowerups) throws Exception{
+
+        ArrayList<ImageView> powerupsIV = new ArrayList<>();
+        for(StackPane stackPane: powerups){
+            stackPane.getChildren().clear();
+        }
+        for(int i = 0; i < givenPowerups.size(); i++){
+            powerupsIV.add(new ImageView());
+            clickedImage(powerupsIV.get(i), "powerups/" + givenPowerups.get(i) + "_click");
+            setUpProperties(powerups.get(i), powerupsIV.get(i));
+        }
+    }
+
+    public void updateRedAmmos(int num) {
+        Platform.runLater(() -> {
+            try {
+                onUpdateRedAmmos(num);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onUpdateRedAmmos(int num) throws Exception{
+
+        ArrayList<ImageView> redAmmosIV = new ArrayList<>();
+        for(StackPane stackPane:redAmmos){
+            stackPane.getChildren().clear();
+        }
+        for(int i = 0; i < num; i++){
+            redAmmosIV.add(new ImageView());
+            clickedImage(redAmmosIV.get(i), "ammotiles/red");
+            setUpProperties(redAmmos.get(i), redAmmosIV.get(i));
         }
 
-        boardGrid.getChildren().remove(cardsContainer);
-        cardsContainer = powerupsContainer;
-        boardGrid.add(cardsContainer, 1,4, 1, 1);
+    }
+
+    public void updateBlueAmmos(int num) {
+        Platform.runLater(() -> {
+            try {
+                onUpdateBlueAmmos(num);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onUpdateBlueAmmos(int num) throws Exception{
+
+        ArrayList <ImageView> blueAmmosIV = new ArrayList<>();
+        for(StackPane stackPane:blueAmmos){
+            stackPane.getChildren().clear();
+        }
+        for(int i = 0; i < num; i++){
+            blueAmmosIV.add(new ImageView());
+            clickedImage(blueAmmosIV.get(i), "ammotiles/blue");
+            setUpProperties(blueAmmos.get(i), blueAmmosIV.get(i));
+        }
     }
 
 
-    public void addAmmos(ArrayList<String> ammoColor, GridPane ammosContainer) throws Exception{
-
-        List<StackPane> stackPanes = new ArrayList<>();
-        List<ImageView> imageViews = new ArrayList<>();
-
-        for(int i = 0; i < ammoColor.size(); i++){
-            stackPanes.add(new StackPane());
-            imageViews.add(new ImageView());
-            clickedImage(imageViews.get(i), "ammotiles/"+ammoColor.get(i));
-            setUpProperties(stackPanes.get(i), imageViews.get(i));
-            ammosContainer.add(stackPanes.get(i), i*2,0,2,1);
-        }
-
-
-        boardGrid.getChildren().removeAll(cardsContainer);
-        cardsContainer = ammosContainer;
-        boardGrid.add(cardsContainer, 1,4, 1, 1);
+    public void updateYellowAmmos(int num) {
+        Platform.runLater(() -> {
+            try {
+                onUpdateYellowAmmos(num);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 
-    public void addPlayerBoards(ArrayList<String> playerColors) throws Exception{
+    public void onUpdateYellowAmmos(int num) throws Exception{
+        ArrayList<ImageView> yellowAmmosIV = new ArrayList<>();
+        for(StackPane stackPane:yellowAmmos){
+            stackPane.getChildren().clear();
+        }
+        for(int i = 0; i < num; i++){
+            yellowAmmosIV.add(new ImageView());
+            clickedImage(yellowAmmosIV.get(i), "ammotiles/yellow");
+            setUpProperties(yellowAmmos.get(i), yellowAmmosIV.get(i));
+        }
+    }
 
-        List<StackPane> stackPanes = new ArrayList<>();
-        List<ImageView> imageViews = new ArrayList<>();
+
+    public void updateDeckLeft(List<String> givenWeapons) {
+        Platform.runLater(() -> {
+            try {
+                onUpdateDeckLeft(givenWeapons);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onUpdateDeckLeft(List<String> givenWeapons){
+
+        ArrayList<ImageView> weaponsIV = new ArrayList<>();
+        for(StackPane stackPane: deckLeft){
+            stackPane.getChildren().clear();
+        }
+        for(int i = 0; i < givenWeapons.size(); i++){
+            weaponsIV.add(new ImageView());
+            clickedImage(weaponsIV.get(i), "weapons/"+givenWeapons.get(i));
+            setUpProperties270(deckLeft.get(i), weaponsIV.get(i));
+        }
+    }
+
+
+    public void updateDeckAbove(List<String> givenWeapons) {
+        Platform.runLater(() -> {
+            try {
+                onUpdateDeckAbove(givenWeapons);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+
+    public void onUpdateDeckAbove(List<String> givenWeapons){
+
+        ArrayList<ImageView> weaponsIV = new ArrayList<>();
+        for(StackPane stackPane: deckAbove){
+            stackPane.getChildren().clear();
+        }
+        for(int i = 0; i < givenWeapons.size(); i++){
+            weaponsIV.add(new ImageView());
+            clickedImage(weaponsIV.get(i), "weapons/"+givenWeapons.get(i));
+            setUpProperties(deckAbove.get(i), weaponsIV.get(i));
+        }
+    }
+
+
+    public void updateDeckRight(List<String> givenWeapons) {
+        Platform.runLater(() -> {
+            try {
+                onUpdateDeckRight(givenWeapons);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onUpdateDeckRight(List<String>givenWeapons){
+
+        ArrayList<ImageView> weaponsIV = new ArrayList<>();
+        for(StackPane stackPane: deckRight){
+            stackPane.getChildren().clear();
+        }
+        for(int i = 0; i < givenWeapons.size(); i++){
+            weaponsIV.add(new ImageView());
+            clickedImage(weaponsIV.get(i), "weapons/"+givenWeapons.get(i));
+            setUpProperties90(deckRight.get(i), weaponsIV.get(i));
+        }
+
+    }
+
+    public void updateFirstRow(List<String> ammoTiles) {
+        Platform.runLater(() -> {
+            try {
+                onUpdateFirstRow(ammoTiles);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onUpdateFirstRow(List<String> ammoTiles){
+        List<ImageView> ammoTilesIV = new ArrayList<>();
+        int i=0;
+        for(int j=0; j<4; j++){
+            cellsContainers.get(0).get(j).getChildren().clear();
+            ammoTilesIV.add(new ImageView());{
+                if (!(j==2 || j==3&&(conf=="conf_1" || conf=="conf_2")) && i<ammoTiles.size() ){
+                    clickedImage(ammoTilesIV.get(j), "ammotiles/" + ammoTiles.get(i));
+                    setUpPropertiesModified(cellsContainers.get(0).get(j), ammoTilesIV.get(j));
+                    i++;
+                }
+            }
+        }
+    }
+
+    public void updateSecondRow(List<String> ammoTiles) {
+        Platform.runLater(() -> {
+            try {
+                onUpdateSecondRow(ammoTiles);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onUpdateSecondRow(List<String> ammoTiles){
+        List<ImageView> ammoTilesIV = new ArrayList<>();
+        int i=0;
+        for(int j=0; j<4; j++){
+            cellsContainers.get(1).get(j).getChildren().clear();
+            ammoTilesIV.add(new ImageView());{
+                if (!(j==0) && i<ammoTiles.size()){
+                    clickedImage(ammoTilesIV.get(j), "ammotiles/" + ammoTiles.get(i));
+                    setUpPropertiesModified(cellsContainers.get(1).get(j), ammoTilesIV.get(j));
+                    i++;
+                }
+            }
+        }
+    }
+
+    public void updateThirdRow(List<String> ammoTiles) {
+        Platform.runLater(() -> {
+            try {
+                onUpdateThirdRow(ammoTiles);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onUpdateThirdRow(List<String> ammoTiles){
+        List<ImageView> ammoTilesIV = new ArrayList<>();
+        int i=0;
+        for(int j=0; j<4; j++){
+            cellsContainers.get(2).get(j).getChildren().clear();
+            ammoTilesIV.add(new ImageView());{
+                if (!(j==3 || j==0&&(conf=="conf_2" || conf=="conf_3")) && i<ammoTiles.size()){
+                    clickedImage(ammoTilesIV.get(j), "ammotiles/" + ammoTiles.get(i));
+                    setUpPropertiesModified(cellsContainers.get(2).get(j), ammoTilesIV.get(j));
+                    i++;
+                }
+            }
+        }
+    }
+
+    public void addPlayerBoards(List<String> playerColors) {
+        Platform.runLater(() -> {
+            try {
+                onAddPlayerBoards(playerColors);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onAddPlayerBoards(List<String> playerColors) throws Exception{
+
+        playerBoards = new HashMap<>();
+        ArrayList<ImageView> imageViews = new ArrayList<>();
+        damagesGrid = new HashMap<>();
+        bloodTruck = new HashMap<>();
+        marksTruck = new HashMap<>();
+        killedPointsTruck = new HashMap<>();
 
         for(int i = 0; i < playerColors.size(); i++){
-            stackPanes.add(new StackPane());
+            playerBoards.put(playerColors.get(i), new StackPane());
             imageViews.add(new ImageView());
+            damagesGrid.put(playerColors.get(i), new GridPane());
+            bloodTruck.put(playerColors.get(i), new ArrayList<>());
+            marksTruck.put(playerColors.get(i), new ArrayList<>());
+            killedPointsTruck.put(playerColors.get(i), new ArrayList<>());
             clickedImage(imageViews.get(i), "playerboards/playerboard_"+playerColors.get(i));
-            setUpProperties(stackPanes.get(i), imageViews.get(i));
-            if(i==0) boardGrid.add(stackPanes.get(i), 0,4);
-            else boardGrid.add(stackPanes.get(i), 0, i-1);
+            setUpProperties(playerBoards.get(playerColors.get(i)), imageViews.get(i));
+            if(i==0) boardGrid.add(playerBoards.get(playerColors.get(i)), 0,5);
+            else boardGrid.add(playerBoards.get(playerColors.get(i)), 0, i);
+
+            playerBoards.get(playerColors.get(i)).getChildren().add(damagesGrid.get(playerColors.get(i)));
+            damagesGrid.get(playerColors.get(i)).maxWidthProperty().bind(playerBoards.get(playerColors.get(i)).heightProperty().multiply(4));
+            damagesGrid.get(playerColors.get(i)).maxHeightProperty().bind(playerBoards.get(playerColors.get(i)).widthProperty().divide(4));
+            RowConstraints row01=new RowConstraints();
+            row01.setPercentHeight(34);
+            RowConstraints row02= new RowConstraints();
+            row02.setPercentHeight(33);
+            RowConstraints row03= new RowConstraints();
+            row03.setPercentHeight(33);
+            damagesGrid.get(playerColors.get(i)).getRowConstraints().addAll(row01,row02,row03);
+            for(int j=0;j<14;j++){
+                c = new ColumnConstraints();
+                if (j==0) c.setPercentWidth(9.04);
+                else if (j==13) c.setPercentWidth(24);
+                else c.setPercentWidth(5.58);
+                damagesGrid.get(playerColors.get(i)).getColumnConstraints().add(c);
+            }
+            damagesGrid.get(playerColors.get(i)).setGridLinesVisible(true);
+            for(int k=0; k<12; k++){
+                bloodTruck.get(playerColors.get(i)).add(new StackPane());
+                damagesGrid.get(playerColors.get(i)).add(bloodTruck.get(playerColors.get(i)).get(k), k+1, 1);
+            }
+            for(int m=0; m<5; m++){
+                marksTruck.get(playerColors.get(i)).add(new StackPane());
+                damagesGrid.get(playerColors.get(i)).add(marksTruck.get(playerColors.get(i)).get(m), m+8, 0);
+            }
+            for(int n=0; n<6; n++){
+                killedPointsTruck.get(playerColors.get(i)).add(new StackPane());
+                damagesGrid.get(playerColors.get(i)).add(killedPointsTruck.get(playerColors.get(i)).get(n), n+3, 2);
+            }
+        }
+        ArrayList<String>dam= new ArrayList<String>();
+        dam.add("blue");
+        dam.add("yellow");
+        dam.add("green");
+        dam.add("green");
+        onUpdateDamages("blue", dam);
+        updateDamages("yellow", dam);
+        updateMarks("yellow", dam);
+    }
+
+    public void updateDamages(String color, List<String> damages) {
+        Platform.runLater(() -> {
+            try {
+                onUpdateDamages(color, damages);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onUpdateDamages(String color, List<String> damages){
+        List<ImageView> imageViews = new ArrayList<>();
+        for(int i=0; i<12; i++){
+            bloodTruck.get(color).get(i).getChildren().clear();
+        }
+        for(int i=0; i<damages.size(); i++) {
+            imageViews.add(new ImageView());
+            setUpProperties(bloodTruck.get(color).get(i), imageViews.get(i));
+            clickedImage(imageViews.get(i), "characters/" + damages.get(i)+"_blood");
         }
     }
 
-    public void displayMessage(String message){
+    public void updateMarks(String color, List<String> marks) {
+        Platform.runLater(() -> {
+            try {
+                onUpdateMarks(color, marks);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onUpdateMarks(String color, List<String> marks){
+        List<ImageView> imageViews = new ArrayList<>();
+        for(int i=0; i<5; i++){
+            marksTruck.get(color).get(i).getChildren().clear();
+        }
+        for(int i=0; i<marks.size(); i++) {
+            imageViews.add(new ImageView());
+            setUpProperties(marksTruck.get(color).get(i), imageViews.get(i));
+            clickedImage(imageViews.get(i), "characters/" + marks.get(i)+"_blood");
+        }
+    }
+
+    public void displayMessage(String message) {
+        Platform.runLater(() -> {
+            try {
+                displayMessage(message);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onDisplayMessage(String message){
         setText(textContainer, message);
         messageGrid.add(textContainer, 0,0,2,1);
         mainScene.setRoot(messageGrid);
+
+        Button buttonYes = new Button("YES");
+        StackPane yesPane = new StackPane();
+        yesPane.setAlignment(Pos.CENTER);
+        yesPane.getChildren().add(buttonYes);
+
+        Button buttonNo = new Button("NO");
+        StackPane noPane = new StackPane();
+        noPane.setAlignment(Pos.CENTER);
+        noPane.getChildren().add(buttonNo);
+
+        messageGrid.add(yesPane,0,1);
+        messageGrid.add(noPane,1,1);
+        buttonNo.setOnAction(e -> {adrenalineGUI.grabSomethingResponse(true);});
+        buttonYes.setOnAction(e -> {adrenalineGUI.grabSomethingResponse(true);});
     }
 
     public void buildMessageGrid(){
@@ -855,21 +1309,6 @@ public class GUIHandler extends Application {
             messageGrid.getRowConstraints().add(r);
         }
 
-        Button buttonYes = new Button("YES");
-        StackPane yesPane = new StackPane();
-        yesPane.setAlignment(Pos.CENTER);
-        yesPane.getChildren().add(buttonYes);
-
-        Button buttonNo = new Button("NO");
-        StackPane noPane = new StackPane();
-        noPane.setAlignment(Pos.CENTER);
-        noPane.getChildren().add(buttonNo);
-
-        messageGrid.add(yesPane,0,1);
-        messageGrid.add(noPane,1,1);
-
-        buttonNo.setOnAction(e -> {System.out.println("Sbagliato!");});
-        buttonYes.setOnAction(e -> {System.out.println("Sbagliato!");});
     }
 
 
@@ -892,6 +1331,28 @@ public class GUIHandler extends Application {
         stackPane.setAlignment(Pos.CENTER);
         imageView.fitHeightProperty().bind(stackPane.heightProperty());
         imageView.fitWidthProperty().bind(stackPane.widthProperty());
+    }
+
+    public void setUpProperties90(StackPane stackPane, ImageView imageView){
+        imageView.setPreserveRatio(true);
+        imageView.setRotate(90);
+        stackPane.getChildren().add(imageView);
+        stackPane.setMinHeight(0.0);
+        stackPane.setMinWidth(0.0);
+        stackPane.setAlignment(Pos.CENTER);
+        imageView.fitHeightProperty().bind(stackPane.widthProperty());
+        imageView.fitWidthProperty().bind(stackPane.heightProperty());
+    }
+
+    public void setUpProperties270(StackPane stackPane, ImageView imageView){
+        imageView.setPreserveRatio(true);
+        imageView.setRotate(270);
+        stackPane.getChildren().add(imageView);
+        stackPane.setMinHeight(0.0);
+        stackPane.setMinWidth(0.0);
+        stackPane.setAlignment(Pos.CENTER);
+        imageView.fitHeightProperty().bind(stackPane.widthProperty());
+        imageView.fitWidthProperty().bind(stackPane.heightProperty());
     }
 
     public void setUpPropertiesModified(StackPane stackPane, ImageView imageView){
@@ -972,705 +1433,3 @@ public class GUIHandler extends Application {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-package it.polimi.ingsw.view.gui;
-import it.polimi.ingsw.model.utility.MapType;
-import it.polimi.ingsw.networking.utility.ConnectionType;
-import it.polimi.ingsw.utility.AdrenalineLogger;
-import javafx.application.Platform;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.List;
-
-public class GUIHandler extends Application  {
-
-    private BorderPane root;
-    private AdrenalineGUI adrenalineGUI;
-    private HBox boxButton;
-    private Button button;
-    private ConnectionType connectionType;
-    private Stage primaryStage;
-
-    public static void main(String[] args) {
-        AdrenalineLogger.setLogName("GUI");
-        launch(args);
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-
-        this.primaryStage = primaryStage;
-
-        this.adrenalineGUI = new AdrenalineGUI(this);
-
-        primaryStage.setTitle("Adrenaline");
-
-        button = new Button("Continue");
-        button.setOnAction(e -> adrenalineGUI.willChooseConnection());
-        boxButton = new HBox(button);
-        boxButton.setAlignment(Pos.CENTER);
-        boxButton.setMargin(button, new Insets(0, 0, 50, 0));
-
-        root = new BorderPane();
-        BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/adrenaline.jpg")),
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        root.setBackground(new Background(myBI));
-        root.setBottom(boxButton);
-
-        primaryStage.setScene(new Scene(root, 1200, 800));
-        primaryStage.show();
-    }
-
-    public void chooseConnection() throws FileNotFoundException{
-
-        root.getChildren().clear();
-        //root.setStyle("-fx-background-color: white");
-        BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/adrenaline_background.jpg")),
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        root.setBackground(new Background(myBI));
-        root.setBottom(boxButton);
-
-        CheckBox checkBoxRMI = new CheckBox("RMI");
-        CheckBox checkBoxTCP = new CheckBox("TCP");
-        Label label = new Label("Select a connection");
-        button.setOnAction(e -> handleConnectionOptions(checkBoxRMI, checkBoxTCP));
-        checkBoxRMI.setOnAction(e -> handleOptionsRMI(checkBoxRMI, checkBoxTCP));
-        checkBoxTCP.setOnAction(e -> handleOptionsTCP(checkBoxRMI, checkBoxTCP));
-
-        HBox boxRMI = new HBox(checkBoxRMI);
-        boxRMI.setAlignment(Pos.CENTER);
-
-        HBox boxTCP = new HBox(checkBoxTCP);
-        boxTCP.setAlignment(Pos.CENTER);
-
-        HBox boxLabel = new HBox(label);
-        boxLabel.setAlignment(Pos.CENTER);
-        boxLabel.setMargin(label, new Insets(50, 0, 0, 0));
-
-        HBox center = new HBox(boxRMI, boxTCP);
-        center.setAlignment(Pos.CENTER);
-        center.setSpacing(150);
-        root.setCenter(center);
-        root.setBottom(boxButton);
-        root.setTop(boxLabel);
-    }
-
-    public void handleConnectionOptions(CheckBox rmi, CheckBox tcp){
-
-        if (!tcp.isSelected() && !rmi.isSelected()){
-            System.out.println("Seleziona qualcosa!");
-        }
-
-        else {
-            root.getChildren().clear();
-
-            VBox generalBox = new VBox();
-
-            Text text = new Text("Please provide a port number and an address");
-            HBox boxText = new HBox(text);
-            boxText.setAlignment(Pos.CENTER);
-
-            Text portText = new Text("port number:  ");
-            TextField portField = new TextField();
-            HBox boxPort = new HBox(portText, portField);
-            boxPort.setAlignment(Pos.CENTER_LEFT);
-            boxPort.setMargin(portText, new Insets(10, 0, 10, 50));
-            boxPort.setMargin(portField, new Insets(10, 50, 10, 0));
-
-            Text addressText = new Text("address:         ");
-            TextField addressField = new TextField();
-            HBox boxAddress = new HBox(addressText, addressField);
-            boxAddress.setAlignment(Pos.CENTER_LEFT);
-
-            button.setOnAction(e -> handlePortAddressOptions(portField, addressField));
-
-            generalBox.getChildren().add(boxPort);
-            generalBox.getChildren().add(boxAddress);
-            generalBox.setFillWidth(true);
-            generalBox.setAlignment(Pos.CENTER);
-
-            boxText.setMargin(text, new Insets(50, 0, 0, 0));
-            boxAddress.setMargin(addressText, new Insets(10, 0, 10, 50));
-            boxAddress.setMargin(addressField, new Insets(10, 50, 10, 0));
-            root.setCenter(generalBox);
-            root.setTop(boxText);
-            root.setBottom(boxButton);
-
-            if (rmi.isSelected()) {
-                connectionType = ConnectionType.RMI;
-            }
-            if (tcp.isSelected()) {
-                connectionType = ConnectionType.SOCKET;
-            }
-        }
-    }
-
-    public void handleOptionsRMI(CheckBox rmi, CheckBox tcp){
-        if(rmi.isSelected()) {
-            tcp.setSelected(false);
-        }
-    }
-
-    public void handleOptionsTCP(CheckBox rmi, CheckBox tcp){
-        if(tcp.isSelected()) {
-            rmi.setSelected(false);
-        }
-    }
-
-    public void handlePortAddressOptions(TextField portTextfield, TextField addressTextfield){
-        String port = portTextfield.getText();
-        Integer portNumber = Integer.parseInt(port);
-        String address = addressTextfield.getText();
-        this.adrenalineGUI.didChooseConnection(connectionType, portNumber, address);
-        login();
-
-        //try {
-       //     chooseGameMap();
-        //}catch (FileNotFoundException e){
-      //      System.err.println("File exception:" + e.toString());
-       // }
-
-    }
-
-    public void login(){
-        root.getChildren().clear();
-        Text text = new Text("Please provide a username");
-        HBox boxTextlogin = new HBox(text);
-        boxTextlogin.setAlignment(Pos.CENTER);
-
-        Text usernameText = new Text("username: ");
-        TextField usernameField = new TextField();
-        HBox boxUsername = new HBox(usernameText, usernameField);
-        boxUsername.setAlignment(Pos.CENTER_LEFT);
-
-        button.setOnAction(e -> handleLoginOptions(usernameField));
-
-        boxTextlogin.setMargin(text, new Insets(50, 0, 0, 0));
-        boxUsername.setMargin(usernameText,  new Insets(0, 0, 0, 50));
-        boxUsername.setMargin(usernameField,  new Insets(0, 50, 0, 0));
-        root.setCenter(boxUsername);
-        root.setTop(boxTextlogin);
-        root.setBottom(boxButton);
-    }
-
-    public void handleLoginOptions(TextField usernameTextfield) {
-        String username = usernameTextfield.getText();
-        adrenalineGUI.createUser(username);
-    }
-
-    public void handleLoginFailure() {
-        Text text = new Text("Username already in use");
-        VBox box = new VBox(text, boxButton);
-        box.setAlignment(Pos.CENTER);
-        root.setBottom(box);
-    }
-
-    public void chooseCharacter(List<String> availableCharacters) throws FileNotFoundException{
-        try {
-            root.getChildren().clear();
-
-            Text text = new Text();
-            HBox boxText = new HBox(text);
-            boxText.setAlignment(Pos.CENTER);
-
-            Text tBlue = new Text("BANSHEE:");
-            Image imageBlue;
-            if (availableCharacters.contains("blue")) {
-                imageBlue = new Image(new FileInputStream("src/main/resources/images/characters/blue_character.png"));
-            } else {
-                imageBlue = new Image(new FileInputStream("src/main/resources/images/characters/blue_character_taken.png"));
-            }
-            ImageView ivBlue = new ImageView();
-            ivBlue.setImage(imageBlue);
-            VBox boxBlue = new VBox(tBlue, ivBlue);
-            boxBlue.setAlignment(Pos.CENTER);
-
-            Text tGreen = new Text("SPROG:");
-            Image imageGreen;
-            if (availableCharacters.contains("green")) {
-                imageGreen = new Image(new FileInputStream("src/main/resources/images/characters/green_character.png"));
-            } else {
-                imageGreen = new Image(new FileInputStream("src/main/resources/images/characters/green_character_taken.png"));
-            }
-            ImageView ivGreen = new ImageView();
-            ivGreen.setImage(imageGreen);
-            VBox boxGreen = new VBox(tGreen, ivGreen);
-            boxGreen.setAlignment(Pos.CENTER);
-
-            Text tGrey = new Text("DOZER:");
-            Image imageGrey;
-            if (availableCharacters.contains("grey")) {
-                imageGrey = new Image(new FileInputStream("src/main/resources/images/characters/grey_character.png"));
-            } else {
-                imageGrey = new Image(new FileInputStream("src/main/resources/images/characters/grey_character_taken.png"));
-            }
-            ImageView ivGrey = new ImageView();
-            ivGrey.setImage(imageGrey);
-            VBox boxGrey = new VBox(tGrey, ivGrey);
-            boxGrey.setAlignment(Pos.CENTER);
-
-            Text tPurple = new Text("VIOLET:");
-            Image imagePurple;
-            if (availableCharacters.contains("purple")) {
-                imagePurple = new Image(new FileInputStream("src/main/resources/images/characters/purple_character.png"));
-            } else {
-                imagePurple = new Image(new FileInputStream("src/main/resources/images/characters/purple_character_taken.png"));
-            }
-            ImageView ivPurple = new ImageView();
-            ivPurple.setImage(imagePurple);
-            VBox boxPurple = new VBox(tPurple, ivPurple);
-            boxPurple.setAlignment(Pos.CENTER);
-
-            Text tYellow = new Text("D-STRUCT-OR:");
-            Image imageYellow;
-            if (availableCharacters.contains("yellow")) {
-                imageYellow = new Image(new FileInputStream("src/main/resources/images/characters/yellow_character.png"));
-            } else {
-                imageYellow = new Image(new FileInputStream("src/main/resources/images/characters/yellow_character_taken.png"));
-            }
-            ImageView ivYellow = new ImageView();
-            ivYellow.setImage(imageYellow);
-            VBox boxYellow = new VBox(tYellow, ivYellow);
-            boxYellow.setAlignment(Pos.CENTER);
-
-            HBox imagesBox = new HBox(boxBlue, boxGreen, boxGrey, boxPurple, boxYellow);
-            VBox generalBox = new VBox(imagesBox, boxText);
-            root.getChildren().add(generalBox);
-            root.setBottom(boxButton);
-
-
-            ivBlue.setOnMouseClicked(e -> {
-                text.setText("You selected BANSHEE!");
-                button.setOnAction(ev -> handleCharactersOptions("blue"));
-            });
-
-            ivGreen.setOnMouseClicked(e -> {
-                text.setText("You selected SPROG!");
-                button.setOnAction(ev -> handleCharactersOptions("green"));
-            });
-
-            ivGrey.setOnMouseClicked(e -> {
-                text.setText("You selected DOZER!");
-                button.setOnAction(ev -> handleCharactersOptions("grey"));
-            });
-
-            ivPurple.setOnMouseClicked(e -> {
-                text.setText("You selected VIOLET!");
-                button.setOnAction(ev -> handleCharactersOptions("purple"));
-            });
-
-            ivYellow.setOnMouseClicked(e -> {
-                text.setText("You selected D-STRUCT-OR!");
-                button.setOnAction(ev -> handleCharactersOptions("yellow"));
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void handleCharactersOptions(String selectedCharacter){
-        adrenalineGUI.didChooseCharacter(selectedCharacter);
-    }
-
-    public void chooseGameMap() throws FileNotFoundException{
-        root.getChildren().clear();
-
-        Text tFirst = new Text("First configuration, good for 3 or 4 players:");
-        Image firstLeft = new Image(new FileInputStream("src/main/resources/images/board/board1.png"));
-        ImageView ivFirstLeft = new ImageView();
-        ivFirstLeft.setImage(firstLeft);
-        ivFirstLeft.setFitHeight(321);
-        ivFirstLeft.setFitWidth(200);
-        Image firstRight = new Image(new FileInputStream("src/main/resources/images/board/board4.png"));
-        ImageView ivFirstRight = new ImageView();
-        ivFirstRight.setImage(firstRight);
-        ivFirstRight.setFitHeight(321);
-        ivFirstRight.setFitWidth(200);
-        HBox boxFirst = new HBox(ivFirstLeft, ivFirstRight);
-        VBox vBoxFirst = new VBox(tFirst, boxFirst);
-
-        Text tSecond = new Text("Second configuration, good for any number of players:");
-        Image secondLeft = new Image(new FileInputStream("src/main/resources/images/board/board1.png"));
-        ImageView ivSecondLeft = new ImageView();
-        ivSecondLeft.setImage(secondLeft);
-        ivSecondLeft.setFitHeight(321);
-        ivSecondLeft.setFitWidth(200);
-        Image secondRight = new Image(new FileInputStream("src/main/resources/images/board/board2.png"));
-        ImageView ivSecondRight = new ImageView();
-        ivSecondRight.setImage(secondRight);
-        ivSecondRight.setFitHeight(321);
-        ivSecondRight.setFitWidth(200);
-        HBox boxSecond = new HBox(ivSecondLeft, ivSecondRight);
-        VBox vBoxSecond = new VBox(tSecond, boxSecond);
-
-        Text tThird = new Text("Third configuration, good for any number of players:");
-        Image thirdLeft = new Image(new FileInputStream("src/main/resources/images/board/board3.png"));
-        ImageView ivThirdLeft = new ImageView();
-        ivThirdLeft.setImage(thirdLeft);
-        ivThirdLeft.setFitHeight(321);
-        ivThirdLeft.setFitWidth(200);
-        Image thirdRight = new Image(new FileInputStream("src/main/resources/images/board/board2.png"));
-        ImageView ivThirdRight = new ImageView();
-        ivThirdRight.setImage(thirdRight);
-        ivThirdRight.setFitHeight(321);
-        ivThirdRight.setFitWidth(200);
-        HBox boxThird = new HBox(ivThirdLeft, ivThirdRight);
-        VBox vBoxThird = new VBox(tThird, boxThird);
-
-        Text tFourth = new Text("Fourth configuration, good for 4 or 5 players:");
-        Image fourthLeft = new Image(new FileInputStream("src/main/resources/images/board/board3.png"));
-        ImageView ivFourthLeft = new ImageView();
-        ivFourthLeft.setImage(fourthLeft);
-        ivFourthLeft.setFitHeight(321);
-        ivFourthLeft.setFitWidth(200);
-        Image fourthRight = new Image(new FileInputStream("src/main/resources/images/board/board4.png"));
-        ImageView ivFourthRight = new ImageView();
-        ivFourthRight.setImage(fourthRight);
-        ivFourthRight.setFitHeight(321);
-        ivFourthRight.setFitWidth(200);
-        HBox boxFourth = new HBox(ivFourthLeft, ivFourthRight);
-        VBox vBoxFourth = new VBox(tFourth, boxFourth);
-
-        HBox upperBox = new HBox(vBoxFirst, vBoxSecond);
-        HBox lowerBox = new HBox(vBoxThird, vBoxFourth);
-        upperBox.setMargin(vBoxFirst, new Insets(10,10,10,10));
-        upperBox.setMargin(vBoxSecond, new Insets(10,10,10,10));
-        lowerBox.setMargin(vBoxThird, new Insets(10,10,10,10));
-        lowerBox.setMargin(vBoxFourth, new Insets(10,10,10,10));
-
-        Text text = new Text();
-        VBox generalBox = new VBox(upperBox, lowerBox, text);
-        generalBox.setAlignment(Pos.CENTER);
-        root.setTop(generalBox);
-        root.setBottom(boxButton);
-
-        boxFirst.setOnMouseClicked(e -> {
-            text.setText("You selected the first configuration!");
-            button.setOnAction(ev -> handleGameMapOptions(MapType.values()[0].toString()));
-        });
-
-        boxSecond.setOnMouseClicked(e -> {
-            text.setText("You selected the second configuration!");
-            button.setOnAction(ev -> handleGameMapOptions(MapType.values()[1].toString()));
-        });
-
-        boxThird.setOnMouseClicked(e -> {
-            text.setText("You selected the third configuration!");
-            button.setOnAction(ev -> handleGameMapOptions(MapType.values()[2].toString()));
-        });
-
-        boxFourth.setOnMouseClicked(e -> {
-            text.setText("You selected the fourth configuration!");
-            button.setOnAction(ev -> handleGameMapOptions(MapType.values()[3].toString()));
-        });
-    }
-
-    public void handleGameMapOptions(String configuration){
-        adrenalineGUI.didChooseGameMap(configuration);
-    }
-
-    public void chooseSpawnPoint(List<String> powerups) throws FileNotFoundException{
-        root.getChildren().clear();
-        Text text = new Text("Draw two power-up cards from this power-ups deck!");
-        Image back = new Image(new FileInputStream("src/main/resources/images/powerups/Back.png"));
-        ImageView ivBack = new ImageView();
-        ivBack.setImage(back);
-        HBox cardBox = new HBox(ivBack);
-        cardBox.setAlignment(Pos.CENTER);
-        Button b = new Button("Draw two cards");
-        HBox boxB = new HBox(b);
-        boxB.setAlignment(Pos.CENTER);
-        boxB.setMargin(b, new Insets(0, 0, 50, 0));
-        root.setCenter(cardBox);
-        root.setBottom(boxB);
-        b.setOnAction(e -> {try {
-            chooseSpawnPointHelper(powerups);
-        }catch (FileNotFoundException e1){
-            System.err.println(e.toString());
-        }
-        });
-    }
-
-    public void chooseSpawnPointHelper(List<String> powerups) throws FileNotFoundException{
-        root.getChildren().clear();
-        Text text = new Text("Choose a spawn point by selecting one card that you will not keep");
-        HBox textBox = new HBox(text);
-        textBox.setMargin(text, new Insets(10,10,10,10));
-        textBox.setAlignment(Pos.CENTER);
-
-        Image firstCard = new Image(new FileInputStream("src/main/resources/images/powerups/" + powerups.get(0) +".png"));
-        ImageView ivFirst = new ImageView();
-        ivFirst.setImage(firstCard);
-
-        Image secondCard = new Image(new FileInputStream("src/main/resources/images/powerups/" + powerups.get(1) +".png"));
-        ImageView ivSecond = new ImageView();
-        ivSecond.setImage(secondCard);
-
-        HBox cards = new HBox(ivFirst, ivSecond);
-        cards.setAlignment(Pos.CENTER);
-        cards.setMargin(ivFirst, new Insets(10,10,10,10));
-        cards.setMargin(ivSecond, new Insets(10,10,10,10));
-        root.setTop(textBox);
-        root.setCenter(cards);
-        Text textBelow = new Text();
-        VBox vBox = new VBox(textBelow, boxButton);
-        vBox.setMargin(textBelow, new Insets(10,10,10,10));
-        root.setBottom(vBox);
-
-        ivFirst.setOnMouseClicked(e -> {
-            textBelow.setText("You selected the first card as a spawpoint!");
-            button.setOnAction(ev -> handleSpawnPointsOptions(powerups.get(0), powerups.get(1)));
-            try {
-                Image firstCard_click = new Image(new FileInputStream("src/main/resources/images/powerups/" + powerups.get(0) + "_click.png"));
-                ivFirst.setImage(firstCard_click);
-                ivSecond.setImage(secondCard);
-            } catch (FileNotFoundException e1){
-                System.err.println(e.toString());
-            }
-        });
-
-        ivSecond.setOnMouseClicked(e -> {
-            textBelow.setText("You selected the second card as a spawpoint!");
-            button.setOnAction(ev -> handleSpawnPointsOptions(powerups.get(1), powerups.get(0)));
-            try {
-                Image secondCard_click = new Image(new FileInputStream("src/main/resources/images/powerups/" + powerups.get(1) + "_click.png"));
-                ivSecond.setImage(secondCard_click);
-                ivFirst.setImage(firstCard);
-            } catch (FileNotFoundException e1){
-                System.err.println(e.toString());
-            }
-        });
-    }
-
-    public void handleSpawnPointsOptions(String spawnPoint, String otherPowerup){
-        adrenalineGUI.didChooseSpawnPoint(spawnPoint, otherPowerup);
-    }
-
-    public void onChooseCharacter(List<String> availableCharacters) {
-        Platform.runLater(() -> {
-            try {
-                chooseCharacter(availableCharacters);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
-
-    public void chooseAction() throws FileNotFoundException{
-
-        Text text = new Text("Choose your next move!");
-        HBox textBox = new HBox(text);
-        textBox.setMargin(text, new Insets(10,10,10,10));
-        textBox.setAlignment(Pos.CENTER);
-
-
-        Image shoot = new Image(new FileInputStream("src/main/resources/images/actions/shoot.png"));
-        ImageView ivShoot = new ImageView();
-        ivShoot.setImage(shoot);
-        Image grab = new Image(new FileInputStream("src/main/resources/images/actions/grab.png"));
-        ImageView ivGrab = new ImageView();
-        ivGrab.setImage(grab);
-        Image move = new Image(new FileInputStream("src/main/resources/images/actions/move.png"));
-        ImageView ivMove = new ImageView();
-        ivMove.setImage(move);
-
-        VBox actions = new VBox(ivShoot, ivGrab, ivMove);
-        actions.setAlignment(Pos.CENTER);
-        actions.setMargin(ivShoot, new Insets(10,10,10,10));
-        actions.setMargin(ivGrab, new Insets(10,10,10,10));
-        actions.setMargin(ivMove, new Insets(10,10,10,10));
-        root.setTop(textBox);
-        root.setCenter(actions);
-        Text textBelow = new Text();
-        VBox vBox = new VBox(textBelow, boxButton);
-        vBox.setMargin(textBelow, new Insets(10,10,10,10));
-        root.setBottom(vBox);
-
-        ivShoot.setOnMouseClicked(e -> {
-            textBelow.setText("You chose to shoot!");
-            button.setOnAction(ev -> handleActionOptions("shoot"));
-            try {
-                Image shoot_click = new Image(new FileInputStream("src/main/resources/images/actions/shoot_click.png"));
-                ivShoot.setImage(shoot_click);
-                ivGrab.setImage(grab);
-                ivMove.setImage(move);
-            } catch (FileNotFoundException e1){
-                System.err.println(e.toString());
-            }
-
-        });
-
-        ivGrab.setOnMouseClicked(e -> {
-            textBelow.setText("You chose to grab something!");
-            button.setOnAction(ev -> handleActionOptions("grab"));
-            try{
-                Image grab_click = new Image(new FileInputStream("src/main/resources/images/actions/grab_click.png"));
-                ivGrab.setImage(grab_click);
-                ivShoot.setImage(shoot);
-                ivMove.setImage(move);
-            } catch (FileNotFoundException e1){
-                System.err.println(e.toString());
-            }
-        });
-
-        ivMove.setOnMouseClicked(e -> {
-            textBelow.setText("You chose to move!");
-            button.setOnAction(ev -> handleActionOptions("move"));
-            try {
-                Image move_click = new Image(new FileInputStream("src/main/resources/images/actions/move_click.png"));
-                ivMove.setImage(move_click);
-                ivShoot.setImage(shoot);
-                ivGrab.setImage(grab);
-            } catch (FileNotFoundException e1){
-                AdrenalineLogger.error(e.toString());
-            }
-        });
-    }
-
-    public void handleActionOptions(String action){
-    }
-
-    public void board() throws FileNotFoundException{
-        root.getChildren().clear();
-
-        Image row0 = new Image(new FileInputStream("src/main/resources/images/firstboard/first_row.png"));
-        ImageView ivRow0 = new ImageView();
-        ivRow0.setImage(row0);
-        Image above1 = new Image(new FileInputStream("src/main/resources/images/firstboard/1-1.png"));
-        ImageView ivAbove1 = new ImageView();
-        ivAbove1.setImage(above1);
-        Image r0c0 = new Image(new FileInputStream("src/main/resources/images/firstboard/2-1.png"));
-        ImageView iv00 = new ImageView();
-        iv00.setImage(r0c0);
-        Image r1c0 = new Image(new FileInputStream("src/main/resources/images/firstboard/3-1.png"));
-        ImageView iv10 = new ImageView();
-        iv10.setImage(r1c0);
-        Image r2c0 = new Image(new FileInputStream("src/main/resources/images/firstboard/4-1.png"));
-        ImageView iv20 = new ImageView();
-        iv20.setImage(r2c0);
-        Image below1 = new Image(new FileInputStream("src/main/resources/images/firstboard/5-1.png"));
-        ImageView ivBelow1 = new ImageView();
-        ivBelow1.setImage(below1);
-
-        VBox firstRow = new VBox(ivAbove1, iv00, iv10, iv20, ivBelow1);
-
-
-        Image above2 = new Image(new FileInputStream("src/main/resources/images/firstboard/1-2.png"));
-        ImageView ivAbove2 = new ImageView();
-        ivAbove2.setImage(above2);
-        Image r0c1 = new Image(new FileInputStream("src/main/resources/images/firstboard/2-2.png"));
-        ImageView iv01 = new ImageView();
-        iv01.setImage(r0c1);
-        Image r1c1 = new Image(new FileInputStream("src/main/resources/images/firstboard/3-2.png"));
-        ImageView iv11 = new ImageView();
-        iv11.setImage(r1c1);
-        Image r2c1 = new Image(new FileInputStream("src/main/resources/images/firstboard/4-2.png"));
-        ImageView iv21 = new ImageView();
-        iv21.setImage(r2c1);
-        Image below2 = new Image(new FileInputStream("src/main/resources/images/firstboard/5-2.png"));
-        ImageView ivBelow2 = new ImageView();
-        ivBelow2.setImage(below2);
-
-        VBox secondRow = new VBox(ivAbove2, iv01, iv11, iv21, ivBelow2);
-
-
-        Image middle0 = new Image(new FileInputStream("src/main/resources/images/secondboard/1-0.png"));
-        ImageView ivMiddle0 = new ImageView();
-        ivMiddle0.setImage(middle0);
-        Image middle1 = new Image(new FileInputStream("src/main/resources/images/secondboard/2-0.png"));
-        ImageView ivMiddle1 = new ImageView();
-        ivMiddle1.setImage(middle1);
-        Image middle2 = new Image(new FileInputStream("src/main/resources/images/secondboard/3-0.png"));
-        ImageView ivMiddle2 = new ImageView();
-        ivMiddle2.setImage(middle2);
-
-        VBox middle = new VBox(ivMiddle0, ivMiddle1, ivMiddle2);
-
-
-        Image r0c2 = new Image(new FileInputStream("src/main/resources/images/secondboard/1-1.png"));
-        ImageView iv02 = new ImageView();
-        iv02.setImage(r0c2);
-        Image r1c2 = new Image(new FileInputStream("src/main/resources/images/secondboard/2-1.png"));
-        ImageView iv12 = new ImageView();
-        iv12.setImage(r1c2);
-        Image r2c2 = new Image(new FileInputStream("src/main/resources/images/secondboard/3-1.png"));
-        ImageView iv22 = new ImageView();
-        iv22.setImage(r2c2);
-
-        VBox thirdRow = new VBox( iv02, iv12, iv22);
-
-
-        Image r0c3 = new Image(new FileInputStream("src/main/resources/images/secondboard/1-2.png"));
-        ImageView iv03 = new ImageView();
-        iv03.setImage(r0c3);
-        Image r1c3 = new Image(new FileInputStream("src/main/resources/images/secondboard/2-2.png"));
-        ImageView iv13 = new ImageView();
-        iv13.setImage(r1c3);
-        Image r2c3 = new Image(new FileInputStream("src/main/resources/images/secondboard/3-2.png"));
-        ImageView iv23 = new ImageView();
-        iv23.setImage(r2c3);
-
-        VBox fourthRow = new VBox( iv03, iv13, iv23);
-
-
-        HBox hBox = new HBox(middle, thirdRow, fourthRow);
-        Image above34 = new Image(new FileInputStream("src/main/resources/images/secondboard/above.png"));
-        ImageView ivAbove34 = new ImageView();
-        ivAbove34.setImage(above34);
-        Image below34 = new Image(new FileInputStream("src/main/resources/images/secondboard/below.png"));
-        ImageView ivBelow34 = new ImageView();
-        ivBelow34.setImage(below34);
-        VBox third_fourth_row = new VBox(ivAbove34, hBox, ivBelow34);
-
-        Image lastRow = new Image(new FileInputStream("src/main/resources/images/secondboard/last_row.png"));
-        ImageView ivLastRow = new ImageView();
-        ivLastRow.setImage(lastRow);
-
-        HBox generalBox = new HBox(ivRow0, firstRow, secondRow, third_fourth_row, ivLastRow);
-        generalBox.autosize();
-
-        root.getChildren().add(generalBox);
-    }
-}
-
-*/
