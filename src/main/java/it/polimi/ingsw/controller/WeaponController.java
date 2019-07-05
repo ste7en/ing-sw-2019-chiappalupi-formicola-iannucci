@@ -295,6 +295,7 @@ public class WeaponController implements Serializable {
      * Method used to restore the gameMap if something goes wrong during the shooting process.
      */
     public void restoreMap(GameMap map, List<Player> players) {
+        if(gameMapBox == null || movementsMapBox == null) return;
         for(Player player : players)
             if(map.getPositionFromPlayer(player) != null && map.getPositionFromPlayer(player).compareTo(gameMapBox.getPositionFromPlayer(player)) != 0)
                 map.setPlayerPosition(player, gameMapBox.getPositionFromPlayer(player).getRow(), gameMapBox.getPositionFromPlayer(player).getColumn());

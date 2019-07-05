@@ -50,6 +50,7 @@ public class GameLogic implements Externalizable {
     private Player finalPlayer;
     private int numOfRemainingActions;
     private int numOfKillsDuringThisTurn;
+    private boolean isUsingPowerup;
 
     /**
      * Instance variable used to distinguish the (temporary) absence
@@ -91,6 +92,7 @@ public class GameLogic implements Externalizable {
         this.numberOfPlayers = numberOfPlayers;
         this.numOfRemainingActions = -1;
         this.numOfKillsDuringThisTurn = 0;
+        this.isUsingPowerup = false;
 
         this._gameLoadedFromAPreviousSavedState = false;
     }
@@ -500,7 +502,7 @@ public class GameLogic implements Externalizable {
             lookForPlayerFromColor(damage.get(MAX_SIZE_OF_THE_BOARD - 1)).getPlayerBoard().addMarks(player.getCharacter().getColor(), 1);
             numOfBloodInTheSkullsTrack = 2;
         }
-        if(!finalFrenzy && !damage.isEmpty()) board.addBloodFrom(damage.get(DEATH_BLOW_PLACE_ON_THE_BOARD), numOfBloodInTheSkullsTrack);
+        if(!finalFrenzy && !damage.isEmpty() && damage.size() >= DEATH_BLOW_PLACE_ON_THE_BOARD) board.addBloodFrom(damage.get(DEATH_BLOW_PLACE_ON_THE_BOARD), numOfBloodInTheSkullsTrack);
         player.getPlayerBoard().death(finalFrenzy);
     }
 
@@ -795,5 +797,13 @@ public class GameLogic implements Externalizable {
         numOfKillsDuringThisTurn            = in.readInt();
 
         this.players.forEach(Player::disablePlayer);
+    }
+
+    public boolean isUsingPowerup() {
+        return isUsingPowerup;
+    }
+
+    public void setUsingPowerup(boolean usingPowerup) {
+        isUsingPowerup = usingPowerup;
     }
 }

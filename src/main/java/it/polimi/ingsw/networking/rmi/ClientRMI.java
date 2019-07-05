@@ -118,6 +118,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     public void joinWaitingRoom(String username) {
         submitRemoteMethodInvocation(executorService, () -> {
             server.joinWaitingRoom(username);
+            if (this.gameID == null) this.viewObserver.didJoinWaitingRoom();
             return null;
         });
     }
