@@ -44,10 +44,10 @@ The structure of the JSON configuration file is as the following example:
     }
 This is also the config file that will be used in case no arguments (or less then expected) will be passed to the program.
 
-####Multiple games
+#### Multiple games
 The server can handle multiple games. In order to start more than one game, more than five users are needed to login and every `waitingRoomTimeout` seconds a new game is started.
 
-####Persistence
+#### Persistence
 At the end of every turn the server saves its state in `Adrenaline_saved_state.bin` and, if this file exists, the server will ask if a previous state has to be loaded or not. 
 
 Otherwise, the command `--run-saved-state` will restore the server regardless of the other parameters.
