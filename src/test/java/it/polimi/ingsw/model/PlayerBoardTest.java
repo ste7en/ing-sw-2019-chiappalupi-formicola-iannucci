@@ -157,7 +157,7 @@ public class PlayerBoardTest {
         playerBoard.appendDamage(PlayerColor.blue, 10);
         playerBoard.setMarks(testPlayerColorArray);
         List<PlayerColor> box = playerBoard.getMarks();
-        playerBoard.death();
+        playerBoard.death(false);
         assertEquals(playerBoard.getDamage(), emptyPlayerColorArray);
         assertEquals(playerBoard.getMarks(), box);
     }
