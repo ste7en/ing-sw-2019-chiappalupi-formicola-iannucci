@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+    <id>AM19</id>
+    <formats>
+        <format>jar</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <excludes>
+                <exclude>org.openjfx:javafx*</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <outputDirectory>/</outputDirectory>
+            <directory>${project.build.outputDirectory}</directory>
+            <excludes>
+                <exclude>*javafx*</exclude>
+                <exclude>*jfx*</exclude>
+                <exclude>images/**</exclude>
+                <exclude>org/**</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+</assembly>

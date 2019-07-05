@@ -37,10 +37,29 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- MAVEN ASSEMBLY PLUGIN -->
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-assembly-plugin</artifactId>
+      <version>3.1.1</version>
+    </dependency>
+    <!-- end of MAVEN ASSEMBLY PLUGIN -->
+
     <!--JACKSON-->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+      <version>2.9.9</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.9.9</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
       <version>2.9.9</version>
     </dependency>
     <!--end of JACKSON-->
@@ -125,6 +144,76 @@
 
 
     <plugins>
+
+      <!-- MAVEN ASSEMBLY PLUGIN -->
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>server-jar-execution</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/assembly/jar-server.xml</descriptor>
+              </descriptors>
+              <archive>
+                <manifest>
+                  <mainClass>it.polimi.ingsw.networking.Server</mainClass>
+                </manifest>
+              </archive>
+              <finalName>Server</finalName>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>cli-jar-execution</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/assembly/jar-cli.xml</descriptor>
+              </descriptors>
+              <archive>
+                <manifest>
+                  <mainClass>it.polimi.ingsw.view.cli.AdrenalineCLI</mainClass>
+                </manifest>
+              </archive>
+              <finalName>Adrenaline-CLI</finalName>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>gui-jar-execution</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/assembly/jar-gui.xml</descriptor>
+              </descriptors>
+              <archive>
+                <manifest>
+                  <mainClass>it.polimi.ingsw.view.gui.GUIHandler</mainClass>
+                </manifest>
+              </archive>
+              <finalName>Adrenaline-GUI</finalName>
+            </configuration>
+          </execution>
+
+        </executions>
+      </plugin>
+
+      <!-- END MAVEN ASSEMBLY PLUGIN -->
+
       <!-- Jacoco is a code coverage library that allows basic report creation -->
       <plugin>
         <groupId>org.jacoco</groupId>
