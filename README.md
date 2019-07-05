@@ -62,4 +62,5 @@ If no arguments are provided, at the startup a command-line prompt will ask the 
 
 ### Running the Client - GUI
 From the same [directory](./deliverables/JARS) of the server, you can run the CLI version of the client with the command-line command
-	java --module-path /usr/local/lib/javafx-sdk-11.0.2/lib --add-modules javafx.controls -jar Adrenaline-GUI-AM19.jar
+
+    java --module-path /usr/local/lib/javafx-sdk-11.0.2/lib --add-modules javafx.controls -jar Adrenaline-GUI-AM19.jar
