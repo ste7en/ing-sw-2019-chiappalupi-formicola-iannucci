@@ -6,6 +6,7 @@ import it.polimi.ingsw.utility.Loggable;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
@@ -104,4 +105,11 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable, Ser
      * Notifies that the game has ended.
      */
     protected abstract void endOfTheGame(int userID, String scoreBoard);
+
+    /**
+     * Display the changes in the view.
+     * @param userID it's the ID of the user
+     * @param updates it's a map containing the changes.
+     */
+    protected abstract void updateView(int userID, Map<String, List<String>> updates);
 }

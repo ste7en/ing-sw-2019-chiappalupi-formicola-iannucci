@@ -619,9 +619,59 @@ public class GameLogic implements Serializable {
         if(possibleMoves > 0) movementsInCell = board.getMap().getCellsAtMaxDistance(lookForPlayerFromUser(user), possibleMoves);
         if(!movementsInCell.isEmpty()) {
             movementsInCell.add(board.getMap().getCellFromPlayer(lookForPlayerFromUser(user)));
-            for(Cell movement : movementsInCell)
-            movements.add(movement.toString());
+            for(Cell move : movementsInCell)
+                movements.add(move.toString());
         }
         return movements;
+    }
+
+    public Map<String, List<String>> getUpdates(User user) {
+        Map<String, List<String>> updates = new HashMap<>();
+        Player player = lookForPlayerFromUser(user);
+
+        List<String> updateString = new ArrayList<>();
+        List<Weapon> weaponInHand = player.getPlayerHand().getWeapons();
+        for(Weapon weapon : weaponInHand) updateString.add(weapon.getName());
+        updates.put(Weapon.weapon_key, updateString);
+
+        updateString = new ArrayList<>();
+        List<Powerup> powerupInHand = player.getPlayerHand().getPowerups();
+        for(Powerup powerup : powerupInHand) updateString.add(powerup.toString());
+        updates.put(Powerup.powerup_key, updateString);
+
+        for(AmmoColor color : AmmoColor.values()) {
+            updateString = new ArrayList<>();
+            updateString.add(Integer.toString(player.getPlayerHand().getAmmosAmount(color)));
+            updates.put(color.toString(), updateString);
+
+            updateString = new ArrayList<>();
+            List<Weapon> weaponsInRespawn = board.showWeapons(color);
+            for(Weapon weapon : weaponsInRespawn) updateString.add(weapon.getName());
+            updates.put(board.getWeaponKeyFromColor(color), updateString);
+        }
+
+        updateString = new ArrayList<>();
+        List<PlayerColor> damageInHand = player.getPlayerBoard().getDamage();
+        for(PlayerColor color : damageInHand) updateString.add(color.toString());
+        updates.put(Damage.damage_key, updateString);
+
+        updateString = new ArrayList<>();
+        List<PlayerColor> marksOnBoard = player.getPlayerBoard().getMarks();
+        for(PlayerColor color : marksOnBoard) updateString.add(color.toString());
+        updates.put(Damage.mark_key, updateString);
+
+        for(int i = 0; i < 3; i++) {
+            updateString = new ArrayList<>();
+            List<AmmoTile> tilesInARow = board.getMap().tilesInARow(i);
+            for(AmmoTile tile : tilesInARow) updateString.add(tile.toString());
+            String key = GameMap.ROW_1;
+            if(i == 1) key = GameMap.ROW_2;
+            else if(i == 2) key = GameMap.ROW_3;
+            updates.put(key, updateString);
+        }
+        for(PlayerColor color : marksOnBoard) updateString.add(color.toString());
+        updates.put(Damage.mark_key, updateString);
+
+        return updates;
     }
 }

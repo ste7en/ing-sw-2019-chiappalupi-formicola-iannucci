@@ -86,6 +86,11 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     }
 
     @Override
+    public void update(Map<String, List<String>> updates) {
+        this.viewObserver.update(updates);
+    }
+
+    @Override
     public void createUser(String username){
 
             var userID = registerClient(username);

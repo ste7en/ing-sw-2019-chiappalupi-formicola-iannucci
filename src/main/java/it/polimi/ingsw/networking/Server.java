@@ -194,7 +194,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
             AdrenalineLogger.errorException(EXC_CONFIG_FILE, e);
         }
 
-        if (arguments.contains("--debug")) { waitingRoomTimeout = 10; operationTimeout = 10; }
+        if (arguments.contains("--debug")) { waitingRoomTimeout = 4; operationTimeout = 10; }
 
         new Server(socketPortNumber, rmiPortNumber, waitingRoomTimeout, operationTimeout);
     }
@@ -925,8 +925,24 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
     public String afterAction(int userID, UUID gameID) {
         String situation = gameControllers.get(gameID).updateNumOfRemainingActions(findUserFromID(userID));
         List<User> otherUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
-        for(User user : otherUsers)
+
+        Map<String, List<String>> guiChanges = gameControllers.get(gameID).getUpdates(findUserFromID(userID));
+
+        for(String key : guiChanges.keySet()) {
+            Map<String, List<String>> singleChange = new HashMap<>();
+            singleChange.put(key, guiChanges.get(key));
+            users.get(findUserFromID(userID)).updateView(findUserFromID(userID).hashCode(), singleChange);
+        }
+        for(User user : otherUsers) {
             users.get(user).displayChanges(user.hashCode(), gameControllers.get(gameID).toStringFromPlayers(user));
+            guiChanges = gameControllers.get(gameID).getUpdates(user);
+            for(String key : guiChanges.keySet()) {
+                Map<String, List<String>> singleChange = new HashMap<>();
+                singleChange.put(key, guiChanges.get(key));
+                users.get(user).updateView(user.hashCode(), singleChange);
+            }
+
+        }
         return situation;
     }
 

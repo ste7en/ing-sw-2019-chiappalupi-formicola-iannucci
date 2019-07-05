@@ -49,6 +49,9 @@ public class Board implements Serializable {
      * String constant used in messages between client-server
      */
     public static final String skulls_key = "SKULLS";
+    public static String weaponsKey_red = "RED_WEAPON";
+    public static String weaponsKey_yellow = "YELLOW_WEAPON";
+    public static String weaponsKey_blue = "BLUE_WEAPON";
 
     /**
      * Map of the board
@@ -309,6 +312,19 @@ public class Board implements Serializable {
         board.append(NEW_LINE);
 
         return board.toString();
+    }
+
+    public String getWeaponKeyFromColor(AmmoColor color) {
+        switch (color) {
+            case blue:
+                return weaponsKey_blue;
+            case red:
+                return weaponsKey_red;
+            case yellow:
+                return weaponsKey_yellow;
+            default:
+                return null;
+        }
     }
 
 }

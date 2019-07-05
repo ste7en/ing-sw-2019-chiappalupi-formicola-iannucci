@@ -16,6 +16,7 @@ public class Damage implements Comparable<Damage>, Serializable {
      * String constants used in messages between client-server
      */
     public static final String damage_key = "DAMAGE";
+    public static final String mark_key = "MARKS";
     public static final String no_damage = "NO_DAMAGE";
 
     public Damage() {

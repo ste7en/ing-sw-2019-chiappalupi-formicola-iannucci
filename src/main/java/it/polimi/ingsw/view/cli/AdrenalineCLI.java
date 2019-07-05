@@ -241,8 +241,7 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
-    public void onViewUpdate() {
-
+    public void update(Map<String, List<String>> update) {
     }
 
     @Override

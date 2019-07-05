@@ -357,12 +357,14 @@ public enum CommunicationMessage implements Serializable {
      * View update messages.
      *
      * UPDATE_SITUATION is sent from the server to the client to notify that some other player has done something in his turn.
+     * UPDATE_ALL is sent from the server to the client to notify any change.
      * DISPLAY_FINAL_FRENZY is sent from the server to the client to notify that final frenzy game has begun. Arguments: none
      *
      * Arguments: <GameMap.gameMap_key, Board::toStringFromPlayer>
      */
     UPDATE_SITUATION,
     DISPLAY_FINAL_FRENZY,
+    UPDATE_ALL,
 
     /**
      * Check deaths message.

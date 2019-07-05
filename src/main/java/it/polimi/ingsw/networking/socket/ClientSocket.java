@@ -34,6 +34,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
      */
     private static final String UNKNOWN_COMMUNICATION_MESSAGE = "Unsupported communication message: ";
     private static final String SOCKET_CONFIG_STRING          = "A SOCKET connection is setting up...";
+    private static final String EMPTY = "empty";
 
     /**
      * Delegate class responsible to send messages
@@ -245,6 +246,21 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         break;
                     case MOVES_BEFORE_SHOOT:
                         this.viewObserver.moveBeforeShot(new ArrayList<>(args.values()));
+                        break;
+                    case UPDATE_ALL:
+                        List<String> updates = new ArrayList<>(args.values());
+                        String key = "";
+                        for(String s : args.keySet()) {
+                            try {
+                                Integer.parseInt(s);
+                            } catch (NumberFormatException e) {
+                                key = s;
+                            }
+                        }
+                        Map<String, List<String>> updateMap = new HashMap<>();
+                        if(updates.size() != 1 || !updates.get(0).equals(EMPTY)) updateMap.put(key, updates);
+                        else updateMap.put(key, new ArrayList<>());
+                        this.viewObserver.update(updateMap);
                         break;
                     default:
                         logOnFailure(UNKNOWN_COMMUNICATION_MESSAGE+communicationMessage);

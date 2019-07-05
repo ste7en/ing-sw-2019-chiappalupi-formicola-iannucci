@@ -33,6 +33,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  */
 public class ServerSocketConnectionHandler extends ServerConnectionHandler implements Runnable {
 
+    private static final String EMPTY = "empty";
     /**
      * The socket instance, the object that represents a connection
      * between client and server.
@@ -623,5 +624,19 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     @Override
     protected void endOfTheGame(int userID, String scoreboard) {
         this.send(CommunicationMessage.from(userID, GAME_ENDED, argsFrom(GameMap.gameMap_key, scoreboard)));
+    }
+
+    @Override
+    protected void updateView(int userID, Map<String, List<String>> updates) {
+        Map<String, String> args = new HashMap<>();
+        List<String> keys = new ArrayList<>(updates.keySet());
+        List<String> values = new ArrayList<>(updates.get(keys.get(0)));
+        if(!values.isEmpty()) args.put(keys.get(0), values.get(0));
+        else args.put(keys.get(0), EMPTY);
+        for(int i = 1; i < values.size(); i++) args.put(keys.get(0), values.get(i));
+
+        System.out.println(args.toString());
+
+        this.send(CommunicationMessage.from(userID, UPDATE_ALL, args));
     }
 }
