@@ -47,28 +47,34 @@ public class GUIHandler extends Application {
     private GridPane leftDeck;
     private GridPane upperDeck;
     private GridPane rightDeck;
-    List<List<StackPane>> cellsContainers;
-    List<List<Button>> cellsButtons;
-    List<StackPane> yellowAmmos;
-    List<StackPane> redAmmos;
-    List<StackPane> blueAmmos;
-    List<StackPane> weapons;
-    List<StackPane> powerups;
-    List<StackPane> deckLeft;
-    List<StackPane> deckRight;
-    List<StackPane> deckAbove;
+    private List<List<StackPane>> cellsContainers;
+    private List<List<Button>> cellsButtons;
+    private List<StackPane> yellowAmmos;
+    private List<StackPane> redAmmos;
+    private List<StackPane> blueAmmos;
+    private List<StackPane> weapons;
+    private List<StackPane> powerups;
+    private List<StackPane> deckLeft;
+    private List<StackPane> leftBackup;
+    private List<StackPane> deckRight;
+    private List<StackPane> rightBackup;
+    private List<StackPane> deckAbove;
+    private List<StackPane> aboveBackup;
+    private GridPane cardsDisplayer;
 
     //playerboard
-    HashMap<String ,StackPane> playerBoards;
-    HashMap<String, GridPane> damagesGrid;
-    HashMap<String, List <StackPane>> bloodTruck;
-    HashMap<String, List <StackPane>> marksTruck;
-    HashMap<String, List<StackPane>> killedPointsTruck;
+    private HashMap<String ,StackPane> playerBoards;
+    private HashMap<String, GridPane> damagesGrid;
+    private HashMap<String, List <StackPane>> bloodTruck;
+    private HashMap<String, List <StackPane>> marksTruck;
+    private HashMap<String, List<StackPane>> killedPointsTruck;
 
     private ColumnConstraints c;
     private RowConstraints r;
 
     private Button button;
+    private StackPane buttonContainer;
+    private Button button2;
     private HBox boxButton;
     private VBox textContainer;
     private VBox textSelectedContainer;
@@ -76,7 +82,6 @@ public class GUIHandler extends Application {
     private GridPane modesChoiceGrid;
     private GridPane messageGrid;
 
-    private ArrayList<String> prova2;
     private DoubleProperty fontSize = new SimpleDoubleProperty(10);
     private ConnectionType connectionType;
     private Scene secondScene;
@@ -91,13 +96,19 @@ public class GUIHandler extends Application {
         textSelectedContainer = new VBox();
         textSelectedContainer.setAlignment(Pos.CENTER);
         modesChoiceGrid = new GridPane();
+
+        buttonContainer=new StackPane();
+        button2 = new Button();
+        buttonContainer.setAlignment(Pos.CENTER);
+        buttonContainer.getChildren().add(button2);
+
         BackgroundImage backgroundImageAfter= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(1.0, 1.0, true, true, false, false));
         background = new Background(backgroundImageAfter);
         buildMessageGrid();
         textContainer.setAlignment(Pos.CENTER);
         button = new Button("Continue");
-        button.setOnAction(e -> {try{chooseConnection();} catch (Exception ex){ex.printStackTrace();}});
+        button.setOnAction(e -> {try{createGameMap("conf_1");} catch (Exception ex){ex.printStackTrace();}});
         boxButton = new HBox(button);
         boxButton.setAlignment(Pos.CENTER);
         boxButton.setMargin(button, new Insets(0, 0, 50, 0));
@@ -777,9 +788,13 @@ public class GUIHandler extends Application {
         mapGrid.add(leftDeck, 0, 0, 1, 5);
         leftDeck.setGridLinesVisible(true);
         deckLeft = new ArrayList<>();
+        leftBackup = new ArrayList<>();
         for(int e=0; e<3; e++){
             deckLeft.add(new StackPane());
             leftDeck.add(deckLeft.get(e), 0, e+1,1,1);
+        }
+        for(int e=0; e<3; e++){
+            leftBackup.add(new StackPane());
         }
 
         upperDeck = new GridPane();
@@ -802,10 +817,15 @@ public class GUIHandler extends Application {
         mapGrid.add(upperDeck, 0, 0, 6, 1);
         upperDeck.setGridLinesVisible(true);
         deckAbove = new ArrayList<>();
+        aboveBackup = new ArrayList<>();
         for(int d=0; d<3; d++){
             deckAbove.add(new StackPane());
             upperDeck.add(deckAbove.get(d), d+1, 0,1,1);
         }
+        for(int d=0; d<3; d++){
+            aboveBackup.add(new StackPane());
+        }
+
 
 
         rightDeck = new GridPane();
@@ -826,10 +846,38 @@ public class GUIHandler extends Application {
         mapGrid.add(rightDeck, 5, 0, 1, 5);
         rightDeck.setGridLinesVisible(true);
         deckRight = new ArrayList<>();
-        for(int f=0; f<3; f++){
+        rightBackup = new ArrayList<>();
+        for(int d=0; d<3; d++){
             deckRight.add(new StackPane());
-            rightDeck.add(deckRight.get(f), 1, f+1,1,1);
+            rightDeck.add(deckRight.get(d), 1, d+1,1,1);
         }
+        for(int d=0; d<3; d++){
+            rightBackup.add(new StackPane());
+        }
+
+        cardsDisplayer = new GridPane();
+        RowConstraints ro000 = new RowConstraints();
+        ro000.setPercentHeight(20);
+        RowConstraints ro001 = new RowConstraints();
+        ro001.setPercentHeight(80);
+        RowConstraints ro002 = new RowConstraints();
+        ro002.setPercentHeight(20);
+        cardsDisplayer.getRowConstraints().addAll(ro000, ro001, ro002);
+        ColumnConstraints col00 = new ColumnConstraints();
+        col00.setPercentWidth(10);
+        ColumnConstraints col01 = new ColumnConstraints();
+        col01.setPercentWidth(22);
+        ColumnConstraints col02 = new ColumnConstraints();
+        col02.setPercentWidth(7);
+        ColumnConstraints col03 = new ColumnConstraints();
+        col03.setPercentWidth(22);
+        ColumnConstraints col04 = new ColumnConstraints();
+        col04.setPercentWidth(7);
+        ColumnConstraints col05 = new ColumnConstraints();
+        col05.setPercentWidth(22);
+        ColumnConstraints col06 = new ColumnConstraints();
+        col06.setPercentWidth(10);
+        cardsDisplayer.getColumnConstraints().addAll(col00, col01, col02, col03, col04, col05, col06);
 
         //Setting background
         BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
@@ -840,7 +888,40 @@ public class GUIHandler extends Application {
         secondScene = new Scene(boardGrid, 1200, 675);
         primaryStage.setScene(secondScene);
         primaryStage.setFullScreen(true);
+
+
+        ArrayList<String> weapons = new ArrayList<>();
+        weapons.add("Furnace");
+        weapons.add("Hellion");
+        weapons.add("Heatseeker");
+        onUpdateDeckRight(weapons);
+        onUpdateDeckAbove(weapons);
+        onUpdateDeckLeft(weapons);
+        onUpdateWeaponsCards(weapons);
     }
+
+    public void displayCards(int n, int i){
+        Platform.runLater(() -> {
+            try {
+                onDisplayCards(n, i);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void onDisplayCards(int n, int i){
+        cardsDisplayer.getChildren().clear();
+        cardsDisplayer.setBackground(background);
+                if(i==1) cardsDisplayer.add(leftBackup.get(n), 3,1);
+                if(i==2) cardsDisplayer.add(aboveBackup.get(n), 3, 1);
+                if(i==3) cardsDisplayer.add(rightBackup.get(n), 3, 1);
+        button2.setOnAction(e -> {secondScene.setRoot(boardGrid);});
+        button2.setText("Go back to the map");
+        cardsDisplayer.add(buttonContainer,0,2,7,1);
+        secondScene.setRoot(cardsDisplayer);
+    }
+
 
     public void choseCell(int row, int column){
         System.out.println("You selected the position /n row:" + row + " column:" + column);
@@ -977,13 +1058,30 @@ public class GUIHandler extends Application {
     public void onUpdateDeckLeft(List<String> givenWeapons){
 
         ArrayList<ImageView> weaponsIV = new ArrayList<>();
+        ArrayList<ImageView> weaponsBackUpIV = new ArrayList<>();
+        ArrayList<Button> buttons = new ArrayList<>();
         for(StackPane stackPane: deckLeft){
             stackPane.getChildren().clear();
         }
+        for(StackPane stackPane: leftBackup){
+            stackPane.getChildren().clear();
+        }
         for(int i = 0; i < givenWeapons.size(); i++){
+            int index = i;
             weaponsIV.add(new ImageView());
+            weaponsBackUpIV.add(new ImageView());
+            buttons.add(new Button());
             clickedImage(weaponsIV.get(i), "weapons/"+givenWeapons.get(i));
+            clickedImage(weaponsBackUpIV.get(i), "weapons/"+givenWeapons.get(i));
             setUpProperties270(deckLeft.get(i), weaponsIV.get(i));
+            setUpProperties(leftBackup.get(i), weaponsBackUpIV.get(i));
+
+            deckLeft.get(i).getChildren().add(buttons.get(i));
+            buttons.get(i).setStyle("-fx-background-color: transparent");
+            buttons.get(i).setPrefHeight(Integer.MAX_VALUE);
+            buttons.get(i).setPrefWidth(Integer.MAX_VALUE);
+            buttons.get(i).setOnAction(e -> displayCards(index, 1));
+
         }
     }
 
@@ -1002,13 +1100,29 @@ public class GUIHandler extends Application {
     public void onUpdateDeckAbove(List<String> givenWeapons){
 
         ArrayList<ImageView> weaponsIV = new ArrayList<>();
+        ArrayList<ImageView> weaponsBackUpIV = new ArrayList<>();
+        ArrayList<Button> buttons = new ArrayList<>();
         for(StackPane stackPane: deckAbove){
             stackPane.getChildren().clear();
         }
+        for(StackPane stackPane: aboveBackup){
+            stackPane.getChildren().clear();
+        }
         for(int i = 0; i < givenWeapons.size(); i++){
+            int index=i;
             weaponsIV.add(new ImageView());
+            weaponsBackUpIV.add(new ImageView());
+            buttons.add(new Button());
             clickedImage(weaponsIV.get(i), "weapons/"+givenWeapons.get(i));
+            clickedImage(weaponsBackUpIV.get(i), "weapons/"+givenWeapons.get(i));
             setUpProperties(deckAbove.get(i), weaponsIV.get(i));
+            setUpProperties(aboveBackup.get(i), weaponsBackUpIV.get(i));
+
+            deckAbove.get(i).getChildren().add(buttons.get(i));
+            buttons.get(i).setStyle("-fx-background-color: transparent");
+            buttons.get(i).setPrefHeight(Integer.MAX_VALUE);
+            buttons.get(i).setPrefHeight(Integer.MAX_VALUE);
+            buttons.get(i).setOnAction(e -> displayCards(index, 2));
         }
     }
 
@@ -1026,13 +1140,29 @@ public class GUIHandler extends Application {
     public void onUpdateDeckRight(List<String>givenWeapons){
 
         ArrayList<ImageView> weaponsIV = new ArrayList<>();
+        ArrayList<ImageView> weaponsBackUpIV = new ArrayList<>();
+        ArrayList<Button> buttons = new ArrayList<>();
         for(StackPane stackPane: deckRight){
             stackPane.getChildren().clear();
         }
+        for(StackPane stackPane: rightBackup){
+            stackPane.getChildren().clear();
+        }
         for(int i = 0; i < givenWeapons.size(); i++){
+            int index = i;
             weaponsIV.add(new ImageView());
+            weaponsBackUpIV.add(new ImageView());
+            buttons.add(new Button());
             clickedImage(weaponsIV.get(i), "weapons/"+givenWeapons.get(i));
+            clickedImage(weaponsBackUpIV.get(i), "weapons/"+givenWeapons.get(i));
             setUpProperties90(deckRight.get(i), weaponsIV.get(i));
+            setUpProperties(rightBackup.get(i), weaponsBackUpIV.get(i));
+
+            deckRight.get(i).getChildren().add(buttons.get(i));
+            buttons.get(i).setStyle("-fx-background-color: transparent");
+            buttons.get(i).setPrefHeight(Integer.MAX_VALUE);
+            buttons.get(i).setPrefHeight(Integer.MAX_VALUE);
+            buttons.get(i).setOnAction(e -> displayCards(index, 3));
         }
 
     }
