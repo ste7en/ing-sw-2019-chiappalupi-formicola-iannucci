@@ -218,29 +218,36 @@ public class Board implements Serializable {
     public void assignBlood() {
         List<Integer> points = new ArrayList<>(this.pointsFromSkulls);
         Map<PlayerColor, Integer> bloodFrom = new EnumMap<>(PlayerColor.class);
-        for(PlayerColor color : PlayerColor.values()) bloodFrom.put(color, 0);
-        for(List<PlayerColor> damage : skullsTrack.values())
-            if(damage != null)
-                bloodFrom.put(damage.get(0), damage.size());
+
+        Arrays.stream(PlayerColor.values()).forEach(playerColor -> bloodFrom.put(playerColor, 0));
+        skullsTrack.values().forEach(playerColors -> {
+            if (playerColors != null && !playerColors.isEmpty()) bloodFrom.put(playerColors.get(0), playerColors.size());
+        });
+
         while(!bloodFrom.isEmpty()) {
             List<PlayerColor> bests = new ArrayList<>();
-            int max = -1;
-            for(Map.Entry<PlayerColor, Integer> entry : bloodFrom.entrySet())
+            int max = 0;
+            for(Map.Entry<PlayerColor, Integer> entry : bloodFrom.entrySet()) {
                 if(entry.getValue() > max)
                     max = entry.getValue();
-            for(Map.Entry<PlayerColor, Integer> entry : bloodFrom.entrySet())
                 if(entry.getValue() == max)
                     bests.add(entry.getKey());
+            }
+
             PlayerColor bestColor;
             List<PlayerColor> damage = new ArrayList<>();
-            for(Map.Entry<Integer, List<PlayerColor>> entry : skullsTrack.entrySet())
-                if(entry.getValue() != null)
+            for(Map.Entry<Integer, List<PlayerColor>> entry : skullsTrack.entrySet()) {
+                var l = entry.getValue();
+                if(l != null && !l.isEmpty())
                     damage.add(entry.getValue().get(0));
-            if(bests.size() == 1) bestColor = bests.get(0);
+            }
+
+            if(bests.isEmpty() || damage.isEmpty()) break;
+            else if(bests.size() == 1) bestColor = bests.get(0);
             else {
                 int firstOccurrence = damage.size() + 1;
                 for(PlayerColor color : bests)
-                    if(damage.indexOf(color) < firstOccurrence)
+                    if(damage.contains(color) && damage.indexOf(color) < firstOccurrence)
                         firstOccurrence = damage.indexOf(color);
                 bestColor = damage.get(firstOccurrence);
             }
