@@ -26,7 +26,7 @@ public interface ServerInterface extends Remote {
 
     String startActions(int userID, UUID gameID) throws RemoteException;
 
-    void didChooseGameMap(UUID gameID, String configuration) throws RemoteException;
+    void didChooseGameMap(int userID, UUID gameID, String configuration) throws RemoteException;
 
     List<String> getSpawnPowerups(int userID, UUID gameID) throws RemoteException;
 
@@ -79,4 +79,8 @@ public interface ServerInterface extends Remote {
     void turnEnded(int userID, UUID gameID) throws RemoteException;
 
     boolean canContinueAfterDeathsRespawn(int userID, UUID gameID) throws RemoteException;
+
+    List<String> movementsBeforeShot(int userID, UUID gameID) throws RemoteException;
+
+    void movesBefore(String movement, int userID, UUID gameID) throws RemoteException;
 }

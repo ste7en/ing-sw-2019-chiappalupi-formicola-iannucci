@@ -7,6 +7,7 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 
@@ -113,6 +114,14 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler implemen
     protected void endOfTheGame(int userID, String scoreBoard) {
         submitRemoteMethodInvocation(executorService, () -> {
             clientRMI.endOfTheGame(scoreBoard);
+            return null;
+        });
+    }
+
+    @Override
+    protected void updateView(int userID, Map<String, List<String>> updates) {
+        submitRemoteMethodInvocation(executorService, () -> {
+            clientRMI.update(updates);
             return null;
         });
     }

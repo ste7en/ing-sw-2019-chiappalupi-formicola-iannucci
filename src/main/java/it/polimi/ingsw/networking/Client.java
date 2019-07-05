@@ -338,4 +338,15 @@ public abstract class Client implements Loggable {
      */
     public abstract void canContinueFromDeaths();
 
+    /**
+     * Abstract method implemented to ask if the player wants to move.
+     */
+    public abstract void canMoveBeforeShoot();
+
+    /**
+     * Abstract method implemented by subclasses called when the player has to move before the shoot.
+     */
+    public abstract void movesBeforeShoot(String movement);
+
+
 }

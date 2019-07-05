@@ -169,10 +169,18 @@ public enum CommunicationMessage implements Serializable {
      * CHOOSE_MOVEMENT is sent by the server with arguments: <GameLogic.available_moves, values>
      * where values is a list of Strings joined as a single string with a comma separator
      * MOVE is sent by the client when a movement has been chosen with arguments: <GameLogic.movement, value>
+     * GET_MOVES_BEFORE_SHOOT is sent from the client to the server to notify that the player has requested to shoot
+     * MOVES_BEFORE_SHOOT is sent from the server to the client with the list of possible shots
+     * MOVE_CHOSEN_BEFORE_SHOT is sent from the client to the server to notify the players decision
+     *
      */
     GET_AVAILABLE_MOVES,
     CHOOSE_MOVEMENT,
     MOVE,
+    GET_MOVES_BEFORE_SHOOT,
+    MOVES_BEFORE_SHOOT,
+    MOVE_CHOSEN_BEFORE_SHOT,
+    NO_MOVES_BEFORE_SHOT,
 
     /**
      * Weapon using message.
@@ -349,12 +357,14 @@ public enum CommunicationMessage implements Serializable {
      * View update messages.
      *
      * UPDATE_SITUATION is sent from the server to the client to notify that some other player has done something in his turn.
+     * UPDATE_ALL is sent from the server to the client to notify any change.
      * DISPLAY_FINAL_FRENZY is sent from the server to the client to notify that final frenzy game has begun. Arguments: none
      *
      * Arguments: <GameMap.gameMap_key, Board::toStringFromPlayer>
      */
     UPDATE_SITUATION,
     DISPLAY_FINAL_FRENZY,
+    UPDATE_ALL,
 
     /**
      * Check deaths message.

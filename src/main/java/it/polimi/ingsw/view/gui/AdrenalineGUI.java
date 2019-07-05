@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.board.GameMap;
+import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.view.View;
 
@@ -10,7 +12,7 @@ public class AdrenalineGUI extends View {
 
     private GUIHandler handlerGUI;
 
-    public AdrenalineGUI(GUIHandler handlerGUI){
+    AdrenalineGUI(GUIHandler handlerGUI){
         this.handlerGUI = handlerGUI;
     }
 
@@ -48,8 +50,19 @@ public class AdrenalineGUI extends View {
     }
 
     @Override
-    public void onViewUpdate() {
-
+    public void update(Map<String, List<String>> update) {
+        List<String> keys = new ArrayList<>(update.keySet());
+        String key = keys.get(0);
+        List<String> value = update.get(key);
+        switch (key) {
+            case GameMap.gameMap_key:
+                try {
+                    handlerGUI.createGameMap(value.get(0));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
     }
 
     @Override
@@ -103,6 +116,20 @@ public class AdrenalineGUI extends View {
             handlerGUI.chooseAction();
         } catch (FileNotFoundException e){
             System.err.println("ClientRMI exception: " + e.toString());
+        }
+    }
+
+    public void didChooseAction(String action) {
+        switch (action){
+            case "move":
+                client.getAvailableMoves();
+                break;
+            case "grab":
+                grabSomething();
+                break;
+            case "shoot":
+                shootPeople();
+                break;
         }
     }
 
@@ -272,6 +299,11 @@ public class AdrenalineGUI extends View {
 
     @Override
     public void endOfTheGame(String scoreboard) {
+
+    }
+
+    @Override
+    public void moveBeforeShot(List<String> movements) {
 
     }
 

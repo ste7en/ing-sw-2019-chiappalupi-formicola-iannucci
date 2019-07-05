@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking.rmi;
 
+import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.cards.Weapon;
@@ -83,6 +84,11 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     @Override
     public void endOfTheGame(String scoreBoard) {
         this.viewObserver.endOfTheGame(scoreBoard);
+    }
+
+    @Override
+    public void update(Map<String, List<String>> updates) {
+        this.viewObserver.update(updates);
     }
 
     @Override
@@ -175,7 +181,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     @Override
     public void choseGameMap(String configuration) {
         submitRemoteMethodInvocation(executorService, () -> {
-            server.didChooseGameMap(gameID, configuration);
+            server.didChooseGameMap(userID, gameID, configuration);
             return null;
         });
         viewObserver.willChooseSkulls();
@@ -491,6 +497,27 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     public void canContinueFromDeaths() {
         submitRemoteMethodInvocation(executorService, () -> {
             if(this.server.canContinueAfterDeathsRespawn(userID, gameID)) this.viewObserver.canContinue();
+            return null;
+        });
+    }
+
+    @Override
+    public void canMoveBeforeShoot() {
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    List<String> movements = this.server.movementsBeforeShot(userID, gameID);
+                    if(movements.isEmpty()) this.askWeapons();
+                    else this.viewObserver.moveBeforeShot(movements);
+                    return null;
+                })
+        );
+    }
+
+    @Override
+    public void movesBeforeShoot(String movement) {
+        submitRemoteMethodInvocation(executorService, () -> {
+            this.server.movesBefore(movement, userID, gameID);
+            this.askWeapons();
             return null;
         });
     }

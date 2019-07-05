@@ -41,7 +41,7 @@ public abstract class View {
     public static final String CHARACTER_NOT_AVAILABLE          = "The character you chose isn't available.";
     protected static final String TIMEOUT_EXPIRED               = "\n\n\u001B[31mTimeout has expired. Server kicked you out, please reconnect to resume the game.\u001B[0m";
 
-    public abstract void onViewUpdate();
+    public abstract void update(Map<String, List<String>> update);
 
     public abstract void onFailure(String message);
 
@@ -163,7 +163,7 @@ public abstract class View {
     /**
      * Called when the map configuration has been chosen by the player.
      */
-    protected void didChooseGameMap(String configuration) {
+    public void didChooseGameMap(String configuration) {
         client.choseGameMap(configuration);
     }
 
@@ -280,7 +280,7 @@ public abstract class View {
      * Public method used to start the process of using weapons.
      */
     protected void shootPeople() {
-        this.client.askWeapons();
+        this.client.canMoveBeforeShoot();
     }
 
     /**
@@ -538,7 +538,14 @@ public abstract class View {
 
     /**
      * Displays the final scoreboard of the game.
-     * @param scoreboard it's a string containing the leaderboard.
+     * @param scoreboard it's a string containing the leader board.
      */
     public abstract void endOfTheGame(String scoreboard);
+
+
+    public abstract void moveBeforeShot(List<String> movements);
+
+    protected void didChooseMovementBeforeShot(String movement) {
+        this.client.movesBeforeShoot(movement);
+    }
 }

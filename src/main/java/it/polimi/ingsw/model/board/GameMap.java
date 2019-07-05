@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.board;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.polimi.ingsw.controller.DecksHandler;
+import it.polimi.ingsw.model.cards.AmmoTile;
 import it.polimi.ingsw.model.utility.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.utility.AdrenalineLogger;
@@ -73,6 +74,9 @@ public class GameMap implements Cloneable, Serializable {
     private static final String HIGHER_GRID_RIGHT         = "   |";
     private static final String LEFT_GRID                 = "- ";
     private static final String RIGHT_GRID                = " -";
+    public static final String ROW_1                      = "ROW1";
+    public static final String ROW_2                      = "ROW2";
+    public static final String ROW_3                      = "ROW3";
 
     /** Rep of the game's map through a matrix */
     private Cell[][] map;
@@ -755,5 +759,23 @@ public class GameMap implements Cloneable, Serializable {
                     map[i][j].setAmmoCard(decks.drawAmmoTile());
             }
         }
+    }
+
+    public Cell getCellFromToString(String cell) {
+        for(int i = 0; i < ROWS; i++) {
+            for(int j = 0; j < COLUMNS; j++) {
+                if(map[i][j] != null && map[i][j].toString().equals(cell))
+                    return map[i][j];
+            }
+        }
+        return null;
+    }
+
+    public List<AmmoTile> tilesInARow(int i) {
+        List<AmmoTile> tiles = new ArrayList<>();
+        for(int j = 0; j < COLUMNS; j++) {
+                if(map[i][j] != null) tiles.add(map[i][j].getAmmoCard());
+            }
+        return tiles;
     }
 }

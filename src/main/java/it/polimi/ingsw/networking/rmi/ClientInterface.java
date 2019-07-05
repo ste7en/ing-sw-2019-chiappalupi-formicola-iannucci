@@ -3,6 +3,7 @@ package it.polimi.ingsw.networking.rmi;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 
 public interface ClientInterface extends Remote {
 
@@ -63,4 +64,6 @@ public interface ClientInterface extends Remote {
      * @throws RemoteException RMI Exception
      */
     void endOfTheGame(String scoreBoard) throws RemoteException;
+
+    void update(Map<String, List<String>> updates) throws RemoteException;
 }

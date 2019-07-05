@@ -2,6 +2,7 @@ package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.model.board.Cell;
 import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
@@ -32,6 +33,7 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
  */
 public class ServerSocketConnectionHandler extends ServerConnectionHandler implements Runnable {
 
+    private static final String EMPTY = "empty";
     /**
      * The socket instance, the object that represents a connection
      * between client and server.
@@ -261,6 +263,18 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                 case ASK_CAN_CONTINUE:
                     if(this.server.canContinueAfterDeathsRespawn(connectionID, gameID)) send(CommunicationMessage.from(connectionID, CAN_CONTINUE_TRUE));
                     break;
+                case GET_MOVES_BEFORE_SHOOT:
+                    List<String> movements = this.server.movementsBeforeShot(connectionID, gameID);
+                    if(movements.isEmpty()) this.send(CommunicationMessage.from(connectionID, NO_MOVES_BEFORE_SHOT));
+                    else {
+                        Map<String, String> responseArgs = new HashMap<>();
+                        for(String string : movements) responseArgs.put(Integer.toString(movements.indexOf(string)), string);
+                        this.send(CommunicationMessage.from(connectionID, MOVES_BEFORE_SHOOT, responseArgs, clientOperationTimeoutInSeconds));
+                    }
+                    break;
+                case MOVE_CHOSEN_BEFORE_SHOT:
+                    this.server.movesBefore(args.get(Cell.cell_key), connectionID, gameID);
+                    break;
                 default:
                     break;
             }
@@ -400,7 +414,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * @param gameID it's the ID of the game
      */
     private void mapChosen(int connectionID, Map<String, String> args, UUID gameID) {
-        this.server.didChooseGameMap(gameID, args.get(GameMap.gameMap_key));
+        this.server.didChooseGameMap(connectionID, gameID, args.get(GameMap.gameMap_key));
         this.send(CommunicationMessage.from(connectionID, CHOOSE_SKULLS));
     }
 
@@ -610,5 +624,19 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
     @Override
     protected void endOfTheGame(int userID, String scoreboard) {
         this.send(CommunicationMessage.from(userID, GAME_ENDED, argsFrom(GameMap.gameMap_key, scoreboard)));
+    }
+
+    @Override
+    protected void updateView(int userID, Map<String, List<String>> updates) {
+        Map<String, String> args = new HashMap<>();
+        List<String> keys = new ArrayList<>(updates.keySet());
+        List<String> values = new ArrayList<>(updates.get(keys.get(0)));
+        if(!values.isEmpty()) args.put(keys.get(0), values.get(0));
+        else args.put(keys.get(0), EMPTY);
+        for(int i = 1; i < values.size(); i++) args.put(keys.get(0), values.get(i));
+
+        System.out.println(args.toString());
+
+        this.send(CommunicationMessage.from(userID, UPDATE_ALL, args));
     }
 }

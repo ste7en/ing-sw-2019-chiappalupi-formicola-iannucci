@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.model.board.Cell;
 import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Effect;
@@ -25,6 +26,7 @@ public class WeaponController implements Serializable {
     private Map<AmmoColor, Integer> effectsCost;
     private Map<PlayerColor, Integer> marksThisTurn;
     private GameMap gameMapBox;
+    private GameMap movementsMapBox;
 
     /**
      * Class constructor.
@@ -295,16 +297,29 @@ public class WeaponController implements Serializable {
         for(Player player : players)
             if(map.getPositionFromPlayer(player) != null && map.getPositionFromPlayer(player).compareTo(gameMapBox.getPositionFromPlayer(player)) != 0)
                 map.setPlayerPosition(player, gameMapBox.getPositionFromPlayer(player).getRow(), gameMapBox.getPositionFromPlayer(player).getColumn());
+        for(Player player : players)
+            if(map.getPositionFromPlayer(player) != null && map.getPositionFromPlayer(player).compareTo(gameMapBox.getPositionFromPlayer(player)) != 0)
+                map.setPlayerPosition(player, gameMapBox.getPositionFromPlayer(player).getRow(), gameMapBox.getPositionFromPlayer(player).getColumn());
     }
 
     /**
      * Restores the WeaponController.
      */
-    void restore() {
+    void restore(List<Player> players) {
         forPotentiableWeapon.clear();
         powerupUsedToPayCost.clear();
         effectsCost.clear();
         marksThisTurn.clear();
+        for(Player player : players) {
+            gameMapBox.setPlayerPosition(player, null);
+            movementsMapBox.setPlayerPosition(player, null);
+        }
+    }
+
+    public void moveBefore(String cell, Board board, Player player) {
+        movementsMapBox = (GameMap) board.getMap().clone();
+        Cell move = board.getMap().getCellFromToString(cell);
+        board.getMap().setPlayerPosition(player, move);
     }
 
 }
