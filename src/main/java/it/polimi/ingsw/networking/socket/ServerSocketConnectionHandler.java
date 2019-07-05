@@ -2,6 +2,7 @@ package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.model.board.Cell;
 import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
@@ -260,6 +261,18 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
                     break;
                 case ASK_CAN_CONTINUE:
                     if(this.server.canContinueAfterDeathsRespawn(connectionID, gameID)) send(CommunicationMessage.from(connectionID, CAN_CONTINUE_TRUE));
+                    break;
+                case GET_MOVES_BEFORE_SHOOT:
+                    List<String> movements = this.server.movementsBeforeShot(connectionID, gameID);
+                    if(movements.isEmpty()) this.send(CommunicationMessage.from(connectionID, NO_MOVES_BEFORE_SHOT));
+                    else {
+                        Map<String, String> responseArgs = new HashMap<>();
+                        for(String string : movements) responseArgs.put(Integer.toString(movements.indexOf(string)), string);
+                        this.send(CommunicationMessage.from(connectionID, MOVES_BEFORE_SHOOT, responseArgs, clientOperationTimeoutInSeconds));
+                    }
+                    break;
+                case MOVE_CHOSEN_BEFORE_SHOT:
+                    this.server.movesBefore(args.get(Cell.cell_key), connectionID, gameID);
                     break;
                 default:
                     break;

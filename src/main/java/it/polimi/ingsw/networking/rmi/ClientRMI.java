@@ -496,6 +496,27 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     }
 
     @Override
+    public void canMoveBeforeShoot() {
+        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+                submitRemoteMethodInvocation(executorService, () -> {
+                    List<String> movements = this.server.movementsBeforeShot(userID, gameID);
+                    if(movements.isEmpty()) this.askWeapons();
+                    else this.viewObserver.moveBeforeShot(movements);
+                    return null;
+                })
+        );
+    }
+
+    @Override
+    public void movesBeforeShoot(String movement) {
+        submitRemoteMethodInvocation(executorService, () -> {
+            this.server.movesBefore(movement, userID, gameID);
+            this.askWeapons();
+            return null;
+        });
+    }
+
+    @Override
     public void gameStarted(String gameID){
         this.gameID = UUID.fromString(gameID);
         viewObserver.onStart();

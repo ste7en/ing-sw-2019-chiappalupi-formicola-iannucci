@@ -428,7 +428,7 @@ public class GameLogic implements Serializable {
      * @param nextUser it's the player that will play the next turn
      */
     public void endTurn(User nextUser) {
-        this.weaponController.restore();
+        this.weaponController.restore(players);
         this.grabController.restore();
         this.powerupController.clearPowerupTargets();
         this.board.refillWeapons(decks);
@@ -610,5 +610,18 @@ public class GameLogic implements Serializable {
             scoreBoardBuilder.append(POSITION).append(i+1).append(": ").append(playerLeaderboard.get(i).getNickname()).append(";\n");
         }
         return scoreBoardBuilder.toString();
+    }
+
+    public List<String> movesBeforeShot(User user) {
+        List<String> movements = new ArrayList<>();
+        int possibleMoves = lookForPlayerFromUser(user).getPlayerBoard().getStepsBeforeShooting();
+        List<Cell> movementsInCell = new ArrayList<>();
+        if(possibleMoves > 0) movementsInCell = board.getMap().getCellsAtMaxDistance(lookForPlayerFromUser(user), possibleMoves);
+        if(!movementsInCell.isEmpty()) {
+            movementsInCell.add(board.getMap().getCellFromPlayer(lookForPlayerFromUser(user)));
+            for(Cell movement : movementsInCell)
+            movements.add(movement.toString());
+        }
+        return movements;
     }
 }

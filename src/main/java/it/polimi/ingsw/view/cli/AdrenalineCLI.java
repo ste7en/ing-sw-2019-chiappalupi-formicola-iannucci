@@ -23,6 +23,7 @@ public class AdrenalineCLI extends View {
     private static final String NO_COMBO_FOUND = "No combinations of effects/costs found for your request.";
     private static final String FINAL_FRENZY = "Final frenzy has begun! Kill as much people as you can, because everyone will get only one turn more.";
     private static final String GAME_ENDED = "The game has ended!";
+    private static final String SHOOTING_POSITION = "Choose the position where you want to shoot from.";
     @SuppressWarnings("squid:S106")
     private PrintWriter out = new PrintWriter(System.out, true);
     private Scanner     in  = new Scanner(System.in);
@@ -886,6 +887,7 @@ public class AdrenalineCLI extends View {
         this.didChooseSpawnAfterDeath(choice);
     }
 
+    @Override
     protected void didChooseSpawnAfterDeath(String powerupChosen) {
         super.didChooseSpawnAfterDeath(powerupChosen);
         locked = false;
@@ -911,6 +913,17 @@ public class AdrenalineCLI extends View {
     public void endOfTheGame(String scoreboard) {
         out.println(GAME_ENDED);
         out.println(scoreboard);
+    }
+
+    @Override
+    public void moveBeforeShot(List<String> movements) {
+        out.println(SHOOTING_POSITION);
+        String choice = decisionHandlerFromList(movements);
+        while(choice == null) {
+            out.println(INCORRECT_CHOICE);
+            choice = decisionHandlerFromList(movements);
+        }
+        this.didChooseMovementBeforeShot(choice);
     }
 
 }

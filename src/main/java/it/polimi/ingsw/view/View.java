@@ -280,7 +280,7 @@ public abstract class View {
      * Public method used to start the process of using weapons.
      */
     protected void shootPeople() {
-        this.client.askWeapons();
+        this.client.canMoveBeforeShoot();
     }
 
     /**
@@ -538,7 +538,14 @@ public abstract class View {
 
     /**
      * Displays the final scoreboard of the game.
-     * @param scoreboard it's a string containing the leaderboard.
+     * @param scoreboard it's a string containing the leader board.
      */
     public abstract void endOfTheGame(String scoreboard);
+
+
+    public abstract void moveBeforeShot(List<String> movements);
+
+    protected void didChooseMovementBeforeShot(String movement) {
+        this.client.movesBeforeShoot(movement);
+    }
 }

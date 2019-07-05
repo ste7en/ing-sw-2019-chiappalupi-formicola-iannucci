@@ -275,5 +275,10 @@ public class AdrenalineGUI extends View {
 
     }
 
+    @Override
+    public void moveBeforeShot(List<String> movements) {
+
+    }
+
 }
 

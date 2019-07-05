@@ -2,6 +2,7 @@ package it.polimi.ingsw.networking.socket;
 
 import it.polimi.ingsw.controller.GameLogic;
 import it.polimi.ingsw.model.board.Board;
+import it.polimi.ingsw.model.board.Cell;
 import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
@@ -238,6 +239,12 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                         break;
                     case GAME_ENDED:
                         this.viewObserver.endOfTheGame(args.get(GameMap.gameMap_key));
+                        break;
+                    case NO_MOVES_BEFORE_SHOT:
+                        this.askWeapons();
+                        break;
+                    case MOVES_BEFORE_SHOOT:
+                        this.viewObserver.moveBeforeShot(new ArrayList<>(args.values()));
                         break;
                     default:
                         logOnFailure(UNKNOWN_COMMUNICATION_MESSAGE+communicationMessage);
@@ -488,5 +495,16 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
     @Override
     public void canContinueFromDeaths() {
         this.send(CommunicationMessage.from(userID, ASK_CAN_CONTINUE, gameID));
+    }
+
+    @Override
+    public void canMoveBeforeShoot() {
+        this.send(CommunicationMessage.from(userID, GET_MOVES_BEFORE_SHOOT, gameID));
+    }
+
+    @Override
+    public void movesBeforeShoot(String movement) {
+        this.send(CommunicationMessage.from(userID, MOVE_CHOSEN_BEFORE_SHOT, argsFrom(Cell.cell_key, movement)));
+        this.askWeapons();
     }
 }

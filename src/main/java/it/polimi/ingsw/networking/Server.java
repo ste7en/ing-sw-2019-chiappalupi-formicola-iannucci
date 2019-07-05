@@ -1002,6 +1002,16 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
         return gameControllers.get(gameID).deathList().isEmpty();
     }
 
+    @Override
+    public List<String> movementsBeforeShot(int userID, UUID gameID) {
+        return gameControllers.get(gameID).movesBeforeShot(findUserFromID(userID));
+    }
+
+    @Override
+    public void movesBefore(String movement, int userID, UUID gameID) {
+        gameControllers.get(gameID).getWeaponController().moveBefore(movement, gameControllers.get(gameID).getBoard(), gameControllers.get(gameID).lookForPlayerFromUser(findUserFromID(userID)));
+    }
+
     private void printIngConti() {
       System.out.println( "\u001B[32m................................................................................\n" +
                           ".............................................,,/(########(*....................\n" +

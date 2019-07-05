@@ -756,4 +756,14 @@ public class GameMap implements Cloneable, Serializable {
             }
         }
     }
+
+    public Cell getCellFromToString(String cell) {
+        for(int i = 0; i < ROWS; i++) {
+            for(int j = 0; j < COLUMNS; j++) {
+                if(map[i][j] != null && map[i][j].toString().equals(cell))
+                    return map[i][j];
+            }
+        }
+        return null;
+    }
 }
