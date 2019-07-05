@@ -39,6 +39,7 @@ public class GameLogic {
     private PowerupController powerupController;
     private GrabController grabController;
     private Player firstPlayer;
+    private Player finalPlayer;
     private int numOfRemainingActions;
     private int numOfKillsDuringThisTurn;
 
@@ -357,7 +358,7 @@ public class GameLogic {
     }
 
     /**
-     * This method is used to know which one is the player after the one who is playing
+     * This method is used to know which one is the active player after the one who is playing
      * @param user it's the user who is playing right now
      * @return the next user
      */
@@ -380,6 +381,20 @@ public class GameLogic {
         }
         if(nextPlayer == actualPlayer || nextPlayer == null) throw new IllegalArgumentException("No next player found!");
         return nextPlayer.getUser();
+    }
+
+    /**
+     * This method is used to know if this was the last turn;
+     */
+    public boolean isThisTheEnd(User user, User nextUser) {
+        Player actualPlayer = lookForPlayerFromUser(user);
+        Player nextPlayer = lookForPlayerFromUser(nextUser);
+        if(nextPlayer.equals(finalPlayer)) return true;
+        int indexOfActualPlayer = players.indexOf(actualPlayer);
+        int indexOfNextPlayer = players.indexOf(nextPlayer);
+        int indexOfLastPlayer = players.indexOf(finalPlayer);
+        if(indexOfNextPlayer > indexOfLastPlayer && indexOfActualPlayer < indexOfLastPlayer) return true;
+        return indexOfNextPlayer < indexOfActualPlayer && indexOfActualPlayer < indexOfLastPlayer;
     }
 
     /**
@@ -406,14 +421,16 @@ public class GameLogic {
 
     /**
      * Restores weapons and ammo tiles where they are missing
+     * @param nextUser it's the player that will play the next turn
      */
-    public void endTurn() {
+    public void endTurn(User nextUser) {
         this.weaponController.restore();
         this.grabController.restore();
         this.powerupController.clearPowerupTargets();
         this.board.refillWeapons(decks);
         this.board.getMap().refillAmmoTiles(decks);
         this.numOfKillsDuringThisTurn = 0;
+        if(!finalFrenzy && this.board.isFinalFrenzy()) turnToFinalFrenzy(lookForPlayerFromUser(nextUser));
     }
 
     /**
@@ -448,14 +465,14 @@ public class GameLogic {
             pointsFromColor.put(color, oldPoints);
         }
         assignPointsFromDamage(damage, points, pointsFromColor);
-        lookForPlayerFromColor(damage.get(0)).addPoints(1);
+        if(!finalFrenzy) lookForPlayerFromColor(damage.get(0)).addPoints(1);
         int numOfBloodInTheSkullsTrack = 1;
         if(damage.size() == MAX_SIZE_OF_THE_BOARD) {
             lookForPlayerFromColor(damage.get(MAX_SIZE_OF_THE_BOARD - 1)).getPlayerBoard().addMarks(player.getCharacter().getColor(), 1);
             numOfBloodInTheSkullsTrack = 2;
         }
         board.addBloodFrom(damage.get(DEATH_BLOW_PLACE_ON_THE_BOARD), numOfBloodInTheSkullsTrack);
-        player.getPlayerBoard().death();
+        player.getPlayerBoard().death(finalFrenzy);
     }
 
     /**
@@ -542,5 +559,25 @@ public class GameLogic {
         Cell spawnCell = board.getMap().getSpawnPoint(spawn.getColor());
         board.getMap().setPlayerPosition(lookForPlayerFromUser(user), spawnCell);
         decks.wastePowerup(spawn);
+    }
+
+    /**
+     * Public method that turns the game to final frenzy mode.
+     * @param nextPlayer it's the player that will play the next turn; (the last player of the game)
+     */
+    private void turnToFinalFrenzy(Player nextPlayer) {
+        this.finalFrenzy = true;
+        for(Player player : players)
+            if(player.getPlayerBoard().getDamage().isEmpty())
+                player.getPlayerBoard().turnToFinalFrenzy(player.equals(firstPlayer));
+        this.finalPlayer = nextPlayer;
+    }
+
+    /**
+     * Returns the state of the game
+     * @return true if the game is in final frenzy mode
+     */
+    public boolean isFinalFrenzy() {
+        return finalFrenzy;
     }
 }

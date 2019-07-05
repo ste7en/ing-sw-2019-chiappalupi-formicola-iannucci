@@ -93,4 +93,9 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable {
      * @param powerupsToSpawn it's the list of powerups that can be used to spawn.
      */
     protected abstract void spawnAfterDeath(int userID, List<String> powerupsToSpawn);
+
+    /**
+     * Notifies that the final frenzy has begun!
+     */
+    protected abstract void displayFinalFrenzy(int userID);
 }

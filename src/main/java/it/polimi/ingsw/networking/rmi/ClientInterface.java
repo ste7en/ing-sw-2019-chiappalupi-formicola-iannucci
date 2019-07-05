@@ -51,4 +51,10 @@ public interface ClientInterface extends Remote {
      * @throws RemoteException RMI Exception.
      */
     void willSpawnAfterDeath(List<String> powerupsInHand) throws RemoteException;
+
+    /**
+     * Displays that the final frenzy phase has begun!
+     * @throws RemoteException RMI Exception
+     */
+    void finalFrenzy() throws RemoteException;
 }

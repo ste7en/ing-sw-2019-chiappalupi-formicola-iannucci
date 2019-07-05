@@ -130,7 +130,7 @@ public class PlayerBoardTest {
      */
     @Test
     public void testMaxPointsAdrenalinic() {
-        playerBoard.becomeAdrenalinic(true);
+        playerBoard.turnToFinalFrenzy(true);
         List<Integer> box = new ArrayList<>();
         box.add(2);
         box.add(1);
@@ -141,7 +141,7 @@ public class PlayerBoardTest {
         assertEquals(3, playerBoard.getStepsBeforeGrabbing());
         assertEquals(2, playerBoard.getStepsBeforeShooting());
         assertEquals(0, playerBoard.getStepsOfMovement());
-        playerBoard.becomeAdrenalinic(false);
+        playerBoard.turnToFinalFrenzy(false);
         for(int i = 0; i < box.size(); i++)
             assertEquals(playerBoard.getMaxPoints().get(i), box.get(i));
         assertEquals(2, playerBoard.getStepsBeforeGrabbing());

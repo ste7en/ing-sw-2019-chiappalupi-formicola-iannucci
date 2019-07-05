@@ -213,7 +213,9 @@ public class GameMap implements Cloneable{
             mapString.append("\n").append("Players positions:").append("\n");
             List<Player> players = new ArrayList<>(playersPosition.keySet());
             for (Player player : players) {
-                mapString.append(player.getNickname()).append(": ").append(playersPosition.get(player).toString()).append("\n");
+                if(playersPosition.get(player) != null)
+                    mapString.append(player.getNickname()).append(": ").append(playersPosition.get(player).toString()).append("\n");
+                else mapString.append(player.getNickname()).append(": ").append("dead").append("\n");
             }
         }
         return mapString.toString();

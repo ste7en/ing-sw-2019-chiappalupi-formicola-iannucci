@@ -21,6 +21,7 @@ import java.util.*;
  */
 public class AdrenalineCLI extends View {
     private static final String NO_COMBO_FOUND = "No combinations of effects/costs found for your request.";
+    private static final String FINAL_FRENZY = "Final frenzy has begun! Kill as much people as you can, because everyone will get only one turn more.";
     @SuppressWarnings("squid:S106")
     private PrintWriter out = new PrintWriter(System.out, true);
     private Scanner     in  = new Scanner(System.in);
@@ -898,6 +899,11 @@ public class AdrenalineCLI extends View {
         synchronized (this) {
             this.notifyAll();
         }
+    }
+
+    @Override
+    public void displayFinalFrenzy() {
+        out.println(FINAL_FRENZY);
     }
 
 }

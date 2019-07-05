@@ -102,6 +102,14 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler implemen
     }
 
     @Override
+    protected void displayFinalFrenzy(int userID) {
+        submitRemoteMethodInvocation(executorService, () -> {
+            clientRMI.finalFrenzy();
+            return null;
+        });
+    }
+
+    @Override
     public void ping() {
         try {
             if (isConnectionAvailable() && clientRMI.ping()) Ping.getInstance().didPong(getConnectionHashCode());

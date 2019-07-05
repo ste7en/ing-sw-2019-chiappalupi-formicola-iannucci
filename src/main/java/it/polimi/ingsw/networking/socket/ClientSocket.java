@@ -233,6 +233,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case CAN_CONTINUE_TRUE:
                         this.viewObserver.canContinue();
                         break;
+                    case DISPLAY_FINAL_FRENZY:
+                        this.viewObserver.displayFinalFrenzy();
+                        break;
                     default:
                         logOnFailure(UNKNOWN_COMMUNICATION_MESSAGE+communicationMessage);
                         break;

@@ -601,4 +601,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         for(String powerup : powerupsToSpawn) args.put(Integer.toString(powerupsToSpawn.indexOf(powerup)), powerup);
         this.send(CommunicationMessage.from(userID, SPAWN_AFTER_DEATH, args));
     }
+
+    @Override
+    protected void displayFinalFrenzy(int userID) {
+        this.send(CommunicationMessage.from(userID, DISPLAY_FINAL_FRENZY));
+    }
 }

@@ -44,6 +44,8 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 @SuppressWarnings("all")
 public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
 
+    private static final String FINAL_FRENZY = "Final Frenzy mode has begun!";
+    private static final String SPACE = " - ";
     private Registry registry;
 
     private Registry remoteRegistry;
@@ -437,7 +439,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     @Override
     public void didChooseSkulls(String skulls, UUID gameID) {
         gameControllers.get(gameID).getBoard().setSkulls(Integer.parseInt(skulls));
-        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + SKULLS_NUMBER_SET_TO + skulls);
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + SKULLS_NUMBER_SET_TO + skulls);
     }
 
     @Override
@@ -463,7 +465,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     public void didChooseGameMap(UUID gameID, String configuration) {
         MapType mapType = MapType.valueOf(configuration);
         this.gameControllers.get(gameID).initializeMap(mapType);
-        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + GAME_MAP_SET);
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + GAME_MAP_SET);
     }
 
     @Override
@@ -529,7 +531,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         var gameController  = gameControllers.get(gameID);
         var player          = gameController.lookForPlayerFromUser(user);
         var grabController  = gameController.getGrabController();
-        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + user.getUsername() + " grabbed " + pick);
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + user.getUsername() + " grabbed " + pick);
         return grabController.didGrab(pick, player, gameController.getDecks(), gameController.getBoard());
     }
 
@@ -546,7 +548,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         var player          = gameController.lookForPlayerFromUser(user);
         var grabController  = gameController.getGrabController();
         grabController.powerupToDiscard(powerup, player, gameController.getDecks(), gameController.getBoard());
-        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + user.getUsername() + " discarded the powerup " + powerup);
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + user.getUsername() + " discarded the powerup " + powerup);
     }
 
     /**
@@ -562,7 +564,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
         var player          = gameController.lookForPlayerFromUser(user);
         var grabController  = gameController.getGrabController();
         grabController.weaponToDiscard(weapon, player, gameController.getBoard(), gameController.getDecks());
-        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + user.getUsername() + " discarded the weapon " + weapon);
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + user.getUsername() + " discarded the weapon " + weapon);
     }
 
     /**
@@ -575,7 +577,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
     public List<String> askWeapons(int userID, UUID gameID) {
         var gameController  = gameControllers.get(gameID);
         var user            = findUserFromID(userID);
-        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + user.getUsername() + " chose to shoot.");
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + user.getUsername() + " chose to shoot.");
         return gameController.getWeaponController().lookForPlayerWeapons(gameController.lookForPlayerFromUser(user), gameController.getBoard().getMap());
     }
 
@@ -613,7 +615,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
                 break;
             }
         }
-        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + user.getUsername() + " selected " + weapon);
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + user.getUsername() + " selected " + weapon);
         return weaponProcess;
     }
 
@@ -931,7 +933,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
   public void spawnAfterDeath(int userID, UUID gameID, String powerup) {
         var user = findUserFromID(userID);
         gameControllers.get(gameID).spawnAfterDeath(user, powerup);
-        AdrenalineLogger.info(GAME_ID + gameID.toString() + " - " + user.getUsername() + " spawned with the powerup " + powerup);
+        AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + user.getUsername() + " spawned with the powerup " + powerup);
     }
 
     /**
@@ -941,12 +943,18 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface {
    */
   @Override
   public void turnEnded(int userID, UUID gameID) {
-      AdrenalineLogger.info(GAME_ID + gameID + " - " + TURN_ENDED_USER + findUserFromID(userID).getUsername());
-      gameControllers.get(gameID).endTurn();
+      AdrenalineLogger.info(GAME_ID + gameID + SPACE + TURN_ENDED_USER + findUserFromID(userID).getUsername());
       User nextUser = gameControllers.get(gameID).getNextPlayer(findUserFromID(userID));
+      gameControllers.get(gameID).endTurn(nextUser);
+      if(gameControllers.get(gameID).isFinalFrenzy()) {
+          AdrenalineLogger.info(GAME_ID + gameID + SPACE + FINAL_FRENZY);
+          for(User user : users.keySet()) {
+              users.get(user).displayFinalFrenzy(user.hashCode());
+          }
+      }
       if(gameControllers.get(gameID).isAlreadyInGame(nextUser)) users.get(nextUser).startNewTurn(nextUser.hashCode());
       else users.get(nextUser).startNewTurnFromRespawn(nextUser.hashCode());
-      AdrenalineLogger.info(GAME_ID + gameID + " - " + NEXT_TURN + nextUser.getUsername());
+      AdrenalineLogger.info(GAME_ID + gameID + SPACE + NEXT_TURN + nextUser.getUsername());
   }
 
     @Override

@@ -50,6 +50,11 @@ public class Board {
     private Map<Integer, List<PlayerColor>> skullsTrack;
 
     /**
+     * Boolean that saves if the game is in final frenzy mode
+     */
+    private boolean finalFrenzy;
+
+    /**
      * Constructor: creates a new board based on its map, its killshot track and weapons positioned near its spawnpoint
      * @param map the map of the board
      * @param weapons a collection of three boards placed next to the spawpoints defined by a color and that contain three weapons each
@@ -59,6 +64,7 @@ public class Board {
         this.skullsTrack = new LinkedHashMap<>();
         this.map = map;
         this.weapons.putAll(weapons);
+        this.finalFrenzy = false;
     }
 
     /**
@@ -113,16 +119,16 @@ public class Board {
      * @return the number of skulls left
      */
     public int skullsLeft() {
-        int lastSkullConquered=-1;
-        int totalSkulls=0;
-        for(Integer skullsNumber : skullsTrack.keySet()){
-            if (skullsTrack.get(skullsNumber)==null && lastSkullConquered==-1) {
-                lastSkullConquered=skullsNumber;
+        int lastSkullConquered = -1;
+        int totalSkulls = 0;
+        for(Map.Entry<Integer, List<PlayerColor>> entry : skullsTrack.entrySet()){
+            if (entry.getValue() == null && lastSkullConquered == -1) {
+                lastSkullConquered = entry.getKey();
             }
             totalSkulls++;
         }
         if (lastSkullConquered == -1) return 0;
-        else return (totalSkulls-lastSkullConquered);
+        else return (totalSkulls - lastSkullConquered);
     }
 
     /**
@@ -131,13 +137,21 @@ public class Board {
      * @param count the number of damage tokens to add (either 1 or 2)
      */
     public void addBloodFrom(PlayerColor player, Integer count) {
-        int i=0;
+        int i = 0;
         List<PlayerColor> playerColors = new ArrayList<>();
         while (this.skullsTrack.get(i) != null) i++;
         for (int j = 0; j < count; j++){
             playerColors.add(player);
         }
         skullsTrack.put(i, playerColors);
+        if(skullsLeft() == 0) finalFrenzy = true;
+    }
+
+    /**
+     * Return true if the game is in final frenzy mode
+     */
+    public boolean isFinalFrenzy() {
+        return finalFrenzy;
     }
 
     /**
@@ -145,7 +159,7 @@ public class Board {
      * @param i an index that represents the death rounds starting from zero
      * @return a collection of damage tokens, all having the same color defined as a PlayerColor Enum type
      */
-    public ArrayList<PlayerColor> getBlood(int i){
+    public List<PlayerColor> getBlood(int i){
         ArrayList<PlayerColor> blood = new ArrayList<>();
         blood.addAll(skullsTrack.get(i));
         return blood;

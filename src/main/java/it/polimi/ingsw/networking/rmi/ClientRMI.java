@@ -76,6 +76,11 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     }
 
     @Override
+    public void finalFrenzy() {
+        this.viewObserver.displayFinalFrenzy();
+    }
+
+    @Override
     public void createUser(String username){
 
             var userID = registerClient(username);

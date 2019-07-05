@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.player;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.polimi.ingsw.model.cards.AmmoTile;
 import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
@@ -64,6 +63,7 @@ public class PlayerBoard {
     private int stepsBeforeShooting;
     private int stepsBeforeGrabbing;
     private int numOfActions;
+    private boolean finalFrenzy;
 
     /**
      * Steps of movement getter.
@@ -134,6 +134,7 @@ public class PlayerBoard {
      * @param adrenaline it's a boolean containing the information about the phase of the game
      */
     private void initializeMaxPoints(boolean adrenaline) {
+        if(adrenaline) this.finalFrenzy = true;
         ObjectMapper objectMapper = new ObjectMapper();
         int numOfPoints = NUM_OF_MAX_ASSIGNABLE_POINTS;
         String jsonName = PATHNAME_NOT_ADRENALINIC;
@@ -153,17 +154,20 @@ public class PlayerBoard {
 
     /**
      * Updates the max points that can be taken from a player
+     * @param finalFrenzy true if the game is in final frenzy
      */
-    public void updateMaxPoints() {
-        if(this.maxPoints.size() > 1) this.maxPoints.remove(0);
+    private void updateMaxPoints(boolean finalFrenzy) {
+        if(finalFrenzy && !this.finalFrenzy) this.initializeMaxPoints(true);
+        else if(this.maxPoints.size() > 1) this.maxPoints.remove(0);
     }
 
     /**
-     * Sets the board to adrenaline mode.
+     * Sets the board to final frenzy mode.
      * @param firstPlayer it's the boolean containing the information about the first player
      */
-    public void becomeAdrenalinic(boolean firstPlayer) {
-        initializeMaxPoints(true);
+    public void turnToFinalFrenzy(boolean firstPlayer) {
+        if(damage.isEmpty())
+            initializeMaxPoints(true);
         if(firstPlayer) {
             numOfActions = 1;
             stepsOfMovement = 0;
@@ -191,6 +195,7 @@ public class PlayerBoard {
         this.stepsBeforeGrabbing = 1;
         this.stepsBeforeShooting = 0;
         this.numOfActions = 2;
+        this.finalFrenzy = false;
     }
 
     /**
@@ -220,6 +225,18 @@ public class PlayerBoard {
             damage.add(color);
             n--;
         }
+
+        if(isAdrenalinic1()) this.stepsBeforeGrabbing = 2;
+        if(isAdrenalinic2()) this.stepsBeforeShooting = 1;
+    }
+
+    /**
+     * Restores the situation of adrenaline after a death
+     */
+    private void backToReality() {
+        this.stepsOfMovement = 3;
+        this.stepsBeforeGrabbing = 1;
+        this.stepsBeforeShooting = 0;
     }
 
     /**
@@ -269,10 +286,12 @@ public class PlayerBoard {
     /**
      * A method responsible for resetting the board, changing the
      * maximum number of points and wiping out damages or marks.
+     * @param finalFrenzy it's true if the game is in final frenzy mode.
      */
-    public void death() {
+    public void death(boolean finalFrenzy) {
         flushDamage();
-        updateMaxPoints();
+        updateMaxPoints(finalFrenzy);
+        if(!finalFrenzy) backToReality();
     }
 
     /**
