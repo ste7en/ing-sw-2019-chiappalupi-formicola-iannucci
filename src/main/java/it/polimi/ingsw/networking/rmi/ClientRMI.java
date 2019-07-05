@@ -67,12 +67,10 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public void willSpawnAfterDeath(List<String> powerupsInHand) {
-        timeoutOperation(clientOperationTimeoutInSeconds, () ->
-                submitRemoteMethodInvocation(executorService, () -> {
-                    this.viewObserver.willSpawnAfterDeath(powerupsInHand);
-                    return null;
-                })
-        );
+        submitRemoteMethodInvocation(executorService, () -> {
+            timeoutOperation(clientOperationTimeoutInSeconds, () -> this.viewObserver.willSpawnAfterDeath(powerupsInHand));
+            return null;
+        });
     }
 
     @Override
@@ -93,10 +91,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     @Override
     public void willUseTagback(List<String> powerups, String nickname) {
         timeoutOperation(clientOperationTimeoutInSeconds, () ->
-                submitRemoteMethodInvocation(executorService, () -> {
-                    this.viewObserver.tagback(powerups, nickname);
-                    return null;
-                })
+                this.viewObserver.tagback(powerups, nickname)
         );
     }
 
@@ -126,22 +121,25 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     public void didChooseSkulls(String choice) {
         timeoutOperation(clientOperationTimeoutInSeconds, () ->
                 submitRemoteMethodInvocation(executorService, () -> {
-                server.didChooseSkulls(choice, gameID);
-                viewObserver.willChooseSpawnPoint();
-                return null;
+                    server.didChooseSkulls(choice, gameID);
+                    viewObserver.willChooseSpawnPoint();
+                    return null;
                 })
         );
     }
 
     @Override
     public void newAction() {
-        timeoutOperation(clientOperationTimeoutInSeconds, () ->
+        submitRemoteMethodInvocation(executorService, () -> {
+            timeoutOperation(clientOperationTimeoutInSeconds, () -> {
                 submitRemoteMethodInvocation(executorService, () -> {
                     var situation = server.startActions(userID, gameID);
                     this.viewObserver.onChooseAction(situation);
                     return null;
-                })
-        );
+                });
+            });
+            return null;
+        });
     }
 
     @Override
@@ -167,7 +165,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     @Override
     public void willStartTurn() {
         submitRemoteMethodInvocation(executorService, () -> {
-            timeoutOperation(clientOperationTimeoutInSeconds, viewObserver::newAction);
+            viewObserver.newAction();
             return null;
         });
     }
@@ -175,7 +173,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     @Override
     public void willStartFromRespawn() {
         submitRemoteMethodInvocation(executorService, () -> {
-            this.viewObserver.willChooseSpawnPoint();
+            timeoutOperation(clientOperationTimeoutInSeconds, viewObserver::willChooseSpawnPoint);
             return null;
         });
     }
