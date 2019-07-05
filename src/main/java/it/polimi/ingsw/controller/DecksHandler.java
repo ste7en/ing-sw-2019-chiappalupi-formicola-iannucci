@@ -28,14 +28,14 @@ public class DecksHandler implements Serializable {
     /**
      * String that contains the path to where the resources are located.
      */
-    private static final URL SIMPLE_WEAPONS_PATH = Thread.currentThread().getContextClassLoader().getResource("simpleWeapons.json");
-    private static final URL POTENTIABLE_WEAPONS_PATH = Thread.currentThread().getContextClassLoader().getResource("potentiableWeapons.json");
-    private static final URL SELECTABLE_WEAPONS_PATH = Thread.currentThread().getContextClassLoader().getResource("selectableWeapons.json");
-    private static final URL AMMO_TILES_PATH = Thread.currentThread().getContextClassLoader().getResource("ammoTiles.json");
-    private static final URL NEWTON_POWERUP_PATH = Thread.currentThread().getContextClassLoader().getResource("newtonPowerups.json");
-    private static final URL TAGBACK_POWERUP_PATH = Thread.currentThread().getContextClassLoader().getResource("tagbackGrenadePowerups.json");
+    private static final URL SIMPLE_WEAPONS_PATH         = Thread.currentThread().getContextClassLoader().getResource("simpleWeapons.json");
+    private static final URL POTENTIABLE_WEAPONS_PATH    = Thread.currentThread().getContextClassLoader().getResource("potentiableWeapons.json");
+    private static final URL SELECTABLE_WEAPONS_PATH     = Thread.currentThread().getContextClassLoader().getResource("selectableWeapons.json");
+    private static final URL AMMO_TILES_PATH             = Thread.currentThread().getContextClassLoader().getResource("ammoTiles.json");
+    private static final URL NEWTON_POWERUP_PATH         = Thread.currentThread().getContextClassLoader().getResource("newtonPowerups.json");
+    private static final URL TAGBACK_POWERUP_PATH        = Thread.currentThread().getContextClassLoader().getResource("tagbackGrenadePowerups.json");
     private static final URL TARGETINGSCOPE_POWERUP_PATH = Thread.currentThread().getContextClassLoader().getResource("targetingScopePowerups.json");
-    private static final URL TELEPORTER_POWERUP_PATH = Thread.currentThread().getContextClassLoader().getResource("teleporterPowerups.json");
+    private static final URL TELEPORTER_POWERUP_PATH     = Thread.currentThread().getContextClassLoader().getResource("teleporterPowerups.json");
 
     /**
      * Integer to initialize the weaponsDeck

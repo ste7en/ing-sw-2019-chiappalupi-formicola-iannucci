@@ -26,7 +26,6 @@ public class GameLogic implements Externalizable {
     private static final int NUM_OF_WEAPONS_IN_SPAWNS       = 3;
     private static final int DEATH_BLOW_PLACE_ON_THE_BOARD  = 10;
     private static final int MAX_SIZE_OF_THE_BOARD          = 12;
-    private static final int MIN_NUMBER_OF_PLAYERS          = 3;
     private static final String NO_PLAYER_WITH_THIS_COLOR   = "No player in the game has this color.";
     private static final String POWERUP_NOT_IN_HAND         = "This powerup is not one that you have in your hand!";
     private static final String WINNER = "The winner is: ";
@@ -38,6 +37,7 @@ public class GameLogic implements Externalizable {
     private static final String NUMBER_OF_REMAINING_ACTIONS = "Number of remaining actions: ";
 
     private int numberOfPlayers;
+    private int minNumberOfPlayers;
     private boolean finalFrenzy;
     private List<Player> players;
     private Board board;
@@ -70,12 +70,18 @@ public class GameLogic implements Externalizable {
     public static final String movement         = "MOVEMENT";
 
     /**
+     * Is the player currently playing
+     */
+    private Player currentPlayer;
+
+    /**
      * Game Logic constructor.
      *
      * @param gameID it's the gameID.
      */
-    public GameLogic(UUID gameID, int numberOfPlayers) {
+    public GameLogic(UUID gameID, int minNumberOfPlayers, int numberOfPlayers) {
         this.decks = new DecksHandler();
+        this.minNumberOfPlayers = minNumberOfPlayers;
         this.finalFrenzy = false;
         this.gameID = gameID;
         this.weaponController = new WeaponController();
@@ -215,7 +221,10 @@ public class GameLogic implements Externalizable {
      * @return true if the numberOfPlayers Players have been added
      */
     public synchronized boolean addPlayer(Player player) {
-        if (players.isEmpty()) setFirstPlayer(player);
+        if (players.isEmpty()) {
+            setFirstPlayer(player);
+            currentPlayer = player;
+        }
         this.players.add(player);
         return this.players.size() == numberOfPlayers;
     }
@@ -403,6 +412,9 @@ public class GameLogic implements Externalizable {
             else index++;
         }
         if(nextPlayer == actualPlayer || nextPlayer == null) throw new IllegalArgumentException("No next player found!");
+
+        currentPlayer = nextPlayer;
+
         return nextPlayer.getUser();
     }
 
@@ -410,7 +422,7 @@ public class GameLogic implements Externalizable {
      * This method is used to know if this was the last turn;
      */
     public boolean isThisTheEnd(User user, User nextUser) {
-        if (numberOfActivePlayers() < MIN_NUMBER_OF_PLAYERS) return true;
+        if (numberOfActivePlayers() < minNumberOfPlayers) return true;
         Player actualPlayer = lookForPlayerFromUser(user);
         Player nextPlayer = lookForPlayerFromUser(nextUser);
         if (nextPlayer.equals(finalPlayer)) return true;
@@ -729,8 +741,10 @@ public class GameLogic implements Externalizable {
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeBoolean(true);
+        out.writeInt(minNumberOfPlayers);
         out.writeInt(numberOfPlayers);
         out.writeBoolean(finalFrenzy);
+        out.writeObject(currentPlayer);
         out.writeObject(players);
         out.writeObject(board);
         out.writeObject(gameID);
@@ -749,8 +763,10 @@ public class GameLogic implements Externalizable {
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         _gameLoadedFromAPreviousSavedState  = in.readBoolean();
+        minNumberOfPlayers                  = in.readInt();
         numberOfPlayers                     = in.readInt();
         finalFrenzy                         = in.readBoolean();
+        currentPlayer                       = (Player)in.readObject();
         players                             = (List<Player>) in.readObject();
         board                               = (Board) in.readObject();
         gameID                              = (UUID) in.readObject();

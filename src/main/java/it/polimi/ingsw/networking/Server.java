@@ -276,7 +276,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
     @Override
     public void startNewGame(List<User> userList) {
         var gameID = UUID.randomUUID();
-        var gameLogic = new GameLogic(gameID, userList.size());
+        var gameLogic = new GameLogic(gameID, MIN_NUMBER_OF_PLAYERS, userList.size());
         var characters = gameLogic.getAvailableCharacters();
 
         gameControllers.put(gameID, gameLogic);
