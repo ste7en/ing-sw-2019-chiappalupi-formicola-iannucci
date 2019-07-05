@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking.rmi;
 
+import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.Damage;
 import it.polimi.ingsw.model.cards.Powerup;
 import it.polimi.ingsw.model.cards.Weapon;
@@ -180,7 +181,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
     @Override
     public void choseGameMap(String configuration) {
         submitRemoteMethodInvocation(executorService, () -> {
-            server.didChooseGameMap(gameID, configuration);
+            server.didChooseGameMap(userID, gameID, configuration);
             return null;
         });
         viewObserver.willChooseSkulls();

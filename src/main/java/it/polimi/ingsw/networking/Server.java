@@ -2,6 +2,7 @@ package it.polimi.ingsw.networking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.controller.GameLogic;
+import it.polimi.ingsw.model.board.GameMap;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Character;
 import it.polimi.ingsw.model.player.Player;
@@ -188,7 +189,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
 
             if (!socketSet) socketPortNumber = (int)map.get("socketPortNumber");
             if (!rmiSet) rmiPortNumber = (int)map.get("rmiPortNumber");
-            if (!waitingRoomSet) waitingRoomTimeout = (int)map.get("waitingRoomTimeout");
+            if (!waitingRoomSet) waitingRoomTimeout = 1;//(int)map.get("waitingRoomTimeout");
             if (!operationTimeoutSet) operationTimeout = (int)map.get("operationTimeout");
         } catch (Exception e) {
             AdrenalineLogger.errorException(EXC_CONFIG_FILE, e);
@@ -489,13 +490,20 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
 
     /**
      * Method called when a player chose the GameMap
+     * @param userID it's the ID of the user who has chosen the map configuration
      * @param gameID gameID
      * @param configuration string representation of the GameMap
      */
     @Override
-    public void didChooseGameMap(UUID gameID, String configuration) {
+    public void didChooseGameMap(int userID, UUID gameID, String configuration) {
         MapType mapType = MapType.valueOf(configuration);
         this.gameControllers.get(gameID).initializeMap(mapType);
+        Map<String, List<String>> mapUpdate = new HashMap<>();
+        List<String> mapConf = new ArrayList<>();
+        mapConf.add(configuration);
+        mapUpdate.put(GameMap.gameMap_key, mapConf);
+        List<User> otherUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
+        for(User user : otherUsers) users.get(user).updateView(user.hashCode(), mapUpdate);
         AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + GAME_MAP_SET);
     }
 

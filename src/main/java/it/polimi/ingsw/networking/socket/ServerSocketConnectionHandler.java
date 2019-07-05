@@ -414,7 +414,7 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
      * @param gameID it's the ID of the game
      */
     private void mapChosen(int connectionID, Map<String, String> args, UUID gameID) {
-        this.server.didChooseGameMap(gameID, args.get(GameMap.gameMap_key));
+        this.server.didChooseGameMap(connectionID, gameID, args.get(GameMap.gameMap_key));
         this.send(CommunicationMessage.from(connectionID, CHOOSE_SKULLS));
     }
 

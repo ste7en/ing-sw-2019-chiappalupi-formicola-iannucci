@@ -163,7 +163,7 @@ public abstract class View {
     /**
      * Called when the map configuration has been chosen by the player.
      */
-    protected void didChooseGameMap(String configuration) {
+    public void didChooseGameMap(String configuration) {
         client.choseGameMap(configuration);
     }
 

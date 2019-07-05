@@ -242,6 +242,9 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void update(Map<String, List<String>> update) {
+        out.println("\nCHECK OUT THIS!");
+        out.println();
+        out.println("");
     }
 
     @Override

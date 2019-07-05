@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.model.cards.AmmoTile;
+import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import javafx.application.Application;
@@ -202,7 +203,18 @@ public class GUIHandler extends Application {
         }
     }
 
+    public void createGameMap(String configuration) {
+        Platform.runLater(() -> {
+            try {
+                onCreateGameMap(configuration);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
     public void handlePortAddressOptions(TextField portTextfield, TextField addressTextfield){
+
         String port = portTextfield.getText();
         Integer portNumber = Integer.parseInt(port);
         String address = addressTextfield.getText();
@@ -315,8 +327,8 @@ public class GUIHandler extends Application {
 
                 button.setOnAction( e -> {
 
-                    handleCharactersOptions(character);});
-                    //adrenalineGUI.didChooseCharacter(character);});
+
+                    adrenalineGUI.didChooseCharacter(character);});
 
 
                         setText(textSelectedContainer, "You selected " + character);
@@ -330,11 +342,7 @@ public class GUIHandler extends Application {
         mainScene.setRoot(modesChoiceGrid);
     }
 
-    public void handleCharactersOptions(String character){
-        System.out.println(character);
 
-
-    }
 
     public void onChooseCharacterSuccess() {
         Platform.runLater(() -> {
@@ -387,7 +395,7 @@ public class GUIHandler extends Application {
 
         ArrayList<String> confs = new ArrayList<>();
         for(int i=0; i<4; i++){
-            confs.add("conf"+(i+1));
+            confs.add(MapType.values()[i].toString());
         }
 
         try {
@@ -395,6 +403,11 @@ public class GUIHandler extends Application {
         } catch (Exception e){
             e.printStackTrace();
         }
+
+        StackPane buttonContainer = new StackPane();
+        Button gameMapButton = new Button("Continue");
+        buttonContainer.getChildren().add(gameMapButton);
+        buttonContainer.setAlignment(Pos.CENTER);
 
         List<StackPane> stackPanes = new ArrayList<>();
         for(int i=0; i<4; i++) {
@@ -407,6 +420,7 @@ public class GUIHandler extends Application {
             imageViews.get(i).setOnMouseClicked(e -> {
                 try {
                     unclickedImage(imageViews, confs, "board/" );
+                    gameMapButton.setOnAction(e1 -> {adrenalineGUI.didChooseGameMap(configuration);});
                 }catch (Exception e1){
                     e1.printStackTrace();
                 }
@@ -414,8 +428,7 @@ public class GUIHandler extends Application {
             });
         }
 
-        modesChoiceGrid.add(boxButton, 0, 3,2,1);
-        button.setOnAction(e -> {try{drawTwoPowerups(prova2);} catch (Exception ex){ex.printStackTrace();}});
+        modesChoiceGrid.add(buttonContainer, 0, 3,2,1);
         setText(textContainer, "Choose a map configuration");
         modesChoiceGrid.add(textContainer, 0,0,2,1);
         mainScene.setRoot(modesChoiceGrid);
@@ -515,7 +528,7 @@ public class GUIHandler extends Application {
         }
         modesChoiceGrid.add(boxButton, 0, 2,5,1);
         button.setText("Continue");
-        button.setOnAction(e -> {try{createMap();} catch (Exception ex){ex.printStackTrace();}});
+        button.setOnAction(e -> {try{} catch (Exception ex){ex.printStackTrace();}});
         setText(textContainer, "Here are two powerup cards. Choose the one you want to discard: its color will be the color where you will spawn.");
         modesChoiceGrid.add(textContainer, 0,0,5,1);
 
@@ -602,7 +615,7 @@ public class GUIHandler extends Application {
     }
 
 
-    public void createMap() throws Exception{
+    void onCreateGameMap(String conf) throws Exception{
 
 
         //Main modesChoiceGrid creation
@@ -627,7 +640,7 @@ public class GUIHandler extends Application {
 
         //Map creation
         StackPane mapContainer = new StackPane();
-        Image map = new Image(new FileInputStream("src/main/resources/images/board/conf4.png"));
+        Image map = new Image(new FileInputStream("src/main/resources/images/board/" + conf + ".png"));
         ImageView ivMap = new ImageView();
         ivMap.setImage(map);
         ivMap.setPreserveRatio(true);

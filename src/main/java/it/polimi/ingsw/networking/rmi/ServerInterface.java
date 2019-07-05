@@ -26,7 +26,7 @@ public interface ServerInterface extends Remote {
 
     String startActions(int userID, UUID gameID) throws RemoteException;
 
-    void didChooseGameMap(UUID gameID, String configuration) throws RemoteException;
+    void didChooseGameMap(int userID, UUID gameID, String configuration) throws RemoteException;
 
     List<String> getSpawnPowerups(int userID, UUID gameID) throws RemoteException;
 
