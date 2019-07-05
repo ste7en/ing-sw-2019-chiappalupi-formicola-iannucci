@@ -48,6 +48,6 @@ This is also the config file that will be used in case no arguments (or less the
 From the same [directory](./deliverables/JARS) of the server, you can run the CLI version of the client with the command-line command
 
     java -jar Adrenaline-CLI-AM19.jar [	< --socket | --rmi > 
-										< serverAddress> 
-										< serverPort> ]
+                                            < serverAddress> 
+                                            < serverPort> ]
 If no arguments are provided, at the startup a command-line prompt will ask the user for the connection type, server IP address and server port.
