@@ -178,7 +178,7 @@ public class AdrenalineCLI extends View {
             AdrenalineLogger.warning(MISSING_ARGUMENTS);
             new AdrenalineCLI();
         } else {
-            var connectionType = arguments.get(0);
+            var connectionType = arguments.get(0).substring(2);
             var serverName     = arguments.get(1);
             var serverPort     = arguments.get(2);
             new AdrenalineCLI(connectionType, serverName, serverPort);

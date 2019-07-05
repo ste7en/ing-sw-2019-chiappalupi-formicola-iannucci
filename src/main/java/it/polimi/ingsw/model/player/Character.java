@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -158,7 +158,7 @@ public class Character implements Serializable {
         ObjectMapper objectMapper = new ObjectMapper();
         Character[] box = new Character[NUM_CHARACTERS];
         try {
-            File json = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "characters.json");
+            URL json = Thread.currentThread().getContextClassLoader().getResource("characters.json");
             box = objectMapper.readValue(json, Character[].class);
 
         } catch (IOException e) {

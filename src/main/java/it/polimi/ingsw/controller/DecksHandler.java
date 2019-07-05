@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 
+import javax.swing.plaf.TableHeaderUI;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +28,14 @@ public class DecksHandler implements Serializable {
     /**
      * String that contains the path to where the resources are located.
      */
-    private static final String PATHNAME = "src" + File.separator + "main" + File.separator + "resources" + File.separator;
+    private static final URL SIMPLE_WEAPONS_PATH = Thread.currentThread().getContextClassLoader().getResource("simpleWeapons.json");
+    private static final URL POTENTIABLE_WEAPONS_PATH = Thread.currentThread().getContextClassLoader().getResource("potentiableWeapons.json");
+    private static final URL SELECTABLE_WEAPONS_PATH = Thread.currentThread().getContextClassLoader().getResource("selectableWeapons.json");
+    private static final URL AMMO_TILES_PATH = Thread.currentThread().getContextClassLoader().getResource("ammoTiles.json");
+    private static final URL NEWTON_POWERUP_PATH = Thread.currentThread().getContextClassLoader().getResource("newtonPowerups.json");
+    private static final URL TAGBACK_POWERUP_PATH = Thread.currentThread().getContextClassLoader().getResource("tagbackGrenadePowerups.json");
+    private static final URL TARGETINGSCOPE_POWERUP_PATH = Thread.currentThread().getContextClassLoader().getResource("targetingScopePowerups.json");
+    private static final URL TELEPORTER_POWERUP_PATH = Thread.currentThread().getContextClassLoader().getResource("teleporterPowerups.json");
 
     /**
      * Integer to initialize the weaponsDeck
@@ -99,12 +108,9 @@ public class DecksHandler implements Serializable {
         PotentiableWeapon[] boxPotentiable = new PotentiableWeapon[NUM_OF_POTENTIABLE_WEAPONS];
         SelectableWeapon[] boxSelectable = new SelectableWeapon[NUM_OF_SELECTABLE_WEAPONS];
         try {
-            File json = new File(PATHNAME + "simpleWeapons.json");
-            boxSimple = objectMapper.readValue(json, SimpleWeapon[].class);
-            json = new File(PATHNAME + "potentiableWeapons.json");
-            boxPotentiable = objectMapper.readValue(json, PotentiableWeapon[].class);
-            json = new File(PATHNAME + "selectableWeapons.json");
-            boxSelectable = objectMapper.readValue(json, SelectableWeapon[].class);
+            boxSimple = objectMapper.readValue(SIMPLE_WEAPONS_PATH, SimpleWeapon[].class);
+            boxPotentiable = objectMapper.readValue(POTENTIABLE_WEAPONS_PATH, PotentiableWeapon[].class);
+            boxSelectable = objectMapper.readValue(SELECTABLE_WEAPONS_PATH, SelectableWeapon[].class);
         } catch (IOException e) {
             AdrenalineLogger.error(e.toString());
         }
@@ -128,8 +134,7 @@ public class DecksHandler implements Serializable {
         ObjectMapper objectMapper = new ObjectMapper();
         AmmoTile[] box = new AmmoTile[NUM_OF_AMMOTILES];
         try {
-            File json = new File(PATHNAME + "ammoTiles.json");
-            box = objectMapper.readValue(json, AmmoTile[].class);
+            box = objectMapper.readValue(AMMO_TILES_PATH, AmmoTile[].class);
 
         } catch (IOException e) {
             AdrenalineLogger.error(e.toString());
@@ -149,14 +154,10 @@ public class DecksHandler implements Serializable {
         TagbackGrenade[] boxTagbackGrenade = new TagbackGrenade[NUM_OF_POWERUPS];
         Teleporter[] boxTeleporter = new Teleporter[NUM_OF_POWERUPS];
         try {
-            File json = new File(PATHNAME + "newtonPowerups.json");
-            boxNewton = objectMapper.readValue(json, Newton[].class);
-            json = new File(PATHNAME + "tagbackGrenadePowerups.json");
-            boxTagbackGrenade = objectMapper.readValue(json, TagbackGrenade[].class);
-            json = new File(PATHNAME + "targetingScopePowerups.json");
-            boxTargetingScope = objectMapper.readValue(json, TargetingScope[].class);
-            json = new File(PATHNAME + "teleporterPowerups.json");
-            boxTeleporter = objectMapper.readValue(json, Teleporter[].class);
+            boxNewton = objectMapper.readValue(NEWTON_POWERUP_PATH, Newton[].class);
+            boxTagbackGrenade = objectMapper.readValue(TAGBACK_POWERUP_PATH, TagbackGrenade[].class);
+            boxTargetingScope = objectMapper.readValue(TARGETINGSCOPE_POWERUP_PATH, TargetingScope[].class);
+            boxTeleporter = objectMapper.readValue(TELEPORTER_POWERUP_PATH, Teleporter[].class);
         } catch (IOException e) {
             AdrenalineLogger.error(e.toString());
         }

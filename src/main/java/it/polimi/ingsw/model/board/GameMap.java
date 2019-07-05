@@ -11,6 +11,7 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -31,10 +32,6 @@ public class GameMap implements Cloneable, Serializable {
     /** Static GameMap max dimensions */
     private static final int ROWS = 3;
     private static final int COLUMNS = 4;
-
-    /** String that contains the path to where the resources are located. */
-    private static final String PATHNAME =
-            "src" + File.separator + "main" + File.separator + "resources" + File.separator;
 
     /** Static gameMap Strings used to print the map; */
     private static final char DOOR_UP                     = '\u039B';
@@ -96,7 +93,7 @@ public class GameMap implements Cloneable, Serializable {
         ObjectMapper objectMapper = new ObjectMapper();
         Cell[][] box = new Cell[ROWS][COLUMNS];
         try {
-            File json = new File(PATHNAME + mapType + ".json");
+            URL json = Thread.currentThread().getContextClassLoader().getResource(mapType+".json");
             box = objectMapper.readValue(json, Cell[][].class);
 
         } catch (IOException e) {

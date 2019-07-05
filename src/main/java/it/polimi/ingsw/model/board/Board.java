@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.board;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,8 +38,7 @@ public class Board implements Serializable {
     /**
      * String that contains the path information to where the resources are located.
      */
-    private static final String PATHNAME            = "src" + File.separator + "main" + File.separator + "resources" + File.separator;
-    private static final String PATHNAME_POINTS     = "max_points_list.json";
+    private static final URL PATHNAME_POINTS     = Thread.currentThread().getContextClassLoader().getResource("max_points_list.json");
 
     /**
      * Parameter for the jsno deparse
@@ -97,11 +97,9 @@ public class Board implements Serializable {
      */
     private void initializePointsFromSkulls() {
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonName = PATHNAME_POINTS;
         Integer[] box = new Integer[NUM_OF_MAX_ASSIGNABLE_POINTS];
         try {
-            File json = new File(PATHNAME + jsonName);
-            box = objectMapper.readValue(json, Integer[].class);
+            box = objectMapper.readValue(PATHNAME_POINTS, Integer[].class);
         } catch (IOException e) {
             AdrenalineLogger.error(e.toString());
         }

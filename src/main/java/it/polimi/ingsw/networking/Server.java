@@ -174,25 +174,27 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
             }
         }
 
-        try {
-            var overrConfFile = new File("./configuration.json");
-            var configurationFile = new File("src" + File.separator + "main" + File.separator + "resources" + File.separator + "server-config.json");
-            var mapper = new ObjectMapper();
+        if(arguments.isEmpty()) {
+            try {
+                var configurationFile = Thread.currentThread().getContextClassLoader().getResource("server-config.json");
+                var overrConfFile = new File("./configuration.json");
+                var mapper = new ObjectMapper();
 
-            Map map;
+                Map map;
 
-            if (overrConfFile.exists()) {
-                AdrenalineLogger.info(OVERR_CONFIG_FILE);
-                map = mapper.readValue(overrConfFile, Map.class);
+                if (overrConfFile.exists()) {
+                    AdrenalineLogger.info(OVERR_CONFIG_FILE);
+                    map = mapper.readValue(overrConfFile, Map.class);
+                }
+                else map = mapper.readValue(configurationFile, Map.class);
+
+                if (!socketSet) socketPortNumber = (int)map.get("socketPortNumber");
+                if (!rmiSet) rmiPortNumber = (int)map.get("rmiPortNumber");
+                if (!waitingRoomSet) waitingRoomTimeout = (int)map.get("waitingRoomTimeout");
+                if (!operationTimeoutSet) operationTimeout = (int)map.get("operationTimeout");
+            } catch (Exception e) {
+                AdrenalineLogger.errorException(EXC_CONFIG_FILE, e);
             }
-            else map = mapper.readValue(configurationFile, Map.class);
-
-            if (!socketSet) socketPortNumber = (int)map.get("socketPortNumber");
-            if (!rmiSet) rmiPortNumber = (int)map.get("rmiPortNumber");
-            if (!waitingRoomSet) waitingRoomTimeout = 1;//(int)map.get("waitingRoomTimeout");
-            if (!operationTimeoutSet) operationTimeout = (int)map.get("operationTimeout");
-        } catch (Exception e) {
-            AdrenalineLogger.errorException(EXC_CONFIG_FILE, e);
         }
 
         if (arguments.contains("--debug")) { waitingRoomTimeout = 4; operationTimeout = 10; }

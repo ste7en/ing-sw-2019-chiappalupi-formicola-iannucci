@@ -7,6 +7,7 @@ import it.polimi.ingsw.utility.AdrenalineLogger;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,9 +30,8 @@ public class PlayerBoard implements Serializable {
     /**
      * String that contains the path information to where the resources are located.
      */
-    private static final String PATHNAME                 = "src" + File.separator + "main" + File.separator + "resources" + File.separator;
-    private static final String PATHNAME_NOT_ADRENALINIC = "max_points_list.json";
-    private static final String PATHNAME_ADRENALINIC     = "max_points_list_adrenalinic.json";
+    private static final URL PATHNAME_NOT_ADRENALINIC = Thread.currentThread().getContextClassLoader().getResource("max_points_list.json");
+    private static final URL PATHNAME_ADRENALINIC     = Thread.currentThread().getContextClassLoader().getResource("max_points_list_adrenalinic.json");
 
     /**
      * Color corresponding to the player and his character.
@@ -122,15 +122,14 @@ public class PlayerBoard implements Serializable {
         if(adrenaline) this.finalFrenzy = true;
         ObjectMapper objectMapper = new ObjectMapper();
         int numOfPoints = NUM_OF_MAX_ASSIGNABLE_POINTS;
-        String jsonName = PATHNAME_NOT_ADRENALINIC;
+        URL jsonName = PATHNAME_NOT_ADRENALINIC;
         if(adrenaline) {
             numOfPoints = NUM_OF_MAX_ASSIGNABLE_POINTS_ADRENALINIC;
             jsonName = PATHNAME_ADRENALINIC;
         }
         Integer[] box = new Integer[numOfPoints];
         try {
-            File json = new File(PATHNAME + jsonName);
-            box = objectMapper.readValue(json, Integer[].class);
+            box = objectMapper.readValue(jsonName, Integer[].class);
         } catch (IOException e) {
             AdrenalineLogger.error(e.toString());
         }
