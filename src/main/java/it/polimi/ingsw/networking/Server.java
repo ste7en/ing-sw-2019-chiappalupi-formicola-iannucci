@@ -637,7 +637,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
         var gameController  = gameControllers.get(gameID);
         var user            = findUserFromID(userID);
         AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + user.getUsername() + " chose to shoot.");
-        return gameController.getWeaponController().lookForPlayerWeapons(gameController.lookForPlayerFromUser(user), gameController.getBoard().getMap());
+        List<String> weapons = gameController.getWeaponController().lookForPlayerWeapons(gameController.lookForPlayerFromUser(user), gameController.getBoard().getMap());
+        if(weapons.isEmpty()) {
+            gameController.getWeaponController().restoreMap(gameController.getBoard().getMap(), gameController.getPlayers());
+        }
+        return weapons;
     }
 
     /**

@@ -152,7 +152,8 @@ public class WeaponController implements Serializable {
     public List<String> lookForPlayerWeapons(Player player, GameMap map) {
         List<String> playerWeapons = new ArrayList<>();
         for(Weapon weapon : player.getPlayerHand().getWeapons())
-            playerWeapons.add(weapon.getName());
+            if(weapon.isLoaded())
+                playerWeapons.add(weapon.getName());
         this.gameMapBox = (GameMap)map.clone();
         return playerWeapons;
     }
@@ -298,8 +299,8 @@ public class WeaponController implements Serializable {
             if(map.getPositionFromPlayer(player) != null && map.getPositionFromPlayer(player).compareTo(gameMapBox.getPositionFromPlayer(player)) != 0)
                 map.setPlayerPosition(player, gameMapBox.getPositionFromPlayer(player).getRow(), gameMapBox.getPositionFromPlayer(player).getColumn());
         for(Player player : players)
-            if(map.getPositionFromPlayer(player) != null && map.getPositionFromPlayer(player).compareTo(gameMapBox.getPositionFromPlayer(player)) != 0)
-                map.setPlayerPosition(player, gameMapBox.getPositionFromPlayer(player).getRow(), gameMapBox.getPositionFromPlayer(player).getColumn());
+            if(map.getPositionFromPlayer(player) != null && map.getPositionFromPlayer(player).compareTo(movementsMapBox.getPositionFromPlayer(player)) != 0)
+                map.setPlayerPosition(player, movementsMapBox.getPositionFromPlayer(player).getRow(), movementsMapBox.getPositionFromPlayer(player).getColumn());
     }
 
     /**
@@ -311,8 +312,8 @@ public class WeaponController implements Serializable {
         effectsCost.clear();
         marksThisTurn.clear();
         for(Player player : players) {
-            gameMapBox.setPlayerPosition(player, null);
-            movementsMapBox.setPlayerPosition(player, null);
+            if(gameMapBox != null) gameMapBox.setPlayerPosition(player, null);
+            if(movementsMapBox != null) movementsMapBox.setPlayerPosition(player, null);
         }
     }
 
@@ -321,5 +322,4 @@ public class WeaponController implements Serializable {
         Cell move = board.getMap().getCellFromToString(cell);
         board.getMap().setPlayerPosition(player, move);
     }
-
 }
