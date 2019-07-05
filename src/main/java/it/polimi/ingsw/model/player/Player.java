@@ -59,7 +59,7 @@ public class Player implements Comparable<Player>, Serializable {
      * Called when a user disconnects
      */
     public synchronized void disablePlayer() {
-        _isActive = true;
+        _isActive = false;
     }
 
     /**
