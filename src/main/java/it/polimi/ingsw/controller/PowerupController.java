@@ -17,6 +17,7 @@ import java.util.*;
 public class PowerupController implements Serializable {
 
     private static final String POWERUP_NOT_IN_HAND = "This powerup is not in the hand of this player!";
+    private static final String PLAYER_NULL = "Player can't be null!";
     /**
      * It's the set of targets that can be shot through a powerup that can be used after a weapon.
      * Set because no duplicates must be in it.
@@ -81,6 +82,7 @@ public class PowerupController implements Serializable {
      */
     public List<Damage> getPowerupDamages(String powerup, Player player, GameMap map, List<Player> players) {
         if(player == null) player = this.tagback;
+        if(player == null) throw new NullPointerException(PLAYER_NULL);
         List<Powerup> powerups = player.getPlayerHand().getPowerups();
         Powerup selectedPowerup = null;
         for(Powerup p : powerups)
@@ -88,6 +90,11 @@ public class PowerupController implements Serializable {
                 selectedPowerup = p;
         if(selectedPowerup == null) throw new NullPointerException(POWERUP_NOT_IN_HAND);
         if(selectedPowerup.isUsableAfterDamageMade()) return selectedPowerup.use(player, map, new ArrayList<>(targets));
+        if(selectedPowerup.isUsableAfterDamageTaken()) {
+            List<Player> tagbackTargets = new ArrayList<>();
+            targets.add(player);
+            return selectedPowerup.use(null, map, tagbackTargets);
+        }
         return selectedPowerup.use(player, map, players);
     }
 

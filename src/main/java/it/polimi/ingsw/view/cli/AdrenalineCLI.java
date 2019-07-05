@@ -854,15 +854,12 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void displayChange(String change) {
-        out.println(MOVEMENT_MADE);
-        out.println(change);
-        out.println(WILL_PLAY_SOON);
-        if(locked) {
-            locked = false;
-            synchronized (this) {
-                this.notifyAll();
-            }
+        if(!locked) {
+            out.println(MOVEMENT_MADE);
+            out.println(change);
+            out.println(WILL_PLAY_SOON);
         }
+        locked = false;
     }
 
     @Override
@@ -906,17 +903,6 @@ public class AdrenalineCLI extends View {
     @Override
     public void tagback(List<String> availablePowerup, String nickname) {
         locked = true;
-        while (locked) {
-            synchronized (this) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    AdrenalineLogger.error(e.toString());
-                    AdrenalineLogger.error(e.getMessage());
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
         out.println(SHOT + nickname + MARK_HIM);
         String scanInput = in.nextLine();
         if(scanInput.equalsIgnoreCase("yes") || scanInput.equalsIgnoreCase("y")) {
