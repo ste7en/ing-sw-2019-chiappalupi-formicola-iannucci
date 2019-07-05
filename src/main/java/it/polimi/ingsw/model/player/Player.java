@@ -58,7 +58,7 @@ public class Player implements Comparable<Player>, Serializable {
     /**
      * Called when a user disconnects
      */
-    public void disablePlayer() {
+    public synchronized void disablePlayer() {
         _isActive = true;
     }
 
@@ -66,7 +66,7 @@ public class Player implements Comparable<Player>, Serializable {
      * Called when a user reconnects
      * @param user new user instance
      */
-    public void reEnablePlayer(User user) {
+    public synchronized void reEnablePlayer(User user) {
         this.user = user;
         _isActive = true;
     }
@@ -75,7 +75,7 @@ public class Player implements Comparable<Player>, Serializable {
      * @return true if the user is connected to the server, false otherwise
      */
     public boolean isActive() {
-        return user != null;
+        return _isActive;
     }
 
     /**
