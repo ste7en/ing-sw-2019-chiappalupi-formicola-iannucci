@@ -19,6 +19,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -47,6 +49,7 @@ public class GUIHandler extends Application implements Loggable {
     private Scene mainScene;
     private Background background;
     private String conf;
+    private static final Font andaleMonoFont = Font.font("Andale Mono");
 
     //game map
     private GridPane boardGrid;
@@ -143,19 +146,19 @@ public class GUIHandler extends Application implements Loggable {
     }
 
 
-    public void chooseConnection() throws FileNotFoundException{
+    public void chooseConnection() {
 
         firstRoot.getChildren().clear();
         firstRoot.setBackground(background);
-        /*root.setStyle("-fx-background-color: white");
-        BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/adrenaline_background.jpg")),
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);*/
         firstRoot.setBottom(boxButton);
 
         CheckBox checkBoxRMI = new CheckBox("RMI");
         CheckBox checkBoxTCP = new CheckBox("TCP");
-        checkBoxRMI.setStyle("-fx-fill: white;");
-        checkBoxRMI.setStyle("-fx-font-family: 'Andale Mono';");
+        checkBoxRMI.setFont(andaleMonoFont);
+        checkBoxTCP.setFont(andaleMonoFont);
+        checkBoxRMI.setTextFill(Color.WHITE);
+        checkBoxTCP.setTextFill(Color.WHITE);
+
 
         button.setOnAction(e -> handleConnectionOptions(checkBoxRMI, checkBoxTCP));
         checkBoxRMI.setOnAction(e -> handleOptionsRMI(checkBoxRMI, checkBoxTCP));
@@ -189,31 +192,47 @@ public class GUIHandler extends Application implements Loggable {
             VBox generalBox = new VBox();
 
             Text text = new Text("Please provide a port number and an address");
+            text.setFont(andaleMonoFont);
             HBox boxText = new HBox(text);
             boxText.setAlignment(Pos.CENTER);
 
-            Text portText = new Text("port number:  ");
+            Text portText = new Text("Port number");
+            portText.setFont(andaleMonoFont);
+            portText.setFill(Color.WHITE);
             TextField portField = new TextField();
             HBox boxPort = new HBox(portText, portField);
             boxPort.setAlignment(Pos.CENTER_LEFT);
-            boxPort.setMargin(portText, new Insets(10, 0, 10, 50));
-            boxPort.setMargin(portField, new Insets(10, 50, 10, 0));
+            HBox.setMargin(portText, new Insets(10, 0, 10, 50));
+            HBox.setMargin(portField, new Insets(10, 50, 10, 0));
 
-            Text addressText = new Text("address:         ");
+            Text addressText = new Text("Server address");
+            addressText.setFont(andaleMonoFont);
+            addressText.setFill(Color.WHITE);
             TextField addressField = new TextField();
             HBox boxAddress = new HBox(addressText, addressField);
             boxAddress.setAlignment(Pos.CENTER_LEFT);
+            HBox.setMargin(addressText, new Insets(10, 0, 10, 50));
+            HBox.setMargin(addressField, new Insets(10, 50, 10, 0));
+
+            var textVBox = new VBox(addressText, portText);
+            textVBox.setSpacing(30);
+            var fieldVBox = new VBox(addressField, portField);
+            fieldVBox.setSpacing(15);
+
+            var hbox = new HBox(textVBox, fieldVBox);
+            HBox.setMargin(textVBox, new Insets(5, 0, 50, 20));
+
+            hbox.setSpacing(8);
 
             button.setOnAction(e -> handlePortAddressOptions(portField, addressField));
 
-            generalBox.getChildren().add(boxPort);
-            generalBox.getChildren().add(boxAddress);
+            generalBox.getChildren().add(hbox);
             generalBox.setFillWidth(true);
             generalBox.setAlignment(Pos.CENTER);
 
-            boxText.setMargin(text, new Insets(50, 0, 0, 0));
-            boxAddress.setMargin(addressText, new Insets(10, 0, 10, 50));
-            boxAddress.setMargin(addressField, new Insets(10, 50, 10, 0));
+            HBox.setMargin(text, new Insets(50, 0, 0, 0));
+            HBox.setMargin(addressText, new Insets(10, 0, 10, 50));
+            HBox.setMargin(addressField, new Insets(10, 50, 10, 0));
             firstRoot.setCenter(generalBox);
             setText(textContainer, "Please provide an address and a port number");
             firstRoot.setTop(textContainer);
@@ -269,14 +288,16 @@ public class GUIHandler extends Application implements Loggable {
     public void login(){
         firstRoot.getChildren().clear();
 
-        Text usernameText = new Text("username: ");
+        Text usernameText = new Text("Username");
+        usernameText.setFont(andaleMonoFont);
+        usernameText.setFill(Color.WHITE);
         TextField usernameField = new TextField();
         HBox boxUsername = new HBox(usernameText, usernameField);
         boxUsername.setAlignment(Pos.CENTER_LEFT);
 
         button.setOnAction(e -> handleLoginOptions(usernameField));
 
-        boxUsername.setMargin(usernameText,  new Insets(0, 0, 0, 50));
+        boxUsername.setMargin(usernameText,  new Insets(0, 16, 0, 50));
         boxUsername.setMargin(usernameField,  new Insets(0, 50, 0, 0));
         firstRoot.setCenter(boxUsername);
         setText(textContainer, "Please provide a username");
@@ -291,6 +312,8 @@ public class GUIHandler extends Application implements Loggable {
 
     public void handleLoginFailure() {
         Text text = new Text("Username already in use");
+        text.setFont(andaleMonoFont);
+        text.setFill(Color.WHITE);
         VBox box = new VBox(text, boxButton);
         box.setAlignment(Pos.CENTER);
         firstRoot.setBottom(box);
@@ -337,7 +360,6 @@ public class GUIHandler extends Application implements Loggable {
         button.setPrefHeight(Integer.MAX_VALUE);
         modesChoiceGrid.add(button, 0,4,6,1);
 
-
         setText(textContainer,"Select a character, these are the ones that are not taken");
         modesChoiceGrid.add(textContainer, 0,0,6,1);
         modesChoiceGrid.add(textSelectedContainer, 0,3,6,1);
@@ -382,14 +404,10 @@ public class GUIHandler extends Application implements Loggable {
 
 
     public void onChooseCharacterSuccess() {
-        Platform.runLater(() -> {
-                chooseCharacterSuccess();
-
-        });
+        Platform.runLater(this::chooseCharacterSuccess);
     }
 
     public void chooseCharacterSuccess(){
-        System.out.println(primaryStage.getHeight());
         modesChoiceGrid.getChildren().clear();
         setText(textSelectedContainer, "You chose your character, the game will start soon!");
         modesChoiceGrid.add(textSelectedContainer, 0,1,6,5);
@@ -1515,32 +1533,3 @@ public class GUIHandler extends Application implements Loggable {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
