@@ -10,22 +10,21 @@
             <useProjectArtifact>false</useProjectArtifact>
             <unpack>true</unpack>
             <scope>runtime</scope>
-            <excludes>
-                <exclude>org.openjfx:javafx*</exclude>
-            </excludes>
+            <includes>
+                <include>com.fasterxml.jackson.core:jackson*</include>
+            </includes>
+
         </dependencySet>
     </dependencySets>
     <fileSets>
         <fileSet>
-            <outputDirectory>/</outputDirectory>
             <directory>${project.build.outputDirectory}</directory>
+            <outputDirectory>/</outputDirectory>
             <excludes>
                 <exclude>*javafx*</exclude>
                 <exclude>*jfx*</exclude>
                 <exclude>images/**</exclude>
-                <exclude>org/**</exclude>
-                <exclude>**/inject/**</exclude>
-                <exclude>**.log**</exclude>
+                <exclude>assemblies/**</exclude>
             </excludes>
         </fileSet>
     </fileSets>
