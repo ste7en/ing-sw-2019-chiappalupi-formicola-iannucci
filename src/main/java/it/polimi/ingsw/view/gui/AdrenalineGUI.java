@@ -341,7 +341,9 @@ public class AdrenalineGUI extends View {
 
     @Override
     public void willChooseWhatToGrab(List<String> possiblePicks) {
+        for(String pick : possiblePicks) {
 
+        }
     }
 
     @Override

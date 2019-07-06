@@ -25,10 +25,7 @@ import javax.management.monitor.StringMonitor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("Duplicates")
 public class GUIHandler extends Application {
@@ -68,6 +65,7 @@ public class GUIHandler extends Application {
     private HashMap<String, List <StackPane>> bloodTruck;
     private HashMap<String, List <StackPane>> marksTruck;
     private HashMap<String, List<StackPane>> killedPointsTruck;
+    private Map<String, List<String>> weaponsInRespawn;
 
     private ColumnConstraints c;
     private RowConstraints r;
@@ -108,7 +106,7 @@ public class GUIHandler extends Application {
         buildMessageGrid();
         textContainer.setAlignment(Pos.CENTER);
         button = new Button("Continue");
-        button.setOnAction(e -> {try{createGameMap("conf_1");} catch (Exception ex){ex.printStackTrace();}});
+        button.setOnAction(e -> {try{chooseConnection();}catch (Exception ex){ex.printStackTrace();}});
         boxButton = new HBox(button);
         boxButton.setAlignment(Pos.CENTER);
         boxButton.setMargin(button, new Insets(0, 0, 50, 0));
@@ -118,6 +116,8 @@ public class GUIHandler extends Application {
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(1.0, 1.0, true, true, false, true));
         firstRoot.setBackground(new Background(backgroundImage));
         firstRoot.setBottom(boxButton);
+
+        weaponsInRespawn = new HashMap<>();
 
 
         mainScene = new Scene(firstRoot, 1200,800);
@@ -1056,7 +1056,6 @@ public class GUIHandler extends Application {
     }
 
     public void onUpdateDeckLeft(List<String> givenWeapons){
-
         ArrayList<ImageView> weaponsIV = new ArrayList<>();
         ArrayList<ImageView> weaponsBackUpIV = new ArrayList<>();
         ArrayList<Button> buttons = new ArrayList<>();
@@ -1066,6 +1065,7 @@ public class GUIHandler extends Application {
         for(StackPane stackPane: leftBackup){
             stackPane.getChildren().clear();
         }
+        weaponsInRespawn.put("1, 0", givenWeapons);
         for(int i = 0; i < givenWeapons.size(); i++){
             int index = i;
             weaponsIV.add(new ImageView());
@@ -1097,8 +1097,7 @@ public class GUIHandler extends Application {
     }
 
 
-    public void onUpdateDeckAbove(List<String> givenWeapons){
-
+    private void onUpdateDeckAbove(List<String> givenWeapons){
         ArrayList<ImageView> weaponsIV = new ArrayList<>();
         ArrayList<ImageView> weaponsBackUpIV = new ArrayList<>();
         ArrayList<Button> buttons = new ArrayList<>();
@@ -1108,6 +1107,7 @@ public class GUIHandler extends Application {
         for(StackPane stackPane: aboveBackup){
             stackPane.getChildren().clear();
         }
+        weaponsInRespawn.put("0, 2", givenWeapons);
         for(int i = 0; i < givenWeapons.size(); i++){
             int index=i;
             weaponsIV.add(new ImageView());
@@ -1121,7 +1121,7 @@ public class GUIHandler extends Application {
             deckAbove.get(i).getChildren().add(buttons.get(i));
             buttons.get(i).setStyle("-fx-background-color: transparent");
             buttons.get(i).setPrefHeight(Integer.MAX_VALUE);
-            buttons.get(i).setPrefHeight(Integer.MAX_VALUE);
+            buttons.get(i).setPrefWidth(Integer.MAX_VALUE);
             buttons.get(i).setOnAction(e -> displayCards(index, 2));
         }
     }
@@ -1137,7 +1137,7 @@ public class GUIHandler extends Application {
         });
     }
 
-    public void onUpdateDeckRight(List<String>givenWeapons){
+    void onUpdateDeckRight(List<String>givenWeapons){
 
         ArrayList<ImageView> weaponsIV = new ArrayList<>();
         ArrayList<ImageView> weaponsBackUpIV = new ArrayList<>();
@@ -1148,6 +1148,7 @@ public class GUIHandler extends Application {
         for(StackPane stackPane: rightBackup){
             stackPane.getChildren().clear();
         }
+        weaponsInRespawn.put("2, 3", givenWeapons);
         for(int i = 0; i < givenWeapons.size(); i++){
             int index = i;
             weaponsIV.add(new ImageView());
@@ -1161,7 +1162,7 @@ public class GUIHandler extends Application {
             deckRight.get(i).getChildren().add(buttons.get(i));
             buttons.get(i).setStyle("-fx-background-color: transparent");
             buttons.get(i).setPrefHeight(Integer.MAX_VALUE);
-            buttons.get(i).setPrefHeight(Integer.MAX_VALUE);
+            buttons.get(i).setPrefWidth(Integer.MAX_VALUE);
             buttons.get(i).setOnAction(e -> displayCards(index, 3));
         }
 
