@@ -51,12 +51,18 @@ public class GameLogic implements Externalizable {
     private int numOfRemainingActions;
     private int numOfKillsDuringThisTurn;
     private boolean isUsingPowerup;
+    private boolean hasAlreadyUpdated;
 
     /**
      * Instance variable used to distinguish the (temporary) absence
      * of connected users, after a GameLogic deserialization
      */
     private boolean _gameLoadedFromAPreviousSavedState;
+
+    /**
+     * Used to check if the game is finished or not
+     */
+    private boolean gameEnded = false;
 
     /**
      * Log strings
@@ -110,6 +116,8 @@ public class GameLogic implements Externalizable {
         if(numOfRemainingActions == -1) numOfRemainingActions = lookForPlayerFromUser(user).getPlayerBoard().getNumOfActions();
         return this.situation(user);
     }
+
+    public boolean isGameEnded() { return this.gameEnded; }
 
     /**
      * Number of remaining actions updater: called when a player has done an action successfully
@@ -281,6 +289,7 @@ public class GameLogic implements Externalizable {
      * @param otherPowerup it's the Powerup::toString of the powerup that the player will have in his hand.
      */
     public void spawn(User user, String spawnPoint, String otherPowerup) {
+        if(!isAlreadyUpdated()) hasAlreadyUpdated = true;
         Player player = lookForPlayerFromUser(user);
 
         Powerup spawnPowerup = decks.drawPowerup();
@@ -424,15 +433,26 @@ public class GameLogic implements Externalizable {
      * This method is used to know if this was the last turn;
      */
     public boolean isThisTheEnd(User user, User nextUser) {
-        if (numberOfActivePlayers() < minNumberOfPlayers) return true;
+        if (numberOfActivePlayers() < minNumberOfPlayers) {
+            gameEnded = true;
+            return true;
+        }
         Player actualPlayer = lookForPlayerFromUser(user);
         Player nextPlayer = lookForPlayerFromUser(nextUser);
-        if (nextPlayer.equals(finalPlayer)) return true;
+        if (nextPlayer.equals(finalPlayer)) {
+            gameEnded = true;
+            return true;
+        }
         int indexOfActualPlayer = players.indexOf(actualPlayer);
         int indexOfNextPlayer = players.indexOf(nextPlayer);
         int indexOfLastPlayer = players.indexOf(finalPlayer);
-        if (indexOfNextPlayer > indexOfLastPlayer && indexOfActualPlayer < indexOfLastPlayer) return true;
-        return (indexOfNextPlayer < indexOfActualPlayer && indexOfActualPlayer < indexOfLastPlayer);
+        if (indexOfNextPlayer > indexOfLastPlayer && indexOfActualPlayer < indexOfLastPlayer) {
+            gameEnded = true;
+            return true;
+        } else {
+            gameEnded = (indexOfNextPlayer < indexOfActualPlayer && indexOfActualPlayer < indexOfLastPlayer);
+            return gameEnded;
+        }
     }
 
     /**
@@ -706,32 +726,22 @@ public class GameLogic implements Externalizable {
             updates.put(board.getWeaponKeyFromColor(color), updateString);
         }
 
-        updateString = new ArrayList<>();
-        List<PlayerColor> damageInHand = player.getPlayerBoard().getDamage();
-        for(PlayerColor color : damageInHand) updateString.add(color.toString());
-        updates.put(Damage.damage_key, updateString);
+        List<PlayerColor> damageInHand;
 
         for(Player p : players) {
-            if(p != player) {
                 updateString = new ArrayList<>();
                 damageInHand = p.getPlayerBoard().getDamage();
                 for(PlayerColor color : damageInHand) updateString.add(color.toString());
                 updates.put(p.keyDamage(), updateString);
-            }
         }
 
-        updateString = new ArrayList<>();
-        List<PlayerColor> marksOnBoard = player.getPlayerBoard().getMarks();
-        for(PlayerColor color : marksOnBoard) updateString.add(color.toString());
-        updates.put(Damage.mark_key, updateString);
+        List<PlayerColor> marksOnBoard;
 
         for(Player p : players) {
-            if(p != player) {
-                updateString = new ArrayList<>();
-                marksOnBoard = player.getPlayerBoard().getMarks();
-                for(PlayerColor color : marksOnBoard) updateString.add(color.toString());
-                updates.put(p.keyMark(), updateString);
-            }
+            updateString = new ArrayList<>();
+            marksOnBoard = player.getPlayerBoard().getMarks();
+            for(PlayerColor color : marksOnBoard) updateString.add(color.toString());
+            updates.put(p.keyMark(), updateString);
         }
 
         for(int i = 0; i < 3; i++) {
@@ -758,6 +768,7 @@ public class GameLogic implements Externalizable {
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeBoolean(true);
+        out.writeBoolean(gameEnded);
         out.writeInt(minNumberOfPlayers);
         out.writeInt(numberOfPlayers);
         out.writeBoolean(finalFrenzy);
@@ -780,6 +791,7 @@ public class GameLogic implements Externalizable {
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         _gameLoadedFromAPreviousSavedState  = in.readBoolean();
+        gameEnded                           = in.readBoolean();
         minNumberOfPlayers                  = in.readInt();
         numberOfPlayers                     = in.readInt();
         finalFrenzy                         = in.readBoolean();
@@ -806,4 +818,6 @@ public class GameLogic implements Externalizable {
     public void setUsingPowerup(boolean usingPowerup) {
         isUsingPowerup = usingPowerup;
     }
+
+    public boolean isAlreadyUpdated() { return hasAlreadyUpdated; }
 }

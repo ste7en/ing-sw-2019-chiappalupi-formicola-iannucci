@@ -21,6 +21,7 @@ public class Player implements Comparable<Player>, Serializable {
     public static final String playerKey_damages_green     = "DAMAGES-PLAYER-GREEN";
     public static final String playerKey_damages_grey      = "DAMAGES-PLAYER-GREY";
     public static final String playerKey_damages_purple    = "DAMAGES-PLAYER-PURPLE";
+
     public static final String playerKey_marks_yellow      = "DAMAGES-MARKS-YELLOW";
     public static final String playerKey_marks_blue        = "DAMAGES-MARKS-BLUE";
     public static final String playerKey_marks_green       = "DAMAGES-MARKS-GREEN";
@@ -190,15 +191,15 @@ public class Player implements Comparable<Player>, Serializable {
     private String getString(String yellowKey, String blueKey, String purpleKey, String greyKey, String greenKey) {
         switch(character.getColor()) {
             case yellow:
-                return playerKey_marks_yellow;
+                return yellowKey;
             case blue:
-                return playerKey_marks_blue;
+                return blueKey;
             case purple:
-                return playerKey_marks_purple;
+                return purpleKey;
             case grey:
-                return playerKey_marks_grey;
+                return greyKey;
             case green:
-                return playerKey_marks_green;
+                return greenKey;
         }
         throw new NullPointerException(KEY_DOES_NOT_EXISTS);
     }

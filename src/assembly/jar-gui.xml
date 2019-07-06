@@ -10,9 +10,9 @@
             <useProjectArtifact>false</useProjectArtifact>
             <unpack>true</unpack>
             <scope>runtime</scope>
-            <excludes>
-                <exclude>org.openjfx:javafx*</exclude>
-            </excludes>
+            <includes>
+                <include>com.fasterxml.jackson.core:jackson*</include>
+            </includes>
         </dependencySet>
     </dependencySets>
     <fileSets>

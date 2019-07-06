@@ -190,7 +190,7 @@ public abstract class View {
      * @param powerupChosenAsSpawnPoint it's the powerup that has been chosen from the player: it will be discarded and used to let him spawn.
      * @param otherPowerup it's the other powerup: it will be added to the hand of the player.
      */
-    protected void didChooseSpawnPoint(String powerupChosenAsSpawnPoint, String otherPowerup) {
+    public void didChooseSpawnPoint(String powerupChosenAsSpawnPoint, String otherPowerup) {
         client.choseSpawnPoint(powerupChosenAsSpawnPoint, otherPowerup);
     }
 
@@ -215,7 +215,8 @@ public abstract class View {
      * When the client chooses where to move
      * @param movement the chosen movement
      */
-    protected void didChooseMovement(String movement) {
+    public void didChooseMovement(String movement) {
+        System.out.println("Did choose movement " + movement);
         client.move(movement);
     }
 
@@ -239,7 +240,8 @@ public abstract class View {
      * Protected method called when the player has decided what he wants to pick.
      * @param pick it's the card that the player wants to pick.
      */
-    protected void didChooseWhatToGrab(String pick) {
+    public void didChooseWhatToGrab(String pick) {
+        System.out.println("Did choose what do grab " + pick);
         this.client.didChooseWhatToGrab(pick);
     }
 
@@ -306,7 +308,7 @@ public abstract class View {
      *
      * @param weaponSelected it's the weapon that has been selected by the player.
      */
-    protected void didChooseWeapon(String weaponSelected) {
+    public void didChooseWeapon(String weaponSelected) {
         AdrenalineLogger.info(DID_CHOOSE_WEAPON + weaponSelected);
         this.client.useWeapon(weaponSelected);
     }
@@ -352,7 +354,7 @@ public abstract class View {
      * @param indexOfEffect it's the index of the effect that is being used.
      * @param forPotentiableWeapon it's the string containing the information about potentiable weapons.
      */
-    protected void didChooseDamage(String weapon, String damage, String indexOfEffect, String forPotentiableWeapon) {
+    public void didChooseDamage(String weapon, String damage, String indexOfEffect, String forPotentiableWeapon) {
         AdrenalineLogger.info(DID_CHOOSE_DAMAGE);
         this.client.makeDamage(weapon, damage, indexOfEffect, forPotentiableWeapon);
     }
@@ -370,7 +372,7 @@ public abstract class View {
      * @param weapon it's the weapon that is being used.
      * @param effect it's the effect that has been chosen.
      */
-    protected void didChooseMode(String weapon, String effect) {
+    public void didChooseMode(String weapon, String effect) {
         AdrenalineLogger.info(DID_CHOOSE_MODALITY + effect);
         this.client.useMode(weapon, effect);
     }
@@ -386,7 +388,7 @@ public abstract class View {
      * @param effectsToUse it's a list containing the effects chosen.
      * @param weapon it's the weapon that is being used.
      */
-    protected void didChooseEffects(List<String> effectsToUse, String weapon) {
+    public void didChooseEffects(List<String> effectsToUse, String weapon) {
         AdrenalineLogger.info(DID_CHOOSE_EFFECTS);
         this.client.useEffect(weapon, effectsToUse);
     }
@@ -413,9 +415,11 @@ public abstract class View {
     public abstract void onWeaponUsingFailure();
 
     /**
-     * Public method implemented by subclasses, called when the player has done an action.
+     * Public method called when the player has done an action.
      */
-    public abstract void afterAction();
+    public void afterAction() {
+        this.client.afterAction();
+    }
 
     /**
      * Public method implemented by subclasses, called when the player has to finish his turn.
@@ -558,4 +562,6 @@ public abstract class View {
     protected void didNotUseTagback() {
         this.client.didNotUseTagback();
     }
+
+    public abstract void awake();
 }

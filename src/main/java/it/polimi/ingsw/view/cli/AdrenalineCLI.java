@@ -484,6 +484,7 @@ public class AdrenalineCLI extends View {
     }
 
     @Override
+    @SuppressWarnings("Duplicates")
     public void willChooseDamage(Map<String, String> damagesToChoose) {
         String forPotentiableWeapon = null;
         if(damagesToChoose.containsKey(PotentiableWeapon.forPotentiableWeapon_key)) {
@@ -647,11 +648,6 @@ public class AdrenalineCLI extends View {
     public void onWeaponUsingFailure() {
         out.println(NO_COMBO_FOUND);
         this.onChooseAction(curSituation);
-    }
-
-    @Override
-    public void afterAction() {
-        this.client.afterAction();
     }
 
     @Override
@@ -915,6 +911,11 @@ public class AdrenalineCLI extends View {
             this.didChooseTagback(choice);
         }
         else this.didNotUseTagback();
+    }
+
+    @Override
+    public void awake() {
+        //unused
     }
 
 }

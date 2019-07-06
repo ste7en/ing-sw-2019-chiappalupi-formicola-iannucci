@@ -46,8 +46,6 @@ import static it.polimi.ingsw.networking.utility.CommunicationMessage.*;
 @SuppressWarnings("all")
 public class Server implements Loggable, WaitingRoomObserver, ServerInterface, Serializable {
 
-    private static final String FINAL_FRENZY = "Final Frenzy mode has begun!";
-    private static final String SPACE = " - ";
     private Registry registry;
 
     private Registry remoteRegistry;
@@ -114,7 +112,10 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
     private static final String SKULLS_NUMBER_SET_TO        = "Skulls number set to ";
     private static final String GAME_ID                     = "Game ID: ";
     private static final String TURN_ENDED_USER             = "Turn ended for user ";
+    private static final String GAME_ENDED                  = "Game ended.";
     private static final String NEXT_TURN                   = "Next turn will be played by the user ";
+    private static final String FINAL_FRENZY                = "Final Frenzy mode has begun!";
+    private static final String SPACE                       = " - ";
 
 
     /**
@@ -301,7 +302,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
         users.forEach(
                 (user, connectionHandler) -> {
                     if (connectionHandler == connection) {
-                        Ping.getInstance().removePing(connection);
+                        // Ping.getInstance().removePing(connection);
                         gameControllers                             // if the user is binded to a gameLogic, set it as
                                 .values()                           // disconnected, otherwise remove it from the
                                 .stream()                           // waiting room
@@ -386,6 +387,7 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
     public void joinWaitingRoom(String username) {
         gameControllers.values()
                 .stream()
+                .filter(gameLogic -> !gameLogic.isGameEnded())
                 .filter( gameLogic -> gameLogic     // for every GameController
                         .getPlayers()               // filter the ones
                         .stream()                   // whose players
@@ -504,25 +506,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
     public void didChooseGameMap(int userID, UUID gameID, String configuration) {
         MapType mapType = MapType.valueOf(configuration);
         this.gameControllers.get(gameID).initializeMap(mapType);
-        Map<String, List<String>> mapUpdate = new HashMap<>();
-        List<String> mapConf = new ArrayList<>();
-        mapConf.add(configuration);
-        Map<String, List<String>> playersUpdate = new HashMap<>();
-        List<String> playerColors = new ArrayList<>();
-        mapUpdate.put(GameMap.gameMap_key, mapConf);
-        List<User> otherUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
-        otherUsers.add(0, findUserFromID(userID));
-
-        for(User user : otherUsers) {
-            playersUpdate.clear();
-            playerColors = new ArrayList<>();
-            List<User> moreUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
-            for(User u : moreUsers) playerColors.add(gameControllers.get(gameID).lookForPlayerFromUser(u).getCharacter().getColor().toString());
-            playerColors.add(0, gameControllers.get(gameID).lookForPlayerFromUser(user).getCharacter().getColor().toString());
-            playersUpdate.put(Player.playerKey_players, playerColors);
-            users.get(user).updateView(user.hashCode(), mapUpdate);
-            users.get(user).updateView(user.hashCode(), playersUpdate);
-        }
 
         AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + GAME_MAP_SET);
     }
@@ -541,7 +524,30 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
 
     @Override
     public void choseSpawnPoint(int userID, UUID gameID, String spawnPoint, String otherPowerup) {
+        boolean hasAlreadyUpdated = gameControllers.get(gameID).isAlreadyUpdated();
         gameControllers.get(gameID).spawn(findUserFromID(userID), spawnPoint, otherPowerup);
+        if(!hasAlreadyUpdated) {
+            Map<String, List<String>> mapUpdate = new HashMap<>();
+            List<String> mapConf = new ArrayList<>();
+            mapConf.add(gameControllers.get(gameID).getBoard().getMap().getMapType().toString());
+            Map<String, List<String>> playersUpdate = new HashMap<>();
+            List<String> playerColors = new ArrayList<>();
+            mapUpdate.put(GameMap.gameMap_key, mapConf);
+            List<User> otherUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
+            otherUsers.add(0, findUserFromID(userID));
+
+            for(User user : otherUsers) {
+                playersUpdate = new HashMap<>();
+                playerColors = new ArrayList<>();
+                List<User> moreUsers = gameControllers.get(gameID).getOtherUsers(user);
+                for(User u : moreUsers) playerColors.add(gameControllers.get(gameID).lookForPlayerFromUser(u).getCharacter().getColor().toString());
+                playerColors.add(0, gameControllers.get(gameID).lookForPlayerFromUser(user).getCharacter().getColor().toString());
+                playersUpdate.put(Player.playerKey_players, playerColors);
+                users.get(user).updateView(user.hashCode(), mapUpdate);
+                users.get(user).updateView(user.hashCode(), playersUpdate);
+            }
+            update(userID, gameID);
+        }
     }
 
     @Override
@@ -983,6 +989,27 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
         return situation;
     }
 
+    private void update(int userID, UUID gameID) {
+
+        Map<String, List<String>> guiChanges = gameControllers.get(gameID).getUpdates(findUserFromID(userID));
+        List<User> otherUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
+
+        for(String key : guiChanges.keySet()) {
+            Map<String, List<String>> singleChange = new HashMap<>();
+            singleChange.put(key, guiChanges.get(key));
+            users.get(findUserFromID(userID)).updateView(findUserFromID(userID).hashCode(), singleChange);
+        }
+        for(User user : otherUsers) {
+            users.get(user).displayChanges(user.hashCode(), gameControllers.get(gameID).toStringFromPlayers(user));
+            guiChanges = gameControllers.get(gameID).getUpdates(user);
+            for(String key : guiChanges.keySet()) {
+                Map<String, List<String>> singleChange = new HashMap<>();
+                singleChange.put(key, guiChanges.get(key));
+                users.get(user).updateView(user.hashCode(), singleChange);
+            }
+        }
+    }
+
     /**
      * Method called before a turn finished: checks if any death has happened. If so, let the deads respawn.
      * @param gameID it's the ID of the game.
@@ -1052,8 +1079,11 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
           // This also handles the case when less than MIN_NUM_OF_PLAYERS players are connected
           String scoreboard = gameLogic.endOfTheGame();
 
-          activeGameUsers.forEach(activeGameUser -> users.get(activeGameUser).endOfTheGame(activeGameUser.hashCode(), scoreboard));
-
+          activeGameUsers.forEach(activeGameUser -> {
+              var activeUser = users.get(activeGameUser);
+              activeUser.endOfTheGame(activeGameUser.hashCode(), scoreboard);
+          });
+          AdrenalineLogger.info(GAME_ID+gameID+SPACE+GAME_ENDED);
           gameControllers.remove(gameLogic);
       } else if(gameLogic.deathList().isEmpty() && !gameControllers.get(gameID).isUsingPowerup()) {
           if (gameLogic.isAlreadyInGame(nextUser)) users.get(nextUser).startNewTurn(nextUser.hashCode());
