@@ -12,6 +12,7 @@ import it.polimi.ingsw.view.View;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AdrenalineGUI extends View {
 
@@ -341,8 +342,17 @@ public class AdrenalineGUI extends View {
 
     @Override
     public void willChooseWhatToGrab(List<String> possiblePicks) {
+        Map<Integer, Integer> ammoTiles = new HashMap<>();
+        List<String> weapons = new ArrayList<>();
         for(String pick : possiblePicks) {
-
+            if(pick.substring(0, 9).equals("Ammo Card")) {
+                String s3 = pick.substring(pick.length() - 6, pick.length() - 2);
+                s3 = s3.replaceAll(",", "");
+                List<Integer> x = Arrays.stream(s3.split("\\s"))
+                        .map(Integer::parseInt)
+                        .collect(Collectors.toList());
+                ammoTiles.put(x.get(0), x.get(1));
+            } else weapons.add(pick.substring(0, pick.length() - 17));
         }
     }
 
