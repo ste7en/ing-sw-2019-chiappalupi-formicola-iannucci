@@ -119,4 +119,6 @@ public abstract class ServerConnectionHandler implements Loggable, Pingable, Ser
      * @param username it's the username of the player who has shot
      */
     protected abstract void useVenom(int userID, List<String> availablePowerups, String username);
+
+    protected abstract void awake(int userID);
 }

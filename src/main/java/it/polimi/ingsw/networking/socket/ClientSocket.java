@@ -251,6 +251,9 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                     case WILL_CHOOSE_TAGBACK:
                         willChooseTagback(args);
                         break;
+                    case AWAKE:
+                        this.viewObserver.awake();
+                        break;
                     default:
                         logOnFailure(UNKNOWN_COMMUNICATION_MESSAGE+communicationMessage);
                         break;

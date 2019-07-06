@@ -51,6 +51,7 @@ public class GameLogic implements Externalizable {
     private int numOfRemainingActions;
     private int numOfKillsDuringThisTurn;
     private boolean isUsingPowerup;
+    private boolean hasAlreadyUpdated;
 
     /**
      * Instance variable used to distinguish the (temporary) absence
@@ -281,6 +282,7 @@ public class GameLogic implements Externalizable {
      * @param otherPowerup it's the Powerup::toString of the powerup that the player will have in his hand.
      */
     public void spawn(User user, String spawnPoint, String otherPowerup) {
+        if(!isAlreadyUpdated()) hasAlreadyUpdated = true;
         Player player = lookForPlayerFromUser(user);
 
         Powerup spawnPowerup = decks.drawPowerup();
@@ -706,32 +708,22 @@ public class GameLogic implements Externalizable {
             updates.put(board.getWeaponKeyFromColor(color), updateString);
         }
 
-        updateString = new ArrayList<>();
-        List<PlayerColor> damageInHand = player.getPlayerBoard().getDamage();
-        for(PlayerColor color : damageInHand) updateString.add(color.toString());
-        updates.put(Damage.damage_key, updateString);
+        List<PlayerColor> damageInHand;
 
         for(Player p : players) {
-            if(p != player) {
                 updateString = new ArrayList<>();
                 damageInHand = p.getPlayerBoard().getDamage();
                 for(PlayerColor color : damageInHand) updateString.add(color.toString());
                 updates.put(p.keyDamage(), updateString);
-            }
         }
 
-        updateString = new ArrayList<>();
-        List<PlayerColor> marksOnBoard = player.getPlayerBoard().getMarks();
-        for(PlayerColor color : marksOnBoard) updateString.add(color.toString());
-        updates.put(Damage.mark_key, updateString);
+        List<PlayerColor> marksOnBoard;
 
         for(Player p : players) {
-            if(p != player) {
-                updateString = new ArrayList<>();
-                marksOnBoard = player.getPlayerBoard().getMarks();
-                for(PlayerColor color : marksOnBoard) updateString.add(color.toString());
-                updates.put(p.keyMark(), updateString);
-            }
+            updateString = new ArrayList<>();
+            marksOnBoard = player.getPlayerBoard().getMarks();
+            for(PlayerColor color : marksOnBoard) updateString.add(color.toString());
+            updates.put(p.keyMark(), updateString);
         }
 
         for(int i = 0; i < 3; i++) {
@@ -806,4 +798,6 @@ public class GameLogic implements Externalizable {
     public void setUsingPowerup(boolean usingPowerup) {
         isUsingPowerup = usingPowerup;
     }
+
+    public boolean isAlreadyUpdated() { return hasAlreadyUpdated; }
 }

@@ -65,7 +65,8 @@ public class AmmoTile implements Serializable {
     }
 
     public String guiString() {
-        return toString();
+        String s = toString();
+        return s.replaceAll("Ammo Card: ", "").replaceAll(" ammo", "").replaceAll(";", "");
     }
 
 }
