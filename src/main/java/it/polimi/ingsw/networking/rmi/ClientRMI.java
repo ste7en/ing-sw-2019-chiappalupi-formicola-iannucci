@@ -53,7 +53,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     private int registerClient(String username) {
         try {
-            return server.registerClient(clientStub, username);
+           return server.registerClient(clientStub, username);
         } catch (RemoteException e){
             logOnException(RMI_EXCEPTION +e.getCause(), e);
         }
@@ -93,6 +93,11 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
         timeoutOperation(clientOperationTimeoutInSeconds, () ->
                 this.viewObserver.tagback(powerups, nickname)
         );
+    }
+
+    @Override
+    public void awake() {
+        this.viewObserver.awake();
     }
 
     @Override

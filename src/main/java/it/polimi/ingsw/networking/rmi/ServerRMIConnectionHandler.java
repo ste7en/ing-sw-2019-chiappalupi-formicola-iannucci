@@ -135,6 +135,14 @@ public class ServerRMIConnectionHandler extends ServerConnectionHandler implemen
     }
 
     @Override
+    protected void awake(int userID) {
+        submitRemoteMethodInvocation(executorService, () -> {
+            clientRMI.awake();
+            return null;
+        });
+    }
+
+    @Override
     public void ping() {
         try {
             if (isConnectionAvailable() && clientRMI.ping()) Ping.getInstance().didPong(getConnectionHashCode());

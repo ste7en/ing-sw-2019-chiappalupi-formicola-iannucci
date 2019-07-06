@@ -775,4 +775,8 @@ public class GameMap implements Cloneable, Serializable {
             }
         return tiles;
     }
+
+    public MapType getMapType() {
+        return this.mapType;
+    }
 }

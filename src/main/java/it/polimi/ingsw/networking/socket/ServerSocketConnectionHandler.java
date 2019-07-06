@@ -652,4 +652,9 @@ public class ServerSocketConnectionHandler extends ServerConnectionHandler imple
         args.put(Player.playerKey_player, username);
         this.send(CommunicationMessage.from(userID, WILL_CHOOSE_TAGBACK, args, clientOperationTimeoutInSeconds));
     }
+
+    @Override
+    protected void awake(int userID) {
+        this.send(CommunicationMessage.from(userID, AWAKE));
+    }
 }

@@ -504,25 +504,6 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
     public void didChooseGameMap(int userID, UUID gameID, String configuration) {
         MapType mapType = MapType.valueOf(configuration);
         this.gameControllers.get(gameID).initializeMap(mapType);
-        Map<String, List<String>> mapUpdate = new HashMap<>();
-        List<String> mapConf = new ArrayList<>();
-        mapConf.add(configuration);
-        Map<String, List<String>> playersUpdate = new HashMap<>();
-        List<String> playerColors = new ArrayList<>();
-        mapUpdate.put(GameMap.gameMap_key, mapConf);
-        List<User> otherUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
-        otherUsers.add(0, findUserFromID(userID));
-
-        for(User user : otherUsers) {
-            playersUpdate.clear();
-            playerColors = new ArrayList<>();
-            List<User> moreUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
-            for(User u : moreUsers) playerColors.add(gameControllers.get(gameID).lookForPlayerFromUser(u).getCharacter().getColor().toString());
-            playerColors.add(0, gameControllers.get(gameID).lookForPlayerFromUser(user).getCharacter().getColor().toString());
-            playersUpdate.put(Player.playerKey_players, playerColors);
-            users.get(user).updateView(user.hashCode(), mapUpdate);
-            users.get(user).updateView(user.hashCode(), playersUpdate);
-        }
 
         AdrenalineLogger.info(GAME_ID + gameID.toString() + SPACE + GAME_MAP_SET);
     }
@@ -541,7 +522,30 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
 
     @Override
     public void choseSpawnPoint(int userID, UUID gameID, String spawnPoint, String otherPowerup) {
+        boolean hasAlreadyUpdated = gameControllers.get(gameID).isAlreadyUpdated();
         gameControllers.get(gameID).spawn(findUserFromID(userID), spawnPoint, otherPowerup);
+        if(!hasAlreadyUpdated) {
+            Map<String, List<String>> mapUpdate = new HashMap<>();
+            List<String> mapConf = new ArrayList<>();
+            mapConf.add(gameControllers.get(gameID).getBoard().getMap().getMapType().toString());
+            Map<String, List<String>> playersUpdate = new HashMap<>();
+            List<String> playerColors = new ArrayList<>();
+            mapUpdate.put(GameMap.gameMap_key, mapConf);
+            List<User> otherUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
+            otherUsers.add(0, findUserFromID(userID));
+
+            for(User user : otherUsers) {
+                playersUpdate = new HashMap<>();
+                playerColors = new ArrayList<>();
+                List<User> moreUsers = gameControllers.get(gameID).getOtherUsers(user);
+                for(User u : moreUsers) playerColors.add(gameControllers.get(gameID).lookForPlayerFromUser(u).getCharacter().getColor().toString());
+                playerColors.add(0, gameControllers.get(gameID).lookForPlayerFromUser(user).getCharacter().getColor().toString());
+                playersUpdate.put(Player.playerKey_players, playerColors);
+                users.get(user).updateView(user.hashCode(), mapUpdate);
+                users.get(user).updateView(user.hashCode(), playersUpdate);
+            }
+            update(userID, gameID);
+        }
     }
 
     @Override
@@ -981,6 +985,27 @@ public class Server implements Loggable, WaitingRoomObserver, ServerInterface, S
             }
         }
         return situation;
+    }
+
+    private void update(int userID, UUID gameID) {
+
+        Map<String, List<String>> guiChanges = gameControllers.get(gameID).getUpdates(findUserFromID(userID));
+        List<User> otherUsers = gameControllers.get(gameID).getOtherUsers(findUserFromID(userID));
+
+        for(String key : guiChanges.keySet()) {
+            Map<String, List<String>> singleChange = new HashMap<>();
+            singleChange.put(key, guiChanges.get(key));
+            users.get(findUserFromID(userID)).updateView(findUserFromID(userID).hashCode(), singleChange);
+        }
+        for(User user : otherUsers) {
+            users.get(user).displayChanges(user.hashCode(), gameControllers.get(gameID).toStringFromPlayers(user));
+            guiChanges = gameControllers.get(gameID).getUpdates(user);
+            for(String key : guiChanges.keySet()) {
+                Map<String, List<String>> singleChange = new HashMap<>();
+                singleChange.put(key, guiChanges.get(key));
+                users.get(user).updateView(user.hashCode(), singleChange);
+            }
+        }
     }
 
     /**
