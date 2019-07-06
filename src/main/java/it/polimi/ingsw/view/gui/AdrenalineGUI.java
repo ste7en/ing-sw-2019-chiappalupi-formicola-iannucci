@@ -35,7 +35,11 @@ public class AdrenalineGUI extends View {
 
     @Override
     protected void willChooseConnection() {
-        handlerGUI.chooseConnection();
+        try {
+            handlerGUI.chooseConnection();
+        } catch (FileNotFoundException e){
+
+        }
     }
 
     @Override

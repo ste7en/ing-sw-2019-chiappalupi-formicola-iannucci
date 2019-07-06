@@ -3,7 +3,6 @@ package it.polimi.ingsw.view.gui;
 import it.polimi.ingsw.model.utility.MapType;
 import it.polimi.ingsw.networking.utility.ConnectionType;
 import it.polimi.ingsw.utility.AdrenalineLogger;
-import it.polimi.ingsw.utility.Loggable;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -19,8 +18,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -32,26 +29,12 @@ import java.util.*;
 @SuppressWarnings("all")
 public class GUIHandler extends Application {
 
-    private static final String IMAGE_DIR_PATH = "images/";
-    private static final String CHARACTERS_DIR_PATH = "characters/";
-    private static final String CHARACTER_FILE_UNCLICKED_FORMAT = "_unclicked";
-    private static final String BOARD_DIR_PATH = "board/";
-    private static final String POWERUPS_DIR_PATH = "powerups/";
-    private static final String ACTIONS_DIR_PATH = "actions/";
-    private static final String WEAPONS_DIR_PATH = "weapons/";
-    private static final String AMMOTILES_DIR_PATH = "ammotiles/";
-    private static final String PLAYERBOARDS_DIR_PATH = "playerboards/";
-    private static final String PLAYERBOARD_FILE_FORMAT = "playerboard_";
-    private static final String PNG_FILE_EXT = ".png";
-
-
     //main attributes
     private AdrenalineGUI adrenalineGUI;
     private Stage primaryStage;
     private Scene mainScene;
     private Background background;
     private String conf;
-    private static final Font andaleMonoFont = Font.font("Andale Mono");
 
     //game map
     private GridPane boardGrid;
@@ -143,7 +126,7 @@ public class GUIHandler extends Application {
         boxButton.setMargin(button, new Insets(0, 0, 50, 0));
 
         firstRoot = new BorderPane();
-        BackgroundImage backgroundImage = new BackgroundImage(getImageFromPath(IMAGE_DIR_PATH+"adrenaline.jpg"),
+        BackgroundImage backgroundImage = new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/adrenaline.jpg")),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(1.0, 1.0, true, true, false, true));
         firstRoot.setBackground(new Background(backgroundImage));
         firstRoot.setBottom(boxButton);
@@ -188,7 +171,7 @@ public class GUIHandler extends Application {
     }
 
 
-    public void chooseConnection() {
+    public void chooseConnection() throws FileNotFoundException{
 
         firstRoot.getChildren().clear();
         firstRoot.setBackground(background);
@@ -200,7 +183,6 @@ public class GUIHandler extends Application {
         checkBoxRMI.setStyle("-fx-font-family: 'Andale Mono';");
         checkBoxTCP.setTextFill(Color.WHITE);
         checkBoxTCP.setStyle("-fx-font-family: 'Andale Mono';");
-
 
         button.setOnAction(e -> handleConnectionOptions(checkBoxRMI, checkBoxTCP));
         checkBoxRMI.setOnAction(e -> handleOptionsRMI(checkBoxRMI, checkBoxTCP));
@@ -239,9 +221,7 @@ public class GUIHandler extends Application {
             HBox boxText = new HBox(text);
             boxText.setAlignment(Pos.CENTER);
 
-            Text portText = new Text("Port number");
-            portText.setFont(andaleMonoFont);
-            portText.setFill(Color.WHITE);
+            Text portText = new Text("port number:  ");
             TextField portField = new TextField();
             portText.setFill(Color.WHITE);
             portText.setStyle("-fx-font-family: 'Andale Mono';");
@@ -249,8 +229,8 @@ public class GUIHandler extends Application {
 
             HBox boxPort = new HBox(portText, portField);
             boxPort.setAlignment(Pos.CENTER_LEFT);
-            HBox.setMargin(portText, new Insets(10, 0, 10, 50));
-            HBox.setMargin(portField, new Insets(10, 50, 10, 0));
+            boxPort.setMargin(portText, new Insets(10, 0, 10, 50));
+            boxPort.setMargin(portField, new Insets(10, 50, 10, 0));
 
             Text addressText = new Text("address:      ");
             TextField addressField = new TextField();
@@ -259,18 +239,6 @@ public class GUIHandler extends Application {
 
             HBox boxAddress = new HBox(addressText, addressField);
             boxAddress.setAlignment(Pos.CENTER_LEFT);
-            HBox.setMargin(addressText, new Insets(10, 0, 10, 50));
-            HBox.setMargin(addressField, new Insets(10, 50, 10, 0));
-
-            var textVBox = new VBox(addressText, portText);
-            textVBox.setSpacing(30);
-            var fieldVBox = new VBox(addressField, portField);
-            fieldVBox.setSpacing(15);
-
-            var hbox = new HBox(textVBox, fieldVBox);
-            HBox.setMargin(textVBox, new Insets(5, 0, 50, 20));
-
-            hbox.setSpacing(8);
 
             button.setOnAction(e -> handlePortAddressOptions(portField, addressField));
 
@@ -279,9 +247,9 @@ public class GUIHandler extends Application {
             generalBox.setFillWidth(true);
             generalBox.setAlignment(Pos.CENTER);
 
-            HBox.setMargin(text, new Insets(50, 0, 0, 0));
-            HBox.setMargin(addressText, new Insets(10, 0, 10, 50));
-            HBox.setMargin(addressField, new Insets(10, 50, 10, 0));
+            boxText.setMargin(text, new Insets(50, 0, 0, 0));
+            boxAddress.setMargin(addressText, new Insets(10, 0, 10, 50));
+            boxAddress.setMargin(addressField, new Insets(10, 50, 10, 0));
             firstRoot.setCenter(generalBox);
             VBox chooseConnection = new VBox();
             setText(chooseConnection, "Please provide an address and a port number");
@@ -314,7 +282,7 @@ public class GUIHandler extends Application {
             try {
                 onCreateGameMap(configuration);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -383,7 +351,7 @@ public class GUIHandler extends Application {
             try {
                 chooseCharacter(availableCharacters);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -428,7 +396,7 @@ public class GUIHandler extends Application {
             imageViews.add(new ImageView());
         }
 
-            unclickedImage(imageViews, availableCharacters, CHARACTERS_DIR_PATH  );
+            unclickedImage(imageViews, availableCharacters, "characters/"  );
 
         List<StackPane> stackPanes = new ArrayList<>();
         for(int i=0; i<availableCharacters.size(); i++) {
@@ -440,8 +408,8 @@ public class GUIHandler extends Application {
             ImageView imageView = imageViews.get(i);
             String character = availableCharacters.get(i);
             imageViews.get(i).setOnMouseClicked(event -> {
-                        unclickedImage(imageViews, availableCharacters, CHARACTERS_DIR_PATH);
-                    clickedImage(imageView, CHARACTERS_DIR_PATH + character);
+                        unclickedImage(imageViews, availableCharacters, "characters/");
+                    clickedImage(imageView, "characters/" + character);
 
                 buttonContinue.setOnAction( e -> {
 
@@ -463,10 +431,14 @@ public class GUIHandler extends Application {
 
 
     public void onChooseCharacterSuccess() {
-        Platform.runLater(this::chooseCharacterSuccess);
+        Platform.runLater(() -> {
+                chooseCharacterSuccess();
+
+        });
     }
 
     public void chooseCharacterSuccess(){
+        System.out.println(primaryStage.getHeight());
         modesChoiceGrid.getChildren().clear();
         setText(textSelectedContainer, "You chose your character, the game will start soon!");
         modesChoiceGrid.add(textSelectedContainer, 0,1,6,5);
@@ -477,7 +449,7 @@ public class GUIHandler extends Application {
             try {
                 onChooseGameMap();
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -513,9 +485,9 @@ public class GUIHandler extends Application {
         }
 
         try {
-            unclickedImage(imageViews, confs, BOARD_DIR_PATH);
+            unclickedImage(imageViews, confs, "board/");
         } catch (Exception e){
-            logOnException(e.getMessage(), e);
+            e.printStackTrace();
         }
 
         StackPane buttonContainer = new StackPane();
@@ -533,12 +505,12 @@ public class GUIHandler extends Application {
             String configuration = confs.get(i);
             imageViews.get(i).setOnMouseClicked(e -> {
                 try {
-                    unclickedImage(imageViews, confs, BOARD_DIR_PATH );
+                    unclickedImage(imageViews, confs, "board/" );
                     gameMapButton.setOnAction(e1 -> {adrenalineGUI.didChooseGameMap(configuration);});
-                }catch (Exception exc){
-                    logOnException(exc.getMessage(), exc);
+                }catch (Exception e1){
+                    e1.printStackTrace();
                 }
-                clickedImage(imageView, BOARD_DIR_PATH + configuration + "_choice");
+                clickedImage(imageView, "board/" + configuration + "_choice");
             });
         }
 
@@ -553,7 +525,7 @@ public class GUIHandler extends Application {
             try {
                 onDrawTwoPowerups(powerups);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -581,7 +553,7 @@ public class GUIHandler extends Application {
         ImageView imageView = new ImageView();
         setUpProperties(stackPane, imageView);
         modesChoiceGrid.add(stackPane,1,1 ,1,1);
-        clickedImage(imageView, POWERUPS_DIR_PATH+"Back");
+        clickedImage(imageView, "powerups/Back");
 
         Button powerupButton = new Button("Draw cards");
         StackPane powerupButtonContainer = new StackPane();
@@ -622,9 +594,9 @@ public class GUIHandler extends Application {
             imageViews.add(new ImageView());
         }
         try {
-            unclickedImage(imageViews, powerups, POWERUPS_DIR_PATH);
+            unclickedImage(imageViews, powerups, "powerups/");
         } catch (Exception e){
-            logOnException(e.getMessage(), e);
+            e.printStackTrace();
         }
         List<StackPane> stackPanes = new ArrayList<>();
         Button powerupButton = new Button("Continue!");
@@ -839,7 +811,7 @@ public class GUIHandler extends Application {
 
         //Map creation
         StackPane mapContainer = new StackPane();
-        Image map = getImageFromPath(IMAGE_DIR_PATH+BOARD_DIR_PATH+conf+PNG_FILE_EXT);
+        Image map = new Image(new FileInputStream("src/main/resources/images/board/" + conf + ".png"));
         ImageView ivMap = new ImageView();
         ivMap.setImage(map);
         ivMap.setPreserveRatio(true);
@@ -1046,7 +1018,7 @@ public class GUIHandler extends Application {
         cardsDisplayer.getColumnConstraints().addAll(col00, col01, col02, col03, col04, col05, col06);
 
         //Setting background
-        BackgroundImage myBI= new BackgroundImage(getImageFromPath(IMAGE_DIR_PATH+"background.png"),
+        BackgroundImage myBI= new BackgroundImage(new Image(new FileInputStream("src/main/resources/images/background.png")),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(1.0, 1.0, true, true, false, false));
         boardGrid.setBackground(new Background(myBI));
 
@@ -1105,7 +1077,7 @@ public class GUIHandler extends Application {
             try {
                 onDisplayCards(n, i);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1264,7 +1236,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdateWeaponsCards(givenWeapons);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1279,7 +1251,7 @@ public class GUIHandler extends Application {
         }
         for(int i = 0; i < givenWeapons.size(); i++){
             weaponsIV.add(new ImageView());
-            clickedImage(weaponsIV.get(i), WEAPONS_DIR_PATH + givenWeapons.get(i));
+            clickedImage(weaponsIV.get(i), "weapons/" + givenWeapons.get(i));
             setUpProperties(weapons.get(i), weaponsIV.get(i));
         }
 
@@ -1293,7 +1265,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdatePowerups(givenPowerups);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1308,7 +1280,7 @@ public class GUIHandler extends Application {
         }
         for(int i = 0; i < givenPowerups.size(); i++){
             powerupsIV.add(new ImageView());
-            clickedImage(powerupsIV.get(i), POWERUPS_DIR_PATH + givenPowerups.get(i) + "_click");
+            clickedImage(powerupsIV.get(i), "powerups/" + givenPowerups.get(i) + "_click");
             setUpProperties(powerups.get(i), powerupsIV.get(i));
         }
 
@@ -1322,7 +1294,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdateRedAmmos(num);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1337,7 +1309,7 @@ public class GUIHandler extends Application {
         }
         for(int i = 0; i < num; i++){
             redAmmosIV.add(new ImageView());
-            clickedImage(redAmmosIV.get(i), AMMOTILES_DIR_PATH+"red");
+            clickedImage(redAmmosIV.get(i), "ammotiles/red");
             setUpProperties(redAmmos.get(i), redAmmosIV.get(i));
         }
 
@@ -1352,7 +1324,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdateBlueAmmos(num);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1367,7 +1339,7 @@ public class GUIHandler extends Application {
         }
         for(int i = 0; i < num; i++){
             blueAmmosIV.add(new ImageView());
-            clickedImage(blueAmmosIV.get(i), AMMOTILES_DIR_PATH+"blue");
+            clickedImage(blueAmmosIV.get(i), "ammotiles/blue");
             setUpProperties(blueAmmos.get(i), blueAmmosIV.get(i));
         }
 
@@ -1382,7 +1354,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdateYellowAmmos(num);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1397,7 +1369,7 @@ public class GUIHandler extends Application {
         }
         for(int i = 0; i < num; i++){
             yellowAmmosIV.add(new ImageView());
-            clickedImage(yellowAmmosIV.get(i), AMMOTILES_DIR_PATH+"yellow");
+            clickedImage(yellowAmmosIV.get(i), "ammotiles/yellow");
             setUpProperties(yellowAmmos.get(i), yellowAmmosIV.get(i));
         }
 
@@ -1415,7 +1387,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdateDeckLeft(givenWeapons);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
 
@@ -1443,8 +1415,8 @@ public class GUIHandler extends Application {
             weaponsIV.add(new ImageView());
             weaponsBackUpIV.add(new ImageView());
             buttons.add(new Button());
-            clickedImage(weaponsIV.get(i), WEAPONS_DIR_PATH+givenWeapons.get(i));
-            clickedImage(weaponsBackUpIV.get(i), WEAPONS_DIR_PATH+givenWeapons.get(i));
+            clickedImage(weaponsIV.get(i), "weapons/"+givenWeapons.get(i));
+            clickedImage(weaponsBackUpIV.get(i), "weapons/"+givenWeapons.get(i));
             setUpProperties270(deckLeft.get(i), weaponsIV.get(i));
             setUpProperties(leftBackup.get(i), weaponsBackUpIV.get(i));
 
@@ -1467,7 +1439,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdateDeckAbove(givenWeapons);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1492,8 +1464,8 @@ public class GUIHandler extends Application {
             weaponsIV.add(new ImageView());
             weaponsBackUpIV.add(new ImageView());
             buttons.add(new Button());
-            clickedImage(weaponsIV.get(i), WEAPONS_DIR_PATH+givenWeapons.get(i));
-            clickedImage(weaponsBackUpIV.get(i), WEAPONS_DIR_PATH+givenWeapons.get(i));
+            clickedImage(weaponsIV.get(i), "weapons/"+givenWeapons.get(i));
+            clickedImage(weaponsBackUpIV.get(i), "weapons/"+givenWeapons.get(i));
             setUpProperties(deckAbove.get(i), weaponsIV.get(i));
             setUpProperties(aboveBackup.get(i), weaponsBackUpIV.get(i));
 
@@ -1515,7 +1487,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdateDeckRight(givenWeapons);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1539,8 +1511,8 @@ public class GUIHandler extends Application {
             weaponsIV.add(new ImageView());
             weaponsBackUpIV.add(new ImageView());
             buttons.add(new Button());
-            clickedImage(weaponsIV.get(i), WEAPONS_DIR_PATH+givenWeapons.get(i));
-            clickedImage(weaponsBackUpIV.get(i), WEAPONS_DIR_PATH+givenWeapons.get(i));
+            clickedImage(weaponsIV.get(i), "weapons/"+givenWeapons.get(i));
+            clickedImage(weaponsBackUpIV.get(i), "weapons/"+givenWeapons.get(i));
             setUpProperties90(deckRight.get(i), weaponsIV.get(i));
             setUpProperties(rightBackup.get(i), weaponsBackUpIV.get(i));
 
@@ -1562,7 +1534,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdateFirstRow(ammoTiles);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1577,7 +1549,7 @@ public class GUIHandler extends Application {
             cellsContainers.get(0).get(j).getChildren().clear();
             ammoTilesIV.add(new ImageView());{
                 if (!(j==2 || j==3&&(conf=="conf_1" || conf=="conf_2")) && i<ammoTiles.size() ){
-                    clickedImage(ammoTilesIV.get(j), AMMOTILES_DIR_PATH + ammoTiles.get(i));
+                    clickedImage(ammoTilesIV.get(j), "ammotiles/" + ammoTiles.get(i));
                     setUpPropertiesModified(cellsContainers.get(0).get(j), ammoTilesIV.get(j));
                     i++;
                 }
@@ -1597,7 +1569,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdateSecondRow(ammoTiles);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
 
@@ -1616,7 +1588,7 @@ public class GUIHandler extends Application {
             cellsContainers.get(1).get(j).getChildren().clear();
             ammoTilesIV.add(new ImageView());{
                 if (!(j==0) && i<ammoTiles.size()){
-                    clickedImage(ammoTilesIV.get(j), AMMOTILES_DIR_PATH + ammoTiles.get(i));
+                    clickedImage(ammoTilesIV.get(j), "ammotiles/" + ammoTiles.get(i));
                     setUpPropertiesModified(cellsContainers.get(1).get(j), ammoTilesIV.get(j));
                     i++;
                 }
@@ -1633,7 +1605,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdateThirdRow(ammoTiles);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1666,7 +1638,7 @@ public class GUIHandler extends Application {
             try {
                 onAddPlayerBoards(playerColors);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1687,7 +1659,7 @@ public class GUIHandler extends Application {
             bloodTruck.put(playerColors.get(i), new ArrayList<>());
             marksTruck.put(playerColors.get(i), new ArrayList<>());
             killedPointsTruck.put(playerColors.get(i), new ArrayList<>());
-            clickedImage(imageViews.get(i), PLAYERBOARDS_DIR_PATH+PLAYERBOARD_FILE_FORMAT+playerColors.get(i));
+            clickedImage(imageViews.get(i), "playerboards/playerboard_"+playerColors.get(i));
             setUpProperties(playerBoards.get(playerColors.get(i)), imageViews.get(i));
             if(i==0) boardGrid.add(playerBoards.get(playerColors.get(i)), 0,6);
             else boardGrid.add(playerBoards.get(playerColors.get(i)), 0, i+1);
@@ -1730,7 +1702,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdateDamages(color, damages);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1747,7 +1719,7 @@ public class GUIHandler extends Application {
         for(int i=0; i<damages.size(); i++) {
             imageViews.add(new ImageView());
             setUpProperties(bloodTruck.get(color).get(i), imageViews.get(i));
-            clickedImage(imageViews.get(i), CHARACTERS_DIR_PATH + damages.get(i)+"_blood");
+            clickedImage(imageViews.get(i), "characters/" + damages.get(i)+"_blood");
         }
 
         synchronized (this) {
@@ -1760,7 +1732,7 @@ public class GUIHandler extends Application {
             try {
                 onUpdateMarks(color, marks);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1776,7 +1748,7 @@ public class GUIHandler extends Application {
         for(int i=0; i<marks.size(); i++) {
             imageViews.add(new ImageView());
             setUpProperties(marksTruck.get(color).get(i), imageViews.get(i));
-            clickedImage(imageViews.get(i), CHARACTERS_DIR_PATH + marks.get(i)+"_blood");
+            clickedImage(imageViews.get(i), "characters/" + marks.get(i)+"_blood");
         }
 
         synchronized (this) {
@@ -1790,7 +1762,7 @@ public class GUIHandler extends Application {
             try {
                 displayMessage(message);
             } catch (Exception ex) {
-                logOnException(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
         });
     }
@@ -1909,20 +1881,20 @@ public class GUIHandler extends Application {
 
     public void clickedImage(ImageView imageView, String image) {
         try {
-            Image clickedPic = getImageFromPath(IMAGE_DIR_PATH+image+PNG_FILE_EXT);
+            Image clickedPic = new Image(new FileInputStream("src/main/resources/images/" + image + ".png"));
             imageView.setImage(clickedPic);
-        } catch (Exception e){
-            logOnException(e.getMessage(), e);
+        } catch (FileNotFoundException e){
+            System.err.println(e.toString());
         }
     }
 
     public void unclickedImage(ArrayList<ImageView> imageViews, List<String> availableCharacters, String path) {
         try {
             for (int i = 0; i < availableCharacters.size(); i++) {
-                imageViews.get(i).setImage(getImageFromPath(IMAGE_DIR_PATH+path+availableCharacters.get(i)+CHARACTER_FILE_UNCLICKED_FORMAT+PNG_FILE_EXT));
+                imageViews.get(i).setImage(new Image(new FileInputStream("src/main/resources/images/" + path + availableCharacters.get(i) + "_unclicked.png")));
             }
-        } catch (Exception e){
-            logOnException(e.getMessage(), e);
+        } catch (FileNotFoundException e){
+            System.out.println(e.toString());
         }
     }
 
@@ -2115,3 +2087,32 @@ public class GUIHandler extends Application {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
