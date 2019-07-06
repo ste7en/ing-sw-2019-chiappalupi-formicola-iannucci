@@ -144,9 +144,7 @@
 
 
     <plugins>
-
       <!-- MAVEN ASSEMBLY PLUGIN -->
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>

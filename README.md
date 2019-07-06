@@ -61,6 +61,7 @@ From the same [directory](./deliverables/JARS) of the server, you can run the CL
 If no arguments are provided, at the startup a command-line prompt will ask the user for the connection type, server IP address and server port.
 
 ### Running the Client - GUI
-From the same [directory](./deliverables/JARS) of the server, you can run the CLI version of the client with the command-line command
+From the same [directory](./deliverables/JARS) of the server, you can run the GUI version of the client with the command-line command
 
-    java --module-path /usr/local/lib/javafx-sdk-11.0.2/lib --add-modules javafx.controls -jar Adrenaline-GUI-AM19.jar
+    java --module-path ./lib --add-modules javafx.controls -jar Adrenaline-GUI-AM19.jar
+but JavaFX library folder is required in the same directory. Otherwise you can specify an absolute path to the `--module-path` argument instead of  `./lib`.
