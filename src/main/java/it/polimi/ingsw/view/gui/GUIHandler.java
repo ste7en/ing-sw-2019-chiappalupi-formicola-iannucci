@@ -532,6 +532,33 @@ public class GUIHandler extends Application implements Loggable {
         mainScene.setRoot(modesChoiceGrid);
     }
 
+
+    public void chooseSkulls() {
+        Platform.runLater(() -> {
+            try {
+               onChooseSkulls();
+            } catch (Exception ex) {
+                logOnException(ex.getMessage(), ex);
+            }
+        });
+    }
+
+    public void onChooseSkulls(){
+        Button skulls5 = new Button("select 5 skulls");
+        skulls5.setOnAction(e -> adrenalineGUI.didChooseSkulls("5"));
+        Button skulls6 = new Button("select 6 skulls");
+        skulls6.setOnAction(e -> adrenalineGUI.didChooseSkulls("6"));
+        Button skulls7  = new Button("select 7 skulls");
+        skulls7.setOnAction(e -> adrenalineGUI.didChooseSkulls("7"));
+        Button skulls8  = new Button("select 8 skulls");
+        skulls8.setOnAction(e -> adrenalineGUI.didChooseSkulls("8"));
+        VBox generalBox = new VBox(skulls5, skulls6, skulls7, skulls8);
+        generalBox.setSpacing(20);
+        generalBox.setAlignment(Pos.CENTER);
+        generalBox.setBackground(background);
+        mainScene.setRoot(generalBox);
+    }
+
     public void drawTwoPowerups(List<String> powerups) {
         Platform.runLater(() -> {
             try {
@@ -666,6 +693,7 @@ public class GUIHandler extends Application implements Loggable {
             }
         }*/
         mapButton.setText("Choose an action!");
+        setText(textContainer, "It's your turn!");
         mapButton.setOnAction(e -> primaryStage.setScene(mainScene));
 
         VBox actionVisualizer = new VBox();
@@ -1155,19 +1183,17 @@ public class GUIHandler extends Application implements Loggable {
         for (int i = 0; i < row.size(); i++) {
             if(!cellsContainers.get(row.get(i)).get(column.get(i)).getChildren().contains(cellsButtons.get(row.get(i)).get(column.get(i))))
                 cellsContainers.get(row.get(i)).get(column.get(i)).getChildren().add(cellsButtons.get(row.get(i)).get(column.get(i)));
+            int index = i;
             cellsButtons.get(row.get(i)).get(column.get(i)).setOnAction(e -> {
                 String selected = null;
-                int rowPos = 0;
-                int colPos = 0;
-                for(Map.Entry<String, Map<Integer, Integer>> tile : ammoTiles.entrySet())
-                    for(Map.Entry<Integer, Integer> position : tile.getValue().entrySet())
-                        for(int j = 0; j < row.size(); j++)
-                            if(position.getValue().equals(column.get(j)) && position.getKey().equals(row.get(j))) {
-                                selected = tile.getKey();
-                                rowPos = row.get(j);
-                                colPos = column.get(j);
-                            }
-                choseCell(selected, rowPos, colPos);
+                Map <Integer, Integer> tile = new HashMap<Integer, Integer>();
+                tile.put(row.get(index), column.get(index));
+                for(String string : ammoTiles.keySet()){
+                    if(ammoTiles.get(string).equals(tile)){
+                        selected = string;
+                    }
+                }
+                choseWhereToMove(selected, row.get(index), column.get(index));
             });
         }
         button3.setOnAction(e -> {
@@ -1186,22 +1212,23 @@ public class GUIHandler extends Application implements Loggable {
             column.addAll(movements.get(entryAmmo).values());
         }
 
+
         for (int i = 0; i < row.size(); i++) {
             if(!cellsContainers.get(row.get(i)).get(column.get(i)).getChildren().contains(cellsButtons.get(row.get(i)).get(column.get(i))))
                 cellsContainers.get(row.get(i)).get(column.get(i)).getChildren().add(cellsButtons.get(row.get(i)).get(column.get(i)));
+            int index = i;
             cellsButtons.get(row.get(i)).get(column.get(i)).setOnAction(e -> {
+
                 String selected = null;
-                int rowPos = 0;
-                int colPos = 0;
-                for(Map.Entry<String, Map<Integer, Integer>> tile : movements.entrySet())
-                    for(Map.Entry<Integer, Integer> position : tile.getValue().entrySet())
-                        for(int j = 0; j < row.size(); j++)
-                            if(position.getValue().equals(column.get(j)) && position.getKey().equals(row.get(j))) {
-                                selected = tile.getKey();
-                                rowPos = row.get(j);
-                                colPos = column.get(j);
-                            }
-                choseWhereToMove(selected, rowPos, colPos);
+                Map <Integer, Integer> tile = new HashMap<Integer, Integer>();
+                tile.put(row.get(index), column.get(index));
+                for(String string : movements.keySet()){
+                    if(movements.get(string).equals(tile)){
+                        selected = string;
+                    }
+                }
+                choseWhereToMove(selected, row.get(index), column.get(index));
+
             });
         }
 
@@ -1209,7 +1236,7 @@ public class GUIHandler extends Application implements Loggable {
 
     private void choseWhereToMove(String chosen, int row, int column){
         textContainer.getChildren().clear();
-        setText(textContainer, "Cell selected!");
+        setText(textContainer, "You selected row: " + row + "column: " + column);
         Button button = new Button("Move this way!");
         pickButtonContainer.getChildren().add(button);
         pickButtonContainer.setAlignment(Pos.CENTER);

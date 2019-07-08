@@ -257,7 +257,11 @@ public class AdrenalineGUI extends View implements Loggable {
 
     @Override
     public void willChooseSkulls() {
-        this.client.didChooseSkulls("5");
+       handlerGUI.chooseSkulls();
+    }
+
+    public void didChooseSkulls(String choice){
+        this.client.didChooseSkulls(choice);
     }
 
     @Override
