@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.utility.PlayerColor;
 import it.polimi.ingsw.model.player.PlayerBoard;
+import it.polimi.ingsw.utility.Loggable;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,7 +17,7 @@ import static org.junit.Assert.*;
  * @author Stefano Formicola
  */
 
-public class PlayerBoardTest {
+public class PlayerBoardTest implements Loggable {
 
     private PlayerBoard playerBoard;
 
@@ -102,7 +103,7 @@ public class PlayerBoardTest {
         try {
             playerBoard.setMarks(toAdd);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            logOnException(e.getMessage(), e);
         }
         assertTrue(playerBoard.getMarks().containsAll(toAdd));
     }

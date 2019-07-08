@@ -135,7 +135,7 @@ public class GUIHandler extends Application implements Loggable {
         button = new Button("Continue");
         button.setOnAction(e -> {try{chooseConnection();}catch (Exception ex){logOnException(ex.getMessage(), ex);}});
         button3 = new Button("Buy Card");
-        button.setOnAction(e -> {try{chooseConnection();}catch (Exception ex){ex.printStackTrace();}});
+        button.setOnAction(e -> {try{chooseConnection();}catch (Exception ex){logOnException(ex.getMessage(), ex);}});
         boxButton = new HBox(button);
         boxButton.setAlignment(Pos.CENTER);
         boxButton.setMargin(button, new Insets(0, 0, 50, 0));
@@ -571,7 +571,7 @@ public class GUIHandler extends Application implements Loggable {
         StackPane powerupButtonContainer = new StackPane();
         powerupButtonContainer.setAlignment(Pos.CENTER);
         powerupButtonContainer.getChildren().add(powerupButton);
-        powerupButton.setOnAction(e -> {try{chooseSpawnPoint(powerups);} catch (Exception ex){ex.printStackTrace();}});
+        powerupButton.setOnAction(e -> {try{chooseSpawnPoint(powerups);} catch (Exception ex){logOnException(ex.getMessage(), ex);}});
         modesChoiceGrid.add(powerupButtonContainer, 0, 2,3,1);
 
         setText(textContainerSettingChoice, "Draw two powerups from the deck");
@@ -646,7 +646,7 @@ public class GUIHandler extends Application implements Loggable {
             try {
                 onChooseAction();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logOnException(ex.getMessage(), ex);
             }
         });
     }
@@ -801,7 +801,7 @@ public class GUIHandler extends Application implements Loggable {
             try {
                 onPickAmmoTile(tiles, weapons);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logOnException(ex.getMessage(), ex);
             }
         });
     }
@@ -811,7 +811,7 @@ public class GUIHandler extends Application implements Loggable {
             try {
                 onChooseMovement(movements);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logOnException(ex.getMessage(), ex);
             }
         });
     }
@@ -1992,7 +1992,7 @@ public class GUIHandler extends Application implements Loggable {
             try {
                 onTurnNormal();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logOnException(ex.getMessage(), ex);
             }
         });
     }
@@ -2011,7 +2011,7 @@ public class GUIHandler extends Application implements Loggable {
             try {
                 onChooseEffect(effects, weapon);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logOnException(ex.getMessage(), ex);
             }
         });
     }
@@ -2040,7 +2040,7 @@ public class GUIHandler extends Application implements Loggable {
             try {
                 onChooseMode(modes, weapon);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logOnException(ex.getMessage(), ex);
             }
         });
     }
@@ -2069,7 +2069,7 @@ public class GUIHandler extends Application implements Loggable {
             try {
                 onChooseDamage(damages, indexOfEffect, weapon, forPotentiableWeapon);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logOnException(ex.getMessage(), ex);
             }
         });
     }

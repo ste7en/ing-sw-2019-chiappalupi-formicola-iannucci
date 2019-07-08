@@ -102,9 +102,18 @@ public class Damage implements Comparable<Damage>, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        Damage d = (Damage) o;
-        if(d.getTarget() != target || d.getDamage() != damage || d.getMarks() != marks || d.getPosition() != position) return false;
-        return true;
+        if (super.equals(o)) return true; // reference equality
+
+        if (o instanceof Damage) {
+            var d = (Damage) o;
+            return !(d.getTarget() != target || d.getDamage() != damage || d.getMarks() != marks || d.getPosition() != position);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     @Override

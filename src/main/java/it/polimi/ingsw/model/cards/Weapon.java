@@ -632,7 +632,7 @@ public abstract class Weapon implements Serializable {
         {
             int a = 0;
             for (int j=0; j<r; j++)
-                a += pow(10, r-1-j) * data[j];
+                a += pow(10, (double) r - 1 - j) * data[j];
             box.add(a);
             return;
         }
