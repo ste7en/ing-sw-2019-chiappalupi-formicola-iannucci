@@ -549,6 +549,7 @@ public class ClientRMI extends Client implements ClientInterface, RMIAsyncHelper
 
     @Override
     public boolean ping() {
+        onPong();
         return true;
     }
 

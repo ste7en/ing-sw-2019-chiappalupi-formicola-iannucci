@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking;
 
+import it.polimi.ingsw.networking.utility.Ping;
 import it.polimi.ingsw.utility.AdrenalineLogger;
 import it.polimi.ingsw.utility.Loggable;
 import it.polimi.ingsw.view.View;
@@ -7,8 +8,7 @@ import it.polimi.ingsw.view.View;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -31,6 +31,7 @@ public abstract class Client implements Loggable {
     protected View viewObserver;
     protected UUID gameID;
     protected int userID;
+    protected Timer pingTimer;
 
     /**
      * Log strings
@@ -52,6 +53,7 @@ public abstract class Client implements Loggable {
      */
     private static final String ASK_HOST_NAME           = "Please, insert server's address or hostname: ";
     private static final String ASK_PORT_NUMBER         = "Please, insert server's port number: ";
+    private static final String CONNECTION_INTERRUPT    = "\n\u001B[31mConnection interrupted with the server, please reconnect.\u001B[0m\n";
 
     /**
      * Class constructor
@@ -62,6 +64,7 @@ public abstract class Client implements Loggable {
     public Client(String host, Integer port) {
         this.serverName = host;
         this.connectionPort = port;
+        this.pingTimer = new Timer(true);
 
         setupConnection();
     }
@@ -75,6 +78,20 @@ public abstract class Client implements Loggable {
     public void registerObserver(View viewObserver) {
         this.viewObserver = viewObserver;
         AdrenalineLogger.config(OBS_REGISTERED);
+    }
+
+    protected void onPong() {
+        try {
+            pingTimer.cancel();
+        } catch (IllegalStateException e) { }
+        finally {
+            this.pingTimer = new Timer(true);
+            this.pingTimer.schedule(new TimerTask() {
+                public void run() {
+                    viewObserver.onFailure(CONNECTION_INTERRUPT);
+                }
+            }, new Date(System.currentTimeMillis()+Ping.getInstance().getPingInterval()));
+        }
     }
 
     /**

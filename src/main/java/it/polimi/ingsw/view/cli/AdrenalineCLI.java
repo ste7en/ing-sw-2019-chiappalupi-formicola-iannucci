@@ -243,11 +243,7 @@ public class AdrenalineCLI extends View {
 
     @Override
     public void onFailure(String message) {
-        if (CHARACTER_NOT_AVAILABLE.equals(message)) {
-            out.println(message);
-        } else {
-            out.println(message);
-        }
+        out.println(message);
     }
 
     @Override

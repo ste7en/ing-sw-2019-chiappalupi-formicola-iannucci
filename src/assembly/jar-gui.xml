@@ -10,6 +10,9 @@
             <useProjectArtifact>false</useProjectArtifact>
             <unpack>true</unpack>
             <scope>runtime</scope>
+            <includes>
+                <include>com.fasterxml.jackson.core:jackson*</include>
+            </includes>
         </dependencySet>
     </dependencySets>
     <fileSets>
@@ -18,6 +21,8 @@
             <directory>${project.build.outputDirectory}</directory>
             <excludes>
                 <exclude>**.log**</exclude>
+                <exclude>*javafx*</exclude>
+                <exclude>*jfx*</exclude>
             </excludes>
         </fileSet>
     </fileSets>

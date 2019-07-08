@@ -6,13 +6,13 @@ import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.utility.AmmoColor;
 import it.polimi.ingsw.utility.AdrenalineLogger;
+import it.polimi.ingsw.utility.Loggable;
 import it.polimi.ingsw.view.View;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class AdrenalineGUI extends View {
+public class AdrenalineGUI extends View implements Loggable {
 
     private GUIHandler handlerGUI;
     private Random r;
@@ -35,11 +35,7 @@ public class AdrenalineGUI extends View {
 
     @Override
     protected void willChooseConnection() {
-        try {
-            handlerGUI.chooseConnection();
-        } catch (FileNotFoundException e){
-
-        }
+        handlerGUI.chooseConnection();
     }
 
     @Override
@@ -69,168 +65,168 @@ public class AdrenalineGUI extends View {
                     try {
                         handlerGUI.createGameMap(value.get(0));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Player.playerKey_players:
                     try {
                         handlerGUI.addPlayerBoards(value);
                     }catch (Exception e) {
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Weapon.weapon_key:
                     try {
                         if(isBuilt) handlerGUI.updateWeaponsCards(value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Powerup.powerup_key:
                     try {
                         if(isBuilt) handlerGUI.updatePowerups(value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case AmmoColor.ammoColorKey_blue:
                     try {
                         handlerGUI.updateBlueAmmos(Integer.parseInt(value.get(0)));
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case AmmoColor.ammoColorKey_red:
                     try {
                         handlerGUI.updateRedAmmos(Integer.parseInt(value.get(0)));
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case AmmoColor.ammoColorKey_yellow:
                     try {
                         handlerGUI.updateYellowAmmos(Integer.parseInt(value.get(0)));
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Board.weaponsKey_blue:
                     try {
                         handlerGUI.updateDeckAbove(value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Board.weaponsKey_red:
                     try {
                         handlerGUI.updateDeckLeft(value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Board.weaponsKey_yellow:
                     try {
                         handlerGUI.updateDeckRight(value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case GameMap.ROW_1:
                     try {
                         handlerGUI.updateFirstRow(value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case GameMap.ROW_2:
                     try {
                         handlerGUI.updateSecondRow(value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case GameMap.ROW_3:
                     try {
                         handlerGUI.updateThirdRow(value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Player.playerKey_damages_blue:
                     try {
                         handlerGUI.updateDamages("blue", value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Player.playerKey_damages_yellow:
                     try {
                         handlerGUI.updateDamages("yellow", value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Player.playerKey_damages_green:
                     try {
                         handlerGUI.updateDamages("green", value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Player.playerKey_damages_grey:
                     try {
                         handlerGUI.updateDamages("grey", value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Player.playerKey_damages_purple:
                     try {
                         handlerGUI.updateDamages("purple", value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Player.playerKey_marks_blue:
                     try {
                         handlerGUI.updateMarks("blue", value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Player.playerKey_marks_yellow:
                     try {
                         handlerGUI.updateMarks("yellow", value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Player.playerKey_marks_green:
                     try {
                         handlerGUI.updateMarks("green", value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Player.playerKey_marks_grey:
                     try {
                         handlerGUI.updateMarks("grey", value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 case Player.playerKey_marks_purple:
                     try {
                         handlerGUI.updateMarks("purple", value);
                     }catch (Exception e){
-                        e.printStackTrace();
+                        logOnException(e.getMessage(), e);
                     }
                     break;
                 default:
                     break;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logOnException(e.getMessage(), e);
         }
     }
 
@@ -321,7 +317,7 @@ public class AdrenalineGUI extends View {
         handlerGUI.moveOptions(movements);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            logOnException(e.getMessage(), e);
         }
     }
 
@@ -358,7 +354,7 @@ public class AdrenalineGUI extends View {
             } else weapons.put(pick, pick.substring(0, pick.length() - 18));
         }
         handlerGUI.pickOptions(ammoTiles, weapons); } catch (Exception e) {
-            e.printStackTrace();
+            logOnException(e.getMessage(), e);
         }
     }
 
