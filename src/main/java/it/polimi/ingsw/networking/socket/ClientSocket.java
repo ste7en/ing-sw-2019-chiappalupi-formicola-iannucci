@@ -91,6 +91,7 @@ public class ClientSocket extends Client implements ConnectionHandlerReceiverDel
                 switch (communicationMessage) {
                     case PING:
                         sender.send(CommunicationMessage.from(id, PONG));
+                        onPong();
                         break;
                     case CREATE_USER_OK:
                         super.userID = id;

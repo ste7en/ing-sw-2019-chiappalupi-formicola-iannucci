@@ -138,4 +138,10 @@ public class Ping {
      * @return the pingHandler instance
      */
     private ConcurrentMap<Pingable, Integer> getPingHandler() { return this.pingHandler; }
+
+    /**
+     * Ping interval
+     * @return ping interval
+     */
+    public long getPingInterval() { return EXECUTION_PERIOD+EXECUTION_DELAY; }
 }
